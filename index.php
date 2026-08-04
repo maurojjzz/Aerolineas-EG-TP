@@ -9,10 +9,11 @@
 
     <link rel="stylesheet" href="./public/css/index.css">
     <link rel="stylesheet" href="./public/css/layout/header.css">
+    <link rel="stylesheet" href="./public/css/components/menuMobile.css">
 
 </head>
 
-<body class="container-fluid border">
+<body class="container-fluid">
     <?php require './src/views/layouts/header.php' ?>
 
     <main>

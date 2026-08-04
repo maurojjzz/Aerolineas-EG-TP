@@ -1,27 +1,22 @@
 .logo {
-    height: 100px;
-    width: 100px;
+    height: 46px;
+    width: 74px;
 }
 
 .navbar-custom {
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.18);
     backdrop-filter: blur(12px);
     height: 60px;
-    display: flex;
-    overflow: hidden;
 }
 
-.navbar-custom .nav-item{
-    border-radius:4px;
-    transition:.25s;
+.navbar-custom .nav-item {
+    transition: 0.25s;
 }
 
-.navbar-custom .nav-link{
-    color:white;
-    font-weight:500;
-    font-size:18px;
-    padding:14px 28px;
-    /* border-radius:10px; */
+.navbar-custom .nav-link {
+    color: white;
+    font-weight: 500;
+    font-size: 18px;
 }
 
 .nav-item {
@@ -30,19 +25,17 @@
     justify-content: center;
     height: 100%;
     transition: background-color 0.3s ease;
-} 
-
-
-.navbar-custom .nav-item:hover{
-    background:rgba(255,255,255,.12);
 }
 
-
-.navbar-custom .nav-item.active{
-    background:rgba(255,255,255,.18);
+.navbar-custom .nav-item:hover {
+    background: rgba(255, 255, 255, 0.12);
 }
 
-.btn-custom{
+.navbar-custom .nav-item.active {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.btn-custom {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -52,18 +45,23 @@
     color: white;
     font-weight: 500;
     font-size: 18px;
-    transition:all .25s ease;
-    margin-right: 13px;
+    transition: all 0.25s ease;
+    margin-right: 35px;
 }
 
-.icono_perfil{
+.icono_perfil {
     height: 18px;
     width: 18px;
 }
 
-.btn-custom:hover{
-    background:rgba(255,255,255,.12);
-    color:white;
-    border:1px solid white;
-    transition:all .25s ease;
+.icono_perfil-mobile {
+    height: 30px;
+    width: 30px;
+}
+
+.btn-custom:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+    border: 1px solid white;
+    transition: all 0.25s ease;
 }
