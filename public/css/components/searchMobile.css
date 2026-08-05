@@ -1,0 +1,34 @@
+.options-line {
+    height: 70px;
+}
+
+.option-line-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 55px;
+    border-right: 2px solid #dfd6d6;
+}
+
+.option-line-item:last-child {
+    border-right: none;
+}
+
+.option-line-item p {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.7px;
+}
+
+.iconos-search {
+    width: 28px;
+    height: 28px;
+}
+
+@media screen and (min-width: 400px) {
+    .option-line-item p {
+        font-size: 0.9rem;
+        font-weight: 500;
+        letter-spacing: 0.7px;
+    }
+}
