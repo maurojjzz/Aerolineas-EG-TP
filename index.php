@@ -1,3 +1,4 @@
+<?php date_default_timezone_set('America/Argentina/Buenos_Aires');?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -19,7 +20,7 @@
         
         <img src="./public/img/clouds.png" class="nubes " alt="fondo de nubes">
 
-        <section class="container-xxl custom-main border border-danger">
+        <section class="container-xxl custom-main">
             
             <div class="hero-content text-center mt-3">
                 <h5>Vuela sin limites</h5>
@@ -31,7 +32,7 @@
         </section>
 
         <!-- Buscador mobile -->
-        <section class="border border-danger searchbox px-3">
+        <section class="searchbox px-3 mb-5">
             <?php require './src/views/components/searchMobile.php' ?>
         </section>
 
@@ -40,7 +41,10 @@
 
         </section>
        
+
+        <script src="./public/js/searchMobile.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
     </body>
 
 </html>

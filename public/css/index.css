@@ -4,15 +4,13 @@ body {
 
 .custom-main {
     position: relative;
-    /* min-height: 90vh; */
     height: auto;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    /* align-items:center; */
     z-index: 2;
-    padding-bottom: 350px;
+    padding-bottom: 150px;
 }
 
 .hero-content {
@@ -41,7 +39,7 @@ body {
 }
 
 .nubes {
-    position: fixed;
+    position: absolute;
     left: 50%;
     top: 185px;
     transform: translateX(-50%);
@@ -61,13 +59,25 @@ body {
     z-index: 1;
 }
 
-.searchbox{
-    /* height: 55px; */
+.searchbox {
+    position: relative;
+}
+
+@media screen and (min-width: 360px) {
+    .custom-main {
+        padding-bottom: 200px;
+    }
+}
+
+@media screen and (min-width: 590px) {
+    .custom-main {
+        padding-bottom: 300px;
+    }
 }
 
 @media screen and (min-width: 768px) {
     .nubes {
-        position: fixed;
+        position: absolute;
         left: 50%;
         top: 213px;
         transform: translateX(-50%);
