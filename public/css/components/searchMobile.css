@@ -57,8 +57,10 @@
 .autocomplete {
     position: relative;
     background-color: #e8effc;
-    /* min-height: 80px; */
+    max-width: 395px;
+    width: 100%;
 }
+
 .input-custom {
     width: 100%;
 }
@@ -73,24 +75,17 @@
     left: 0;
     right: 0;
     top: 100%;
-
     background: white;
     border-radius: 10px;
-
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-
     overflow: hidden;
-
     display: none;
-
     z-index: 1000;
 }
 
 .autocomplete-option {
     padding: 12px 15px;
-
     cursor: pointer;
-
     display: flex;
     flex-direction: column;
 }
@@ -144,6 +139,8 @@
 .inputCalendar {
     background-color: #e8effc;
     height: 60px;
+    max-width: 395px;
+    width: 100%;
 }
 
 .cal-label {
@@ -187,7 +184,7 @@
     height: 60px;
 }
 
-.selectPasenger{
+.selectPasenger {
     background-color: transparent;
     border: none;
     box-shadow: none;
@@ -210,16 +207,17 @@
     left: 10px;
 }
 
-.b-vuelos{
-    background-color: #0D3262;
+.b-vuelos {
+    background-color: #0d3262;
     font-size: 1.2rem;
     font-weight: 500;
+    width: 100%;
     letter-spacing: 0.5px;
     transition: all 0.15s ease;
 }
 
-.b-vuelos:hover{
-    background-color: #0D3262;
+.b-vuelos:hover {
+    background-color: #0d3262;
     opacity: 0.9;
     transition: all 0.3s ease-out;
 }
@@ -227,4 +225,95 @@
 .btn-icon-vuelos {
     width: 27px;
     height: 20px;
+}
+
+@media screen and (min-width: 465px) {
+    .inputCalendar,
+    .autocomplete {
+        max-width: 220px;
+        width: 100%;
+    }
+
+    .ctm-box-pas-btn {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .inputPasajeros {
+        max-width: 460px;
+        width: 100%;
+    }
+
+    .b-vuelos {
+        width: 460px;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .inputPasajeros {
+        max-width: 180px;
+        width: 100%;
+    }
+
+    .b-vuelos {
+        width: 50px;
+        height: 50px;
+    }
+
+    .custom-cal-in {
+        min-height: calc(1.5em + 0.75rem + 4px);
+        padding: 0.375rem 0.75rem;
+        font-size: 0.95rem;
+        border-radius: 0.375rem;
+        width: 130px;
+    }
+
+    .custom-input-b2,
+    .custom-input-b2::placeholder {
+        font-size: 1rem;
+    }
+
+    .flight-location,
+    .label-search {
+        font-size: 0.75rem;
+    }
+
+    .fecha-sub {
+        font-size: 0.7rem;
+    }
+
+    .selectPasenger {
+        font-size: 0.9rem;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .custom-input-b2,
+    .custom-input-b2::placeholder {
+        font-size: 1.2rem;
+    }
+
+    .selectPasenger {
+        font-size: 1rem;
+    }
+
+    .custom-cal-in {
+        min-height: calc(1.5em + 0.75rem + 2px);
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        width: 140px;
+    }
+
+    .text-vuelo{
+        display: block;
+    }
+
+    .b-vuelos {
+        width: 210px;
+        height: 60px;
+        margin-bottom: 5px;
+    }
+    
 }

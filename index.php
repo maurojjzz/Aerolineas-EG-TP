@@ -22,25 +22,20 @@
 
         <section class="container-xxl custom-main">
             
-            <div class="hero-content text-center mt-3">
-                <h5>Vuela sin limites</h5>
-                <h2>DONDE CADA VIAJE COMIENZA</h2>
+            <div class="hero-content text-center mt-3 mt-sm-4 mt-md-5">
+                <h5 >Vuela sin limites</h5>
+                <h2 >DONDE CADA <span>VIAJE</span> COMIENZA</h2>
                 <p>Conectamos personas y destinos con una experiencia rapida, segura y confiable.</p>
             </div>
 
             <img src="./public/img/airplane.png" alt="Imagen avion" class="hero-plane">
         </section>
 
-        <!-- Buscador mobile -->
+
         <section class="searchbox px-3 mb-5">
             <?php require './src/views/components/searchMobile.php' ?>
         </section>
 
-        <!-- Buscador desktop -->
-        <section class="d-none border border-danger  searchbox">
-
-        </section>
-       
 
         <script src="./public/js/searchMobile.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>

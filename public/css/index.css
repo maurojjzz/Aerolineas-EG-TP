@@ -23,13 +23,15 @@ body {
 .hero-content h5 {
     text-transform: uppercase;
     font-size: 1rem;
-    letter-spacing: 2.5px;
+    letter-spacing: 5px;
+    color: #082149;
 }
 
 .hero-content h2 {
     font-size: 2.4rem;
     font-weight: 700;
     min-width: 300px;
+    color: #082149;
 }
 
 .hero-content p {
@@ -89,6 +91,25 @@ body {
     .custom-main {
         padding-bottom: 450px;
     }
+
+    .hero-content h2 {
+        font-size: 4rem;
+    }
+
+    .hero-content h2 span {
+        color: transparent;
+        -webkit-text-stroke: 3px #082149;
+        font-weight: 800;
+    }
+
+    .hero-content h5 {
+        font-size: 1.7rem;
+        letter-spacing: 10px;
+    }
+
+    .hero-content p {
+        font-size: 1.2rem;
+    }
 }
 
 @media screen and (min-width: 1180px) {
@@ -100,5 +121,9 @@ body {
         height: auto;
         max-height: 500px;
         width: 100%;
+    }
+
+    .hero-content h2 {
+        font-size: 4.7rem;
     }
 }
