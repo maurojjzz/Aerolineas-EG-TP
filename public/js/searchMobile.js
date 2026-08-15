@@ -1,6 +1,8 @@
 const options = document.querySelectorAll(".option-line-item");
 const box2 = document.getElementById("box2");
 
+const copiaVuelosMob= box2.cloneNode(true);
+
 options.forEach((option) => {
     option.addEventListener("click", () => {
         options.forEach((item) => {
@@ -12,7 +14,7 @@ options.forEach((option) => {
         const selected = option.dataset.option;
 
         if (selected === "vuelos") {
-            box2.textContent = "Seleccionaste Vuelos";
+            box2.innerHTML = copiaVuelosMob.innerHTML;
         }
 
         if (selected === "promociones") {

@@ -1,0 +1,163 @@
+.desktop-search-tabs {
+    min-height: 75px;
+    border-bottom: 1px solid #eef1f4;
+}
+
+.desktop-tab {
+    height: 75px;
+    padding: 0 28px;
+    border: none;
+    background: transparent;
+    color: #17233c;
+    transition: 0.2s ease;
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+.desktop-tab img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.desktop-tab:hover {
+    background: #f5f7fa;
+}
+
+.desktop-tab.active {
+    background: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+
+.desktop-search-form {
+    min-height: 135px;
+    padding: 25px 35px;
+    gap: 22px;
+}
+
+.desktop-field {
+    min-width: 0;
+}
+
+.desktop-field label {
+    display: block;
+    margin-bottom: 2px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #27334b;
+    text-transform: uppercase;
+}
+
+.desktop-field p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: #384359;
+}
+
+.desktop-airport {
+    width: 150px;
+}
+
+.desktop-main-input {
+    width: 100%;
+    padding: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: #15213c;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.desktop-main-input::placeholder {
+    color: #15213c;
+    opacity: 1;
+}
+
+.desktop-arrow {
+    position: absolute;
+    top: 30px;
+    right: 0;
+    font-size: 1.2rem;
+}
+
+.swap-btn {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    border-radius: 50%;
+    border: 1px solid #e2e6eb;
+    background: white;
+    font-size: 1.2rem;
+}
+
+
+.desktop-divider {
+    width: 1px;
+    height: 72px;
+    flex: 0 0 1px;
+    background: #aeb4bd;
+}
+
+
+.desktop-date {
+    width: 150px;
+}
+
+.desktop-date-input {
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 0;
+    background: transparent;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #16213a;
+}
+
+
+.desktop-passengers {
+    width: 150px;
+}
+
+.desktop-passenger-select {
+    border: none;
+    box-shadow: none;
+
+    padding-left: 0;
+
+    background-color: transparent;
+
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.desktop-passenger-select:focus {
+    box-shadow: none;
+}
+
+
+.desktop-search-btn {
+    min-width: 185px;
+    height: 58px;
+    background: #0d3262;
+    color: white;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.desktop-search-btn:hover {
+    background: #09264b;
+    color: white;
+}
+
+.autocomplete-option {
+    padding: 12px 15px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}

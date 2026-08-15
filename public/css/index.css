@@ -44,9 +44,9 @@ body {
     position: absolute;
     left: 50%;
     top: 185px;
-    transform: translateX(-50%);
+    transform: translateX(-48.5%);
     height: 345px;
-    width: 120%;
+    width: 99%;
     pointer-events: none;
 }
 

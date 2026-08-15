@@ -38,8 +38,6 @@
                     <option value="3">3 Pasajeros</option>
                     <option value="4">4 Pasajeros</option>
                     <option value="5">5 Pasajeros</option>
-                    <option value="6">6 Pasajeros</option>
-                    <option value="7+">+7 Pasajeros</option>
                 </select>
                 
             </div>
