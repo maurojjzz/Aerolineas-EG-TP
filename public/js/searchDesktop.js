@@ -174,3 +174,21 @@ dateInputReturn.addEventListener("input", function () {
 
     dateInputReturnWord.textContent = `${parseInt(dia)} ${mesTexto}, ${año}`;
 });
+
+
+const swapButton = document.getElementById("swap-desktop");
+
+swapButton.addEventListener("click", function () {
+    const temp = inputSalida.value;
+    inputSalida.value = inputDestino.value;
+    inputDestino.value = temp;
+
+    const tempLocation = inputSalidaLocation.textContent;
+    inputSalidaLocation.textContent = inputDestinoLocation.textContent;
+    inputDestinoLocation.textContent = tempLocation;
+
+    inputSalida.dispatchEvent(new Event("input"));
+    inputDestino.dispatchEvent(new Event("input"));
+    inputSalidaResult.style.display = "none";
+    inputDestinoResult.style.display = "none";
+});

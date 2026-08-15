@@ -29,6 +29,12 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
+.desktop-tab:first-child, 
+.desktop-tab.active:first-child, 
+.desktop-tab:hover:first-child {
+    border-radius: 16px 0 0 0;
+}
+
 
 .desktop-search-form {
     min-height: 135px;
@@ -148,6 +154,8 @@
     justify-content: center;
     align-items: center;
     white-space: nowrap;
+    font-weight: 500;
+    font-size: 1.2rem;
 }
 
 .desktop-search-btn:hover {
