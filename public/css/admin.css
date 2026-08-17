@@ -1,0 +1,48 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #031f47;
+}
+
+.nav-item {
+    min-height: 50px;
+    max-width: 200px;
+    width: 100%;
+    overflow-x: hidden;
+    transition: all 0.3s ease-out;
+}
+
+ul .nav-item .nav-link {
+    color: #ffffff;
+    font-weight: 500;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+}
+
+ul .nav-item .nav-link.active {
+    background: linear-gradient(135deg, #2066ba, #134384, #114182);
+    color: #ffffff;
+}
+
+ul .nav-item .nav-link:hover {
+    background: linear-gradient(10deg, #2066ba, #134384, #114182);
+    color: #ffffff;
+}
+
+.iconos-sidebar {
+    width: 20px;
+    height: 18px;
+}
+.logo-sidebar {
+    width: 80px;
+    height: 58px;
+} 
+
+.custom-logo h6{
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 0.75rem;
+} 
