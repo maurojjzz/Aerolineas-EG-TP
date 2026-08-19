@@ -1,4 +1,4 @@
-<div class="d-flex flex-column align-items-center m-0 h-100 ">
+<div class="d-flex flex-column align-items-center m-0 h-100 ctm-sidebar">
 
         <div class="d-flex flex-column align-items-center gap-2 py-3 px-3 custom-logo">
             <img src="../../../public/img/aerologo.webp" alt="logo sitio web" class="logo-sidebar">    

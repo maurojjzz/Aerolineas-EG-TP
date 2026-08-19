@@ -14,9 +14,9 @@
     </head>
     <body>
         
-        <div class="d-flex min-vh-100  row g-0 m-0 p-2 pe-2 border border-danger">
+        <div class="d-flex min-vh-100 row g-0 m-0 p-2 pe-2">
 
-            <aside class="admin-sidebar text-white col-3 col-xxl-2 pe-1">
+            <aside class="admin-sidebar text-white col-3 col-xxl-2 pe-1 ">
                 <?php require '../layouts/sidebarAdmin.php'; ?>
             </aside>
 
@@ -26,18 +26,10 @@
                     <?php require '../layouts/headerAdmin.php'; ?>
                 </header>
 
-                <main class="container-fluid ">
+                <main class="container-fluid d-flex flex-column gap-3 p-3 admin-content ">
+                    <?php require './aerolineaAlta.php'; ?>
 
-                    <h1>Panel de Administración</h1>
-                    <p>Gestiona y supervisa todos los aspectos del sistema de reservas.</p>
-
-                    <div class="row g-3">
-                        <div class="col-3">Card</div>
-                        <div class="col-3">Card</div>
-                        <div class="col-3">Card</div>
-                        <div class="col-3">Card</div>
-                    </div>
-
+                    
                 </main>
 
             </div>

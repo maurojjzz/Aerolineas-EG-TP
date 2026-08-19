@@ -1,8 +1,36 @@
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+}
+
 body {
     margin: 0;
     padding: 0;
     background-color: #031f47;
 }
+
+.ctm-sidebar {
+    width: 100%;
+}
+
+.admin-sidebar {
+    height: calc(100vh - 16px);
+    flex-shrink: 0;
+}
+
+.admin-main {
+    height: calc(100vh - 16px);
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-content {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
 
 .nav-item {
     min-height: 50px;
