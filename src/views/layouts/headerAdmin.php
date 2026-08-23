@@ -1,6 +1,19 @@
 <div class="container-header d-flex align-items-center bg-light row border-bottom border-2 w-100 m-0 p-0 g-0">
-    <button type="button" class=" col-1 btn ctm-btn-header">
+    <button type="button" class=" col-1 btn ctm-btn-header d-none d-md-block" id="sidebarToggleHamburguesa">
         <img src="../../../public/img/icons/menu-hamburguesa.png" alt="icnno menu hamburguesa" class="logo-header-admin opacity-75"> 
+    </button>
+
+    <!-- menu hamburguesa para mobile -->
+    <button 
+        type="button" 
+        class=" col-1 btn ctm-btn-header d-md-none" 
+        data 
+        id="sidebarToggleHamburguesaMobile"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#offcanvasAdmin"
+        aria-controls="offcanvasAdmin"   
+    >
+            <img src="../../../public/img/icons/menu-hamburguesa.png" alt="icnno menu hamburguesa" class="logo-header-admin opacity-75"> 
     </button>
 
     <h5 class="col m-0 p-0">

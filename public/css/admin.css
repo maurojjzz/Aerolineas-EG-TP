@@ -31,6 +31,22 @@ body {
     min-height: 0;
 }
 
+.ctm-btn-header:focus {
+    box-shadow: none;
+    outline: none;
+    border: none;
+}
+
+.offcanvas-body .nav-link {
+    /* border border-danger d-flex align-items-center justify-content-center gap-2 */
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+}
+
 .nav-item {
     min-height: 50px;
     max-width: 200px;

@@ -1,4 +1,4 @@
-<div class="d-flex flex-column align-items-center m-0 h-100 ctm-sidebar">
+<div class="d-flex flex-column align-items-center m-0 ctm-sidebar ">
 
         <div class="d-flex flex-column align-items-center gap-2 py-3 px-3 custom-logo">
             <img src="../../../public/img/aerologo.webp" alt="logo sitio web" class="logo-sidebar">    
@@ -6,54 +6,54 @@
         </div>
 
 
-        <ul class="nav navbar-custom d-flex flex-column align-items-center w-100 gap-3 rounded-2 py-3 px-3">
-            <li class="nav-item ">
-                <a class="nav-link rounded-3 w-100" href="#">
+        <ul class="nav navbar-custom d-flex flex-column align-items-center w-100 gap-3 rounded-2 py-3 px-3 ">
+            <li class="nav-item">
+                <a class="nav-link rounded-3 " href="#">
                     <img src="../../../public/img/icons/casa.png" alt="icono casa dashboard" class="iconos-sidebar">
-                    Inicio
+                    <span>Inicio</span>
                 </a>
             </li>
 
             <li class="nav-item"> 
                 <a class="nav-link active rounded-3" href="#">
                     <img src="../../../public/img/icons/avionSidebar.png" alt="icono avion seccion admin" class="iconos-sidebar">
-                    Aerolineas
+                    <span>Aerolineas</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link rounded-3" href="#">
                     <img src="../../../public/img/icons/promoSidebar.png" alt="icono promociones seccion admin" class="iconos-sidebar">
-                    Promociones
+                    <span>Promociones</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link rounded-3" href="#">
                     <img src="../../../public/img/icons/novedadesSidebar.png" alt="icono novedades seccion admin" class="iconos-sidebar">
-                    Novedades
+                    <span>Novedades</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link rounded-3" href="#">
                     <img src="../../../public/img/icons/usuario.png" alt="icono usuarios seccion admin" class="iconos-sidebar">
-                    Usuarios
+                    <span>Usuarios</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link rounded-3" href="#">
                     <img src="../../../public/img/icons/ceo.png" alt="icono CEOs seccion admin" class="iconos-sidebar">
-                    CEOs
+                    <span>CEOs</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link rounded-3" href="#">
                     <img src="../../../public/img/icons/reporteSidebar.png" alt="icono reportes seccion admin" class="iconos-sidebar">
-                    Reportes
+                    <span>Reportes</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link rounded-3" href="#">
                     <img src="../../../public/img/icons/configuracionSidebar.png" alt="icono configuraciones seccion admin" class="iconos-sidebar">
-                    Configuraciones
+                    <span>Configuraciones</span>
                 </a>
             </li>
         </ul>
