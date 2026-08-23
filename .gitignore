@@ -1,0 +1,37 @@
+
+# Dependencies
+/vendor/
+/node_modules/
+
+# Environment and local configuration
+.env
+.env.*
+!.env.example
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# PHP and framework caches
+*.log
+/storage/logs/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/bootstrap/cache/*
+
+# Coverage and test output
+/coverage/
+.phpunit.result.cache
+
+# Build and temporary files
+/public/build/
+/public/hot
+*.tmp
+*.temp

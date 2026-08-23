@@ -10,7 +10,7 @@
             <li class="nav-item ">
                 <a class="nav-link rounded-3 w-100" href="#">
                     <img src="../../../public/img/icons/casa.png" alt="icono casa dashboard" class="iconos-sidebar">
-                    Dashboard
+                    Inicio
                 </a>
             </li>
 

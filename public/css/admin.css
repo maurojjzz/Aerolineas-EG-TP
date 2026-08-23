@@ -31,7 +31,6 @@ body {
     min-height: 0;
 }
 
-
 .nav-item {
     min-height: 50px;
     max-width: 200px;
@@ -67,10 +66,94 @@ ul .nav-item .nav-link:hover {
 .logo-sidebar {
     width: 80px;
     height: 58px;
-} 
+}
 
-.custom-logo h6{
+.custom-logo h6 {
     text-transform: uppercase;
     letter-spacing: 3px;
     font-size: 0.75rem;
-} 
+}
+
+.breadcrumbCont {
+    height: 25px;
+}
+
+.subt {
+    font-size: 1rem;
+    letter-spacing: 0.4px;
+}
+.form-label-t {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+.form-text-info {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: #6c757d;
+}
+
+.paises-results {
+    position: absolute;
+    top: 64%;
+    left: 0;
+    width: 100%;
+    max-height: 220px;
+    overflow-y: auto;
+    background-color: white;
+    border: 1px solid #ced4da;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    display: none;
+    z-index: 1000;
+}
+
+.pais-option {
+    padding: 10px 15px;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.pais-option:hover {
+    background-color: #f1f5f9;
+}
+
+.pais-option span {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+/* el boton input para las fotos */
+
+.logoAerolinea {
+    border: 2px dashed #d3d7dd;
+    cursor: pointer;
+    min-height: 80px;
+    transition: all 0.2s ease;
+}
+
+.logoAerolinea:hover {
+    background-color: #f1f5f9;
+    border-color: #2066ba;
+}
+
+.upload-foto{
+    width: 48px;
+    height: 50px;
+}
+.tetxt{
+    height: 50px;
+}
+
+.firstLogoText{
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.sndLogoText{
+    font-size: 0.75rem;
+    font-weight: 400;
+}
+
+
+/* fin boton logo aero */
