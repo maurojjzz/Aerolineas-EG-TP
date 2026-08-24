@@ -1,6 +1,6 @@
 <div class="d-flex flex-column align-items-center m-0 ctm-sidebar ">
 
-        <div class="d-flex flex-column align-items-center gap-2 py-3 px-3 custom-logo">
+        <div class="d-flex flex-column align-items-center justify-content-center gap-2 py-3 px-3 custom-logo">
             <img src="../../../public/img/aerologo.webp" alt="logo sitio web" class="logo-sidebar">    
             <h6>Vuela sin limites</h6>
         </div>
