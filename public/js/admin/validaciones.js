@@ -57,7 +57,7 @@ const validarCodigo = () => {
         return false;
     }
 
-    if (valor.length <= 3 || valor.length > 5) {
+    if (valor.length < 3 || valor.length > 5) {
         iCodigo.classList.add("is-invalid");
 
         infoCodigo.textContent = "El código debe tener entre 3 y 5 caracteres.";
@@ -256,7 +256,6 @@ const quitarError = (campo) => {
 
 const actualizarCajaErrores = () => {
     const lista = Object.values(errores);
-    console.log(lista);
 
     // no hay errores
     if (lista.length === 0) {

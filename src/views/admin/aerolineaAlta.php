@@ -37,13 +37,13 @@ $paises = [
             <div class="col-12 col-lg-9 border shadow rounded-2 py-4">
 
                 <div class="row d-flex justify-content-evenly m-0 g-0 p-0">
-                    <div class="form-group d-flex flex-column gap-1 col-5 ">
+                    <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11 ">
                         <label class="form-label-t" for="nombre">Nombre de la aerolínea:</label>
-                        <input type="text" name="nombre" id="nombre" class="form-control ctm-inp" required placeholder="Aeroflux" min="3" max="50">
+                        <input type="text" name="nombre" id="nombre" class="form-control ctm-inp" required placeholder="Aeroflux" minlength="3" maxlength="50">
                         <p id="infoNombre" class="form-text-info">Nombre con el que operará comercialmente.</p>
                     </div>
 
-                    <div class="form-group d-flex flex-column gap-1 col-5 ">
+                    <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11 ">
                         <label class="form-label-t" for="codigo">Codigo:</label>
                         <input type="text" name="codigo" id="codigo" class="form-control ctm-inp" required placeholder="AFX" min="3" max="5">
                         <p id="infoCodigo" class="form-text-info">Codigo unico de la aerolínea.</p>
@@ -52,10 +52,8 @@ $paises = [
 
                 <div class="row d-flex justify-content-evenly m-0 g-0 p-0">
                     
-                    <div class="pais-autocomplete position-relative col-5">
-
+                    <div class="pais-autocomplete position-relative col-sm-5 col-11">
                         <label class="form-label-t " for="pais">Pais:</label>
-
                         <input
                             type="text"
                             id="pais"
@@ -86,9 +84,9 @@ $paises = [
 
                     </div>
 
-                    <div class="form-group d-flex flex-column gap-1 col-5 ">
+                    <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11 ">
                         <label class="form-label-t" for="email">Email:</label>
-                        <input type="text" name="email" id="email" class="form-control ctm-inp" required placeholder="aerolinea@example.com">
+                        <input type="email" name="email" id="email" class="form-control ctm-inp" required placeholder="aerolinea@example.com">
                         <p id="infoEmail" class="form-text-info">Email de contacto de la aerolinea.</p>
                     </div>
                 </div>
@@ -102,7 +100,7 @@ $paises = [
                 </div>
 
                 <div class="row d-flex justify-content-evenly m-0 g-0 p-0 ">
-                    <div class="form-group d-flex flex-column gap-1 col-4 ">
+                    <div class="form-group d-flex flex-column gap-1 col-sm-4 col-10 ">
 
                         <label class="form-label-t" for="logo">
                             <p class="form-label-t mb-1">Logotipo:</p> 
@@ -123,7 +121,7 @@ $paises = [
                         <p id="infoLogo" class="form-text-info">Formatos: JPG, PNG, WEBP. Max: 2MB</p>
                     </div>
 
-                    <div class="form-group d-flex flex-column gap-1 col-6 ">
+                    <div class="form-group d-flex flex-column gap-1 col-sm-6 col-11 ">
                         
                         <label class="form-label-t" for="estadoAerolinea">Estado:</label>
 

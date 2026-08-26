@@ -17,17 +17,17 @@
         <div class="d-flex min-vh-100 row g-0 m-0 p-2 pe-2">
 
             <aside class="admin-sidebar text-white d-none d-md-block col-md-3 col-xxl-2 pe-1 ">
-                <?php require '../layouts/sidebarAdmin.php'; ?>
+                <?php require __DIR__ . '/../layouts/sidebarAdmin.php'; ?>
             </aside>
 
             <div class="admin-main col-12 col-md-9 col-xxl-10 bg-light rounded-3 overflow-hidden ">
 
                 <header class="admin-header">
-                    <?php require '../layouts/headerAdmin.php'; ?>
+                    <?php require __DIR__ . '/../layouts/headerAdmin.php'; ?>
                 </header>
 
                 <main class="container-fluid d-flex flex-column gap-3 p-2 admin-content ">
-                    <?php require './aerolineaAlta.php'; ?>
+                    <?php require __DIR__ . '/aerolineaAlta.php'; ?>
                 </main>
 
             </div>
