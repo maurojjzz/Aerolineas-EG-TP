@@ -1,0 +1,234 @@
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #031f47;
+}
+
+.ctm-sidebar {
+    width: 100%;
+}
+
+.admin-sidebar {
+    height: calc(100vh - 16px);
+    flex-shrink: 0;
+}
+
+.admin-main {
+    height: calc(100vh - 16px);
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-sidebar,
+.admin-main {
+    transition:
+        width 0.3s ease,
+        flex-basis 0.3s ease,
+        max-width 0.3s ease;
+}
+
+.logo-sidebar {
+    transition:
+        width 0.3s ease,
+        height 0.3s ease;
+}
+
+.nav-link {
+    transition: all 0.3s ease;
+}
+
+.admin-content {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.ctm-btn-header:focus {
+    box-shadow: none;
+    outline: none;
+    border: none;
+}
+
+.offcanvas-body .nav-link {
+    /* border border-danger d-flex align-items-center justify-content-center gap-2 */
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+}
+
+.nav-item {
+    min-height: 50px;
+    max-width: 200px;
+    width: 100%;
+    overflow-x: hidden;
+    transition: all 0.3s ease-out;
+}
+
+ul .nav-item .nav-link {
+    color: #ffffff;
+    font-weight: 500;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+}
+
+ul .nav-item .nav-link.active {
+    background: linear-gradient(135deg, #2066ba, #134384, #114182);
+    color: #ffffff;
+}
+
+ul .nav-item .nav-link:hover {
+    background: linear-gradient(10deg, #2066ba, #134384, #114182);
+    color: #ffffff;
+}
+
+.iconos-sidebar {
+    width: 20px;
+    height: 18px;
+}
+.logo-sidebar {
+    width: 80px;
+    height: 58px;
+}
+.custom-logo{
+    min-height: 122px;
+}
+
+.custom-logo h6 {
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 0.75rem;
+}
+
+.breadcrumbCont {
+    height: 25px;
+}
+
+.subt {
+    font-size: 1rem;
+    letter-spacing: 0.4px;
+}
+.form-label-t {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+.form-text-info {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: #6c757d;
+}
+
+.paises-results {
+    position: absolute;
+    top: 64%;
+    left: 0;
+    width: 100%;
+    max-height: 220px;
+    overflow-y: auto;
+    background-color: white;
+    border: 1px solid #ced4da;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    display: none;
+    z-index: 1000;
+}
+
+.pais-option {
+    padding: 10px 15px;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.pais-option:hover {
+    background-color: #f1f5f9;
+}
+
+.pais-option span {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+/* el boton input para las fotos */
+
+.logoAerolinea {
+    border: 2px dashed #d3d7dd;
+    cursor: pointer;
+    min-height: 90px;
+    transition: all 0.2s ease;
+}
+
+.logoAerolinea:hover {
+    background-color: #f1f5f9;
+    border-color: #2066ba;
+}
+
+.upload-foto{
+    width: 48px;
+    height: 50px;
+}
+.tetxt{
+    height: 50px;
+}
+
+.firstLogoText{
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.sndLogoText{
+    font-size: 0.75rem;
+    font-weight: 400;
+}
+
+.logo-preview-img{
+    background-color: white;
+    height: 70px;
+    width: 80px;
+    object-fit: contain;
+}
+
+.btn-mini{
+    width: 18px;
+    height: 16px;
+    
+}
+
+/* fin boton logo aero */
+
+.tituloBoxErrores{
+    min-height: 80px;
+}
+
+.tituloBoxErrores h5{
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.tituloBoxErrores p{
+    font-size: 0.875rem;
+}
+
+.errorBoxContent ul li, .recomendaBoxContent ul li{
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.errorBoxContent ul li::marker{
+    color: #dc3545;
+}
+
+.recomendaBoxContent ul li::marker{
+    color: #0d6efd;
+}
