@@ -166,6 +166,13 @@ logoInput.addEventListener("change", function () {
         return;
     }
 
+    if (archivo.size > 2 * 1024 * 1024) {
+        alert("La imagen no puede superar los 2MB.");
+        logoInput.value = "";
+        return;
+    }
+
+
     const urlImagen = URL.createObjectURL(archivo);
 
     cuadroFoto.style.border = "2px solid #d3d7dd";
@@ -259,8 +266,12 @@ logoInput.addEventListener("change", function () {
 
             this.blur();
 
+            logoInput.value = "";
 
             cuadroFoto.innerHTML = cuadroOg;
+
+            cuadroFoto.classList.remove("justify-content-start");
+            cuadroFoto.classList.add("justify-content-center");
 
             cuadroFoto.style.border = " 2px dashed #d3d7dd";
             

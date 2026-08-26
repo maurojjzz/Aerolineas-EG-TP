@@ -45,7 +45,7 @@ $paises = [
 
                     <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11 ">
                         <label class="form-label-t" for="codigo">Codigo:</label>
-                        <input type="text" name="codigo" id="codigo" class="form-control ctm-inp" required placeholder="AFX" min="3" max="5">
+                        <input type="text" name="codigo" id="codigo" class="form-control ctm-inp" required placeholder="AFX" minlength="3" maxlength="5">
                         <p id="infoCodigo" class="form-text-info">Codigo unico de la aerolínea.</p>
                     </div>
                 </div>
@@ -61,6 +61,7 @@ $paises = [
                             class="form-control ctm-inp my-1"
                             placeholder="Seleccione un país"
                             autocomplete="off"
+                            required
                         >
 
                         <div id="paises-results" class="paises-results">
@@ -125,7 +126,7 @@ $paises = [
                         
                         <label class="form-label-t" for="estadoAerolinea">Estado:</label>
 
-                        <select name="estadoAerolinea" class="form-select">
+                        <select name="estadoAerolinea" id="estadoAerolinea" class="form-select">
                             <option value="activa" selected>Activa</option>
                             <option value="inactiva">Inactiva</option>
                         </select>

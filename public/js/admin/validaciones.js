@@ -189,6 +189,7 @@ const validarLogo = () => {
 
         infoLogo.textContent = "Formatos: JPG, PNG, WEBP. Max: 2MB";
 
+        
         return true;
     }
 
