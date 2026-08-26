@@ -206,3 +206,29 @@ ul .nav-item .nav-link:hover {
 }
 
 /* fin boton logo aero */
+
+.tituloBoxErrores{
+    min-height: 80px;
+}
+
+.tituloBoxErrores h5{
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.tituloBoxErrores p{
+    font-size: 0.875rem;
+}
+
+.errorBoxContent ul li, .recomendaBoxContent ul li{
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.errorBoxContent ul li::marker{
+    color: #dc3545;
+}
+
+.recomendaBoxContent ul li::marker{
+    color: #0d6efd;
+}

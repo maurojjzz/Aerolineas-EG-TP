@@ -29,9 +29,9 @@ $paises = [
 
     <div class="contForm col-12 d-flex flex-column p-2 admin-content  h-100">
         <h2 class="m-0 p-0 fs-2 fw-bold">Crear Aerolínea</h2>
-        <p class="m-0 p-0 mb-1 subt">Registra una nueva aerolínea en el sistema.</p>
+        <p class="m-0 p-0 mb-1 subt ">Registra una nueva aerolínea en el sistema.</p>
         
-        <form action="#" method="POST" class="row m-0 g-0 p-0 gap-2 " enctype="multipart/form-data">
+        <form action="#" method="POST" class="row mt-2 m-0 g-0 p-0 gap-2 " enctype="multipart/form-data">
 
             <!-- seccion del formulario -->
             <div class="col-12 col-lg-9 border shadow rounded-2 py-4">
@@ -39,14 +39,14 @@ $paises = [
                 <div class="row d-flex justify-content-evenly m-0 g-0 p-0">
                     <div class="form-group d-flex flex-column gap-1 col-5 ">
                         <label class="form-label-t" for="nombre">Nombre de la aerolínea:</label>
-                        <input type="text" name="nombre" id="nombre" class="form-control ctm-inp" required placeholder="Aeroflux">
-                        <p class="form-text-info">Nombre con el que operará comercialmente.</p>
+                        <input type="text" name="nombre" id="nombre" class="form-control ctm-inp" required placeholder="Aeroflux" min="3" max="50">
+                        <p id="infoNombre" class="form-text-info">Nombre con el que operará comercialmente.</p>
                     </div>
 
                     <div class="form-group d-flex flex-column gap-1 col-5 ">
                         <label class="form-label-t" for="codigo">Codigo:</label>
-                        <input type="text" name="codigo" id="codigo" class="form-control ctm-inp" required placeholder="AFX">
-                        <p class="form-text-info">Nombre con el que operará comercialmente.</p>
+                        <input type="text" name="codigo" id="codigo" class="form-control ctm-inp" required placeholder="AFX" min="3" max="5">
+                        <p id="infoCodigo" class="form-text-info">Codigo unico de la aerolínea.</p>
                     </div>
                 </div>
 
@@ -81,7 +81,7 @@ $paises = [
                             <?php endforeach; ?>
                         </div>
 
-                        <p class="form-text-info">Pais de origen de la aerolinea.</p>
+                        <p id="infoPais" class="form-text-info">Pais de origen de la aerolinea.</p>
 
 
                     </div>
@@ -89,14 +89,14 @@ $paises = [
                     <div class="form-group d-flex flex-column gap-1 col-5 ">
                         <label class="form-label-t" for="email">Email:</label>
                         <input type="text" name="email" id="email" class="form-control ctm-inp" required placeholder="aerolinea@example.com">
-                        <p class="form-text-info">Email de contacto de la aerolinea.</p>
+                        <p id="infoEmail" class="form-text-info">Email de contacto de la aerolinea.</p>
                     </div>
                 </div>
 
                 <div class="row d-flex justify-content-evenly m-0 g-0 px-2">
                     <div class="form-group d-flex flex-column gap-1 col-11 ">
                         <label class="form-label-t" for="descripcion">Descripcion:</label>
-                        <textarea class="form-control" id="exampleFormControlTextarea1" name="descripcion" rows="3" required placeholder="Ingrese una descripción"></textarea>
+                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required placeholder="Ingrese una descripción"></textarea>
                         <p class="form-text-info"> Descripción de la aerolínea. </p>
                     </div>
                 </div>
@@ -109,8 +109,8 @@ $paises = [
                             <div class="logoAerolinea rounded-2 d-flex align-items-center justify-content-center gap-2 p-2 " id="logoPreview">
                                 <img src="../../../public/img/icons/subir.png" alt="icono subir imagen admin" class="upload-foto">
                                 <div class="d-flex flex-column justify-content-center m-0 p-0 tetxt">
-                                    <p class="firstLogoText p-0 m-0">Arrastra y suelta tu archivo aquí</p>
-                                    <p class="sndLogoText p-0 m-0">o haz click para seleccionar</p>
+                                    <p class="firstLogoText p-0 m-0">Añada un logo a su aerolinea</p>
+                                    <p class="sndLogoText p-0 m-0"> haz click para seleccionar</p>
 
                                 </div>
 
@@ -118,9 +118,9 @@ $paises = [
                         
                         </label>
 
-                        <input type="file" accept="image/png, image/jpeg, image/webp" name="logo" id="logo" class="d-none" required>
+                        <input type="file" accept="image/png, image/jpeg, image/webp" name="logo" id="logo" class="d-none" >
                         
-                        <p class="form-text-info">Formatos: JPG, PNG, WEBP. Max: 2MB</p>
+                        <p id="infoLogo" class="form-text-info">Formatos: JPG, PNG, WEBP. Max: 2MB</p>
                     </div>
 
                     <div class="form-group d-flex flex-column gap-1 col-6 ">
@@ -147,12 +147,67 @@ $paises = [
             </div>
 
             <!-- seccion de validaciones -->
-            <div class="d-none d-lg-flex col-lg border shadow rounded-2 p-2">
-                <div class="form-group d-flex flex-column gap-1">
-                    <label for="validacion">Validación:</label>
-                    <input type="text" name="validacion" id="validacion" class="form-control" disabled>
-                </div>
+            <div class="d-none d-lg-flex col-lg flex-column align-items-center gap-4 ">
 
+                <div class="d-flex flex-column border border-2 border-danger-subtle w-100 rounded-3 shadow d-none" id="erroresBox">
+                    <div class="tituloBoxErrores bg-danger-subtle border-bottom d-flex flex-column align-items-center justify-content-center ">
+                        <img src="../../../public/img/icons/alerta.png" alt="icono alerta validaciones formulario" class="img-fluid my-2" style="width: 28px; height: 28px;">
+                        <h5 class="text-danger">Validacion del Formulario</h5>
+                        <p id="cantidadErrores">Errores pendientes: 2</p>
+                    </div>
+                    <div class="errorBoxContent py-3 pe-3" >
+                        <ul id="errorList">
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="d-flex flex-column border border-2 border-primary-subtle w-100 rounded-3 shadow " id="recomendacionesBox">
+                    <div class="tituloBoxErrores bg-primary-subtle border-bottom d-flex flex-column align-items-center justify-content-center ">
+                        <img src="../../../public/img/icons/luz.png" alt="icono alerta validaciones formulario" class="img-fluid my-2" style="width: 28px; height: 28px;">
+                        <h5 class="text-primary">Recomendaciones</h5>
+                        <p class="text-break text-center px-2">Tené en cuenta estos puntos antes de crear la aerolinea</p>
+                    </div>
+
+                    <div class="recomendaBoxContent d-flex flex-column align-items-center py-3 ps-2">
+
+                        <div class="d-flex gap-2 mb-3  w-100 justify-content-center">
+                            <div>
+                                <p class="m-0 fw-semibold text-center">Código único</p>
+                                <p class="m-0 form-text-info text-center">
+                                    Utilizá un código corto que identifique a la aerolínea.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex gap-2 mb-3 w-100 justify-content-center">
+                            <div>
+                                <p class="m-0 fw-semibold text-center">Nombre comercial</p>
+                                <p class="m-0 form-text-info text-center">
+                                    Ingresá el nombre con el que operará públicamente.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 mb-3 w-100 justify-content-center ">
+                            <div>
+                                <p class="m-0 fw-semibold text-center">Información precisa</p>
+                                <p class="m-0 form-text-info text-center">
+                                    Verificá que el país y el email sean correctos.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 w-100 justify-content-center">
+                            <div>
+                                <p class="m-0 fw-semibold text-center">Logotipo</p>
+                                <p class="m-0 form-text-info text-center">
+                                    Es opcional. JPG, PNG o WEBP de hasta 2 MB.
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
             </div>
             
 

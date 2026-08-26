@@ -3,23 +3,103 @@
 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
 const tooltipList = [...tooltipTriggerList].map((tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl));
 
+function iniciarTooltips(contenedor = document) {
+    const tooltips = contenedor.querySelectorAll('[data-bs-toggle="tooltip"]');
+
+    tooltips.forEach((elemento) => {
+        bootstrap.Tooltip.getOrCreateInstance(elemento);
+    });
+}
+
+
 // opciones del select pais
 
 const paisInput = document.getElementById("pais");
 const paisResults = document.getElementById("paises-results");
 const paisOptions = document.querySelectorAll(".pais-option");
 
+let opcionActiva = -1;
+
 paisInput.addEventListener("focus", function () {
     paisResults.style.display = "block";
 });
 
+// filtrar mientras escribe
+
+paisInput.addEventListener("input", function () {
+    const texto = paisInput.value.trim().toLowerCase();
+
+    paisResults.style.display="block";
+    
+    paisOptions.forEach((option) => {
+        const nombre = option.dataset.nombre.toLowerCase();
+        const codigo = option.dataset.codigo.toLowerCase();
+
+        if(nombre.includes(texto) || codigo.includes(texto)) {
+            option.style.display = "flex";
+        } else {
+            option.style.display = "none";
+        }
+
+    });
+});
+
+// seleccionar pais cuando se hace click
 paisOptions.forEach((option) => {
     option.addEventListener("click", function () {
         paisInput.value = this.dataset.nombre;
 
+        paisInput.dataset.codigo = this.dataset.codigo;
+
         paisResults.style.display = "none";
     });
 });
+
+// no se estaba cerrando cuando le sacaba el blur
+
+document.addEventListener("click", function (e) {
+
+    if (
+        !paisInput.contains(e.target) &&
+        !paisResults.contains(e.target)
+    ) {
+        paisResults.style.display = "none";
+    }
+
+});
+
+paisInput.addEventListener("blur", function () {
+    setTimeout(() => {
+        paisResults.style.display = "none";
+    }, 100);
+});
+
+
+paisInput.addEventListener("blur", function () {
+
+    const texto = paisInput.value.trim().toLowerCase();
+
+    const paisEncontrado = [...paisOptions].find((option) => {
+
+        return (
+            option.dataset.nombre.toLowerCase() === texto ||
+            option.dataset.codigo.toLowerCase() === texto
+        );
+
+    });
+
+
+    if (paisEncontrado) {
+
+        paisInput.value = paisEncontrado.dataset.nombre;
+
+        paisInput.dataset.codigo =
+            paisEncontrado.dataset.codigo;
+    }
+
+});
+
+
 
 /*sidebar menu hamburguesa*/
 
@@ -67,18 +147,11 @@ setTimeout(() => {
 
 // manejo de la foto
 
-function iniciarTooltips(contenedor = document) {
-    const tooltips = contenedor.querySelectorAll('[data-bs-toggle="tooltip"]');
-
-    tooltips.forEach((elemento) => {
-        bootstrap.Tooltip.getOrCreateInstance(elemento);
-    });
-}
 
 const logoInput = document.getElementById("logo");
 const cuadroFoto = document.getElementById("logoPreview");
 
-const cuadroOg = cuadroFoto.cloneNode(true);
+const cuadroOg = cuadroFoto.innerHTML;
 
 logoInput.addEventListener("change", function () {
     const archivo = logoInput.files[0];
@@ -89,7 +162,7 @@ logoInput.addEventListener("change", function () {
 
     if (!validTypes.includes(archivo.type)) {
         alert("Solo se permiten imágenes JPG, PNG o WEBP.");
-        archivo.value = "";
+        logoInput.value = "";
         return;
     }
 
@@ -115,7 +188,7 @@ logoInput.addEventListener("change", function () {
             >
 
             <div class="d-flex flex-column w-100">
-                <p class="m-0 fw-semibold">
+                <p class="m-0 fw-semibold text-break">
                     ${archivo.name}
                 </p>
 
@@ -186,7 +259,12 @@ logoInput.addEventListener("change", function () {
 
             this.blur();
 
-            cuadroFoto.replaceWith(cuadroOg);
+
+            cuadroFoto.innerHTML = cuadroOg;
+
+            cuadroFoto.style.border = " 2px dashed #d3d7dd";
+            
+
         });
 
     }, 1500);
