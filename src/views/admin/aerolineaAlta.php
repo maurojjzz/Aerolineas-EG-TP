@@ -31,7 +31,7 @@ $paises = [
         <h2 class="m-0 p-0 fs-2 fw-bold">Crear Aerolínea</h2>
         <p class="m-0 p-0 mb-1 subt ">Registra una nueva aerolínea en el sistema.</p>
         
-        <form action="#" method="POST" class="row mt-2 m-0 g-0 p-0 gap-2 " enctype="multipart/form-data">
+        <form action="/src/routes/aerolinea.php?accion=crear" method="POST" class="row mt-2 m-0 g-0 p-0 gap-2 " enctype="multipart/form-data">
 
             <!-- seccion del formulario -->
             <div class="col-12 col-lg-9 border shadow rounded-2 py-4">
@@ -57,12 +57,13 @@ $paises = [
                         <input
                             type="text"
                             id="pais"
-                            name="pais"
                             class="form-control ctm-inp my-1"
                             placeholder="Seleccione un país"
                             autocomplete="off"
-                            required
+                            required    
                         >
+
+                        <input type="hidden" id="paisCodigo" name="pais">
 
                         <div id="paises-results" class="paises-results">
 
@@ -138,7 +139,7 @@ $paises = [
                 <div class="row d-flex justify-content-evenly m-0 g-0 p-0 ">
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end col-11">
                         <button type="button" class="btn btn-outline-danger me-md-2">Cancelar</button>
-                        <button type="button" class="btn btn-primary">Crear Aerolinea</button>
+                        <button type="submit" class="btn btn-primary">Crear Aerolinea</button>
                     </div>
                 </div>
 
