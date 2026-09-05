@@ -39,13 +39,13 @@ $paises = [
                 <div class="row d-flex justify-content-evenly m-0 g-0 p-0">
                     <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11 ">
                         <label class="form-label-t" for="nombre">Nombre de la aerolínea:</label>
-                        <input type="text" name="nombre" id="nombre" class="form-control ctm-inp" required placeholder="Aeroflux" minlength="3" maxlength="50">
+                        <input type="text" name="nombre" id="nombre" autocomplete="off" class="form-control ctm-inp" required placeholder="Aeroflux" minlength="3" maxlength="50">
                         <p id="infoNombre" class="form-text-info">Nombre con el que operará comercialmente.</p>
                     </div>
 
                     <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11 ">
                         <label class="form-label-t" for="codigo">Codigo:</label>
-                        <input type="text" name="codigo" id="codigo" class="form-control ctm-inp" required placeholder="AFX" minlength="3" maxlength="5">
+                        <input type="text" name="codigo" id="codigo" autocomplete="off" class="form-control ctm-inp" required placeholder="AFX" minlength="3" maxlength="5">
                         <p id="infoCodigo" class="form-text-info">Codigo unico de la aerolínea.</p>
                     </div>
                 </div>
@@ -88,7 +88,7 @@ $paises = [
 
                     <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11 ">
                         <label class="form-label-t" for="email">Email:</label>
-                        <input type="email" name="email" id="email" class="form-control ctm-inp" required placeholder="aerolinea@example.com">
+                        <input type="email" name="email" autocomplete="off" id="email" class="form-control ctm-inp" required placeholder="aerolinea@example.com">
                         <p id="infoEmail" class="form-text-info">Email de contacto de la aerolinea.</p>
                     </div>
                 </div>
@@ -96,7 +96,7 @@ $paises = [
                 <div class="row d-flex justify-content-evenly m-0 g-0 px-2">
                     <div class="form-group d-flex flex-column gap-1 col-11 ">
                         <label class="form-label-t" for="descripcion">Descripcion:</label>
-                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required placeholder="Ingrese una descripción"></textarea>
+                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3" autocomplete="off" placeholder="Ingrese una descripción"></textarea>
                         <p class="form-text-info"> Descripción de la aerolínea. </p>
                     </div>
                 </div>
