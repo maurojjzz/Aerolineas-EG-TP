@@ -31,7 +31,7 @@ $paises = [
         <h2 class="m-0 p-0 fs-2 fw-bold">Crear Aerolínea</h2>
         <p class="m-0 p-0 mb-1 subt ">Registra una nueva aerolínea en el sistema.</p>
         
-        <form action="#" method="POST" class="row mt-2 m-0 g-0 p-0 gap-2 " enctype="multipart/form-data">
+        <form action="/src/routes/aerolinea.php?accion=crear" method="POST" class="row mt-2 m-0 g-0 p-0 gap-2 " enctype="multipart/form-data">
 
             <!-- seccion del formulario -->
             <div class="col-12 col-lg-9 border shadow rounded-2 py-4">
@@ -39,13 +39,13 @@ $paises = [
                 <div class="row d-flex justify-content-evenly m-0 g-0 p-0">
                     <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11 ">
                         <label class="form-label-t" for="nombre">Nombre de la aerolínea:</label>
-                        <input type="text" name="nombre" id="nombre" class="form-control ctm-inp" required placeholder="Aeroflux" minlength="3" maxlength="50">
+                        <input type="text" name="nombre" id="nombre" autocomplete="off" class="form-control ctm-inp" required placeholder="Aeroflux" minlength="3" maxlength="50">
                         <p id="infoNombre" class="form-text-info">Nombre con el que operará comercialmente.</p>
                     </div>
 
                     <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11 ">
                         <label class="form-label-t" for="codigo">Codigo:</label>
-                        <input type="text" name="codigo" id="codigo" class="form-control ctm-inp" required placeholder="AFX" minlength="3" maxlength="5">
+                        <input type="text" name="codigo" id="codigo" autocomplete="off" class="form-control ctm-inp" required placeholder="AFX" minlength="3" maxlength="5">
                         <p id="infoCodigo" class="form-text-info">Codigo unico de la aerolínea.</p>
                     </div>
                 </div>
@@ -57,12 +57,13 @@ $paises = [
                         <input
                             type="text"
                             id="pais"
-                            name="pais"
                             class="form-control ctm-inp my-1"
                             placeholder="Seleccione un país"
                             autocomplete="off"
-                            required
+                            required    
                         >
+
+                        <input type="hidden" id="paisCodigo" name="pais">
 
                         <div id="paises-results" class="paises-results">
 
@@ -87,7 +88,7 @@ $paises = [
 
                     <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11 ">
                         <label class="form-label-t" for="email">Email:</label>
-                        <input type="email" name="email" id="email" class="form-control ctm-inp" required placeholder="aerolinea@example.com">
+                        <input type="email" name="email" autocomplete="off" id="email" class="form-control ctm-inp" required placeholder="aerolinea@example.com">
                         <p id="infoEmail" class="form-text-info">Email de contacto de la aerolinea.</p>
                     </div>
                 </div>
@@ -95,7 +96,7 @@ $paises = [
                 <div class="row d-flex justify-content-evenly m-0 g-0 px-2">
                     <div class="form-group d-flex flex-column gap-1 col-11 ">
                         <label class="form-label-t" for="descripcion">Descripcion:</label>
-                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required placeholder="Ingrese una descripción"></textarea>
+                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3" autocomplete="off" placeholder="Ingrese una descripción"></textarea>
                         <p class="form-text-info"> Descripción de la aerolínea. </p>
                     </div>
                 </div>
@@ -138,7 +139,7 @@ $paises = [
                 <div class="row d-flex justify-content-evenly m-0 g-0 p-0 ">
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end col-11">
                         <button type="button" class="btn btn-outline-danger me-md-2">Cancelar</button>
-                        <button type="button" class="btn btn-primary">Crear Aerolinea</button>
+                        <button type="submit" class="btn btn-primary">Crear Aerolinea</button>
                     </div>
                 </div>
 

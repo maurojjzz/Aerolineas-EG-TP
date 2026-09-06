@@ -15,88 +15,72 @@ function iniciarTooltips(contenedor = document) {
 // opciones del select pais
 
 const paisInput = document.getElementById("pais");
+const paisCodigo = document.getElementById("paisCodigo");
 const paisResults = document.getElementById("paises-results");
 const paisOptions = document.querySelectorAll(".pais-option");
-
-let opcionActiva = -1;
 
 paisInput.addEventListener("focus", function () {
     paisResults.style.display = "block";
 });
 
-// filtrar mientras escribe
-
+// Filtrar mientras escribe.
 paisInput.addEventListener("input", function () {
     const texto = paisInput.value.trim().toLowerCase();
 
-    paisResults.style.display="block";
-    
+    paisCodigo.value = "";
+    paisInput.dataset.codigo = "";
+    paisResults.style.display = "block";
+
     paisOptions.forEach((option) => {
         const nombre = option.dataset.nombre.toLowerCase();
         const codigo = option.dataset.codigo.toLowerCase();
 
-        if(nombre.includes(texto) || codigo.includes(texto)) {
-            option.style.display = "flex";
-        } else {
-            option.style.display = "none";
-        }
-
+        option.style.display =
+            nombre.includes(texto) || codigo.includes(texto)
+                ? "flex"
+                : "none";
     });
 });
 
-// seleccionar pais cuando se hace click
+// mousedown evita que el blur impida seleccionar la opción.
 paisOptions.forEach((option) => {
-    option.addEventListener("click", function () {
+    option.addEventListener("mousedown", function (event) {
+        event.preventDefault();
+
         paisInput.value = this.dataset.nombre;
-
         paisInput.dataset.codigo = this.dataset.codigo;
-
+        paisCodigo.value = this.dataset.codigo;
         paisResults.style.display = "none";
     });
-});
-
-// no se estaba cerrando cuando le sacaba el blur
-
-document.addEventListener("click", function (e) {
-
-    if (
-        !paisInput.contains(e.target) &&
-        !paisResults.contains(e.target)
-    ) {
-        paisResults.style.display = "none";
-    }
-
 });
 
 paisInput.addEventListener("blur", function () {
     setTimeout(() => {
+        const texto = paisInput.value.trim().toLowerCase();
+        const paisEncontrado = [...paisOptions].find((option) => {
+            return (
+                option.dataset.nombre.toLowerCase() === texto ||
+                option.dataset.codigo.toLowerCase() === texto
+            );
+        });
+
+        if (paisEncontrado) {
+            paisInput.value = paisEncontrado.dataset.nombre;
+            paisInput.dataset.codigo = paisEncontrado.dataset.codigo;
+            paisCodigo.value = paisEncontrado.dataset.codigo;
+        } else {
+            paisCodigo.value = "";
+            paisInput.dataset.codigo = "";
+        }
+
         paisResults.style.display = "none";
-    }, 100);
+    }, 150);
 });
 
-
-paisInput.addEventListener("blur", function () {
-
-    const texto = paisInput.value.trim().toLowerCase();
-
-    const paisEncontrado = [...paisOptions].find((option) => {
-
-        return (
-            option.dataset.nombre.toLowerCase() === texto ||
-            option.dataset.codigo.toLowerCase() === texto
-        );
-
-    });
-
-
-    if (paisEncontrado) {
-
-        paisInput.value = paisEncontrado.dataset.nombre;
-
-        paisInput.dataset.codigo =
-            paisEncontrado.dataset.codigo;
+document.addEventListener("click", function (event) {
+    if (!paisInput.contains(event.target) && !paisResults.contains(event.target)) {
+        paisResults.style.display = "none";
     }
-
 });
 
 
