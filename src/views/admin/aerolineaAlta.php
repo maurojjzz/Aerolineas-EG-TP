@@ -31,7 +31,7 @@ $paises = [
         <h2 class="m-0 p-0 fs-2 fw-bold">Crear Aerolínea</h2>
         <p class="m-0 p-0 mb-1 subt ">Registra una nueva aerolínea en el sistema.</p>
         
-        <form action="/src/routes/aerolinea.php?accion=crear" method="POST" class="row mt-2 m-0 g-0 p-0 gap-2 " enctype="multipart/form-data">
+        <form action=" <?= url('src/routes/aerolinea.php?accion=crear') ?>" method="POST" class="row mt-2 m-0 g-0 p-0 gap-2 " enctype="multipart/form-data">
 
             <!-- seccion del formulario -->
             <div class="col-12 col-lg-9 border shadow rounded-2 py-4">
@@ -106,16 +106,15 @@ $paises = [
 
                         <label class="form-label-t" for="logo">
                             <p class="form-label-t mb-1">Logotipo:</p> 
+
                             <div class="logoAerolinea rounded-2 d-flex align-items-center justify-content-center gap-2 p-2 " id="logoPreview">
-                                <img src="../../../public/img/icons/subir.png" alt="icono subir imagen admin" class="upload-foto">
+                                <img src="<?= url('public/img/icons/subir.png') ?>" alt="icono subir imagen admin" class="upload-foto">
+
                                 <div class="d-flex flex-column justify-content-center m-0 p-0 tetxt">
                                     <p class="firstLogoText p-0 m-0">Añada un logo a su aerolinea</p>
                                     <p class="sndLogoText p-0 m-0"> haz click para seleccionar</p>
-
                                 </div>
-
                             </div>
-                        
                         </label>
 
                         <input type="file" accept="image/png, image/jpeg, image/webp" name="logo" id="logo" class="d-none" >
@@ -151,7 +150,7 @@ $paises = [
 
                 <div class="d-flex flex-column border border-2 border-danger-subtle w-100 rounded-3 shadow d-none" id="erroresBox">
                     <div class="tituloBoxErrores bg-danger-subtle border-bottom d-flex flex-column align-items-center justify-content-center ">
-                        <img src="../../../public/img/icons/alerta.png" alt="icono alerta validaciones formulario" class="img-fluid my-2" style="width: 28px; height: 28px;">
+                        <img src="<?= url('public/img/icons/alerta.png') ?>" alt="icono alerta validaciones formulario" class="img-fluid my-2" style="width: 28px; height: 28px;">
                         <h5 class="text-danger">Validacion del Formulario</h5>
                         <p id="cantidadErrores">Errores pendientes: 2</p>
                     </div>
@@ -163,7 +162,7 @@ $paises = [
                 
                 <div class="d-flex flex-column border border-2 border-primary-subtle w-100 rounded-3 shadow " id="recomendacionesBox">
                     <div class="tituloBoxErrores bg-primary-subtle border-bottom d-flex flex-column align-items-center justify-content-center ">
-                        <img src="../../../public/img/icons/luz.png" alt="icono alerta validaciones formulario" class="img-fluid my-2" style="width: 28px; height: 28px;">
+                        <img src="<?= url('public/img/icons/luz.png') ?>" alt="icono alerta validaciones formulario" class="img-fluid my-2" style="width: 28px; height: 28px;">
                         <h5 class="text-primary">Recomendaciones</h5>
                         <p class="text-break text-center px-2">Tené en cuenta estos puntos antes de crear la aerolinea</p>
                     </div>

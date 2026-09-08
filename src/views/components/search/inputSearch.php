@@ -1,7 +1,7 @@
 <div class="d-flex flex-wrap flex-lg-row flex-lg-nowrap justify-content-center align-items-center gap-3">
     <div class="autocomplete d-flex flex-row align-items-center px-2 gap-2 mt-3 p-2 rounded-3 shadow-sm">
 
-        <img src="../../../public/img/icons/avion.png" alt="icono avion barra busqueda" class="autocomplete-icon">
+        <img src="<?= url('public/img/icons/avion.png') ?>" alt="icono avion barra busqueda" class="autocomplete-icon">
 
         <div class="input-custom d-flex flex-column position-relative">
 
@@ -28,7 +28,7 @@
 
     <div class="autocomplete d-flex flex-row align-items-center px-2 gap-2 mt-3 p-2 rounded-3 shadow-sm">
 
-        <img src="../../../public/img/icons/avion.png" alt="icono avion barra busqueda" class="autocomplete-icon">
+        <img src="<?= url('public/img/icons/avion.png') ?>" alt="icono avion barra busqueda" class="autocomplete-icon">
 
         <div class="input-custom d-flex flex-column position-relative">
 

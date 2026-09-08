@@ -5,17 +5,17 @@
         <div class="desktop-search-tabs d-flex align-items-center">
 
             <button class="desktop-tab active d-flex align-items-center gap-2">
-                <img src="../../../public/img/icons/avion.png" alt="Icono avión">
+                <img src=" <?= url('public/img/icons/avion.png') ?>" alt="Icono avión">
                 <span>Vuelos</span>
             </button>
 
             <button class="desktop-tab">
-                <img src="../../../public/img/icons/promocion.png" alt="Icono promoción">
+                <img src="<?= url('public/img/icons/promocion.png') ?>" alt="Icono promoción">
                 <span>Promociones</span>
             </button>
 
             <button class="desktop-tab">
-                <img src="../../../public/img/icons/novedades.png" alt="Icono novedades">
+                <img src="<?= url('public/img/icons/novedades.png') ?>" alt="Icono novedades">
                 <span>Novedades</span>
             </button>
         </div>
@@ -148,7 +148,7 @@
 
 
             <button type="submit" class="btn desktop-search-btn ms-auto gap-2">
-                <img src="../../../public/img/icons/lupa.png" alt="icono pasajero" class="autocomplete-icon">
+                <img src="<?= url('public/img/icons/lupa.png') ?>" alt="icono pasajero" class="autocomplete-icon">
                 Buscar Vuelos
             </button>
 

@@ -78,7 +78,7 @@ class AerolineaController {
         }
 
         // despues cambiar por aerolinea home ahora no hay nada ahi 
-        header("Location: /");
+        header("Location: " . url('src/views/admin/aerolineaLayout.php'));
 
         exit;
 

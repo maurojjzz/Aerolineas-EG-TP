@@ -1,53 +1,30 @@
-<?php date_default_timezone_set('America/Argentina/Buenos_Aires');?>
-<!DOCTYPE html>
-<html lang="es">
+<?php
+date_default_timezone_set('America/Argentina/Buenos_Aires');
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Aerolinea</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+require_once __DIR__ . '/src/config/app.php';
 
-        <link rel="stylesheet" href="./public/css/index.css">
-        <link rel="stylesheet" href="./public/css/layout/header.css">
-        <link rel="stylesheet" href="./public/css/components/menuMobile.css">
-        <link rel="stylesheet" href="./public/css/components/searchMobile.css">
-        <link rel="stylesheet" href="./public/css/components/searchDesktop.css">
+$pagina = $_GET['pagina'] ?? 'inicio';
 
-    </head>
+switch ($pagina) {
 
-    <body class="container-fluid overflow-x-hidden p-0 m-0">
-        <?php require './src/views/layouts/header.php' ?>
-        
-        <img src="./public/img/clouds.png" class="nubes " alt="fondo de nubes">
+    case 'inicio':
+        require __DIR__ . '/src/views/home.php';
+        break;
 
-        <section class="container-xxl custom-main">
-            
-            <div class="hero-content text-center mt-3 mt-sm-4 mt-md-5 user-select-none">
-                <h5 >Vuela sin limites</h5>
-                <h2 >DONDE CADA <span>VIAJE</span> COMIENZA</h2>
-                <p>Conectamos personas y destinos con una experiencia rapida, segura y confiable.</p>
-            </div>
+    case 'aerolinea':
+        require __DIR__ . '/src/views/admin/aerolineaLayout.php';
+        break;
 
-            <img src="./public/img/airplane.png" alt="Imagen avion" class="hero-plane user-select-none">
-        </section>
+    default:
+        http_response_code(404);
+        echo 'Página no encontrada';
+        break;
+}
 
 
-        <!-- Mobile -->
-        <section class="searchbox d-lg-none px-3 mb-5">
-            <?php require './src/views/components/searchMobile.php' ?>
-        </section>
-
-        <!-- Desktop -->
-        <section class="searchbox-desktop d-none d-lg-block mb-5">
-            <?php require './src/views/components/searchDesktop.php' ?>
-        </section>
 
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-        <script src="./public/js/searchMobile.js"></script>
-        <script src="./public/js/searchDesktop.js"></script>
 
-    </body>
 
-</html>
+
+?>

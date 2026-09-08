@@ -1,4 +1,16 @@
-<?php date_default_timezone_set('America/Argentina/Buenos_Aires');?>
+<?php 
+date_default_timezone_set('America/Argentina/Buenos_Aires');
+$accion = $_GET['accion'] ?? 'listado';
+
+$vistas = [
+    'alta' => __DIR__ . '/aerolineaAlta.php',
+    'listado' => __DIR__ . '/aerolineaListado.php',
+    'detalle' => __DIR__ . '/aerolineaDetalle.php',
+    'editar' => __DIR__ . '/aerolineaEditar.php'
+];
+
+
+?>
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -7,9 +19,9 @@
         <title>Administrador - Aerolínea</title>
 
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-
-        <link rel="stylesheet" href="/public/css/admin.css">
-        <link rel="stylesheet" href="/public/css/layout/headerAdmin.css">
+        
+        <link rel="stylesheet" href="<?= url('public/css/admin.css') ?>">
+        <link rel="stylesheet" href="<?= url('public/css/layout/headerAdmin.css') ?>">
 
     </head>
     <body>
@@ -27,7 +39,14 @@
                 </header>
 
                 <main class="container-fluid d-flex flex-column gap-3 p-2 admin-content ">
-                    <?php require __DIR__ . '/aerolineaAlta.php'; ?>
+                    <?php 
+                        if (!isset($vistas[$accion])) {
+                            http_response_code(404);
+                            echo '<h1>Sección no encontrada</h1>';
+                        } else {
+                            require $vistas[$accion];
+                        }
+                    ?>
                 </main>
 
             </div>
@@ -37,8 +56,8 @@
         <?php require __DIR__ . '/../components/menuMobileAdmin.php' ?>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-        <script src="/public/js/admin/aerolineaView.js"></script>
-        <script src="/public/js/admin/validaciones.js"></script>
-        
+
+        <script src="<?=  url('public/js/admin/aerolineaView.js') ?>"></script>
+        <script src="<?=  url('public/js/admin/validaciones.js') ?>"></script>
     </body>
 </html>
