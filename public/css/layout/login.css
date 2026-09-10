@@ -1,0 +1,108 @@
+body {
+    /* background-color: rgb(107, 163, 209); */
+    background-image: url("../../img/fondo-avion.webp");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+}
+
+.main-section {
+    min-height: calc(100vh - 80px);
+}
+
+.formContainer {
+    width: 85%;
+    max-width: 550px;
+    background-color: #e8f2fa;
+    margin-bottom: 5rem;
+}
+
+.titleForm {
+    color: #0a2855;
+}
+
+.form-text-info {
+    min-height: 26px;
+}
+
+.btnLogin {
+    background-color: #0a2855;
+    border-color: #0a2855;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btnLogin:hover {
+    background-color: #0a2855;
+    color: white;
+    opacity: 0.8;
+}
+
+.iconoBtnLgn {
+    width: 26px;
+    height: 26px;
+}
+
+.BtnRegisterOnLogin {
+    border-color: #0a2855;
+    color: #0a2855;
+    transition: all 0.3s ease;
+    min-height: 48px;
+    max-width: 260px;
+    width: 100%;
+}
+
+.iconoBtnRegister {
+    width: 18px;
+    height: 16px;
+    filter: brightness(0) saturate(100%) invert(15%) sepia(37%) saturate(2218%) hue-rotate(184deg) brightness(88%)
+        contrast(97%);
+    transition: all 0.3s ease;
+}
+
+.iconoBtnRegisterCEO {
+    width: 22px;
+    height: 22px;
+    filter: brightness(0) saturate(100%) invert(15%) sepia(37%) saturate(2218%) hue-rotate(184deg) brightness(88%)
+        contrast(97%);
+    transition: all 0.3s ease;
+}
+
+.BtnRegisterOnLogin:hover .iconoBtnRegister,
+.BtnRegisterOnLogin:hover .iconoBtnRegisterCEO {
+    filter: none;
+}
+
+.BtnRegisterOnLogin:hover {
+    background-color: #0a2855;
+    color: white;
+    opacity: 0.8;
+}
+
+/* aca para  la parte del texto*/
+
+.hero-content h5 {
+    text-transform: uppercase;
+    letter-spacing: 6px;
+    color: #082149;
+}
+
+.hero-content h2 {
+    font-size: 3.86rem;
+    font-weight: 700;
+    min-width: 300px;
+    color: #082149;
+}
+
+.hero-content p {
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.7px;
+}
+
+.hero-content h2 span {
+    color: transparent;
+    -webkit-text-stroke: 2.5px #082149;
+    font-weight: 800;
+}

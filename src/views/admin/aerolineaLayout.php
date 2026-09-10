@@ -1,6 +1,6 @@
 <?php 
 date_default_timezone_set('America/Argentina/Buenos_Aires');
-$accion = $_GET['accion'] ?? 'listado';
+$seccion = $_GET['seccion'] ?? 'listado';
 
 $vistas = [
     'alta' => __DIR__ . '/aerolineaAlta.php',
@@ -40,11 +40,11 @@ $vistas = [
 
                 <main class="container-fluid d-flex flex-column gap-3 p-2 admin-content ">
                     <?php 
-                        if (!isset($vistas[$accion])) {
+                        if (!isset($vistas[$seccion])) {
                             http_response_code(404);
                             echo '<h1>Sección no encontrada</h1>';
                         } else {
-                            require $vistas[$accion];
+                            require $vistas[$seccion];
                         }
                     ?>
                 </main>

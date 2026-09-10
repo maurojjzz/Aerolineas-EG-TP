@@ -15,14 +15,15 @@ switch ($pagina) {
         require __DIR__ . '/src/views/admin/aerolineaLayout.php';
         break;
 
+    case 'login':
+        require __DIR__ . '/src/views/auth/login.php';
+        break;
+
     default:
         http_response_code(404);
         echo 'Página no encontrada';
         break;
 }
-
-
-
 
 
 
