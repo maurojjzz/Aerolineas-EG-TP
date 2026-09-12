@@ -19,6 +19,14 @@ switch ($pagina) {
         require __DIR__ . '/src/views/auth/login.php';
         break;
 
+    case 'registro':
+        require __DIR__ . '/src/views/auth/signUp.php';
+        break;
+
+    case 'registro-ceo':
+        require __DIR__ . '/src/views/auth/signUpCEO.php';
+        break;
+
     default:
         http_response_code(404);
         echo 'Página no encontrada';

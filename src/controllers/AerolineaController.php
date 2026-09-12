@@ -43,10 +43,7 @@ class AerolineaController {
 
         }
 
-
         $aerolinea  = new Aerolinea($nombre, $codigoIATA, $descripcion, $codPais, $email, $logoUrl, $activo, null, $logoPublicId);
-
-
 
         $query = "INSERT INTO aerolinea (nombreAerolinea, codigoIATA, descripcion, codPais, email, logoUrl, activo, logoPublicId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -83,6 +80,42 @@ class AerolineaController {
         exit;
 
     }
+
+
+    public function listarAerolineas(): array {
+        $query = "SELECT * FROM aerolinea";
+        $result = mysqli_query($this->conexion, $query);
+
+        if (!$result) {
+            http_response_code(500);
+            echo "Error al obtener las aerolineas";
+            return [];
+        }
+
+        $aerolineas = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $aerolinea = new Aerolinea(
+                $row['nombreAerolinea'],
+                $row['codigoIATA'],
+                $row['descripcion'],
+                $row['codPais'],
+                $row['email'],
+                $row['logoUrl'],
+                $row['activo'],
+                $row['idAerolinea'],
+                $row['logoPublicId']
+            );
+            $aerolineas[] = $aerolinea;
+        }
+
+        mysqli_free_result($result);
+
+        return $aerolineas;
+    }
+
+
+
+
 
 }
 

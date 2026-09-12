@@ -11,8 +11,8 @@ body {
 }
 
 .formContainer {
-    width: 85%;
-    max-width: 550px;
+    width: 95%;
+    max-width: 800px;
     background-color: #e8f2fa;
     margin-bottom: 5rem;
 }
@@ -38,50 +38,10 @@ body {
     opacity: 0.8;
 }
 
+
 .iconoBtnLgn {
     width: 26px;
     height: 26px;
-}
-
-.BtnRegisterOnLogin {
-    border-color: #0a2855;
-    color: #0a2855;
-    transition: all 0.3s ease;
-    min-height: 48px;
-    max-width: 260px;
-    width: 100%;
-}
-
-.iconoBtnRegister {
-    width: 18px;
-    height: 16px;
-    filter: brightness(0) saturate(100%) invert(15%) sepia(37%) saturate(2218%) hue-rotate(184deg) brightness(88%)
-        contrast(97%);
-    transition: all 0.3s ease;
-}
-
-.iconoBtnRegisterCEO {
-    width: 22px;
-    height: 22px;
-    filter: brightness(0) saturate(100%) invert(15%) sepia(37%) saturate(2218%) hue-rotate(184deg) brightness(88%)
-        contrast(97%);
-    transition: all 0.3s ease;
-}
-
-.BtnRegisterOnLogin:hover .iconoBtnRegister,
-.BtnRegisterOnLogin:hover .iconoBtnRegisterCEO {
-    filter: none;
-}
-
-.BtnRegisterOnLogin:hover {
-    background-color: #0a2855;
-    color: white;
-    opacity: 0.8;
-}
-@media (max-width: 767px) {
-    .BtnRegisterOnLogin {
-        max-width: 100%;
-    }
 }
 
 /* aca para  la parte del texto*/
