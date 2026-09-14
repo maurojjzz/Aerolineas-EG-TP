@@ -13,11 +13,11 @@ class AerolineaController {
     }
 
     public function crearAerolinea(): void {
-        $nombre = $_POST['nombre'] ?? null;
-        $codigoIATA = $_POST['codigo'] ?? null;
-        $codPais = $_POST['pais'] ?? null;
-        $email = $_POST['email'] ?? null;
-        $descripcion = $_POST['descripcion'] ?? null;
+        $nombre = trim($_POST['nombre'] ?? null);
+        $codigoIATA = trim($_POST['codigo'] ?? null);
+        $codPais = trim($_POST['pais'] ?? null);
+        $email = trim($_POST['email'] ?? null);
+        $descripcion = trim($_POST['descripcion'] ?? null);
         $activo = $_POST["estadoAerolinea"] === "activa"? 1: 0;
         $logoUrl = null; 
         $logoPublicId = null;
