@@ -15,8 +15,10 @@ class Usuario{
     private bool $activo;
     private bool $emailVerificado;
     private ?string $tokenVerificacion;
+    private ?string $fechaHoraAutorizacion;
+    private ?int $idAerolinea;
 
-    public function __construct(string $nombre, string $apellido, string $tipoDocumento, string $nroDocumento, string $contrasena, string $email, string $telefono, string $fechaNacimiento, string $rol = 'cliente', bool $activo=false, bool $emailVerificado=false, ?string $tokenVerificacion = null, ?int $idUsuario = null) {
+    public function __construct(string $nombre, string $apellido, string $tipoDocumento, string $nroDocumento, string $contrasena, string $email, string $telefono, string $fechaNacimiento, string $rol = 'cliente', bool $activo=false, bool $emailVerificado=false, ?string $tokenVerificacion = null, ?int $idAerolinea = null, ?string $fechaHoraAutorizacion = null, ?int $idUsuario = null) {
         $this->nombre = $nombre;
         $this->apellido = $apellido;
         $this->tipoDocumento = $tipoDocumento;
@@ -29,7 +31,10 @@ class Usuario{
         $this->activo = $activo;
         $this->emailVerificado = $emailVerificado;
         $this->tokenVerificacion = $tokenVerificacion;
+        $this->idAerolinea = $idAerolinea;
+        $this->fechaHoraAutorizacion = $fechaHoraAutorizacion;
         $this->idUsuario = $idUsuario;
+
     }
 
     public function getIdUsuario(): ?int { return $this->idUsuario; }
@@ -45,7 +50,9 @@ class Usuario{
     public function getActivo(): bool { return $this->activo; }
     public function getEmailVerificado(): bool { return $this->emailVerificado; }
     public function getTokenVerificacion(): ?string { return $this->tokenVerificacion; }
-
+    public function getIdAerolinea(): ?int { return $this->idAerolinea; }
+    public function getFechaHoraAutorizacion(): ?string { return $this->fechaHoraAutorizacion; }
+    
     public function setIdUsuario(?int $idUsuario): void { $this->idUsuario = $idUsuario; }
     public function setNombre(string $nombre): void { $this->nombre = $nombre; }
     public function setApellido(string $apellido): void { $this->apellido = $apellido; }
@@ -59,7 +66,8 @@ class Usuario{
     public function setActivo(bool $activo): void { $this->activo = $activo; }
     public function setEmailVerificado(bool $v): void { $this->emailVerificado = $v; }
     public function setTokenVerificacion(?string $t): void { $this->tokenVerificacion = $t; }
-
+    public function setIdAerolinea(?int $idAerolinea): void { $this->idAerolinea = $idAerolinea; }
+    public function setFechaHoraAutorizacion(?string $fechaHoraAutorizacion): void { $this->fechaHoraAutorizacion = $fechaHoraAutorizacion; }
 
 
 }

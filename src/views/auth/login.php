@@ -16,9 +16,11 @@
     </head>
 
     <body class="container-fluid overflow-x-hidden p-0 m-0 d-flex flex-column align-items-center"> 
+        
         <?php require './src/views/layouts/header.php' ?>
         
         <section class="container-xxl main-section row p-0 m-0">
+            <?php require __DIR__ . '/../components/alertToast.php';  ?>
             <div class="d-none d-lg-flex col-lg-5  mt-5 pt-3  h-100">
                 
                 <div class="hero-content text-left mt-5 user-select-none">
@@ -29,7 +31,7 @@
             </div>
 
             <div class="col-12 col-lg-7 d-flex flex-column align-items-center align-items-lg-end justify-content-center ">
-                <form action="" class="formContainer  rounded-3 shadow-lg p-4 me-lg-5 " >
+                <form action="" method="POST" class="formContainer  rounded-3 shadow-lg p-4 me-lg-5 " >
                     <h3 class="fs-1 fw-semibold titleForm">Iniciar Sesión</h3>
                     <p class="text-muted text-break">Accede a tu cuenta para gestionar reservas, vuelos o promociones</p>
                     
@@ -73,6 +75,19 @@
         </section>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+        <script>
+            const btnRegister = document.querySelector('.BtnRegisterOnLogin');
+            const btnRegisterCEO = document.querySelector('.BtnRegisterOnLogin:nth-child(2)');
+
+            btnRegister.addEventListener('click', () => {
+                window.location.href = "<?= url('index.php?pagina=registro') ?>";
+            });
+
+            btnRegisterCEO.addEventListener('click', () => {
+                window.location.href = "<?= url('index.php?pagina=registro-ceo') ?>";
+            });
+        </script>
+
 
     </body>
 

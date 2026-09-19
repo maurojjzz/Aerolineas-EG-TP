@@ -18,8 +18,9 @@
         <?php require './src/views/layouts/header.php' ?>
         
         <section class="container-xxl main-section row p-0 m-0">
+            <?php require __DIR__ . '/../components/alertToast.php';  ?>
+
             <div class="d-none d-lg-flex col-lg-4  mt-5 pt-3  h-100">
-                
                 <div class="hero-content text-left mt-5 user-select-none">
                     <h5 class="fw-bold">Vuela sin limites</h5>
                     <h2 >CREA TU <span>CUENTA</span> </h2>
@@ -27,8 +28,8 @@
                 </div>
             </div>
 
-            <div class="col-12 col-lg-8 d-flex flex-column align-items-center justify-content-center pt-5 pt-sm-0 ">
-                <form action="#" id="formRegistro" class="formContainer rounded-3 shadow-lg p-4  " >
+            <div class="col-12 col-lg-8 d-flex flex-column align-items-center justify-content-center pt-5 ">
+                <form action="<?= url('src/routes/usuarios.php?accion=registrar') ?>" method="POST" id="formRegistro" class="formContainer rounded-3 shadow-lg p-4  " >
                     <h3 class="fs-1 fw-semibold titleForm">Registrarme como usuario</h3>
                     <p class="text-muted text-break">Completa tus datos y te enviaremos un correo de validacion para activar tu cuenta.</p>
 
@@ -114,7 +115,7 @@
                         <span class="fs-5 fw-medium">Crear Usuario</span>
                     </button>
 
-                    <a href="#" class="d-block text-decoration-none text-center fs-6 mt-4" ><span class="text-dark">¿Ya tienes cuenta?</span> Inicia sesión</a>
+                    <a href="<?= url('index.php?pagina=login') ?>" class="d-block text-decoration-none text-center fs-6 mt-4" ><span class="text-dark">¿Ya tienes cuenta?</span> Inicia sesión</a>
                     
                 </form>
             </div>

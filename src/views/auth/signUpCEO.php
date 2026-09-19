@@ -26,6 +26,9 @@
         <?php require './src/views/layouts/header.php' ?>
         
         <section class="container-xxl main-section row p-0 m-0">
+            
+            <?php require __DIR__ . '/../components/alertToast.php';  ?>
+
             <div class="d-none d-lg-flex col-lg-4  mt-5 pt-3  h-100">
                 
                 <div class="hero-content text-left mt-5 user-select-none">
@@ -35,8 +38,8 @@
                 </div>
             </div>
 
-            <div class="col-12 col-lg-8 d-flex flex-column align-items-center justify-content-center pt-5 pt-sm-0 ">
-                <form action="#" id="formRegistroCEO" class="formContainer rounded-3 shadow-lg p-4  " >
+            <div class="col-12 col-lg-8 d-flex flex-column align-items-center justify-content-center pt-5  ">
+                <form action="<?= url('src/routes/usuarios.php?accion=registrar-ceo') ?>" method="POST" id="formRegistroCEO" class="formContainer rounded-3 shadow-lg p-4  " >
                     <h3 class="fs-1 fw-semibold titleForm">Registrarme como CEO</h3>
                     <p class="text-muted text-break">Completa tus datos para solicitar el registro de tu aerolinea.</p>
 
@@ -151,7 +154,7 @@
                         <span class="fs-5 fw-medium">Crear CEO</span>
                     </button>
 
-                    <a href="#" class="d-block text-decoration-none text-center fs-6 mt-4" ><span class="text-dark">¿Ya tienes cuenta?</span> Inicia sesión</a>
+                    <a href="<?= url('index.php?pagina=login') ?>" class="d-block text-decoration-none text-center fs-6 mt-4" ><span class="text-dark">¿Ya tienes cuenta?</span> Inicia sesión</a>
                     
                 </form>
             </div>
@@ -159,8 +162,6 @@
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
         <script src="<?= url('public/js/admin/validacionRegistro.js') ?>"></script>
-
-
     </body>
 
 </html>

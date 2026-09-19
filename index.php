@@ -1,6 +1,10 @@
 <?php
 date_default_timezone_set('America/Argentina/Buenos_Aires');
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once __DIR__ . '/src/config/app.php';
 
 $pagina = $_GET['pagina'] ?? 'inicio';

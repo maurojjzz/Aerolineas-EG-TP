@@ -11,7 +11,7 @@ const validarNombre = () => {
 
         infoNombre.classList.add("text-danger");
 
-        document.getElementById("labNombre").classList.add("text-danger", "fw-bold"); 
+        document.getElementById("labNombre").classList.add("text-danger", "fw-bold");
 
         return false;
     }
@@ -28,7 +28,7 @@ const validarNombre = () => {
 
     iNombre.classList.remove("is-invalid");
     infoNombre.classList.remove("text-danger");
-    document.getElementById("labNombre").classList.remove("text-danger", "fw-bold"); 
+    document.getElementById("labNombre").classList.remove("text-danger", "fw-bold");
     infoNombre.textContent = "";
 
     return true;
@@ -149,7 +149,6 @@ const validarEmail = () => {
 
 iEmail.addEventListener("blur", validarEmail);
 
-
 const iTelefono = document.getElementById("telefono");
 const infoTelefono = document.getElementById("infoTelefono");
 
@@ -182,7 +181,6 @@ const validarTelefono = () => {
 
 iTelefono.addEventListener("blur", validarTelefono);
 
-
 const iFechaNacimiento = document.getElementById("fecha_nacimiento");
 const infoFechaNacimiento = document.getElementById("infoFechaNacimiento");
 
@@ -204,10 +202,7 @@ const validarFechaNacimiento = () => {
 
     const mes = hoy.getMonth() - fechaNacimiento.getMonth();
 
-    if (
-        mes < 0 ||
-        (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())
-    ) {
+    if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
         edad--;
     }
 
@@ -257,7 +252,6 @@ const validarContrasena = () => {
 
 iContrasena.addEventListener("blur", validarContrasena);
 
-
 const iConfirmarContrasena = document.getElementById("confirmar_contrasena");
 const infoConfirmarContrasena = document.getElementById("infoConfirmarContrasena");
 
@@ -294,82 +288,79 @@ const infoAerolinea = document.getElementById("infoAerolinea");
 // puse este if porque estoy reusando este archivo en ambos login y cliente no tiene aerolinea
 
 if (iAerolinea) {
-const validarAerolinea = () => {
-    const valor = iAerolinea.value;
+    const validarAerolinea = () => {
+        const valor = iAerolinea.value;
 
-    if (valor === "") {
-        iAerolinea.classList.add("is-invalid");
-        infoAerolinea.textContent = "Debe seleccionar una aerolínea.";
-        document.getElementById("labAerolinea").classList.add("text-danger", "fw-bold");
+        if (valor === "") {
+            iAerolinea.classList.add("is-invalid");
+            infoAerolinea.textContent = "Debe seleccionar una aerolínea.";
+            document.getElementById("labAerolinea").classList.add("text-danger", "fw-bold");
 
-        return false;
-    }
+            return false;
+        }
 
-    iAerolinea.classList.remove("is-invalid");
-    document.getElementById("labAerolinea").classList.remove("text-danger", "fw-bold");
-    infoAerolinea.textContent = "";
+        iAerolinea.classList.remove("is-invalid");
+        document.getElementById("labAerolinea").classList.remove("text-danger", "fw-bold");
+        infoAerolinea.textContent = "";
 
-    return true;
-};
+        return true;
+    };
 
+    iAerolinea.addEventListener("change", validarAerolinea);
 
-iAerolinea.addEventListener("change", validarAerolinea);
+    const formRegistroCEO = document.getElementById("formRegistroCEO");
 
+    formRegistroCEO.addEventListener("submit", (e) => {
+        const nombreValido = validarNombre();
+        const apellidoValido = validarApellido();
+        const documentoValido = validarNumeroDocumento();
+        const emailValido = validarEmail();
+        const telefonoValido = validarTelefono();
+        const fechaValida = validarFechaNacimiento();
+        const contrasenaValida = validarContrasena();
+        const confirmarValido = validarConfirmarContrasena();
+        const aerolineaValida = validarAerolinea();
 
-const formRegistroCEO = document.getElementById("formRegistroCEO");
-
-formRegistroCEO.addEventListener("submit", (e) => {
-    const nombreValido = validarNombre();
-    const apellidoValido = validarApellido();
-    const documentoValido = validarNumeroDocumento();
-    const emailValido = validarEmail();
-    const telefonoValido = validarTelefono();
-    const fechaValida = validarFechaNacimiento();
-    const contrasenaValida = validarContrasena();
-    const confirmarValido = validarConfirmarContrasena();
-    const aerolineaValida = validarAerolinea();
-
-    if (
-        !nombreValido ||
-        !apellidoValido ||
-        !documentoValido ||
-        !emailValido ||
-        !telefonoValido ||
-        !fechaValida ||
-        !contrasenaValida ||
-        !confirmarValido ||
-        !aerolineaValida
-    ) {
-        e.preventDefault();
-    }
-});
-
+        if (
+            !nombreValido ||
+            !apellidoValido ||
+            !documentoValido ||
+            !emailValido ||
+            !telefonoValido ||
+            !fechaValida ||
+            !contrasenaValida ||
+            !confirmarValido ||
+            !aerolineaValida
+        ) {
+            e.preventDefault();
+        }
+    });
 }
-
-
 
 const formRegistro = document.getElementById("formRegistro");
 
-formRegistro.addEventListener("submit", (e) => {
-    const nombreValido = validarNombre();
-    const apellidoValido = validarApellido();
-    const documentoValido = validarNumeroDocumento();
-    const emailValido = validarEmail();
-    const telefonoValido = validarTelefono();
-    const fechaValida = validarFechaNacimiento();
-    const contrasenaValida = validarContrasena();
-    const confirmarValido = validarConfirmarContrasena();
+if (formRegistro) {
+    formRegistro.addEventListener("submit", (e) => {
+        const nombreValido = validarNombre();
+        const apellidoValido = validarApellido();
+        const documentoValido = validarNumeroDocumento();
+        const emailValido = validarEmail();
+        const telefonoValido = validarTelefono();
+        const fechaValida = validarFechaNacimiento();
+        const contrasenaValida = validarContrasena();
+        const confirmarValido = validarConfirmarContrasena();
 
-    if (
-        !nombreValido ||
-        !apellidoValido ||
-        !documentoValido ||
-        !emailValido ||
-        !telefonoValido ||
-        !fechaValida ||
-        !contrasenaValida ||
-        !confirmarValido 
-    ) {
-        e.preventDefault();
-    }
-});
+        if (
+            !nombreValido ||
+            !apellidoValido ||
+            !documentoValido ||
+            !emailValido ||
+            !telefonoValido ||
+            !fechaValida ||
+            !contrasenaValida ||
+            !confirmarValido
+        ) {
+            e.preventDefault();
+        }
+    });
+}
