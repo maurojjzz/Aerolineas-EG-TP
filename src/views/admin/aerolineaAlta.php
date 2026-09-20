@@ -34,7 +34,7 @@ $paises = [
         <h2 class="m-0 p-0 fs-2 fw-bold">Crear Aerolínea</h2>
         <p class="m-0 p-0 mb-1 subt ">Registra una nueva aerolínea en el sistema.</p>
         
-        <form action=" <?= url('src/routes/aerolinea.php?accion=crear') ?>" method="POST" class="row mt-2 m-0 g-0 p-0 gap-2 " enctype="multipart/form-data">
+        <form action="<?= url('src/routes/aerolinea.php?accion=crear') ?>" method="POST" class="row mt-2 m-0 g-0 p-0 gap-2 " enctype="multipart/form-data">
 
             <!-- seccion del formulario -->
             <div class="col-12 col-lg-9 border shadow rounded-2 py-4">
