@@ -36,13 +36,13 @@
                     <p class="text-muted text-break">Accede a tu cuenta para gestionar reservas, vuelos o promociones</p>
                     
                     <div class="form-group d-flex flex-column p-0">
-                        <label class="form-label-t" for="email">Email:</label>
+                        <label class="form-label-t" id="labEmail" for="email">Email:</label>
                         <input type="email" name="email" id="email" class="form-control ctm-inp" required placeholder="aeroflux@email.com">
                         <p id="infoEmail" class=" form-text-info"></p>
                     </div>
                     
                     <div class="form-group d-flex flex-column ">
-                        <label class="form-label-t" for="contrasena">Contraseña:</label>
+                        <label class="form-label-t" id="labContrasena" for="contrasena">Contraseña:</label>
                         <input type="password" name="contrasena" id="contrasena" class="form-control ctm-inp" required placeholder="********">
                         <p id="infoContrasena" class="form-text-info"></p>
                     </div>
@@ -87,6 +87,7 @@
                 window.location.href = "<?= url('index.php?pagina=registro-ceo') ?>";
             });
         </script>
+        <script src="<?= url('public/js/admin/validacionLogin.js') ?>"></script>
 
 
     </body>
