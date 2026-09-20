@@ -31,7 +31,7 @@
             </div>
 
             <div class="col-12 col-lg-7 d-flex flex-column align-items-center align-items-lg-end justify-content-center ">
-                <form action="" method="POST" class="formContainer  rounded-3 shadow-lg p-4 me-lg-5 " >
+                <form action="<?= url('src/routes/usuarios.php?accion=login') ?>" method="POST" class="formContainer  rounded-3 shadow-lg p-4 me-lg-5 " >
                     <h3 class="fs-1 fw-semibold titleForm">Iniciar Sesión</h3>
                     <p class="text-muted text-break">Accede a tu cuenta para gestionar reservas, vuelos o promociones</p>
                     
@@ -42,8 +42,8 @@
                     </div>
                     
                     <div class="form-group d-flex flex-column ">
-                        <label class="form-label-t" for="password">Contraseña:</label>
-                        <input type="password" name="password" id="password" class="form-control ctm-inp" required placeholder="********">
+                        <label class="form-label-t" for="contrasena">Contraseña:</label>
+                        <input type="password" name="contrasena" id="contrasena" class="form-control ctm-inp" required placeholder="********">
                         <p id="infoContrasena" class="form-text-info"></p>
                     </div>
 

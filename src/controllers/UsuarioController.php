@@ -146,4 +146,101 @@ class UsuarioController {
         redirect("index.php?pagina=login");
     }
 
+    public function login(): void {
+        $email = trim($_POST['email'] ?? '');
+        $contrasena = $_POST['contrasena'] ?? '';
+
+        if (!$email || !$contrasena) {
+            flash_set('error', 'Faltan campos obligatorios');
+            redirect("index.php?pagina=login");
+        }
+
+        $query = "SELECT idUsuario, nombre, apellido, contrasena, rol, activo, emailVerificado, idAerolinea FROM usuario WHERE email = ?";
+        $stmt = mysqli_prepare($this->conexion, $query);
+
+        if (!$stmt) {
+            flash_set('error', 'Error interno del servidor');
+            redirect("index.php?pagina=login");
+        }
+
+        mysqli_stmt_bind_param($stmt, "s", $email);
+        mysqli_stmt_execute($stmt);
+
+        $result = mysqli_stmt_get_result($stmt);
+        $usuario = mysqli_fetch_assoc($result);
+
+        mysqli_stmt_close($stmt);
+
+        if (!$usuario || !password_verify($contrasena, $usuario['contrasena'])) {
+            flash_set('error', 'Email o contraseña incorrectos');
+            redirect("index.php?pagina=login");
+        }
+
+        if (!$usuario['emailVerificado']) {
+            flash_set('error', 'Debe verificar su correo electrónico antes de iniciar sesión. Por favor, revisa tu correo.');
+            redirect("index.php?pagina=login");
+        }
+
+        // CEO pendiente de aprobación
+        if ($usuario['rol'] === 'ceo' && (int)$usuario['activo'] === 0) {
+            flash_set('error', 'Tu solicitud está pendiente de aprobación.');
+            redirect('index.php?pagina=login');
+        }
+
+        if (!$usuario['activo']) {
+            flash_set('error', 'Tu cuenta esta inactiva. Por favor, contacta al administrador.');
+            redirect("index.php?pagina=login");
+        }
+
+
+        // Iniciar sesión
+        $_SESSION['usuario'] = [
+            'idUsuario'    => (int)$usuario['idUsuario'],
+            'nombre'       => $usuario['nombre'],
+            'apellido'     => $usuario['apellido'],
+            'email'        => $email,
+            'rol'          => $usuario['rol'],
+            'idAerolinea'  => $usuario['idAerolinea'] !== null ? (int)$usuario['idAerolinea'] : null,
+        ];
+
+        switch ($usuario['rol']) {
+            case 'ceo':
+                redirect('index.php?pagina=aerolinea&seccion=alta');
+                //redirect('index.php?pagina=dashboard-ceo');   // este es el og, cambiarlo ahora esta puesto otro para testear
+                break;
+
+            case 'admin':
+                redirect('index.php?pagina=aerolinea&seccion=alta');
+                // redirect('index.php?pagina=dashboard-admin'); // crearlo dsp // este es el og, cambiarlo ahora esta puesto otro para testear
+                break;
+            case 'cliente':
+                redirect('index.php?pagina=aerolinea&seccion=alta');
+                //redirect('index.php?pagina=dashboard'); // crearlo dsp // este es el og, cambiarlo ahora esta puesto otro para testear
+                break;
+            default: 
+                $_SESSION = [];
+                session_destroy();
+                flash_set('error', 'Tu cuenta tiene un rol inválido. Contactá al administrador.');
+                redirect('index.php?pagina=login');
+                break;
+        }
+
+    }
+
+    public function logout(): void {
+        $_SESSION = [];
+
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $params["path"], $params["domain"],
+                $params["secure"], $params["httponly"]
+            );
+        }
+
+        session_destroy();
+        flash_set('success', 'Has cerrado sesión correctamente.');
+        redirect("index.php?pagina=login");
+    }
+
 }

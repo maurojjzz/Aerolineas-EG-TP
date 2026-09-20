@@ -17,6 +17,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         case 'registrar-ceo':
             $ctrl->crearCEO();
             break;
+        case 'login':
+            $ctrl->login();
+            break;
+        case 'logout':
+            $ctrl->logout();
+            break;
         default:
             http_response_code(404);
             echo "Acción no encontrada";
@@ -24,6 +30,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
 } else {
-    http_response_code(405);
-    echo "No permitido";
+    // Permitimos logout por GET (es un caso típico)
+    if ($accion === 'logout') {
+        $ctrl->logout();
+    } else {
+        http_response_code(405);
+        echo "No permitido";
+    }
 }

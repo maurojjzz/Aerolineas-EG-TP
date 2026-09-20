@@ -2,6 +2,10 @@
 
 date_default_timezone_set('America/Argentina/Buenos_Aires');
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 // Compara la carpeta del proyecto contra la raíz del server (htdocs)
 // y saca el prefijo. Da igual qué archivo PHP se ejecute.
 $docRoot  = str_replace('\\', '/', realpath($_SERVER['DOCUMENT_ROOT'] ?? ''));
@@ -52,3 +56,7 @@ function flash_get(string $key, $default = null) {
     unset($_SESSION['flash'][$key]);
     return $value;
 }
+
+require_once __DIR__ . '/auth.php';
+require_once __DIR__ . '/policies.php';
+
