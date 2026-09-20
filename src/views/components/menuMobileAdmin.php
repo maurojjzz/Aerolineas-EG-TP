@@ -11,7 +11,7 @@
         <div class="d-flex align-items-center justify-content-center w-100 ">
 
             <img
-                src="../../../public/img/aerologo.webp"
+                src="<?= url('public/img/aerologo.webp') ?>"
                 alt="Logo"
                 class="logo-sidebar"
             >
@@ -40,7 +40,7 @@
                         href="#"
                     >
                         <img
-                            src="../../../public/img/icons/casa.png"
+                            src="<?= url('public/img/icons/casa.png') ?>"
                             class="iconos-sidebar"
                             alt=""
                         >
@@ -58,7 +58,7 @@
                         href="#"
                     >
                         <img
-                            src="../../../public/img/icons/avionSidebar.png"
+                            src="<?= url('public/img/icons/avionSidebar.png') ?>"
                             class="iconos-sidebar"
                             alt=""
                         >
@@ -76,7 +76,7 @@
                         href="#"
                     >
                         <img
-                            src="../../../public/img/icons/promoSidebar.png"
+                            src="<?= url('public/img/icons/promoSidebar.png') ?>"
                             class="iconos-sidebar"
                             alt=""
                         >
@@ -94,7 +94,7 @@
                         href="#"
                     >
                         <img
-                            src="../../../public/img/icons/novedadesSidebar.png"
+                            src="<?= url('public/img/icons/novedadesSidebar.png') ?>"
                             class="iconos-sidebar"
                             alt=""
                         >
@@ -112,7 +112,7 @@
                         href="#"
                     >
                         <img
-                            src="../../../public/img/icons/usuario.png"
+                            src="<?= url('public/img/icons/usuario.png') ?>"
                             class="iconos-sidebar"
                             alt=""
                         >
@@ -130,7 +130,7 @@
                         href="#"
                     >
                         <img
-                            src="../../../public/img/icons/ceo.png"
+                            src="<?= url('public/img/icons/ceo.png') ?>"
                             class="iconos-sidebar"
                             alt=""
                         >
@@ -148,7 +148,7 @@
                         href="#"
                     >
                         <img
-                            src="../../../public/img/icons/reporteSidebar.png"
+                            src="<?= url('public/img/icons/reporteSidebar.png') ?>"
                             class="iconos-sidebar"
                             alt=""
                         >
@@ -166,7 +166,7 @@
                         href="#"
                     >
                         <img
-                            src="../../../public/img/icons/configuracionSidebar.png"
+                            src="<?= url('public/img/icons/configuracionSidebar.png') ?>"
                             class="iconos-sidebar"
                             alt=""
                         >

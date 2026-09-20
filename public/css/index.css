@@ -16,8 +16,6 @@ body {
 .hero-content {
     position: relative;
     z-index: 2;
-    /* max-width:550px; */
-    /* border: 1px solid red; */
 }
 
 .hero-content h5 {

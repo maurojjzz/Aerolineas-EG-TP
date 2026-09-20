@@ -1,7 +1,9 @@
 <?php
-
+require_once __DIR__ . '/../config/app.php';
 require_once __DIR__ . '/../config/conexion.php';
 require_once __DIR__ . '/../controllers/AerolineaController.php';
+
+requireRol('admin', 'ceo');
 
 $ctrl = new AerolineaController($link);
 
@@ -11,6 +13,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     switch ($accion) {
         case 'crear':
+            if (!puedeCrearAerolinea()) {
+                flash_set('error', 'No tienes permisos para crear aerolíneas.');
+                redirect('index.php?pagina=inicio');
+            }
             $ctrl->crearAerolinea();
             break;
         default:

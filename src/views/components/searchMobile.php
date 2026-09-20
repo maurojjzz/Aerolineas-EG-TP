@@ -3,17 +3,17 @@
     <div class="options-line container-fluid d-flex align-items-center bg-light rounded-4 shadow">
         
         <div class="active col option-line-item d-flex flex-column align-items-center pt-3 " data-option="vuelos" > 
-            <img src="../../../public/img/icons/avion.png" alt="icono avion" class="iconos-search">
+            <img src="<?= url('public/img/icons/avion.png') ?>" alt="icono avion" class="iconos-search">
             <p>Vuelos</p>
         </div>
 
         <div class="col option-line-item d-flex flex-column align-items-center pt-3" data-option="promociones"> 
-            <img src="../../../public/img/icons/promocion.png" alt="icono promocion" class="iconos-search">
+            <img src="<?= url('public/img/icons/promocion.png') ?>" alt="icono promocion" class="iconos-search">
             <p>Promociones</p>
         </div>
 
         <div class="col option-line-item  d-flex flex-column align-items-center pt-3" data-option="novedades" > 
-            <img src="../../../public/img/icons/novedades.png" alt="icono megafono aludiendo a novedades" class="iconos-search">
+            <img src="<?= url('public/img/icons/novedades.png') ?>" alt="icono megafono aludiendo a novedades" class="iconos-search">
             <p>Novedades</p>
         </div>
 
@@ -30,7 +30,7 @@
 
                 <label for="passengers" class="cal-label-pas position-absolute">Pasajeros</label>
 
-                <img src="../../../public/img/icons/pasajeroicon.png" alt="icono pasajero" class="btn-icon-vuelos">
+                <img src="<?= url('public/img/icons/pasajeroicon.png') ?>" alt="icono pasajero" class="btn-icon-vuelos">
 
                 <select name="passengers" class="form-select selectPasenger" aria-label="select pasajeros" id="passengers">
                     <option selected value="1">1 Pasajero</option>
@@ -44,7 +44,7 @@
 
             <div class="d-flex justify-content-center mt-4">
                 <button class="btn b-vuelos d-flex align-items-center justify-content-center gap-2 btn-primary btn-lg rounded-3  shadow-sm" id="search-button">
-                    <img src="../../../public/img/icons/lupa.png" alt="icono pasajero" class="autocomplete-icon">
+                    <img src="<?= url('public/img/icons/lupa.png') ?>" alt="icono pasajero" class="autocomplete-icon">
                     <span class="d-lg-none d-xl-block">Buscar Vuelos</span>
                 </button>   
             </div>

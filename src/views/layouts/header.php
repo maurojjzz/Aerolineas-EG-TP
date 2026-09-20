@@ -7,7 +7,7 @@
         
         <div class="col-1 d-flex justify-content-center align-items-center ">
             <a class="navbar-brand logoLink" href="#">
-                <img class="logo" src="../../../public/img/aerologo.webp" alt="Logo de la pagina" >
+                <img class="logo" src=" <?= url('public/img/aerologo.webp') ?>" alt="Logo de la pagina" >
             </a>
         </div>
         
@@ -33,12 +33,12 @@
 
         <div class="col-1 d-flex justify-content-center align-items-center">
 
-            <button type="button" class="btn  d-md-none  btn-custom-perfil">
-                <img src="../../../public/img/icons/usuario.png" alt="Icono de perfil" class="icono_perfil-mobile">
+            <button type="button" id="btnLogin" class="btn  d-md-none  btn-custom-perfil">
+                <img src=" <?= url('public/img/icons/usuario.png') ?>" alt="Icono de perfil" class="icono_perfil-mobile">
             </button>
             
-            <button type="button" class="btn d-none d-md-flex px-lg-4 btn-custom">
-                <img src="../../../public/img/icons/usuario.png" alt="Icono de perfil" class="icono_perfil">
+            <button type="button" id="btnLogin"  class="btn d-none d-md-flex px-lg-4 btn-custom">
+                <img src=" <?= url('public/img/icons/usuario.png') ?>" alt="Icono de perfil" class="icono_perfil">
                 Ingresar
             </button>
 
@@ -46,3 +46,17 @@
         </div>
     </div>
 </header>
+
+<script>
+    const btnPerfil = document.querySelector('.btn-custom-perfil');
+    const btnIngresar = document.querySelector('.btn-custom');
+    
+    btnPerfil.addEventListener('click', () => {
+        window.location.href = "<?= url('index.php?pagina=login') ?>";
+    });
+
+    btnIngresar.addEventListener('click', () => {
+        window.location.href = "<?= url('index.php?pagina=login') ?>";
+    });
+
+</script>
