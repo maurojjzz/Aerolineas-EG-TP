@@ -23,9 +23,8 @@ class AerolineaController {
         $logoPublicId = null;
 
         if (!$nombre || !$codigoIATA || !$codPais || !$email) {
-            http_response_code(400);
-            echo "datos incompletos";
-            return;
+            flash_set('error', 'Faltan campos obligatorios');
+            redirect("index.php?pagina=aerolinea&seccion=alta");
         }
 
         if(isset($_FILES['logo']) && $_FILES['logo']['error']=== UPLOAD_ERR_OK){
@@ -36,11 +35,9 @@ class AerolineaController {
                 $logoUrl = $resultado['secure_url'];
                 $logoPublicId = $resultado['public_id'];
             } catch (Exception $e) {
-                http_response_code(500);
-                echo "Error al subir la imagen: " . $e->getMessage();
-                return;
+                flash_set('error', 'Error al subir la imagen: ' . $e->getMessage());
+                redirect("index.php?pagina=aerolinea&seccion=alta");
             }
-
         }
 
         $aerolinea  = new Aerolinea($nombre, $codigoIATA, $descripcion, $codPais, $email, $logoUrl, $activo, null, $logoPublicId);
@@ -50,34 +47,51 @@ class AerolineaController {
         $stmt = mysqli_prepare($this->conexion, $query);
 
         if(!$stmt){
-            http_response_code(500);
-            echo "Error al preparar la consulta";
-            return;
+            flash_set('error', 'Error interno del servidor');
+            redirect("index.php?pagina=aerolinea&seccion=alta");
         }
 
-        $ok = mysqli_stmt_execute($stmt, [
-            $aerolinea->getNombreAerolinea(),
-            $aerolinea->getCodigoIATA(),
-            $aerolinea->getDescripcion(),
-            $aerolinea->getCodPais(),
-            $aerolinea->getEmail(),
-            $aerolinea->getLogoUrl(),
-            $aerolinea->getActivo(),
-            $aerolinea->getLogoPublicId()
-        ]);
+        $nombreBD = $aerolinea->getNombreAerolinea();
+        $codigoBD= $aerolinea->getCodigoIATA();
+        $descripcionBD = $aerolinea->getDescripcion();
+        $paisBD = $aerolinea->getCodPais();
+        $emailBD = $aerolinea->getEmail();
+        $logoUrlBD = $aerolinea->getLogoUrl();
+        $activoBD = $aerolinea->getActivo() ? 1 : 0;
+        $logoPubIdBD = $aerolinea->getLogoPublicId();
+
+        mysqli_stmt_bind_param(
+            $stmt,
+            "sssssisi",
+            $nombreBD,
+            $codigoBD,
+            $descripcionBD,
+            $paisBD,
+            $emailBD,
+            $logoUrlBD,
+            $activoBD,
+            $logoPubIdBD
+        );
+
+        try {
+            mysqli_stmt_execute($stmt);
+        } catch (mysqli_sql_exception $e) {
+            $errno = $e->getCode();
+            $error = $e->getMessage();
+            mysqli_stmt_close($stmt);
+
+            if ($errno === 1062) {
+                flash_set('error', 'Ya existe una aerolínea con ese código IATA.');
+            } else {
+                flash_set('error', 'Error al crear la aerolínea.');
+            }
+            redirect('index.php?pagina=aerolinea&seccion=alta');
+        }
 
         mysqli_stmt_close($stmt);
 
-        if(!$ok){
-            http_response_code(500);
-            echo "Error al crear la aerolinea";
-            return;
-        }
-
-        // despues cambiar por aerolinea home ahora no hay nada ahi 
-        header("Location: " . url('src/views/admin/aerolineaLayout.php'));
-
-        exit;
+        flash_set('success', 'Aerolínea creada correctamente.');
+        redirect('index.php?pagina=aerolinea&seccion=listado');
 
     }
 
@@ -87,8 +101,6 @@ class AerolineaController {
         $result = mysqli_query($this->conexion, $query);
 
         if (!$result) {
-            http_response_code(500);
-            echo "Error al obtener las aerolineas";
             return [];
         }
 
@@ -101,8 +113,8 @@ class AerolineaController {
                 $row['codPais'],
                 $row['email'],
                 $row['logoUrl'],
-                $row['activo'],
-                $row['idAerolinea'],
+                (bool)$row['activo'],
+                (int)$row['idAerolinea'],
                 $row['logoPublicId']
             );
             $aerolineas[] = $aerolinea;

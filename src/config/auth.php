@@ -13,7 +13,7 @@ function rolActual(): ?string {
 }
 
 function aerolineaCEO(): ?int {
-    return $_SESSION['usuario']['idUsuario'] ?? null;
+    return $_SESSION['usuario']['idAerolinea'] ?? null;
 }
 
 // GUARDAS 
@@ -33,8 +33,7 @@ function requireRol(string ...$roles):void {
 
     if(!in_array(rolActual(), $roles, true)) {
         flash_set('error', 'No tienes permisos para acceder a esta página.');
-        redirect('index.php?pagina=login');
-
+        redirect('index.php?pagina=login'); # en el futuro habra una pagina que indique el error de permisos por ahora dejo asi para que muestre el alert de flash_set
     }
 }
 

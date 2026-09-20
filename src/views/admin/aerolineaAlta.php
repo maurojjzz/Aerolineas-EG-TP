@@ -16,7 +16,10 @@ $paises = [
     ["codigo" => "VEN", "nombre" => "Venezuela"]
 ];
 
+
 ?>
+            <?php require __DIR__ . '/../components/alertToast.php';  ?>
+
 
 <div class="" >
     <nav class="breadcrumbCont" aria-label="breadcrumb">

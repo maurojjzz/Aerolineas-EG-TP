@@ -214,12 +214,11 @@ class UsuarioController {
                 // redirect('index.php?pagina=dashboard-admin'); // crearlo dsp // este es el og, cambiarlo ahora esta puesto otro para testear
                 break;
             case 'cliente':
-                redirect('index.php?pagina=aerolinea&seccion=alta');
+                redirect('index.php?pagina=inicio');
                 //redirect('index.php?pagina=dashboard'); // crearlo dsp // este es el og, cambiarlo ahora esta puesto otro para testear
                 break;
             default: 
                 $_SESSION = [];
-                session_destroy();
                 flash_set('error', 'Tu cuenta tiene un rol inválido. Contactá al administrador.');
                 redirect('index.php?pagina=login');
                 break;
@@ -238,7 +237,6 @@ class UsuarioController {
             );
         }
 
-        session_destroy();
         flash_set('success', 'Has cerrado sesión correctamente.');
         redirect("index.php?pagina=login");
     }
