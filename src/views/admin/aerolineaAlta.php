@@ -18,9 +18,8 @@ $paises = [
 
 
 ?>
-            <?php require __DIR__ . '/../components/alertToast.php';  ?>
 
-
+<?php require __DIR__ . '/../components/alertToast.php';  ?>
 <div class="" >
     <nav class="breadcrumbCont" aria-label="breadcrumb">
         <ol class="breadcrumb">
