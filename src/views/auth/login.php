@@ -9,7 +9,7 @@
 
 
         <!-- <link rel="stylesheet" href="<?= url('public/css/layout/login.css') ?>"> -->
-        <link rel="stylesheet" href="<?= url('public/css/layout/login.css') ?>?v=<?= time() ?>">
+        <link rel="stylesheet" href="<?= url('public/css/layout/login.css') ?>?v=1.0">
         <link rel="stylesheet" href="<?= url('public/css/layout/header.css') ?>">
         <link rel="stylesheet" href="<?= url('public/css/components/menuMobile.css') ?>">
 
