@@ -16,9 +16,10 @@ class Usuario{
     private bool $emailVerificado;
     private ?string $tokenVerificacion;
     private ?string $fechaHoraAutorizacion;
+    private ?string $fechaCreacion;
     private ?int $idAerolinea;
 
-    public function __construct(string $nombre, string $apellido, string $tipoDocumento, string $nroDocumento, string $contrasena, string $email, string $telefono, string $fechaNacimiento, string $rol = 'cliente', bool $activo=false, bool $emailVerificado=false, ?string $tokenVerificacion = null, ?int $idAerolinea = null, ?string $fechaHoraAutorizacion = null, ?int $idUsuario = null) {
+    public function __construct(string $nombre, string $apellido, string $tipoDocumento, string $nroDocumento, string $contrasena, string $email, string $telefono, string $fechaNacimiento, string $rol = 'cliente', bool $activo=false, bool $emailVerificado=false, ?string $tokenVerificacion = null, ?int $idAerolinea = null, ?string $fechaHoraAutorizacion = null, ?string $fechaCreacion = null, ?int $idUsuario = null) {
         $this->nombre = $nombre;
         $this->apellido = $apellido;
         $this->tipoDocumento = $tipoDocumento;
@@ -33,8 +34,8 @@ class Usuario{
         $this->tokenVerificacion = $tokenVerificacion;
         $this->idAerolinea = $idAerolinea;
         $this->fechaHoraAutorizacion = $fechaHoraAutorizacion;
+        $this->fechaCreacion = $fechaCreacion;
         $this->idUsuario = $idUsuario;
-
     }
 
     public function getIdUsuario(): ?int { return $this->idUsuario; }
@@ -52,6 +53,7 @@ class Usuario{
     public function getTokenVerificacion(): ?string { return $this->tokenVerificacion; }
     public function getIdAerolinea(): ?int { return $this->idAerolinea; }
     public function getFechaHoraAutorizacion(): ?string { return $this->fechaHoraAutorizacion; }
+    public function getFechaCreacion(): ?string { return $this->fechaCreacion; }
     
     public function setIdUsuario(?int $idUsuario): void { $this->idUsuario = $idUsuario; }
     public function setNombre(string $nombre): void { $this->nombre = $nombre; }
@@ -68,6 +70,7 @@ class Usuario{
     public function setTokenVerificacion(?string $t): void { $this->tokenVerificacion = $t; }
     public function setIdAerolinea(?int $idAerolinea): void { $this->idAerolinea = $idAerolinea; }
     public function setFechaHoraAutorizacion(?string $fechaHoraAutorizacion): void { $this->fechaHoraAutorizacion = $fechaHoraAutorizacion; }
+    public function setFechaCreacion(?string $fechaCreacion): void { $this->fechaCreacion = $fechaCreacion; }
 
 
 }

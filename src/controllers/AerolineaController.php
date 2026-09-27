@@ -234,6 +234,52 @@ class AerolineaController {
         ];
     }
 
+    public function obtenerAerolineaPorId(int $id): ?array {
+        $query = "SELECT a.*, u.nombre as ceoNombre, u.apellido as ceoApellido, u.email as ceoEmail
+                FROM aerolinea a
+                LEFT JOIN usuario u ON u.idAerolinea = a.idAerolinea AND u.rol = 'ceo'
+                WHERE a.idAerolinea = ?";
+
+        $stmt = mysqli_prepare($this->conexion, $query);
+        mysqli_stmt_bind_param($stmt, 'i', $id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $fila = mysqli_fetch_assoc($result);
+        mysqli_stmt_close($stmt);
+
+        return $fila ?: null;
+    }
+    // aca la logica para las cards de aerolinea en el listado
+
+    public function obtenerEstadisticasListado(): array {
+        // Total aerolíneas este mes
+        $queryEsteMes = "SELECT COUNT(*) as total FROM aerolinea 
+                        WHERE MONTH(fechaCreacion) = MONTH(NOW()) 
+                        AND YEAR(fechaCreacion) = YEAR(NOW())";
+
+        // Total aerolíneas mes pasado
+        $queryMesPasado = "SELECT COUNT(*) as total FROM aerolinea 
+                        WHERE MONTH(fechaCreacion) = MONTH(DATE_SUB(NOW(), INTERVAL 1 MONTH)) 
+                        AND YEAR(fechaCreacion) = YEAR(DATE_SUB(NOW(), INTERVAL 1 MONTH))";
+
+        // Total CEOs 
+        $queryCeos = "SELECT COUNT(*) as total FROM usuario 
+                    WHERE rol = 'ceo' AND idAerolinea IS NOT NULL";
+
+        $esteMes   = (int) mysqli_fetch_assoc(mysqli_query($this->conexion, $queryEsteMes))['total'];
+        $mesPasado = (int) mysqli_fetch_assoc(mysqli_query($this->conexion, $queryMesPasado))['total'];
+        $ceos      = (int) mysqli_fetch_assoc(mysqli_query($this->conexion, $queryCeos))['total'];
+
+        $diff = $esteMes - $mesPasado;
+
+        return [
+            'nuevasEsteMes' => $esteMes,
+            'mesPasado'     => $mesPasado,
+            'diff'          => $diff,
+            'ceos'          => $ceos,
+        ];
+    }
+
 
 
 }

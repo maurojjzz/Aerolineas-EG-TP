@@ -2,16 +2,16 @@
 .tabla-aerolineas td:nth-child(1) { width: 12%; }
 
 .tabla-aerolineas th:nth-child(2),  /* NOMBRE */
-.tabla-aerolineas td:nth-child(2) { width: 21%; }
+.tabla-aerolineas td:nth-child(2) { width: 24%; }
 
 .tabla-aerolineas th:nth-child(3),  /* PAIS */
 .tabla-aerolineas td:nth-child(3) { width: 16%; }
 
 .tabla-aerolineas th:nth-child(4),  /* ESTADO */
-.tabla-aerolineas td:nth-child(4) { width: 16%; }
+.tabla-aerolineas td:nth-child(4) { width: 10%; }
 
 .tabla-aerolineas th:nth-child(5),  /* CEO ASOCIADO */
-.tabla-aerolineas td:nth-child(5) { width: 20%; }
+.tabla-aerolineas td:nth-child(5) { width: 23%; }
 
 .tabla-aerolineas th:nth-child(6),  /* ACCIONES */
 .tabla-aerolineas td:nth-child(6) { width: 15%; }
@@ -19,6 +19,16 @@
 .tabla-aerolineas th, .tabla-aerolineas td {
     font-size: 0.9rem;
 }
+
+.tablaContenedor {
+    /* min-height: 600px; */
+}
+
+.tabla-aerolineas tbody tr {
+    height: 40px;
+}
+
+
 
 .btn-tabla{
     width: 20px;
@@ -58,4 +68,26 @@
 .active-pag:hover {
     background: linear-gradient(135deg, #1a55a0, #0f3570);
     color: #ffffff !important;
+}
+
+.fila-detalle td {
+    background-color: #f8faff;
+    border-top: none;
+}
+
+.detalle-aerolinea {
+    border-left: 3px solid #2066ba;
+    animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 460px) {
+    .tabla-aerolineas th:nth-child(5),  /* CEO */
+    .tabla-aerolineas td:nth-child(5) { display: none; }
+
+    
 }
