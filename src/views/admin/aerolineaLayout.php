@@ -6,7 +6,7 @@ $vistas = [
     'alta' => __DIR__ . '/aerolineaAlta.php',
     'listado' => __DIR__ . '/aerolineaListado.php',
     'detalle' => __DIR__ . '/aerolineaDetalle.php',
-    'editar' => __DIR__ . '/aerolineaEditar.php'
+    'editar' => __DIR__ . '/aerolineaEditar.php',
 ];
 
 
@@ -22,6 +22,8 @@ $vistas = [
         
         <link rel="stylesheet" href="<?= url('public/css/admin.css') ?>">
         <link rel="stylesheet" href="<?= url('public/css/layout/headerAdmin.css') ?>">
+        <link rel="stylesheet" href="<?= url('public/css/components/tablaLista.css') ?>?v=<?= time() ?>">
+
 
     </head>
     <body>

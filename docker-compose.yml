@@ -23,6 +23,8 @@ services:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
+      TZ: America/Argentina/Buenos_Aires
+      command: --default-time-zone='+03:00'
     volumes:
       - mysql_data:/var/lib/mysql
       - ./sql/aerolinea.sql:/docker-entrypoint-initdb.d/aerolinea.sql:ro

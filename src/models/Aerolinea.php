@@ -11,8 +11,9 @@ class Aerolinea {
     private ?string $logoUrl;
     private bool $activo;
     private ?string $logoPublicId;
+    private ?string $fechaCreacion;
 
-    public function __construct(string $nombreAerolinea, string $codigoIATA, ?string $descripcion, string $codPais, string $email, ?string $logoUrl, bool $activo, ?int $idAerolinea = null, ?string $logoPublicId = null) {
+    public function __construct(string $nombreAerolinea, string $codigoIATA, ?string $descripcion, string $codPais, string $email, ?string $logoUrl, bool $activo, ?int $idAerolinea = null, ?string $logoPublicId = null, ?string $fechaCreacion = null) {
         $this->nombreAerolinea = $nombreAerolinea;
         $this->codigoIATA = $codigoIATA;
         $this->descripcion = $descripcion;
@@ -22,6 +23,7 @@ class Aerolinea {
         $this->activo = $activo;
         $this->idAerolinea = $idAerolinea;
         $this->logoPublicId = $logoPublicId;
+        $this->fechaCreacion = $fechaCreacion;
     }
 
 
@@ -70,6 +72,11 @@ class Aerolinea {
         return $this->logoPublicId;
     }
 
+    public function getFechaCreacion(): ?string
+    {
+        return $this->fechaCreacion;
+    }
+
 
     public function setIdAerolinea(?int $idAerolinea): void
     {
@@ -116,12 +123,10 @@ class Aerolinea {
         $this->logoPublicId = $logoPublicId;
     }
 
-
-
+    public function setFechaCreacion(?string $fechaCreacion): void
+    {
+        $this->fechaCreacion = $fechaCreacion;
+    }
 }
-
-
-
-
 
 ?>

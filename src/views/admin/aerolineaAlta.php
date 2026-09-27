@@ -24,7 +24,7 @@ $paises = [
     <nav class="breadcrumbCont" aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="#">Inicio</a></li>
-            <li class="breadcrumb-item"><a href="#">Aerolínea</a></li>
+            <li class="breadcrumb-item"><a href="<?= url('/index.php?pagina=aerolinea&seccion=listado') ?>">Aerolínea</a></li>
             <li class="breadcrumb-item active" aria-current="page">Crear Aerolínea</li>
         </ol>
     </nav>
