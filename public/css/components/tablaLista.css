@@ -88,6 +88,21 @@
 @media (max-width: 460px) {
     .tabla-aerolineas th:nth-child(5),  /* CEO */
     .tabla-aerolineas td:nth-child(5) { display: none; }
+}
 
-    
+/* estilos de la pagina detalle */
+
+
+.btn-atras{
+    transition: transform 0.2s ease-in-out;
+}
+
+.btn-atras:hover{
+    transform: scale(1.1);
+}
+
+.btn-atras:focus {
+    outline: none;
+    box-shadow: none;
+    border:none;
 }
