@@ -96,6 +96,68 @@ class AerolineaController {
     }
 
 
+    public function editarAerolinea(int $id): void {
+        $nombre      = trim($_POST['nombre']           ?? '');
+        $codPais     = trim($_POST['pais']             ?? '');
+        $email       = trim($_POST['email']            ?? '');
+        $descripcion = trim($_POST['descripcion']      ?? '');
+        $activo      = ($_POST['estadoAerolinea'] ?? '') === 'activa' ? 1 : 0;
+
+        if (!$nombre || !$codPais || !$email) {
+            flash_set('error', 'Faltan campos obligatorios.');
+            redirect("index.php?pagina=aerolinea&seccion=editar&id=$id");
+        }
+
+        // logo: solo actualizar si subieron uno nuevo
+        $logoUrl      = null;
+        $logoPublicId = null;
+
+        if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
+            $cloudinaryController = new CloudinaryController();
+            try {
+                $resultado    = $cloudinaryController->subirFoto($_FILES['logo']['tmp_name']);
+                $logoUrl      = $resultado['secure_url'];
+                $logoPublicId = $resultado['public_id'];
+            } catch (Exception $e) {
+                flash_set('error', 'Error al subir la imagen: ' . $e->getMessage());
+                redirect("index.php?pagina=aerolinea&seccion=editar&id=$id");
+            }
+        }
+
+        if ($logoUrl) {
+            // subieron logo nuevo: actualizar todo
+            $query = "UPDATE aerolinea 
+                    SET nombreAerolinea=?, codPais=?, email=?, descripcion=?, activo=?, logoUrl=?, logoPublicId=?
+                    WHERE idAerolinea=?";
+            $stmt = mysqli_prepare($this->conexion, $query);
+            mysqli_stmt_bind_param($stmt, 'ssssissi',
+                $nombre, $codPais, $email, $descripcion, $activo, $logoUrl, $logoPublicId, $id);
+        } else {
+            // sin logo nuevo: no tocar logoUrl ni logoPublicId
+            $query = "UPDATE aerolinea 
+                    SET nombreAerolinea=?, codPais=?, email=?, descripcion=?, activo=?
+                    WHERE idAerolinea=?";
+            $stmt = mysqli_prepare($this->conexion, $query);
+            mysqli_stmt_bind_param($stmt, 'sssiii',
+                $nombre, $codPais, $email, $descripcion, $activo, $id);
+        }
+
+        try {
+            mysqli_stmt_execute($stmt);
+        } catch (mysqli_sql_exception $e) {
+            mysqli_stmt_close($stmt);
+            flash_set('error', 'Error al actualizar la aerolínea.');
+            redirect("index.php?pagina=aerolinea&seccion=editar&id=$id");
+        }
+
+        mysqli_stmt_close($stmt);
+
+        flash_set('success', 'Aerolínea actualizada correctamente.');
+        redirect("index.php?pagina=aerolinea&seccion=detalle&id=$id");
+    }
+
+
+
     public function listarAerolineas(): array {
         $query = "SELECT * FROM aerolinea";
         $result = mysqli_query($this->conexion, $query);
@@ -271,7 +333,6 @@ class AerolineaController {
         $ceos      = (int) mysqli_fetch_assoc(mysqli_query($this->conexion, $queryCeos))['total'];
 
         $diff = $esteMes - $mesPasado;
-
         return [
             'nuevasEsteMes' => $esteMes,
             'mesPasado'     => $mesPasado,
@@ -280,6 +341,23 @@ class AerolineaController {
         ];
     }
 
+    public function toggleEstadoAerolinea(int $id): void {
+        $query = "UPDATE aerolinea SET activo = NOT activo WHERE idAerolinea = ?";
+        $stmt = mysqli_prepare($this->conexion, $query);
+        mysqli_stmt_bind_param($stmt, 'i', $id);
+
+        try {
+            mysqli_stmt_execute($stmt);
+        } catch (mysqli_sql_exception $e) {
+            flash_set('error', 'Error al cambiar el estado de la aerolínea.');
+            redirect('index.php?pagina=aerolinea&seccion=listado');
+        }
+
+        mysqli_stmt_close($stmt);
+
+        flash_set('success', 'Estado de la aerolínea actualizado.');
+        redirect('index.php?pagina=aerolinea&seccion=listado');
+    }
 
 
 }

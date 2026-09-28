@@ -19,6 +19,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             $ctrl->crearAerolinea();
             break;
+        case 'editar':
+            $id = (int)($_GET['id'] ?? 0);
+            if (!$id) {
+                flash_set('error', 'ID inválido.');
+                redirect('index.php?pagina=aerolinea&seccion=listado');
+            }
+            $ctrl->editarAerolinea($id);
+            break;
+        case 'toggleEstado':
+            $id = (int)($_POST['id'] ?? 0);
+            if (!$id) {
+                flash_set('error', 'ID inválido.');
+                redirect('index.php?pagina=aerolinea&seccion=listado');
+            }
+            $ctrl->toggleEstadoAerolinea($id);
+            break;
         default:
             http_response_code(404);
             echo "Acción no encontrada";

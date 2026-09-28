@@ -6,7 +6,7 @@ $vistas = [
     'alta' => __DIR__ . '/aerolineaAlta.php',
     'listado' => __DIR__ . '/aerolineaListado.php',
     'detalle' => __DIR__ . '/aerolineaDetalle.php',
-    'editar' => __DIR__ . '/aerolineaEditar.php',
+    'editar' => __DIR__ . '/aerolineaAlta.php',
 ];
 
 
