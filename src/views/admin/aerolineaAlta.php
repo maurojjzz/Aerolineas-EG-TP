@@ -1,4 +1,20 @@
 <?php
+require_once __DIR__ . '/../../config/conexion.php';
+require_once __DIR__ . '/../../controllers/AerolineaController.php';
+
+$ctrl = new AerolineaController($link);
+
+$id = (int)($_GET['id'] ?? 0);
+$modoEditar = $id > 0;
+$aero = null;
+
+if ($modoEditar) {
+    $aero = $ctrl->obtenerAerolineaPorId($id);
+    if (!$aero) {
+        flash_set('error', 'Aerolínea no encontrada.');
+        redirect('index.php?pagina=aerolinea&seccion=listado');
+    }
+}
 
 $paises = [
     ["codigo" => "ARG", "nombre" => "Argentina"],
@@ -16,7 +32,6 @@ $paises = [
     ["codigo" => "VEN", "nombre" => "Venezuela"]
 ];
 
-
 ?>
 
 <?php require __DIR__ . '/../components/alertToast.php';  ?>
@@ -25,29 +40,57 @@ $paises = [
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="#">Inicio</a></li>
             <li class="breadcrumb-item"><a href="<?= url('/index.php?pagina=aerolinea&seccion=listado') ?>">Aerolínea</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Crear Aerolínea</li>
+            <li class="breadcrumb-item active" aria-current="page">
+                <?= $modoEditar ? 'Editar Aerolínea' : 'Crear Aerolínea' ?>
+            </li>
         </ol>
     </nav>
 
     <div class="contForm col-12 d-flex flex-column p-2 admin-content  h-100">
-        <h2 class="m-0 p-0 fs-2 fw-bold">Crear Aerolínea</h2>
-        <p class="m-0 p-0 mb-1 subt ">Registra una nueva aerolínea en el sistema.</p>
+        <h2 class="m-0 p-0 fs-2 fw-bold"><?= $modoEditar ? 'Editar Aerolínea' : 'Crear Aerolínea' ?></h2>
+        <p class="m-0 p-0 mb-1 subt"><?= $modoEditar ? 'Modificá los datos de la aerolínea.' : 'Registra una nueva aerolínea en el sistema.' ?></p>
         
-        <form action="<?= url('src/routes/aerolinea.php?accion=crear') ?>" method="POST" class="row mt-2 m-0 g-0 p-0 gap-2 " enctype="multipart/form-data">
-
+        <form 
+            action="<?= $modoEditar ? url('src/routes/aerolinea.php?accion=editar&id=' . $id): url('src/routes/aerolinea.php?accion=crear')?>" 
+            method="POST" 
+            class="row mt-2 m-0 g-0 p-0 gap-2 " 
+            enctype="multipart/form-data"
+        >
             <!-- seccion del formulario -->
             <div class="col-12 col-lg-9 border shadow rounded-2 py-4">
 
                 <div class="row d-flex justify-content-evenly m-0 g-0 p-0">
                     <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11 ">
                         <label class="form-label-t" for="nombre">Nombre de la aerolínea:</label>
-                        <input type="text" name="nombre" id="nombre" autocomplete="off" class="form-control ctm-inp" required placeholder="Aeroflux" minlength="3" maxlength="50">
+                        <input 
+                            type="text" 
+                            name="nombre" 
+                            id="nombre" 
+                            autocomplete="off" 
+                            class="form-control ctm-inp" 
+                            required 
+                            placeholder="Aeroflux" 
+                            minlength="3" 
+                            maxlength="50"
+                            value="<?= $modoEditar ? htmlspecialchars($aero['nombreAerolinea']) : '' ?>"
+                        >
                         <p id="infoNombre" class="form-text-info">Nombre con el que operará comercialmente.</p>
                     </div>
 
                     <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11 ">
                         <label class="form-label-t" for="codigo">Codigo:</label>
-                        <input type="text" name="codigo" id="codigo" autocomplete="off" class="form-control ctm-inp" required placeholder="AFX" minlength="3" maxlength="5">
+                        <input 
+                            type="text" 
+                            name="codigo" 
+                            id="codigo" 
+                            autocomplete="off" 
+                            class="form-control ctm-inp" 
+                            required 
+                            placeholder="AFX" 
+                            minlength="3" 
+                            maxlength="5"
+                            value="<?= $modoEditar ? htmlspecialchars($aero['codigoIATA']) : '' ?>"
+                        >
                         <p id="infoCodigo" class="form-text-info">Codigo unico de la aerolínea.</p>
                     </div>
                 </div>
@@ -62,10 +105,11 @@ $paises = [
                             class="form-control ctm-inp my-1"
                             placeholder="Seleccione un país"
                             autocomplete="off"
-                            required    
+                            required
+                            value="<?= $modoEditar ? htmlspecialchars($aero['codPais']) : '' ?>"    
                         >
 
-                        <input type="hidden" id="paisCodigo" name="pais">
+                        <input type="hidden" id="paisCodigo" name="pais" value="<?= $modoEditar ? htmlspecialchars($aero['codPais']) : '' ?>">
 
                         <div id="paises-results" class="paises-results">
 
@@ -90,7 +134,16 @@ $paises = [
 
                     <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11 ">
                         <label class="form-label-t" for="email">Email:</label>
-                        <input type="email" name="email" autocomplete="off" id="email" class="form-control ctm-inp" required placeholder="aerolinea@example.com">
+                        <input 
+                            type="email" 
+                            name="email" 
+                            autocomplete="off" 
+                            id="email" 
+                            class="form-control ctm-inp" 
+                            required 
+                            value="<?= $modoEditar ? htmlspecialchars($aero['email']) : '' ?>" 
+                            placeholder="aerolinea@example.com"
+                        >
                         <p id="infoEmail" class="form-text-info">Email de contacto de la aerolinea.</p>
                     </div>
                 </div>
@@ -98,7 +151,8 @@ $paises = [
                 <div class="row d-flex justify-content-evenly m-0 g-0 px-2">
                     <div class="form-group d-flex flex-column gap-1 col-11 ">
                         <label class="form-label-t" for="descripcion">Descripcion:</label>
-                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3" autocomplete="off" placeholder="Ingrese una descripción"></textarea>
+                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3" autocomplete="off" placeholder="Ingrese una descripción">
+<?= $modoEditar ? htmlspecialchars($aero['descripcion']) : '' ?></textarea>
                         <p class="form-text-info"> Descripción de la aerolínea. </p>
                     </div>
                 </div>
@@ -109,13 +163,41 @@ $paises = [
                         <label class="form-label-t" for="logo">
                             <p class="form-label-t mb-1">Logotipo:</p> 
 
-                            <div class="logoAerolinea rounded-2 d-flex align-items-center justify-content-center gap-2 p-2 " id="logoPreview">
-                                <img src="<?= url('public/img/icons/subir.png') ?>" alt="icono subir imagen admin" class="upload-foto">
+                            <div class="logoAerolinea rounded-2 d-flex align-items-center gap-2 p-2
+                                <?= ($modoEditar && $aero['logoUrl']) ? 'justify-content-start' : 'justify-content-center' ?>"
+                                id="logoPreview">
 
-                                <div class="d-flex flex-column justify-content-center m-0 p-0 tetxt">
-                                    <p class="firstLogoText p-0 m-0">Añada un logo a su aerolinea</p>
-                                    <p class="sndLogoText p-0 m-0"> haz click para seleccionar</p>
-                                </div>
+                                <?php if ($modoEditar && $aero['logoUrl']): ?>
+                                    <img
+                                        src="<?= htmlspecialchars($aero['logoUrl']) ?>"
+                                        class="logo-preview-img img-fluid"
+                                        alt="logo actual"
+                                    >
+                                    <div class="d-flex flex-column w-100">
+                                        <p class="m-0 fw-semibold">Logo actual</p>
+                                        <p class="m-0 form-text-info">Subí uno nuevo para reemplazarlo</p>
+                                        <div class="d-flex justify-content-end align-items-center gap-1 p-0">
+                                            <button
+                                                type="button"
+                                                id="cambiarLogo"
+                                                class="p-0 bg-transparent border-0"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="top"
+                                                data-bs-title="Cambiar logotipo"
+                                                data-bs-trigger="hover"
+                                            >
+                                                <img src="<?= url('public/img/icons/redo.png') ?>" class="img-fluid btn-mini" alt="cambiar">
+                                            </button>
+                                        </div>
+                                    </div>
+                                <?php else: ?>
+                                    <img src="<?= url('public/img/icons/subir.png') ?>" alt="icono subir imagen admin" class="upload-foto">
+                                    <div class="d-flex flex-column justify-content-center m-0 p-0 tetxt">
+                                        <p class="firstLogoText p-0 m-0">Añada un logo a su aerolinea</p>
+                                        <p class="sndLogoText p-0 m-0">haz click para seleccionar</p>
+                                    </div>
+                                <?php endif; ?>
+
                             </div>
                         </label>
 
@@ -129,8 +211,8 @@ $paises = [
                         <label class="form-label-t" for="estadoAerolinea">Estado:</label>
 
                         <select name="estadoAerolinea" id="estadoAerolinea" class="form-select">
-                            <option value="activa" selected>Activa</option>
-                            <option value="inactiva">Inactiva</option>
+                            <option value="activa" <?= (!$modoEditar || $aero['activo']) ? 'selected' : '' ?>>Activa</option>
+                            <option value="inactiva" <?= ($modoEditar && !$aero['activo']) ? 'selected' : '' ?>>Inactiva</option>
                         </select>
 
                         <p class="form-text-info">Define si la aerolinea estara activa en el sistema</p> 
@@ -139,8 +221,10 @@ $paises = [
 
                 <div class="row d-flex justify-content-evenly m-0 g-0 p-0 ">
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end col-11">
-                        <button type="button" class="btn btn-outline-danger me-md-2">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Crear Aerolinea</button>
+                        <a href="<?= url('index.php?pagina=aerolinea&seccion=listado') ?>"  type="button" class="btn btn-outline-danger me-md-2">Cancelar</a>
+                        <button type="submit" class="btn btn-primary">
+                            <?= $modoEditar ? 'Guardar cambios' : 'Crear Aerolínea' ?>
+                        </button>
                     </div>
                 </div>
 

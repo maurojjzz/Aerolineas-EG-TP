@@ -193,7 +193,8 @@ if ($diff > 0) {
                             </td>
                             <td >
                                 <div class="d-flex justify-content-evenly w-100">
-                                    <button 
+                                    <a 
+                                        href="<?= url('index.php?pagina=aerolinea&seccion=detalle&id=' . $aero['idAerolinea']) ?>"
                                         type="button"
                                         id="btnVerAerolinea"
                                         class=" p-0 text-start bg-transparent border-0"
@@ -202,14 +203,16 @@ if ($diff > 0) {
                                         data-bs-title="Ver Aerolínea"
                                         data-bs-trigger="hover"
                                         data-id="<?= $aero['idAerolinea'] ?>"
+                                        onclick=""
                                     >
                                         <img
                                             src="<?= url('public/img/icons/readTabla.png') ?>"
                                             class= "img-fluid btn-tabla"
                                             alt="icono ver aerolinea"
                                         >
-                                    </button>
-                                    <button 
+                                    </a>
+                                    <a 
+                                        href="<?= url('index.php?pagina=aerolinea&seccion=editar&id=' . $aero['idAerolinea']) ?>" 
                                         type="button"
                                         id="btnEditarAerolinea"
                                         class=" p-0 text-start bg-transparent border-0"
@@ -218,27 +221,26 @@ if ($diff > 0) {
                                         data-bs-title="Editar Aerolínea"
                                         data-bs-trigger="hover"
                                         data-id="<?= $aero['idAerolinea'] ?>"
+
                                     >
                                         <img
                                             src="<?= url('public/img/icons/lapiz-editar.png') ?>"
                                             class= "img-fluid btn-tabla"
                                             alt="icono editar aerolinea"
                                         >
-                                    </button>
+                                    </a>
                                     <button 
                                         type="button"
-                                        id="btnEliminarAerolinea"
-                                        class=" p-0 text-start bg-transparent border-0"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        data-bs-title="Desactivar Aerolínea"
-                                        data-bs-trigger="hover"
+                                        class="p-0 text-start bg-transparent border-0 btn-toggle-estado"
                                         data-id="<?= $aero['idAerolinea'] ?>"
+                                        data-activo="<?= $aero['activo'] ?>"
+                                        data-nombre="<?= htmlspecialchars($aero['nombreAerolinea']) ?>"
+                                        title="<?= $aero['activo'] ? 'Desactivar Aerolínea' : 'Activar Aerolínea' ?>"
                                     >
                                         <img
-                                            src="<?= url('public/img/icons/trash.png') ?>"
-                                            class= "img-fluid btn-tabla"
-                                            alt="icono desactivar aerolinea"
+                                            src="<?= url($aero['activo'] ? 'public/img/icons/trash.png' : 'public/img/icons/redo.png') ?>"
+                                            class="img-fluid btn-tabla"
+                                            alt="<?= $aero['activo'] ? 'desactivar' : 'activar' ?>"
                                         >
                                     </button>
                                 </div>
@@ -298,9 +300,12 @@ if ($diff > 0) {
                                                 Editar aerolínea
                                             </a>
                                             <button type="button"
-                                                class="btn btn-outline-danger btn-sm d-flex align-items-center gap-2"
-                                                data-id="<?= $aero['idAerolinea'] ?>">
-                                                Eliminar aerolínea
+                                                class="btn btn-sm d-flex align-items-center gap-2 btn-toggle-estado
+                                                    <?= $aero['activo'] ? 'btn-outline-danger' : 'btn-outline-success' ?>"
+                                                data-id="<?= $aero['idAerolinea'] ?>"
+                                                data-activo="<?= $aero['activo'] ?>"
+                                                data-nombre="<?= htmlspecialchars($aero['nombreAerolinea']) ?>">
+                                                <?= $aero['activo'] ? 'Desactivar aerolínea' : 'Activar aerolínea' ?>
                                             </button>
                                         </div>
 
@@ -391,6 +396,64 @@ if ($diff > 0) {
 
     </div>
 
+    <div class="modal fade" id="modalToggleEstado" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold" id="modalToggleTitulo"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalToggleTexto" class="text-muted m-0"></p>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                    <form method="POST" action="<?= url('src/routes/aerolinea.php?accion=toggleEstado') ?>">
+                        <input type="hidden" name="id" id="modalToggleId">
+                        <button type="submit" class="btn btn-sm" id="modalToggleConfirmar">Confirmar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script src="<?=  url('public/js/admin/aerolineaListado.js') ?>"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const modalEl     = document.getElementById("modalToggleEstado");
+    const modalTitulo = document.getElementById("modalToggleTitulo");
+    const modalTexto  = document.getElementById("modalToggleTexto");
+    const modalId     = document.getElementById("modalToggleId");
+    const modalBtn    = document.getElementById("modalToggleConfirmar");
+    const bsModal     = new bootstrap.Modal(modalEl);
+
+    document.querySelectorAll(".btn-toggle-estado").forEach(function(btn) {
+        btn.addEventListener("click", function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const id     = this.dataset.id;
+            const activo = this.dataset.activo === "1";
+            const nombre = this.dataset.nombre;
+
+            modalId.value = id;
+
+            if (activo) {
+                modalTitulo.textContent = "Desactivar aerolínea";
+                modalTexto.textContent  = `¿Seguro que querés desactivar "${nombre}"?`;
+                modalBtn.textContent    = "Desactivar";
+                modalBtn.className      = "btn btn-danger btn-sm";
+            } else {
+                modalTitulo.textContent = "Activar aerolínea";
+                modalTexto.textContent  = `¿Seguro que querés activar "${nombre}"?`;
+                modalBtn.textContent    = "Activar";
+                modalBtn.className      = "btn btn-success btn-sm";
+            }
+
+            bsModal.show();
+        });
+    });
+});
+</script>

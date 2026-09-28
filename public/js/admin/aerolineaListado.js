@@ -1,9 +1,9 @@
 (function () {
-    console.log("artooo");
     const tablaBody = document.getElementById("aerolineaTableBody");
     if (!tablaBody) return;
 
     tablaBody.addEventListener("click", function (e) {
+        if (e.target.closest(".btn-toggle-estado")) return;
 
         const btn = e.target.closest(".btn-accion");
         if (btn) {
