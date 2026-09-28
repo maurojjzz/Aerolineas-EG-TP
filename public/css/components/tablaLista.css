@@ -20,15 +20,10 @@
     font-size: 0.9rem;
 }
 
-.tablaContenedor {
-    /* min-height: 600px; */
-}
 
 .tabla-aerolineas tbody tr {
     height: 40px;
 }
-
-
 
 .btn-tabla{
     width: 20px;
@@ -105,4 +100,35 @@
     outline: none;
     box-shadow: none;
     border:none;
+}
+
+/* TABS */
+/* Tabs del detalle — estilo subrayado */
+#detalleTab {
+    border-bottom: 1px solid #dee2e6;
+}
+
+#detalleTab .nav-link {
+    color: #6c757d;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    padding: 10px 18px;
+    font-weight: 500;
+    transition: all 0.2s;
+    
+}
+
+#detalleTab .nav-link:hover {
+    color: #0a2855;
+    border-bottom-color: #cbd5e1;
+    background: transparent;
+}
+
+#detalleTab .nav-link.active {
+    color: #0a2855;
+    font-weight: 600;
+    background: transparent;
+    border-bottom: 2px solid #0a2855;
 }

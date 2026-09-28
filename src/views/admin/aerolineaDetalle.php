@@ -44,12 +44,11 @@ $flechaImg = 'flecha-up.png';
     </div>
 
     <div class="contForm col-12 d-flex flex-column p-2 gap-3">
-        
-        <div class=" p-0 m-0 d-flex flex-row  justify-content-between gap-4 ">
+        <div class=" p-0 m-0 d-flex flex-column flex-md-row  justify-content-between gap-4 ">
 
-            <div class="bg-white shadow rounded-3 p-3 w-75">
+            <div class="bg-white shadow rounded-3 p-3 w-100 w-md-75">
                 <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 ">
-                    <div class="d-flex gap-3 align-items-center">
+                    <div class="d-flex flex-column flex-sm-row gap-3 align-items-center">
                         <?php if ($aero['logoUrl']): ?>
                             <img src="<?= $aero['logoUrl'] ?>" class="rounded-circle border " style="width:150px;height:150px;object-fit:contain;" alt="logo">
                         <?php else: ?>
@@ -92,9 +91,8 @@ $flechaImg = 'flecha-up.png';
                         </div>
                     </div>
                 </div>
-                
             </div>
-            <div class="d-flex flex-column p-3  rounded-3 bg-white shadow w-25">
+            <div class="d-flex flex-column p-3  rounded-3 bg-white shadow w-100 w-md-25">
                     <p class="d-flex flex-row align-items-center justify-content-between fw-semibold m-0 mb-2">
                         Estado de la aerolinea
                         <span class="badge p-1 px-2 text-bg-<?= $aero['activo'] ? 'success' : 'secondary' ?>">
@@ -128,9 +126,9 @@ $flechaImg = 'flecha-up.png';
         </div>
 
         <!-- Tabs -->
-        <div class="bg-white shadow rounded-3">
+        <div class="bg-white shadow rounded-3 ">
 
-            <ul class="nav nav-tabs px-3 pt-3 border-0" id="detalleTab">
+            <ul class="nav nav-tabs px-3 d-flex align-items-center justify-content-center justify-content-md-start" id="detalleTab">
                 <li class="nav-item">
                     <button class="nav-link <?= $tabActiva === 'resumen' ? 'active' : '' ?>"
                             data-bs-toggle="tab" data-bs-target="#tab-resumen">
@@ -158,7 +156,7 @@ $flechaImg = 'flecha-up.png';
 
                     <div class="d-flex flex-column flex-md-row justify-content-md-between row p-0 m-0 gap-3 gap-md-0 mb-3 ">
                         <div class="col-md-3">
-                            <div class="bg-white shadow rounded-3 py-2 px-4">
+                            <div class="bg-white shadow rounded-3 py-2 px-4 overflow-hidden">
                                 <div class="d-flex flex-row align-items-center justify-content-start gap-3">
                                     <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:55px;height:55px;background-color:#E3F0FE;">
                                         <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>" class="img-fluid" alt="avion" style="width:32px;height:32px;object-fit:contain;">
@@ -177,7 +175,7 @@ $flechaImg = 'flecha-up.png';
                         </div>
 
                         <div class="col-md-3">
-                            <div class="bg-white shadow rounded-3 py-2 px-4">
+                            <div class="bg-white shadow rounded-3 py-2 px-4 overflow-hidden">
                                 <div class="d-flex flex-row align-items-center justify-content-start gap-3">
                                     <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:55px;height:55px;background-color:#E3F0FE;">
                                         <img src="<?= url('public/img/icons/placeholdersCards/etiqueta.png') ?>" class="img-fluid" alt="etiqueta" style="width:32px;height:32px;object-fit:contain;">
@@ -195,7 +193,7 @@ $flechaImg = 'flecha-up.png';
                         </div>
 
                         <div class="col-md-3">
-                            <div class="bg-white shadow rounded-3 py-2 px-4">
+                            <div class="bg-white shadow rounded-3 py-2 px-4 overflow-hidden">
                                 <div class="d-flex flex-row align-items-center justify-content-start gap-3">
                                     <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:55px;height:55px;background-color:#E3F0FE;">
                                         <img src="<?= url('public/img/icons/placeholdersCards/ceo.png') ?>" class="img-fluid" alt="ceo" style="width:32px;height:32px;object-fit:contain;">
@@ -213,7 +211,7 @@ $flechaImg = 'flecha-up.png';
                         </div>
 
                         <div class="col-md-3">
-                            <div class="bg-white shadow rounded-3 py-2 px-4">
+                            <div class="bg-white shadow rounded-3 py-2 px-4 overflow-hidden">
                                 <div class="d-flex flex-row align-items-center justify-content-start gap-3">
                                     <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:55px;height:55px;background-color:#E3F0FE;">
                                         <img src="<?= url('public/img/icons/placeholdersCards/ceo.png') ?>" class="img-fluid" alt="ceo" style="width:32px;height:32px;object-fit:contain;">
