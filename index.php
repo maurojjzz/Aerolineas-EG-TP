@@ -36,6 +36,11 @@ switch ($pagina) {
         require __DIR__ . '/src/views/admin/aerolineaLayout.php';
         break;
 
+    case 'cliente':
+        requireRol('cliente');
+        require __DIR__ . '/src/views/cliente/home.php';
+        break;
+
     // ejemplos solo admin 
     // case 'dashboard-admin':
     //     requiereRol('admin');

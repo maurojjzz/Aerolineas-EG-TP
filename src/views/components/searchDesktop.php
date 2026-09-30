@@ -1,9 +1,12 @@
+<?php
+    $paginaActual = $_GET['pagina'] ?? 'inicio';
+?>
 <div class="container-xxl">
 
-    <div class="desktop-search bg-light rounded-4 shadow overflow-visible">
+    <div class="desktop-search bg-light rounded-4 shadow-lg overflow-visible border border-2">
 
         <div class="desktop-search-tabs d-flex align-items-center">
-
+        <?php if ($paginaActual === 'inicio'):?>
             <button class="desktop-tab active d-flex align-items-center gap-2">
                 <img src=" <?= url('public/img/icons/avion.png') ?>" alt="Icono avión">
                 <span>Vuelos</span>
@@ -18,6 +21,15 @@
                 <img src="<?= url('public/img/icons/novedades.png') ?>" alt="Icono novedades">
                 <span>Novedades</span>
             </button>
+        <?php elseif (rolActual() === 'cliente' && $paginaActual === 'cliente' ):?>
+            <div class="d-flex w-100 flex-row justify-content-start align-items-center gap-3">
+                <img class="img-fluid ms-3" src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>" alt="Icono avion titulo" style="width: 42px; height: 42px;">
+                <div class="d-flex flex-column justify-content-center align-items-start ms-2">
+                    <span class="fw-semibold fs-5 p-0 m-0" style="color:#137AFF;">Buscar vuelos</span>
+                    <span class="text-muted fs-6">Encuentra las mejores opciones para tu próximo viaje</span>
+                </div>
+            </div>
+        <?php endif;?>
         </div>
 
 
