@@ -1,37 +1,49 @@
 .tabla-aerolineas th:nth-child(1),  /* CODIGO */
-.tabla-aerolineas td:nth-child(1) { width: 12%; }
-
-.tabla-aerolineas th:nth-child(2),  /* NOMBRE */
-.tabla-aerolineas td:nth-child(2) { width: 24%; }
-
-.tabla-aerolineas th:nth-child(3),  /* PAIS */
-.tabla-aerolineas td:nth-child(3) { width: 16%; }
-
-.tabla-aerolineas th:nth-child(4),  /* ESTADO */
-.tabla-aerolineas td:nth-child(4) { width: 10%; }
-
-.tabla-aerolineas th:nth-child(5),  /* CEO ASOCIADO */
-.tabla-aerolineas td:nth-child(5) { width: 23%; }
-
-.tabla-aerolineas th:nth-child(6),  /* ACCIONES */
-.tabla-aerolineas td:nth-child(6) { width: 15%; }
-
-.tabla-aerolineas th, .tabla-aerolineas td {
-    font-size: 0.9rem;
+.tabla-aerolineas td:nth-child(1) {
+    width: 12%;
 }
 
+.tabla-aerolineas th:nth-child(2),  /* NOMBRE */
+.tabla-aerolineas td:nth-child(2) {
+    width: 24%;
+}
+
+.tabla-aerolineas th:nth-child(3),  /* PAIS */
+.tabla-aerolineas td:nth-child(3) {
+    width: 16%;
+}
+
+.tabla-aerolineas th:nth-child(4),  /* ESTADO */
+.tabla-aerolineas td:nth-child(4) {
+    width: 10%;
+}
+
+.tabla-aerolineas th:nth-child(5),  /* CEO ASOCIADO */
+.tabla-aerolineas td:nth-child(5) {
+    width: 23%;
+}
+
+.tabla-aerolineas th:nth-child(6),  /* ACCIONES */
+.tabla-aerolineas td:nth-child(6) {
+    width: 15%;
+}
+
+.tabla-aerolineas th,
+.tabla-aerolineas td {
+    font-size: 0.9rem;
+}
 
 .tabla-aerolineas tbody tr {
     height: 40px;
 }
 
-.btn-tabla{
+.btn-tabla {
     width: 20px;
     height: 20px;
     transition: transform 0.2s ease-in-out;
 }
 
-.btn-tabla:hover{
+.btn-tabla:hover {
     transform: scale(1.2);
 }
 
@@ -76,30 +88,53 @@
 }
 
 @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-6px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @media (max-width: 460px) {
     .tabla-aerolineas th:nth-child(5),  /* CEO */
-    .tabla-aerolineas td:nth-child(5) { display: none; }
+    .tabla-aerolineas td:nth-child(5) {
+        display: none;
+    }
 }
 
 /* estilos de la pagina detalle */
 
-
-.btn-atras{
+.btn-atras {
     transition: transform 0.2s ease-in-out;
 }
 
-.btn-atras:hover{
+.btn-atras:hover {
     transform: scale(1.1);
 }
 
 .btn-atras:focus {
     outline: none;
     box-shadow: none;
-    border:none;
+    border: none;
+}
+
+.mainInfoAerolinea {
+        width: 100%;
+    }
+.subInfoAero{
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .mainInfoAerolinea {
+        width: 75%;
+    }
+    .subInfoAero{
+        width: 25%;
+    }
 }
 
 /* TABS */
@@ -117,7 +152,6 @@
     padding: 10px 18px;
     font-weight: 500;
     transition: all 0.2s;
-    
 }
 
 #detalleTab .nav-link:hover {

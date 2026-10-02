@@ -46,7 +46,7 @@ $flechaImg = 'flecha-up.png';
     <div class="contForm col-12 d-flex flex-column p-2 gap-3">
         <div class=" p-0 m-0 d-flex flex-column flex-md-row  justify-content-between gap-4 ">
 
-            <div class="bg-white shadow rounded-3 p-3 w-100 w-md-75">
+            <div class="bg-white shadow rounded-3 p-3 mainInfoAerolinea">
                 <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 ">
                     <div class="d-flex flex-column flex-sm-row gap-3 align-items-center">
                         <?php if ($aero['logoUrl']): ?>
@@ -92,7 +92,7 @@ $flechaImg = 'flecha-up.png';
                     </div>
                 </div>
             </div>
-            <div class="d-flex flex-column p-3  rounded-3 bg-white shadow w-100 w-md-25">
+            <div class="d-flex flex-column p-3  rounded-3 bg-white shadow subInfoAero">
                     <p class="d-flex flex-row align-items-center justify-content-between fw-semibold m-0 mb-2">
                         Estado de la aerolinea
                         <span class="badge p-1 px-2 text-bg-<?= $aero['activo'] ? 'success' : 'secondary' ?>">
