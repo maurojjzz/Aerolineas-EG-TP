@@ -3,9 +3,12 @@ date_default_timezone_set('America/Argentina/Buenos_Aires');
 
 require_once __DIR__ . '/../../config/conexion.php';
 require_once __DIR__ . '/../../controllers/AerolineaController.php';
+require_once __DIR__ . '/../../config/auth.php';
+
 
 // El CEO tiene su aerolínea en la sesión
-$idAerolinea = $_SESSION['usuario']['idAerolinea'] ?? 0;
+$idAerolinea = aerolineaCEO();
+
 if (!$idAerolinea) {
     redirect('index.php?pagina=login');
 }
@@ -70,7 +73,7 @@ $flechaColor = 'text-success';
                                     style="width:150px;height:150px;object-fit:contain;" alt="logo">
                             <?php else: ?>
                                 <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center flex-shrink-0"
-                                     style="width:150px;height:150px;">
+                                    style="width:150px;height:150px;">
                                     <span class="text-white fw-bold text-uppercase fs-1">
                                         <?= htmlspecialchars(substr($aero['codigoIATA'], 0, 2)) ?>
                                     </span>
@@ -81,7 +84,7 @@ $flechaColor = 'text-success';
                                 <div class="d-flex align-items-center gap-4 flex-wrap">
                                     <h2 class="fw-bold m-0"><?= htmlspecialchars($aero['nombreAerolinea']) ?></h2>
                                     <span class="badge text-primary border fs-6 text-uppercase"
-                                          style="background-color:#E3F1FE;">
+                                        style="background-color:#E3F1FE;">
                                         <?= htmlspecialchars($aero['codigoIATA']) ?>
                                     </span>
                                 </div>
