@@ -45,7 +45,7 @@
                         <p id="infoContrasena" class="form-text-info"></p>
                     </div>
 
-                    <a href="#" class="d-block text-decoration-none text-end" >¿Olvidaste tu contraseña?</a>
+                    <a href="<?= url('index.php?pagina=olvide-contrasena') ?>" class="d-block text-decoration-none text-end" >¿Olvidaste tu contraseña?</a>
 
                     <button type="submit" class="btn btnLogin py-2 w-100 d-flex align-items-center justify-content-center gap-2 mt-3">
                         <img src=" <?= url('public/img/icons/usuario.png') ?>" alt="Icono de crear usuario" class="iconoBtnLgn">
