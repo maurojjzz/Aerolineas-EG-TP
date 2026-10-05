@@ -205,7 +205,7 @@ class UsuarioController {
 
         switch ($usuario['rol']) {
             case 'ceo':
-                redirect('index.php?pagina=aerolinea&seccion=listado');
+                redirect('index.php?pagina=ceo');
                 //redirect('index.php?pagina=dashboard-ceo');   // este es el og, cambiarlo ahora esta puesto otro para testear
                 break;
 
@@ -214,8 +214,7 @@ class UsuarioController {
                 // redirect('index.php?pagina=dashboard-admin'); // crearlo dsp // este es el og, cambiarlo ahora esta puesto otro para testear
                 break;
             case 'cliente':
-                redirect('index.php?pagina=inicio');
-                //redirect('index.php?pagina=dashboard'); // crearlo dsp // este es el og, cambiarlo ahora esta puesto otro para testear
+                redirect('index.php?pagina=cliente');
                 break;
             default: 
                 $_SESSION = [];

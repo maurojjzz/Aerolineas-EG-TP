@@ -1,0 +1,58 @@
+body {
+    background-image: url("../../img/fondo-cliente.webp");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+}
+
+.hero-content h5 {
+    font-size: 1rem;
+    letter-spacing: 5px;
+    color: #082149;
+}
+
+.hero-content h2 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    min-width: 300px;
+    color: #082149;
+}
+
+.hero-content h2 span {
+    color: transparent;
+    -webkit-text-stroke: 1px #082149;
+    font-weight: 800;
+}
+
+.hero-content p {
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.7px;
+}
+
+.searchbox {
+    position: relative;
+}
+
+
+@media screen and (min-width: 768px) {
+    .hero-content h2 {
+        font-size: 4rem;
+    }
+
+    .hero-content h2 span {
+        color: transparent;
+        -webkit-text-stroke: 3px #082149;
+        font-weight: 800;
+    }
+
+    .hero-content h5 {
+        font-size: 1.3rem;
+        letter-spacing: 10px;
+    }
+
+    .hero-content p {
+        font-size: 1.2rem;
+    }
+}

@@ -32,22 +32,19 @@ switch ($pagina) {
         break;
 
     case 'aerolinea':
-        requireRol('admin', 'ceo'); // checkear dsp el ceo porque este es el alta de aerolinea el no tendria q verlo
+        requireRol('admin');
         require __DIR__ . '/src/views/admin/aerolineaLayout.php';
         break;
 
-    // ejemplos solo admin 
-    // case 'dashboard-admin':
-    //     requiereRol('admin');
-    //     require __DIR__ . '/src/views/admin/dashboardAdmin.php';
-    //     break;
+    case 'cliente':
+        requireRol('cliente');
+        require __DIR__ . '/src/views/cliente/home.php';
+        break;
 
-    // ejemplo solo ceo
-    // case 'dashboard-ceo':
-    //     requiereRol('ceo');
-    //     require __DIR__ . '/src/views/admin/dashboardCeo.php';
-    //     break;
-
+    case 'ceo':
+        requireRol('ceo');
+        require __DIR__ . '/src/views/ceo/home.php';
+        break;
     default:
         http_response_code(404);
         echo 'Página no encontrada';
