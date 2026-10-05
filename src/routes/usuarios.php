@@ -23,6 +23,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         case 'logout':
             $ctrl->logout();
             break;
+        case 'olvide-contrasena':
+            $ctrl->olvidéContrasena();
+            break;
+        case 'reset-password':
+            $ctrl->resetPassword();
+            break;
         default:
             http_response_code(404);
             echo "Acción no encontrada";

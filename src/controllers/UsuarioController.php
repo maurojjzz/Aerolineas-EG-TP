@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../config/conexion.php';
 require_once __DIR__ . '/../models/Usuario.php';
+require_once __DIR__ . '/../services/EmailService.php';
 
 class UsuarioController {
 
@@ -138,8 +139,11 @@ class UsuarioController {
 
 
         if ($rol === 'ceo') {
-            flash_set('success', '¡Cuenta creada! Revisa tu correo para verificarla. Luego un administrador la revisará y te avisaremos por email si fue activada.');
+            EmailService::enviarVerificacion($email, $nombre, $token);
+            EmailService::enviarNotificacionCEOPendiente($email, $nombre);
+            flash_set('success', '¡Cuenta creada! Revisá tu correo para verificarla. Luego un administrador la revisará.');
         } else {
+            EmailService::enviarVerificacion($email, $nombre, $token);
             flash_set('success', '¡Cuenta creada! Revisá tu correo para verificarla.');
         }
         
@@ -239,5 +243,76 @@ class UsuarioController {
         flash_set('success', 'Has cerrado sesión correctamente.');
         redirect("index.php?pagina=login");
     }
+
+    public function olvidéContrasena(): void {
+        $email = trim($_POST['email'] ?? '');
+
+        if (!$email) {
+            flash_set('error', 'Ingresá tu email.');
+            redirect('index.php?pagina=olvide-contrasena');
+        }
+
+        $stmt = mysqli_prepare($this->conexion, "SELECT idUsuario, nombre FROM usuario WHERE email = ? AND activo = 1");
+        mysqli_stmt_bind_param($stmt, 's', $email);
+        mysqli_stmt_execute($stmt);
+        $usuario = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+        mysqli_stmt_close($stmt);
+
+        // Siempre mismo mensaje para no revelar si el email existe
+        flash_set('success', 'Recibirás un enlace para restablecer tu contraseña en el correo indicado.');
+
+        if ($usuario) {
+            $token = bin2hex(random_bytes(32));
+
+            $stmt = mysqli_prepare($this->conexion, "UPDATE usuario SET tokenVerificacion = ? WHERE idUsuario = ?");
+            mysqli_stmt_bind_param($stmt, 'si', $token, $usuario['idUsuario']);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+
+            EmailService::enviarRecuperacionContrasena($email, $usuario['nombre'], $token);
+        }
+
+        redirect('index.php?pagina=login');
+    }
+
+    public function resetPassword(): void {
+        $token       = trim($_POST['token'] ?? '');
+        $contrasena  = $_POST['contrasena'] ?? '';
+        $confirmar   = $_POST['confirmar_contrasena'] ?? '';
+
+        if (!$token || !$contrasena || $contrasena !== $confirmar) {
+            flash_set('error', 'Datos inválidos.');
+            redirect('index.php?pagina=reset-password&token=' . urlencode($token));
+        }
+
+        if (strlen($contrasena) < 8) {
+            flash_set('error', 'La contraseña debe tener al menos 8 caracteres.');
+            redirect('index.php?pagina=reset-password&token=' . urlencode($token));
+        }
+
+        $stmt = mysqli_prepare($this->conexion, "SELECT idUsuario FROM usuario WHERE tokenVerificacion = ? AND activo = 1");
+        mysqli_stmt_bind_param($stmt, 's', $token);
+        mysqli_stmt_execute($stmt);
+        $usuario = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+        mysqli_stmt_close($stmt);
+
+        if (!$usuario) {
+            flash_set('error', 'El enlace es inválido o ya fue usado.');
+            redirect('index.php?pagina=login');
+        }
+
+        $hash = password_hash($contrasena, PASSWORD_DEFAULT);
+
+        $stmt = mysqli_prepare($this->conexion, "UPDATE usuario SET contrasena = ?, tokenVerificacion = NULL WHERE idUsuario = ?");
+        mysqli_stmt_bind_param($stmt, 'si', $hash, $usuario['idUsuario']);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+
+        flash_set('success', 'Contraseña actualizada correctamente. Ya podés iniciar sesión.');
+        redirect('index.php?pagina=login');
+    }
+
+
+
 
 }

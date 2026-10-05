@@ -45,6 +45,20 @@ switch ($pagina) {
         requireRol('ceo');
         require __DIR__ . '/src/views/ceo/home.php';
         break;
+
+    case 'verificar':
+        require __DIR__ . '/src/views/auth/verificarEmail.php';
+        break;
+
+    case 'reset-password':
+        require __DIR__ . '/src/views/auth/resetPassword.php';
+        break;
+
+    case 'olvide-contrasena':
+        soloInvitados();
+        require __DIR__ . '/src/views/auth/olvideContrasena.php';
+        break;
+
     default:
         http_response_code(404);
         echo 'Página no encontrada';

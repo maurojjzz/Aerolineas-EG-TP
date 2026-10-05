@@ -32,6 +32,20 @@ function redirect(string $path): void {
     exit;
 }
 
+function urlAbsoluta(string $path = ''): string {
+    // Detecta protocolo
+    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+
+    // Detecta host (con puerto si aplica)
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+
+    // Usa el APP_BASE que ya calculaste (con DOCUMENT_ROOT + __DIR__)
+    // para saber si estás en raíz o en /aerolinea
+    $path = ltrim($path, '/');
+
+    return $scheme . '://' . $host . APP_BASE . '/' . $path;
+}
+
 
 /**
  * Guarda un valor en sesión para leerlo UNA SOLA VEZ en la próxima request.
