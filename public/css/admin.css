@@ -1,7 +1,8 @@
 html,
 body {
     height: 100%;
-    overflow: hidden;
+    /* overflow: hidden; */
+    overflow: auto;
 }
 
 body {
@@ -20,7 +21,8 @@ body {
 }
 
 .admin-main {
-    height: calc(100vh - 16px);
+    /* height: calc(100vh - 16px); */
+    height:auto;
     display: flex;
     flex-direction: column;
 }
@@ -45,8 +47,9 @@ body {
 
 .admin-content {
     flex: 1;
-    overflow-y: auto;
+    overflow-y: visible;
     min-height: 0;
+    height: auto;
 }
 
 .ctm-btn-header:focus {

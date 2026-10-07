@@ -28,7 +28,7 @@ $vistas = [
     </head>
     <body>
         
-        <div class="d-flex min-vh-100 row g-0 m-0 p-2 pe-2">
+        <div class="d-flex min-vh-100 max-vh-100 row g-0 m-0 p-2 pe-2">
 
             <aside class="admin-sidebar text-white d-none d-md-block col-md-3 col-xxl-2 pe-1 ">
                 <?php require __DIR__ . '/../layouts/sidebarAdmin.php'; ?>
@@ -50,10 +50,11 @@ $vistas = [
                         }
                     ?>
                 </main>
-
             </div>
-
         </div>
+        <footer class="w-100 mt-auto">
+            <?php require __DIR__ . '/../layouts/footer.php'; ?>
+        </footer>
 
         <?php require __DIR__ . '/../components/menuMobileAdmin.php' ?>
 
