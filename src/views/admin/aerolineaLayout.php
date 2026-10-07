@@ -23,6 +23,7 @@ $vistas = [
         <link rel="stylesheet" href="<?= url('public/css/admin.css') ?>">
         <link rel="stylesheet" href="<?= url('public/css/layout/headerAdmin.css') ?>">
         <link rel="stylesheet" href="<?= url('public/css/components/tablaLista.css') ?>?v=<?= time() ?>">
+        <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
 
 
     </head>
@@ -50,10 +51,10 @@ $vistas = [
                         }
                     ?>
                 </main>
-
             </div>
-
         </div>
+        
+        <?php require_once './src/views/layouts/footer.php'; ?>
 
         <?php require __DIR__ . '/../components/menuMobileAdmin.php' ?>
 
