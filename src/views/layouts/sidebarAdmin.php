@@ -108,8 +108,10 @@ if ($rol === 'ceo') {
 <div class="d-flex flex-column align-items-center m-0 ctm-sidebar">
 
     <div class="d-flex flex-column align-items-center justify-content-center gap-2 py-3 px-3 custom-logo">
-        <img src="<?= url('public/img/aerologo.webp') ?>" alt="logo" class="logo-sidebar">
-        <h6>Vuela sin limites</h6>
+        <a class="navbar-brand logoLink d-flex flex-column align-items-center text-center" href="<?= url('index.php?pagina=inicio') ?>">
+            <img src="<?= url('public/img/aerologo.webp') ?>" alt="logo" class="logo-sidebar">
+            <h6 class="mb-0 mt-2">Vuela sin limites</h6>
+        </a>
     </div>
 
     <ul class="nav navbar-custom d-flex flex-column align-items-center w-100 gap-3 rounded-2 py-3 px-3">
