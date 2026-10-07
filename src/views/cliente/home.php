@@ -13,6 +13,7 @@
         <link rel="stylesheet" href="<?= url('public/css/components/menuMobile.css') ?>">
         <link rel="stylesheet" href="<?= url('public/css/components/searchMobile.css') ?>">
         <link rel="stylesheet" href="<?= url('public/css/components/searchDesktop.css') ?>">
+        <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
 
     </head>
 
@@ -176,9 +177,7 @@
             </div>
         </section>
 
-        <footer class="w-100 mt-auto">
-            <?php require __DIR__ . '/../layouts/footer.php'; ?>
-        </footer>
+        <?php require_once './src/views/layouts/footer.php'; ?>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
         <script src="<?= url('public/js/searchMobile.js') ?>"></script>

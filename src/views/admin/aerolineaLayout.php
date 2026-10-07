@@ -23,12 +23,13 @@ $vistas = [
         <link rel="stylesheet" href="<?= url('public/css/admin.css') ?>">
         <link rel="stylesheet" href="<?= url('public/css/layout/headerAdmin.css') ?>">
         <link rel="stylesheet" href="<?= url('public/css/components/tablaLista.css') ?>?v=<?= time() ?>">
+        <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
 
 
     </head>
     <body>
         
-        <div class="d-flex min-vh-100 max-vh-100 row g-0 m-0 p-2 pe-2">
+        <div class="d-flex min-vh-100 row g-0 m-0 p-2 pe-2">
 
             <aside class="admin-sidebar text-white d-none d-md-block col-md-3 col-xxl-2 pe-1 ">
                 <?php require __DIR__ . '/../layouts/sidebarAdmin.php'; ?>
@@ -52,9 +53,8 @@ $vistas = [
                 </main>
             </div>
         </div>
-        <footer class="w-100 mt-auto">
-            <?php require __DIR__ . '/../layouts/footer.php'; ?>
-        </footer>
+        
+        <?php require_once './src/views/layouts/footer.php'; ?>
 
         <?php require __DIR__ . '/../components/menuMobileAdmin.php' ?>
 

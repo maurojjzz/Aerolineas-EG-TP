@@ -48,7 +48,7 @@ body {
 .admin-content {
     flex: 1;
     overflow-y: visible;
-    min-height: 0;
+    min-height: auto;
     height: auto;
 }
 
