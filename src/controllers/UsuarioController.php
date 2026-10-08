@@ -313,6 +313,230 @@ class UsuarioController {
     }
 
 
+    public function listarUsuariosPaginado(
+        int $pagina = 1,
+        int $porPagina = 10,
+        string $estado = '',
+        string $busqueda = ''
+        ): array {
+            $offset = ($pagina - 1) * $porPagina;
+            $where = ["1=1"];
+            $params = [];
+            $types = "";
 
+        // Filtro por estado (activo / inactivo)
+        if ($estado !== '') {
+            $where[] = "u.activo = ?";
+            $params[] = (int)$estado;
+            $types .= "i";
+        }
+
+        // Búsqueda por nombre, apellido, email o número de documento
+        if (!empty($busqueda)) {
+            $where[] = "(u.nombre LIKE ? OR u.apellido LIKE ? OR u.email LIKE ? OR u.nroDocumento LIKE ?)";
+            $searchTerm = "%{$busqueda}%";
+            $params[] = $searchTerm;
+            $params[] = $searchTerm;
+            $params[] = $searchTerm;
+            $params[] = $searchTerm;
+            $types .= "ssss";
+        }
+
+        $whereClause = implode(" AND ", $where);
+
+        // 1. Contar total de registros filtrados
+        $queryCount = "SELECT COUNT(*) as total FROM usuario u WHERE {$whereClause}";
+        $stmtCount = mysqli_prepare($this->conexion, $queryCount);
+        if (!empty($params)) {
+            mysqli_stmt_bind_param($stmtCount, $types, ...$params);
+        }
+        mysqli_stmt_execute($stmtCount);
+        $resCount = mysqli_stmt_get_result($stmtCount);
+        $total = mysqli_fetch_assoc($resCount)['total'] ?? 0;
+        mysqli_stmt_close($stmtCount);
+
+        // 2. Obtener los datos paginados
+        $queryData = "SELECT u.idUsuario, u.nombre, u.apellido, u.tipoDocumento, u.nroDocumento, 
+                             u.email, u.telefono, u.rol, u.activo, u.emailVerificado, u.fechaCreacion,
+                             a.nombreAerolinea
+                      FROM usuario u
+                      LEFT JOIN aerolinea a ON u.idAerolinea = a.idAerolinea
+                      WHERE {$whereClause}
+                      ORDER BY u.idUsuario DESC
+                      LIMIT ? OFFSET ?";
+
+        $paramsData = $params;
+        $paramsData[] = $porPagina;
+        $paramsData[] = $offset;
+        $typesData = $types . "ii";
+
+        $stmtData = mysqli_prepare($this->conexion, $queryData);
+        mysqli_stmt_bind_param($stmtData, $typesData, ...$paramsData);
+        mysqli_stmt_execute($stmtData);
+        $resData = mysqli_stmt_get_result($stmtData);
+
+        $usuarios = [];
+        while ($row = mysqli_fetch_assoc($resData)) {
+            $usuarios[] = $row;
+        }
+        mysqli_stmt_close($stmtData);
+
+        return [
+            'data'         => $usuarios,
+            'total'        => (int)$total,
+            'pagina'       => $pagina,
+            'porPagina'    => $porPagina,
+            'totalPaginas' => ceil($total / $porPagina)
+        ];
+    }
+
+
+    public function obtenerEstadisticasUsuarios(): array {
+        // Total de usuarios
+        $resTotal = mysqli_query($this->conexion, "SELECT COUNT(*) as total FROM usuario");
+        $total = mysqli_fetch_assoc($resTotal)['total'] ?? 0;
+
+        // Nuevos este mes
+        $resNuevos = mysqli_query($this->conexion, "SELECT COUNT(*) as nuevos FROM usuario WHERE MONTH(fechaCreacion) = MONTH(CURRENT_DATE()) AND YEAR(fechaCreacion) = YEAR(CURRENT_DATE())");
+        $nuevosEsteMes = mysqli_fetch_assoc($resNuevos)['nuevos'] ?? 0;
+
+        // Nuevos el mes anterior (para calcular la diferencia)
+        $resAnterior = mysqli_query($this->conexion, "SELECT COUNT(*) as anterior FROM usuario WHERE MONTH(fechaCreacion) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(fechaCreacion) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH)");
+        $mesAnterior = mysqli_fetch_assoc($resAnterior)['anterior'] ?? 0;
+
+        $diff = $nuevosEsteMes - $mesAnterior;
+
+        // Desglose por roles
+        $resRoles = mysqli_query($this->conexion, "SELECT rol, COUNT(*) as cantidad FROM usuario GROUP BY rol");
+        $roles = ['cliente' => 0, 'ceo' => 0, 'admin' => 0];
+        while ($row = mysqli_fetch_assoc($resRoles)) {
+            $roles[$row['rol']] = (int)$row['cantidad'];
+        }
+
+        return [
+            'total'         => (int)$total,
+            'nuevosEsteMes' => (int)$nuevosEsteMes,
+            'diff'          => (int)$diff,
+            'clientes'      => $roles['cliente'] ?? 0,
+            'ceos'          => $roles['ceo'] ?? 0,
+            'admins'        => $roles['admin'] ?? 0
+        ];
+    }
+
+
+    public function toggleEstadoUsuario(int $id): void {
+        if ($id <= 0) {
+            flash_set('error', 'ID de usuario no válido.');
+            redirect('index.php?pagina=usuario&seccion=listado');
+        }
+
+        // Evitar que el administrador se desactive a sí mismo
+        if (isset($_SESSION['usuario']['idUsuario']) && (int)$_SESSION['usuario']['idUsuario'] === $id) {
+            flash_set('error', 'No podés desactivar tu propia cuenta de administrador.');
+            redirect('index.php?pagina=usuario&seccion=listado');
+        }
+
+        $stmt = mysqli_prepare($this->conexion, "SELECT nombre, apellido, activo FROM usuario WHERE idUsuario = ?");
+        mysqli_stmt_bind_param($stmt, 'i', $id);
+        mysqli_stmt_execute($stmt);
+        $usuario = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+        mysqli_stmt_close($stmt);
+
+        if (!$usuario) {
+            flash_set('error', 'El usuario no existe.');
+            redirect('index.php?pagina=usuario&seccion=listado');
+        }
+
+        $nuevoEstado = $usuario['activo'] ? 0 : 1;
+
+        $stmtUpdate = mysqli_prepare($this->conexion, "UPDATE usuario SET activo = ? WHERE idUsuario = ?");
+        mysqli_stmt_bind_param($stmtUpdate, 'ii', $nuevoEstado, $id);
+        
+        if (mysqli_stmt_execute($stmtUpdate)) {
+            $accionTexto = $nuevoEstado ? 'activado' : 'desactivado';
+            flash_set('success', "El usuario {$usuario['nombre']} {$usuario['apellido']} fue {$accionTexto} correctamente.");
+        } else {
+            flash_set('error', 'Error al actualizar el estado del usuario.');
+        }
+
+        mysqli_stmt_close($stmtUpdate);
+        redirect('index.php?pagina=usuario&seccion=listado');
+    }
+
+    public function obtenerUsuarioPorId(int $id): ?array {
+        $sql = "SELECT u.*, a.nombreAerolinea 
+                FROM usuario u 
+                LEFT JOIN aerolinea a ON u.idAerolinea = a.idAerolinea 
+                WHERE u.idUsuario = ?";
+                
+        $stmt = mysqli_prepare($this->conexion, $sql);
+        mysqli_stmt_bind_param($stmt, "i", $id);
+        mysqli_stmt_execute($stmt);
+        
+        $resultado = mysqli_stmt_get_result($stmt);
+        $usuario = mysqli_fetch_assoc($resultado);
+        
+        mysqli_stmt_close($stmt);
+
+        return $usuario ?: null;
+    }
+
+
+    public function editarUsuario(int $id) {
+        $nombre        = trim($_POST['nombre'] ?? '');
+        $apellido      = trim($_POST['apellido'] ?? '');
+        $tipoDocumento = trim($_POST['tipoDocumento'] ?? '');
+        $nroDocumento  = trim($_POST['nroDocumento'] ?? '');
+        $email         = trim($_POST['email'] ?? '');
+        $telefono      = trim($_POST['telefono'] ?? '');
+        $rol           = trim($_POST['rol'] ?? '');
+        $idAerolinea   = !empty($_POST['idAerolinea']) ? (int)$_POST['idAerolinea'] : null;
+        $activo = isset($_POST['activo']) ? 1 : 0;
+        
+        // Validaciones básicas
+        if (empty($nombre) || empty($apellido) || empty($nroDocumento) || empty($email)) {
+            flash_set('error', 'Por favor completá todos los campos obligatorios.');
+            redirect('index.php?pagina=usuarios&seccion=editar&id=' . $id);
+        }
+
+        $sql = "UPDATE usuario SET 
+                    nombre = ?, 
+                    apellido = ?, 
+                    tipoDocumento = ?, 
+                    nroDocumento = ?, 
+                    email = ?, 
+                    telefono = ?, 
+                    rol = ?, 
+                    idAerolinea = ?, 
+                    activo = ? 
+                WHERE idUsuario = ?";
+
+        $stmt = mysqli_prepare($this->conexion, $sql);
+        mysqli_stmt_bind_param(
+            $stmt, 
+            "sssssssiii", 
+            $nombre, 
+            $apellido, 
+            $tipoDocumento, 
+            $nroDocumento, 
+            $email, 
+            $telefono, 
+            $rol, 
+            $idAerolinea, 
+            $activo, 
+            $id
+        );
+
+        $exito = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+
+        if ($exito) {
+            flash_set('success', 'Usuario actualizado correctamente.');
+            redirect('index.php?pagina=usuarios&seccion=listado');
+        } else {
+            flash_set('error', 'Ocurrió un error al intentar actualizar el usuario.');
+            redirect('index.php?pagina=usuarios&seccion=editar&id=' . $id);
+        }
+    }
 
 }
