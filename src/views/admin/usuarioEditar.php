@@ -1,4 +1,12 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 require_once __DIR__ . '/../../config/conexion.php';
 require_once __DIR__ . '/../../controllers/UsuarioController.php';
 
@@ -9,11 +17,16 @@ $usuario = $ctrl->obtenerUsuarioPorId($id);
 
 if (!$usuario) {
     flash_set('error', 'Usuario no encontrado.');
-    redirect('index.php?pagina=usuarios&seccion=listado');
+    redirect('index.php?pagina=usuario&seccion=listado');
 }
 
-// Obtener listado de aerolíneas para el selector de asignación
-$resAeros = mysqli_query($link, "SELECT idAerolinea, nombreAerolinea FROM aerolinea WHERE activo = 1 ORDER BY nombreAerolinea ASC");
+// Obtener listado de aerolíneas incluyendo la actual del usuario si estuviera inactiva
+$idAeroActual = (int)($usuario['idAerolinea'] ?? 0);
+$sqlAeros = "SELECT idAerolinea, nombreAerolinea 
+             FROM aerolinea 
+             WHERE activo = 1 OR idAerolinea = {$idAeroActual} 
+             ORDER BY nombreAerolinea ASC";
+$resAeros = mysqli_query($link, $sqlAeros);
 $aerolineas = [];
 while ($row = mysqli_fetch_assoc($resAeros)) {
     $aerolineas[] = $row;
@@ -30,7 +43,7 @@ $esCeo = ($rolActual === 'ceo');
     <nav class="breadcrumbCont" aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="#">Inicio</a></li>
-            <li class="breadcrumb-item"><a href="<?= url('/index.php?pagina=usuarios&seccion=listado') ?>">Usuarios</a></li>
+            <li class="breadcrumb-item"><a href="<?= url('/index.php?pagina=usuario&seccion=listado') ?>">Usuarios</a></li>
             <li class="breadcrumb-item active" aria-current="page">Editar Usuario</li>
         </ol>
     </nav>
@@ -44,7 +57,8 @@ $esCeo = ($rolActual === 'ceo');
             method="POST" 
             class="row mt-2 m-0 g-0 p-0 gap-2"
         >
-            <!-- Sección del formulario principal -->
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+
             <div class="col-12 col-lg-9 border shadow rounded-2 py-4">
 
                 <!-- Fila 1: Nombre y Apellido -->
@@ -173,15 +187,16 @@ $esCeo = ($rolActual === 'ceo');
                         <p id="infoAerolinea" class="form-text-info">Obligatorio únicamente para usuarios con rol CEO.</p>
                     </div>
 
-                    <!-- Div fantasma de relleno para mantener simetría en la derecha si NO es CEO -->
                     <div class="col-sm-5 col-11 mb-3 <?= $esCeo ? 'd-none' : '' ?>" id="grupoSpacerAerolinea"></div>
                 </div>
 
-                <!-- Fila 5: Estado del Usuario (Perfectamente alineado a la izquierda con col-sm-5 col-11) -->
+                <!-- Fila 5: Estado del Usuario -->
                 <div class="row d-flex justify-content-evenly m-0 g-0 p-0 mb-3">
                     <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11">
                         <label class="form-label-t mb-1">Estado del Usuario:</label>
                         <div class="form-check form-switch fs-5 d-flex align-items-center gap-2 ps-0 mt-1">
+                            <!-- Input hidden para asegurar envío de valor 0 al desmarcar -->
+                            <input type="hidden" name="activo" value="0">
                             <input 
                                 class="form-check-input ms-0 mt-0" 
                                 type="checkbox" 
@@ -198,36 +213,20 @@ $esCeo = ($rolActual === 'ceo');
                         <p class="form-text-info m-0 mt-1">Habilitá o deshabilitá el acceso del usuario al sistema.</p>
                     </div>
 
-                    <!-- Div fantasma de relleno para equilibrar la columna derecha -->
                     <div class="col-sm-5 col-11"></div>
                 </div>
 
                 <!-- Fila 6: Botones -->
                 <div class="row d-flex justify-content-evenly m-0 g-0 p-0">
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end col-11">
-                        <a href="<?= url('index.php?pagina=usuarios&seccion=listado') ?>" class="btn btn-outline-danger me-md-2">Cancelar</a>
+                        <a href="<?= url('index.php?pagina=usuario&seccion=listado') ?>" class="btn btn-outline-danger me-md-2">Cancelar</a>
                         <button type="submit" class="btn btn-primary">Guardar cambios</button>
                     </div>
                 </div>
 
             </div>
 
-            <!-- Sección Lateral: Validaciones y Recomendaciones -->
             <div class="d-none d-lg-flex col-lg flex-column align-items-center gap-4">
-
-                <!-- Caja Errores -->
-                <div class="d-flex flex-column border border-2 border-danger-subtle w-100 rounded-3 shadow d-none" id="erroresBox">
-                    <div class="tituloBoxErrores bg-danger-subtle border-bottom d-flex flex-column align-items-center justify-content-center">
-                        <img src="<?= url('public/img/icons/alerta.png') ?>" alt="icono alerta validaciones" class="img-fluid my-2" style="width: 28px; height: 28px;">
-                        <h5 class="text-danger">Validación del Formulario</h5>
-                        <p id="cantidadErrores">Errores pendientes: 0</p>
-                    </div>
-                    <div class="errorBoxContent py-3 pe-3">
-                        <ul id="errorList"></ul>
-                    </div>
-                </div>
-                
-                <!-- Caja Recomendaciones -->
                 <div class="d-flex flex-column border border-2 border-primary-subtle w-100 rounded-3 shadow" id="recomendacionesBox">
                     <div class="tituloBoxErrores bg-primary-subtle border-bottom d-flex flex-column align-items-center justify-content-center">
                         <img src="<?= url('public/img/icons/luz.png') ?>" alt="icono recomendaciones" class="img-fluid my-2" style="width: 28px; height: 28px;">
@@ -236,34 +235,24 @@ $esCeo = ($rolActual === 'ceo');
                     </div>
 
                     <div class="recomendaBoxContent d-flex flex-column align-items-center py-3 ps-2">
-
                         <div class="d-flex gap-2 mb-3 w-100 justify-content-center">
                             <div>
                                 <p class="m-0 fw-semibold text-center">Documentación única</p>
-                                <p class="m-0 form-text-info text-center">
-                                    Verificá que el número de documento no pertenezca a otro usuario.
-                                </p>
+                                <p class="m-0 form-text-info text-center">Verificá que el número de documento no pertenezca a otro usuario.</p>
                             </div>
                         </div>
-
                         <div class="d-flex gap-2 mb-3 w-100 justify-content-center">
                             <div>
                                 <p class="m-0 fw-semibold text-center">Correo institucional</p>
-                                <p class="m-0 form-text-info text-center">
-                                    Asegurate de que el email tenga un formato válido y accesible.
-                                </p>
+                                <p class="m-0 form-text-info text-center">Asegurate de que el email tenga un formato válido y accesible.</p>
                             </div>
                         </div>
-
                         <div class="d-flex gap-2 mb-3 w-100 justify-content-center">
                             <div>
                                 <p class="m-0 fw-semibold text-center">Asignación de roles</p>
-                                <p class="m-0 form-text-info text-center">
-                                    Los usuarios con rol CEO deben asociarse obligatoriamente a una aerolínea.
-                                </p>
+                                <p class="m-0 form-text-info text-center">Los usuarios con rol CEO deben asociarse obligatoriamente a una aerolínea.</p>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>

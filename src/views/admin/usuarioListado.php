@@ -13,31 +13,36 @@ $busqueda = trim($_GET['busqueda'] ?? '');
 $estado   = $_GET['estado'] ?? '';
 
 $resultado    = $ctrl->listarUsuariosPaginado($pagina, $porPagina, $estado, $busqueda);
-$usuarios     =$resultado['data'];
-$total        =$resultado['total'];
-$totalPaginas =$resultado['totalPaginas'];
+$usuarios     = $resultado['data'];
+$total        = $resultado['total'];
+$totalPaginas = $resultado['totalPaginas'];
 
 function urlPagina(int $pag, ?int $porPagina = null): string {
-    $params =$_GET;
-    $params['pag'] =$pag;
-    if ($porPagina !== null) $params['porPagina'] =$porPagina;
+    $params = $_GET;
+    $params['pag'] = $pag;
+    if ($porPagina !== null) $params['porPagina'] = $porPagina;
     return 'index.php?' . http_build_query($params);
 }
 
-$desde =$total === 0 ? 0 : ($pagina - 1) *$porPagina + 1;
-$hasta = min($pagina * $porPagina,$total);
+$desde = $total === 0 ? 0 : ($pagina - 1) * $porPagina + 1;
+$hasta = min($pagina * $porPagina, $total);
 
 // Cálculo de métricas y tendencias
-$stats =$ctrl->obtenerEstadisticasUsuarios();
-$diff  =$stats['diff'] ?? 0;
+$stats = $ctrl->obtenerEstadisticasUsuarios();
+$diff  = $stats['diff'] ?? 0;
 
 if ($diff > 0) {
-    $flechaImg   = 'flecha-up.png';$flechaTexto = '+' . $diff . ' vs mes anterior';$flechaColor = 'text-success';
+    $flechaImg   = 'flecha-up.png';
+    $flechaTexto = '+' . $diff . ' vs mes anterior';
+    $flechaColor = 'text-success';
 } elseif ($diff < 0) {
-    $flechaImg   = 'flecha-down.png';$flechaTexto = $diff . ' vs mes anterior';$flechaColor = 'text-danger';
+    $flechaImg   = 'flecha-down.png';
+    $flechaTexto = $diff . ' vs mes anterior';
+    $flechaColor = 'text-danger';
 } else {
     $flechaImg   = 'simbolo-igual.png';
-    $flechaTexto = 'Igual que el mes anterior';$flechaColor = 'text-muted';
+    $flechaTexto = 'Igual que el mes anterior';
+    $flechaColor = 'text-muted';
 }
 ?>
 
@@ -56,7 +61,7 @@ if ($diff > 0) {
         <h2 class="m-0 p-0 fs-2 fw-bold">Gestión de Usuarios</h2>
         <p class="m-0 p-0 mb-1 subt">Administrá los usuarios registrados en el sistema.</p>
 
-        <!-- Tarjetas de métricas idénticas al diseño de aerolíneas -->
+        <!-- Tarjetas de métricas -->
         <div class="d-flex flex-column flex-md-row justify-content-md-between row p-0 m-0 gap-3 gap-md-0 mb-3">
             <div class="col-md-4">
                 <div class="bg-white shadow rounded-3 py-2 px-4">
@@ -119,14 +124,20 @@ if ($diff > 0) {
                 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center px-2 mb-3 gap-3 gap-sm-0">
                     <h3 class="m-0 p-0 fs-4 fw-bold">Listado de Usuarios</h3>
                     <div class="d-flex flex-column flex-sm-row gap-3 align-items-center">
-                        <input
-                            type="text"
-                            id="buscadorUsuario"
-                            class="form-control ctm-inp"
-                            placeholder="Buscar en la tabla..."
-                            autocomplete="off"
-                            style="max-width: 240px;"
-                        >
+                        <form method="GET" action="index.php" class="d-flex gap-2">
+                            <input type="hidden" name="pagina" value="usuarios">
+                            <input type="hidden" name="seccion" value="listado">
+                            <input 
+                                type="text" 
+                                name="busqueda" 
+                                id="buscadorUsuario" 
+                                class="form-control ctm-inp" 
+                                placeholder="Buscar..." 
+                                value="<?= htmlspecialchars($_GET['busqueda'] ?? '') ?>"
+                                style="max-width: 240px;"
+                            >
+                            <button type="submit" class="btn btn-sm btn-outline-primary">Buscar</button>
+                        </form>
                     </div>
                 </div>
 
@@ -149,7 +160,7 @@ if ($diff > 0) {
                                 </td>
                             </tr>
                         <?php else: 
-                            foreach ($usuarios as$u): ?>
+                            foreach ($usuarios as $u): ?>
                             <tr class="fila-tabla" data-id="<?= $u['idUsuario'] ?>" style="cursor:pointer;">
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
@@ -158,10 +169,10 @@ if ($diff > 0) {
                                                 <?= htmlspecialchars(substr($u['nombre'], 0, 1) . substr($u['apellido'], 0, 1)) ?>
                                             </span>
                                         </div>
-                                        <span class="fw-medium"><?= htmlspecialchars($u['nombre'] . ' ' .$u['apellido']) ?></span>
+                                        <span class="fw-medium"><?= htmlspecialchars($u['nombre'] . ' ' . $u['apellido']) ?></span>
                                     </div>
                                 </td>
-                                <td class="d-none d-md-table-cell"><?= htmlspecialchars($u['tipoDocumento'] . ' ' .$u['nroDocumento']) ?></td>
+                                <td class="d-none d-md-table-cell"><?= htmlspecialchars($u['tipoDocumento'] . ' ' . $u['nroDocumento']) ?></td>
                                 <td><?= htmlspecialchars($u['email']) ?></td>
                                 <td class="d-none d-sm-table-cell">
                                     <span class="badge text-bg-info text-capitalize"><?= htmlspecialchars($u['rol']) ?></span>
@@ -175,15 +186,14 @@ if ($diff > 0) {
                                 </td>
                                 <td>
                                     <div class="d-flex justify-content-evenly w-100 align-items-center">
-                                        <!-- Ver detalle -->
-                                        <button 
-                                            type="button"
+                                        <!-- Ver detalle del usuario -->
+                                        <a 
+                                            href="<?= url('index.php?pagina=usuario&seccion=detalle&id=' . $u['idUsuario']) ?>" 
                                             class="p-0 text-start bg-transparent border-0 btn-ver-detalle"
-                                            data-id="<?= $u['idUsuario'] ?>"
                                             title="Ver Detalle"
                                         >
                                             <img src="<?= url('public/img/icons/readTabla.png') ?>" class="img-fluid btn-tabla" alt="icono ver detalle">
-                                        </button>
+                                        </a>
 
                                         <!-- Editar usuario -->
                                         <a 
@@ -214,7 +224,7 @@ if ($diff > 0) {
                                 <td colspan="6" class="p-0">
                                     <div class="detalle-aerolinea px-4 py-3">
                                         <div class="row g-3 align-items-start">
-                                            <!-- Columna 1: avatar + datos principales -->
+                                            <!-- Columna 1: avatar + datos -->
                                             <div class="col-12 col-md-4 d-flex gap-3">
                                                 <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center flex-shrink-0" style="width:55px;height:55px;">
                                                     <span class="text-white fw-bold text-uppercase" style="font-size:1rem;">
@@ -223,11 +233,11 @@ if ($diff > 0) {
                                                 </div>
 
                                                 <div>
-                                                    <p class="fw-bold m-0" style="font-size:0.95rem;"><?= htmlspecialchars($u['nombre'] . ' ' .$u['apellido']) ?></p>
+                                                    <p class="fw-bold m-0" style="font-size:0.95rem;"><?= htmlspecialchars($u['nombre'] . ' ' . $u['apellido']) ?></p>
                                                     <p class="text-muted m-0" style="font-size:0.8rem;"><?= htmlspecialchars($u['email']) ?></p>
 
                                                     <div class="mt-2 d-flex flex-column gap-1" style="font-size:0.8rem;">
-                                                        <div><span class="text-muted">Documento:</span> <span class="text-primary fw-medium ms-1"><?= htmlspecialchars($u['tipoDocumento'] . ' ' .$u['nroDocumento']) ?></span></div>
+                                                        <div><span class="text-muted">Documento:</span> <span class="text-primary fw-medium ms-1"><?= htmlspecialchars($u['tipoDocumento'] . ' ' . $u['nroDocumento']) ?></span></div>
                                                         <div><span class="text-muted">Teléfono:</span> <span class="text-primary fw-medium ms-1"><?= htmlspecialchars($u['telefono'] ?? '—') ?></span></div>
                                                         <div><span class="text-muted">Rol:</span> <span class="text-primary fw-medium ms-1 text-capitalize"><?= htmlspecialchars($u['rol']) ?></span></div>
                                                         <?php if (!empty($u['nombreAerolinea'])): ?>
@@ -275,7 +285,7 @@ if ($diff > 0) {
                     </tbody>
                 </table>
 
-                <!-- Paginador idéntico -->
+                <!-- Paginador -->
                 <div class="border-top px-3 py-3">
                     <div class="d-flex flex-column flex-sm-row justify-content-center justify-content-sm-between align-items-center flex-wrap gap-3">
                         <span class="text-muted" style="font-size:0.8rem;">
@@ -293,8 +303,8 @@ if ($diff > 0) {
 
                                 <?php
                                 $rango  = 2;
-                                $inicio = max(1, $pagina -$rango);
-                                $fin    = min($totalPaginas, $pagina +$rango);
+                                $inicio = max(1, $pagina - $rango);
+                                $fin    = min($totalPaginas, $pagina + $rango);
                                 ?>
 
                                 <?php if ($inicio > 1): ?>
@@ -303,18 +313,18 @@ if ($diff > 0) {
 
                                 <?php for ($i = $inicio; $i <= $fin; $i++): ?>
                                     <li class="page-item">
-                                        <a class="page-link rounded-2 border-0 <?= $i ===$pagina ? 'active-pag' : 'text-secondary' ?>" href="<?= urlPagina($i) ?>"><?= $i ?></a>
+                                        <a class="page-link rounded-2 border-0 <?= $i === $pagina ? 'active-pag' : 'text-secondary' ?>" href="<?= urlPagina($i) ?>"><?= $i ?></a>
                                     </li>
                                 <?php endfor; ?>
 
-                                <?php if ($fin <$totalPaginas): ?>
+                                <?php if ($fin < $totalPaginas): ?>
                                     <li class="page-item disabled"><span class="page-link border-0 text-muted rounded-2">…</span></li>
                                 <?php endif; ?>
 
-                                <li class="page-item <?= $pagina >=$totalPaginas ? 'disabled' : '' ?>">
+                                <li class="page-item <?= $pagina >= $totalPaginas ? 'disabled' : '' ?>">
                                     <a class="page-link rounded-2 border-0 <?= $pagina >= $totalPaginas ? 'text-muted' : '' ?>" href="<?= $pagina < $totalPaginas ? urlPagina($pagina + 1) : '#' ?>">›</a>
                                 </li>
-                                <li class="page-item <?= $pagina >=$totalPaginas ? 'disabled' : '' ?>">
+                                <li class="page-item <?= $pagina >= $totalPaginas ? 'disabled' : '' ?>">
                                     <a class="page-link rounded-2 border-0 <?= $pagina >= $totalPaginas ? 'text-muted' : '' ?>" href="<?= $pagina < $totalPaginas ? urlPagina($totalPaginas) : '#' ?>">»</a>
                                 </li>
                             </ul>
@@ -324,7 +334,7 @@ if ($diff > 0) {
                             <span class="text-muted" style="font-size:0.8rem;">Por página:</span>
                             <select class="form-select form-select-sm border-0 bg-light rounded-2" style="width:auto; font-size:0.8rem; cursor:pointer;" onchange="window.location.href=this.value">
                                 <?php foreach ([5, 10, 25, 50] as $op): ?>
-                                    <option value="<?= urlPagina(1, $op) ?>" <?= $op ===$porPagina ? 'selected' : '' ?>>
+                                    <option value="<?= urlPagina(1, $op) ?>" <?= $op === $porPagina ? 'selected' : '' ?>>
                                         <?= $op ?> por página
                                     </option>
                                 <?php endforeach; ?>
@@ -341,17 +351,18 @@ if ($diff > 0) {
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header border-0">
-                    <h5 class="modal-title fw-bold" id="modalToggleTitulo"></h5>
+                    <h5 class="modal-title fw-bold" id="modalToggleTituloUsuario"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p id="modalToggleTexto" class="text-muted m-0"></p>
+                    <p id="modalToggleTextoUsuario" class="text-muted m-0"></p>
                 </div>
                 <div class="modal-footer border-0">
                     <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
                     <form method="POST" action="<?= url('src/routes/usuarios.php?accion=toggleEstado') ?>">
-                        <input type="hidden" name="id" id="modalToggleId">
-                        <button type="submit" class="btn btn-sm" id="modalToggleConfirmar">Confirmar</button>
+                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+                        <input type="hidden" name="id" id="modalToggleIdUsuario">
+                        <button type="submit" class="btn btn-sm" id="modalToggleConfirmarUsuario">Confirmar</button>
                     </form>
                 </div>
             </div>
@@ -361,10 +372,11 @@ if ($diff > 0) {
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    // Desplegar fila de detalle (comportamiento acordeón: solo 1 abierto a la vez)
+    // Desplegar fila de detalle al hacer clic en la fila
     document.querySelectorAll(".fila-tabla").forEach(function(row) {
         row.addEventListener("click", function(e) {
-            if (e.target.closest('.btn-toggle-estado')) return; // Ignorar si hizo clic en el botón activar/desactivar
+            // Ignorar clics si son sobre un enlace o botón interno (editar, ver detalle o toggle)
+            if (e.target.closest('a') || e.target.closest('button') || e.target.closest('.btn-toggle-estado')) return;
 
             const id = this.dataset.id;
             const detalleRowTarget = document.getElementById("detalle-" + id);
@@ -372,12 +384,10 @@ document.addEventListener("DOMContentLoaded", function () {
             if (detalleRowTarget) {
                 const estaAbierto = !detalleRowTarget.classList.contains("d-none");
 
-                // 1. Cerrar TODAS las filas de detalles abiertas
                 document.querySelectorAll(".fila-detalle").forEach(function(det) {
                     det.classList.add("d-none");
                 });
 
-                // 2. Si la fila cliqueada estaba cerrada, la abrimos (si estaba abierta, queda cerrada)
                 if (!estaAbierto) {
                     detalleRowTarget.classList.remove("d-none");
                 }
@@ -385,40 +395,42 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-
     // Modal de confirmación toggle estado
     const modalEl     = document.getElementById("modalToggleEstadoUsuario");
-    const modalTitulo = document.getElementById("modalToggleTitulo");
-    const modalTexto  = document.getElementById("modalToggleTexto");
-    const modalId     = document.getElementById("modalToggleId");
-    const modalBtn    = document.getElementById("modalToggleConfirmar");
-    const bsModal     = new bootstrap.Modal(modalEl);
+    const modalTitulo = document.getElementById("modalToggleTituloUsuario");
+    const modalTexto  = document.getElementById("modalToggleTextoUsuario");
+    const modalId     = document.getElementById("modalToggleIdUsuario");
+    const modalBtn    = document.getElementById("modalToggleConfirmarUsuario");
+    
+    if (modalEl) {
+        const bsModal = new bootstrap.Modal(modalEl);
 
-    document.querySelectorAll(".btn-toggle-estado").forEach(function(btn) {
-        btn.addEventListener("click", function(e) {
-            e.preventDefault();
-            e.stopPropagation();
+        document.querySelectorAll(".btn-toggle-estado").forEach(function(btn) {
+            btn.addEventListener("click", function(e) {
+                e.preventDefault();
+                e.stopPropagation();
 
-            const id     = this.dataset.id;
-            const activo = this.dataset.activo === "1";
-            const nombre = this.dataset.nombre;
+                const id     = this.dataset.id;
+                const activo = this.dataset.activo === "1";
+                const nombre = this.dataset.nombre || "este usuario";
 
-            modalId.value = id;
+                modalId.value = id;
 
-            if (activo) {
-                modalTitulo.textContent = "Desactivar usuario";
-                modalTexto.textContent  = `¿Seguro que querés desactivar al usuario "${nombre}"?`;
-                modalBtn.textContent    = "Desactivar";
-                modalBtn.className      = "btn btn-danger btn-sm";
-            } else {
-                modalTitulo.textContent = "Activar usuario";
-                modalTexto.textContent  = `¿Seguro que querés activar al usuario "${nombre}"?`;
-                modalBtn.textContent    = "Activar";
-                modalBtn.className      = "btn btn-success btn-sm";
-            }
+                if (activo) {
+                    modalTitulo.textContent = "Desactivar usuario";
+                    modalTexto.textContent  = '¿Seguro que querés desactivar al usuario "' + nombre + '"?';
+                    modalBtn.textContent    = "Desactivar";
+                    modalBtn.className      = "btn btn-danger btn-sm";
+                } else {
+                    modalTitulo.textContent = "Activar usuario";
+                    modalTexto.textContent  = '¿Seguro que querés activar al usuario "' + nombre + '"?';
+                    modalBtn.textContent    = "Activar";
+                    modalBtn.className      = "btn btn-success btn-sm";
+                }
 
-            bsModal.show();
+                bsModal.show();
+            });
         });
-    });
+    }
 });
 </script>

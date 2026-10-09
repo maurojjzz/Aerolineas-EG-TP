@@ -5,6 +5,7 @@ $seccion = $_GET['seccion'] ?? 'listado';
 $vistas = [
     'listado' => __DIR__ . '/usuarioListado.php',
     'editar'  => __DIR__ . '/usuarioEditar.php',
+    'detalle' => __DIR__ . '/usuarioDetalle.php',
 ];
 ?>
 <!DOCTYPE html>
@@ -48,6 +49,5 @@ $vistas = [
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="<?= url('public/js/admin/sidebar.js') ?>"></script>
-    <script src="<?= url('public/js/admin/validaciones.js') ?>"></script>
 </body>
 </html>

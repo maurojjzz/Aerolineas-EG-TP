@@ -12,16 +12,15 @@ class UsuarioController {
         $this->conexion = $conexion;
     }
 
-    public function crearUsuario():void{
+    public function crearUsuario(): void {
         $this->registrar('cliente');
     }
 
-    public function crearCEO():void{
+    public function crearCEO(): void {
         $this->registrar('ceo');
     }
 
     public function registrar(string $rol): void {
-
         $paginaDestino = ($rol === 'ceo') ? 'registro-ceo' : 'registro';
 
         $nombre = trim($_POST['nombre'] ?? '');
@@ -35,8 +34,7 @@ class UsuarioController {
         $confirmarContrasena = $_POST['confirmar_contrasena'] ?? '';
 
         $idAerolinea = null;
-
-        if($rol === 'ceo') {
+        if ($rol === 'ceo') {
             $idAerolinea = (int)($_POST['aerolinea'] ?? null);
         }
 
@@ -65,35 +63,26 @@ class UsuarioController {
             redirect("index.php?pagina=$paginaDestino");
         }
 
-        // Mayoría de edad
         $fechaNac = new DateTime($fechaNacimiento);
         $hoy = new DateTime();
         if ($hoy->diff($fechaNac)->y < 18) {
             flash_set('error', 'Debe ser mayor de 18 años');
             redirect("index.php?pagina=$paginaDestino");
-            exit;
         }
 
         $hash  = password_hash($contrasena, PASSWORD_DEFAULT);
         $token = bin2hex(random_bytes(32));
 
-        // Todo usuario nuevo arranca inactivo y sin verificar.
-        // - cliente -> se activa al confirmar el mail.
-        // - ceo     -> además tiene que ser aprobado por un admin.
-
-        $activo=0;
-        $emailVerificado=0;
-
+        $activo = 0;
+        $emailVerificado = 0;
 
         $query = "INSERT INTO usuario(nombre, apellido, tipoDocumento, nroDocumento, contrasena, email, telefono, fechaNacimiento, rol, activo, emailVerificado, tokenVerificacion, idAerolinea) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $stmt = mysqli_prepare($this->conexion, $query);
-
         if (!$stmt) {
             flash_set('error', 'Error interno del servidor');
             redirect("index.php?pagina=$paginaDestino");
         }
-
 
         mysqli_stmt_bind_param(
             $stmt,
@@ -113,7 +102,6 @@ class UsuarioController {
             $idAerolinea
         );
 
-        // --- Ejecutar y capturar el error ---
         try {
             mysqli_stmt_execute($stmt);
         } catch (mysqli_sql_exception $e) {
@@ -134,9 +122,7 @@ class UsuarioController {
             redirect("index.php?pagina=$paginaDestino");
         }
 
-
         mysqli_stmt_close($stmt);
-
 
         if ($rol === 'ceo') {
             EmailService::enviarVerificacion($email, $nombre, $token);
@@ -172,7 +158,6 @@ class UsuarioController {
 
         $result = mysqli_stmt_get_result($stmt);
         $usuario = mysqli_fetch_assoc($result);
-
         mysqli_stmt_close($stmt);
 
         if (!$usuario || !password_verify($contrasena, $usuario['contrasena'])) {
@@ -181,57 +166,49 @@ class UsuarioController {
         }
 
         if (!$usuario['emailVerificado']) {
-            flash_set('error', 'Debe verificar su correo electrónico antes de iniciar sesión. Por favor, revisa tu correo.');
+            flash_set('error', 'Debe verificar su correo electrónico antes de iniciar sesión.');
             redirect("index.php?pagina=login");
         }
 
-        // CEO pendiente de aprobación
         if ($usuario['rol'] === 'ceo' && (int)$usuario['activo'] === 0) {
             flash_set('error', 'Tu solicitud está pendiente de aprobación.');
             redirect('index.php?pagina=login');
         }
 
         if (!$usuario['activo']) {
-            flash_set('error', 'Tu cuenta esta inactiva. Por favor, contacta al administrador.');
+            flash_set('error', 'Tu cuenta está inactiva. Por favor, contactá al administrador.');
             redirect("index.php?pagina=login");
         }
 
-
-        // Iniciar sesión
         $_SESSION['usuario'] = [
-            'idUsuario'    => (int)$usuario['idUsuario'],
-            'nombre'       => $usuario['nombre'],
-            'apellido'     => $usuario['apellido'],
-            'email'        => $email,
-            'rol'          => $usuario['rol'],
-            'idAerolinea'  => $usuario['idAerolinea'] !== null ? (int)$usuario['idAerolinea'] : null,
+            'idUsuario'   => (int)$usuario['idUsuario'],
+            'nombre'      => $usuario['nombre'],
+            'apellido'    => $usuario['apellido'],
+            'email'       => $email,
+            'rol'         => $usuario['rol'],
+            'idAerolinea' => $usuario['idAerolinea'] !== null ? (int)$usuario['idAerolinea'] : null,
         ];
 
         switch ($usuario['rol']) {
             case 'ceo':
                 redirect('index.php?pagina=ceo');
-                //redirect('index.php?pagina=dashboard-ceo');   // este es el og, cambiarlo ahora esta puesto otro para testear
                 break;
-
             case 'admin':
                 redirect('index.php?pagina=aerolinea&seccion=listado');
-                // redirect('index.php?pagina=dashboard-admin'); // crearlo dsp // este es el og, cambiarlo ahora esta puesto otro para testear
                 break;
             case 'cliente':
                 redirect('index.php?pagina=cliente');
                 break;
             default: 
                 $_SESSION = [];
-                flash_set('error', 'Tu cuenta tiene un rol inválido. Contactá al administrador.');
+                flash_set('error', 'Tu cuenta tiene un rol inválido.');
                 redirect('index.php?pagina=login');
                 break;
         }
-
     }
 
     public function logout(): void {
         $_SESSION = [];
-
         if (ini_get("session.use_cookies")) {
             $params = session_get_cookie_params();
             setcookie(session_name(), '', time() - 42000,
@@ -239,14 +216,12 @@ class UsuarioController {
                 $params["secure"], $params["httponly"]
             );
         }
-
         flash_set('success', 'Has cerrado sesión correctamente.');
         redirect("index.php?pagina=login");
     }
 
     public function olvidéContrasena(): void {
         $email = trim($_POST['email'] ?? '');
-
         if (!$email) {
             flash_set('error', 'Ingresá tu email.');
             redirect('index.php?pagina=olvide-contrasena');
@@ -258,12 +233,10 @@ class UsuarioController {
         $usuario = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
         mysqli_stmt_close($stmt);
 
-        // Siempre mismo mensaje para no revelar si el email existe
         flash_set('success', 'Recibirás un enlace para restablecer tu contraseña en el correo indicado.');
 
         if ($usuario) {
             $token = bin2hex(random_bytes(32));
-
             $stmt = mysqli_prepare($this->conexion, "UPDATE usuario SET tokenVerificacion = ? WHERE idUsuario = ?");
             mysqli_stmt_bind_param($stmt, 'si', $token, $usuario['idUsuario']);
             mysqli_stmt_execute($stmt);
@@ -276,9 +249,9 @@ class UsuarioController {
     }
 
     public function resetPassword(): void {
-        $token       = trim($_POST['token'] ?? '');
-        $contrasena  = $_POST['contrasena'] ?? '';
-        $confirmar   = $_POST['confirmar_contrasena'] ?? '';
+        $token      = trim($_POST['token'] ?? '');
+        $contrasena = $_POST['contrasena'] ?? '';
+        $confirmar  = $_POST['confirmar_contrasena'] ?? '';
 
         if (!$token || !$contrasena || $contrasena !== $confirmar) {
             flash_set('error', 'Datos inválidos.');
@@ -302,7 +275,6 @@ class UsuarioController {
         }
 
         $hash = password_hash($contrasena, PASSWORD_DEFAULT);
-
         $stmt = mysqli_prepare($this->conexion, "UPDATE usuario SET contrasena = ?, tokenVerificacion = NULL WHERE idUsuario = ?");
         mysqli_stmt_bind_param($stmt, 'si', $hash, $usuario['idUsuario']);
         mysqli_stmt_execute($stmt);
@@ -312,26 +284,118 @@ class UsuarioController {
         redirect('index.php?pagina=login');
     }
 
+    public function obtenerUsuarioPorId(int $id): ?array {
+        $stmt = mysqli_prepare($this->conexion, "SELECT * FROM usuario WHERE idUsuario = ?");
+        mysqli_stmt_bind_param($stmt, "i", $id);
+        mysqli_stmt_execute($stmt);
+        $res = mysqli_stmt_get_result($stmt);
+        $usuario = mysqli_fetch_assoc($res) ?: null;
+        mysqli_stmt_close($stmt);
+        return $usuario;
+    }
+
+    public function editarUsuario(int $id): void {
+        $nombre        = trim($_POST['nombre'] ?? '');
+        $apellido      = trim($_POST['apellido'] ?? '');
+        $tipoDocumento = trim($_POST['tipoDocumento'] ?? '');
+        $nroDocumento  = trim($_POST['nroDocumento'] ?? '');
+        $email         = trim($_POST['email'] ?? '');
+        $telefono      = trim($_POST['telefono'] ?? '');
+        $rol           = strtolower(trim($_POST['rol'] ?? ''));
+        $idAerolinea   = !empty($_POST['idAerolinea']) ? (int)$_POST['idAerolinea'] : null;
+        $activo        = isset($_POST['activo']) ? (int)$_POST['activo'] : 0;
+
+        // 1. Evitar que un Admin desactive su propia cuenta
+        if ($activo === 0 && isset($_SESSION['usuario']['idUsuario']) && (int)$_SESSION['usuario']['idUsuario'] === $id) {
+            flash_set('error', 'No podés desactivar tu propia cuenta de administrador.');
+            redirect('index.php?pagina=usuario&seccion=listado');
+        }
+
+        // 2. Regla Rol - Aerolínea
+        if ($rol === 'ceo') {
+            if (!$idAerolinea) {
+                flash_set('error', 'Debe seleccionar una aerolínea asociada para el rol CEO.');
+                redirect('index.php?pagina=usuario&seccion=editar&id=' . $id);
+            }
+        } else {
+            $idAerolinea = null;
+        }
+
+        // 3. Validaciones de requeridos y email
+        if (empty($nombre) || empty($apellido) || empty($nroDocumento) || empty($email)) {
+            flash_set('error', 'Por favor completá todos los campos obligatorios.');
+            redirect('index.php?pagina=usuario&seccion=editar&id=' . $id);
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            flash_set('error', 'El correo electrónico no es válido.');
+            redirect('index.php?pagina=usuario&seccion=editar&id=' . $id);
+        }
+
+        // 4. Actualización en BD con manejo de excepciones por clave duplicada
+        try {
+            $sql = "UPDATE usuario SET 
+                        nombre = ?, 
+                        apellido = ?, 
+                        tipoDocumento = ?, 
+                        nroDocumento = ?, 
+                        email = ?, 
+                        telefono = ?, 
+                        rol = ?, 
+                        idAerolinea = ?, 
+                        activo = ? 
+                    WHERE idUsuario = ?";
+
+            $stmt = mysqli_prepare($this->conexion, $sql);
+            mysqli_stmt_bind_param(
+                $stmt, 
+                "sssssssiii", 
+                $nombre, 
+                $apellido, 
+                $tipoDocumento, 
+                $nroDocumento, 
+                $email, 
+                $telefono, 
+                $rol, 
+                $idAerolinea, 
+                $activo, 
+                $id
+            );
+
+            $exito = mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+
+            if ($exito) {
+                flash_set('success', 'Usuario actualizado correctamente.');
+                redirect('index.php?pagina=usuario&seccion=listado');
+            }
+        } catch (mysqli_sql_exception $e) {
+            if ($e->getCode() === 1062) {
+                flash_set('error', 'El número de documento o el email ya pertenecen a otro usuario.');
+            } else {
+                flash_set('error', 'Ocurrió un error al intentar actualizar el usuario.');
+            }
+            redirect('index.php?pagina=usuario&seccion=editar&id=' . $id);
+        }
+    }
 
     public function listarUsuariosPaginado(
         int $pagina = 1,
         int $porPagina = 10,
         string $estado = '',
         string $busqueda = ''
-        ): array {
-            $offset = ($pagina - 1) * $porPagina;
-            $where = ["1=1"];
-            $params = [];
-            $types = "";
+    ): array {
+        $offset = ($pagina - 1) * $porPagina;
+        $where = ["1=1"];
+        $params = [];
+        $types = "";
 
-        // Filtro por estado (activo / inactivo)
         if ($estado !== '') {
             $where[] = "u.activo = ?";
             $params[] = (int)$estado;
             $types .= "i";
         }
 
-        // Búsqueda por nombre, apellido, email o número de documento
         if (!empty($busqueda)) {
             $where[] = "(u.nombre LIKE ? OR u.apellido LIKE ? OR u.email LIKE ? OR u.nroDocumento LIKE ?)";
             $searchTerm = "%{$busqueda}%";
@@ -344,7 +408,6 @@ class UsuarioController {
 
         $whereClause = implode(" AND ", $where);
 
-        // 1. Contar total de registros filtrados
         $queryCount = "SELECT COUNT(*) as total FROM usuario u WHERE {$whereClause}";
         $stmtCount = mysqli_prepare($this->conexion, $queryCount);
         if (!empty($params)) {
@@ -355,7 +418,6 @@ class UsuarioController {
         $total = mysqli_fetch_assoc($resCount)['total'] ?? 0;
         mysqli_stmt_close($stmtCount);
 
-        // 2. Obtener los datos paginados
         $queryData = "SELECT u.idUsuario, u.nombre, u.apellido, u.tipoDocumento, u.nroDocumento, 
                              u.email, u.telefono, u.rol, u.activo, u.emailVerificado, u.fechaCreacion,
                              a.nombreAerolinea
@@ -390,23 +452,18 @@ class UsuarioController {
         ];
     }
 
-
     public function obtenerEstadisticasUsuarios(): array {
-        // Total de usuarios
         $resTotal = mysqli_query($this->conexion, "SELECT COUNT(*) as total FROM usuario");
         $total = mysqli_fetch_assoc($resTotal)['total'] ?? 0;
 
-        // Nuevos este mes
         $resNuevos = mysqli_query($this->conexion, "SELECT COUNT(*) as nuevos FROM usuario WHERE MONTH(fechaCreacion) = MONTH(CURRENT_DATE()) AND YEAR(fechaCreacion) = YEAR(CURRENT_DATE())");
         $nuevosEsteMes = mysqli_fetch_assoc($resNuevos)['nuevos'] ?? 0;
 
-        // Nuevos el mes anterior (para calcular la diferencia)
         $resAnterior = mysqli_query($this->conexion, "SELECT COUNT(*) as anterior FROM usuario WHERE MONTH(fechaCreacion) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(fechaCreacion) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH)");
         $mesAnterior = mysqli_fetch_assoc($resAnterior)['anterior'] ?? 0;
 
         $diff = $nuevosEsteMes - $mesAnterior;
 
-        // Desglose por roles
         $resRoles = mysqli_query($this->conexion, "SELECT rol, COUNT(*) as cantidad FROM usuario GROUP BY rol");
         $roles = ['cliente' => 0, 'ceo' => 0, 'admin' => 0];
         while ($row = mysqli_fetch_assoc($resRoles)) {
@@ -423,120 +480,37 @@ class UsuarioController {
         ];
     }
 
-
     public function toggleEstadoUsuario(int $id): void {
         if ($id <= 0) {
             flash_set('error', 'ID de usuario no válido.');
             redirect('index.php?pagina=usuario&seccion=listado');
         }
 
-        // Evitar que el administrador se desactive a sí mismo
         if (isset($_SESSION['usuario']['idUsuario']) && (int)$_SESSION['usuario']['idUsuario'] === $id) {
             flash_set('error', 'No podés desactivar tu propia cuenta de administrador.');
             redirect('index.php?pagina=usuario&seccion=listado');
         }
 
         $stmt = mysqli_prepare($this->conexion, "SELECT nombre, apellido, activo FROM usuario WHERE idUsuario = ?");
-        mysqli_stmt_bind_param($stmt, 'i', $id);
+        mysqli_stmt_bind_param($stmt, "i", $id);
         mysqli_stmt_execute($stmt);
-        $usuario = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+        $res = mysqli_stmt_get_result($stmt);
+        $usuario = mysqli_fetch_assoc($res);
         mysqli_stmt_close($stmt);
 
         if (!$usuario) {
-            flash_set('error', 'El usuario no existe.');
+            flash_set('error', 'Usuario no encontrado.');
             redirect('index.php?pagina=usuario&seccion=listado');
         }
 
         $nuevoEstado = $usuario['activo'] ? 0 : 1;
-
         $stmtUpdate = mysqli_prepare($this->conexion, "UPDATE usuario SET activo = ? WHERE idUsuario = ?");
-        mysqli_stmt_bind_param($stmtUpdate, 'ii', $nuevoEstado, $id);
-        
-        if (mysqli_stmt_execute($stmtUpdate)) {
-            $accionTexto = $nuevoEstado ? 'activado' : 'desactivado';
-            flash_set('success', "El usuario {$usuario['nombre']} {$usuario['apellido']} fue {$accionTexto} correctamente.");
-        } else {
-            flash_set('error', 'Error al actualizar el estado del usuario.');
-        }
-
+        mysqli_stmt_bind_param($stmtUpdate, "ii", $nuevoEstado, $id);
+        mysqli_stmt_execute($stmtUpdate);
         mysqli_stmt_close($stmtUpdate);
+
+        $accionTexto = $nuevoEstado ? 'activado' : 'desactivado';
+        flash_set('success', "Usuario {$usuario['nombre']} {$usuario['apellido']} {$accionTexto} correctamente.");
         redirect('index.php?pagina=usuario&seccion=listado');
     }
-
-    public function obtenerUsuarioPorId(int $id): ?array {
-        $sql = "SELECT u.*, a.nombreAerolinea 
-                FROM usuario u 
-                LEFT JOIN aerolinea a ON u.idAerolinea = a.idAerolinea 
-                WHERE u.idUsuario = ?";
-                
-        $stmt = mysqli_prepare($this->conexion, $sql);
-        mysqli_stmt_bind_param($stmt, "i", $id);
-        mysqli_stmt_execute($stmt);
-        
-        $resultado = mysqli_stmt_get_result($stmt);
-        $usuario = mysqli_fetch_assoc($resultado);
-        
-        mysqli_stmt_close($stmt);
-
-        return $usuario ?: null;
-    }
-
-
-    public function editarUsuario(int $id) {
-        $nombre        = trim($_POST['nombre'] ?? '');
-        $apellido      = trim($_POST['apellido'] ?? '');
-        $tipoDocumento = trim($_POST['tipoDocumento'] ?? '');
-        $nroDocumento  = trim($_POST['nroDocumento'] ?? '');
-        $email         = trim($_POST['email'] ?? '');
-        $telefono      = trim($_POST['telefono'] ?? '');
-        $rol           = trim($_POST['rol'] ?? '');
-        $idAerolinea   = !empty($_POST['idAerolinea']) ? (int)$_POST['idAerolinea'] : null;
-        $activo = isset($_POST['activo']) ? 1 : 0;
-        
-        // Validaciones básicas
-        if (empty($nombre) || empty($apellido) || empty($nroDocumento) || empty($email)) {
-            flash_set('error', 'Por favor completá todos los campos obligatorios.');
-            redirect('index.php?pagina=usuarios&seccion=editar&id=' . $id);
-        }
-
-        $sql = "UPDATE usuario SET 
-                    nombre = ?, 
-                    apellido = ?, 
-                    tipoDocumento = ?, 
-                    nroDocumento = ?, 
-                    email = ?, 
-                    telefono = ?, 
-                    rol = ?, 
-                    idAerolinea = ?, 
-                    activo = ? 
-                WHERE idUsuario = ?";
-
-        $stmt = mysqli_prepare($this->conexion, $sql);
-        mysqli_stmt_bind_param(
-            $stmt, 
-            "sssssssiii", 
-            $nombre, 
-            $apellido, 
-            $tipoDocumento, 
-            $nroDocumento, 
-            $email, 
-            $telefono, 
-            $rol, 
-            $idAerolinea, 
-            $activo, 
-            $id
-        );
-
-        $exito = mysqli_stmt_execute($stmt);
-        mysqli_stmt_close($stmt);
-
-        if ($exito) {
-            flash_set('success', 'Usuario actualizado correctamente.');
-            redirect('index.php?pagina=usuarios&seccion=listado');
-        } else {
-            flash_set('error', 'Ocurrió un error al intentar actualizar el usuario.');
-            redirect('index.php?pagina=usuarios&seccion=editar&id=' . $id);
-        }
-    }
-
 }

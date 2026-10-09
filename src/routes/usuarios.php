@@ -37,20 +37,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         case 'editar':
             requireRol('admin');
+            $tokenPost = $_POST['csrf_token'] ?? '';
+            $tokenSession = $_SESSION['csrf_token'] ?? '';
+            
+            if (empty($tokenPost) || empty($tokenSession) || !hash_equals($tokenSession, $tokenPost)) {
+                flash_set('error', 'Token de seguridad inválido o sesión expirada.');
+                redirect('index.php?pagina=usuarios&seccion=listado');
+            }
+
             $id = (int)($_GET['id'] ?? 0);
             if (!$id) {
                 flash_set('error', 'ID de usuario inválido.');
-                redirect('index.php?pagina=usuario&seccion=listado');
+                redirect('index.php?pagina=usuarios&seccion=listado');
             }
             $ctrl->editarUsuario($id);
             break;
 
         case 'toggleEstado':
             requireRol('admin');
+            
+            // Protección CSRF agregada para la toggle de estado
+            $tokenPost = $_POST['csrf_token'] ?? '';
+            $tokenSession = $_SESSION['csrf_token'] ?? '';
+            if (empty($tokenPost) || empty($tokenSession) || !hash_equals($tokenSession, $tokenPost)) {
+                flash_set('error', 'Token de seguridad inválido o sesión expirada.');
+                redirect('index.php?pagina=usuarios&seccion=listado');
+            }
+
             $id = (int)($_POST['id'] ?? 0);
             if (!$id) {
                 flash_set('error', 'ID de usuario inválido.');
-                redirect('index.php?pagina=usuario&seccion=listado');
+                redirect('index.php?pagina=usuarios&seccion=listado');
             }
             $ctrl->toggleEstadoUsuario($id);
             break;
