@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $tokenEnviado = $_POST['csrf_token'] ?? '';
     $tokenSesion  = $_SESSION['csrf_token'] ?? '';
-    
+
     if (!$tokenEnviado || !$tokenSesion || !hash_equals($tokenSesion, $tokenEnviado)) {
         flash_set('error', 'Token de seguridad inválido. Intentá de nuevo.');
         redirect('index.php?pagina=vuelos');
@@ -31,12 +31,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             break;
         case 'editar':
             $id = (int)($_GET['id'] ?? 0);
-            if (!$id) { flash_set('error', 'ID inválido.'); redirect('index.php?pagina=ceo&tab=vuelos'); }
+            if (!$id) { flash_set('error', 'ID inválido.'); redirect('index.php?pagina=vuelos'); }
             $ctrl->editarVuelo($id, $idAerolinea);
             break;
         case 'eliminar':
             $id = (int)($_POST['id'] ?? 0);
-            if (!$id) { flash_set('error', 'ID inválido.'); redirect('index.php?pagina=ceo&tab=vuelos'); }
+            if (!$id) { flash_set('error', 'ID inválido.'); redirect('index.php?pagina=vuelos'); }
             $ctrl->eliminarVuelo($id, $idAerolinea);
             break;
         default:

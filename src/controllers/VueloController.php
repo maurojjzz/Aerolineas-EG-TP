@@ -19,7 +19,7 @@ class VueloController {
         $asientos = (int)($_POST['asientos'] ?? 0);
         $precio = (float)($_POST['precio'] ?? 0);
 
-        if (!$origen || !$destino || !$fecha || !$hora || $asientos <= 0 || $precio <= 0) {
+        if (!$origen || !$destino || !$fecha || !$hora || $asientos <= 0 || $precio <= 0 ||  strcasecmp($origen, $destino) === 0) {
             flash_set('error', 'Faltan campos obligatorios o valores inválidos.');
             redirect("index.php?pagina=vuelo");
         }
