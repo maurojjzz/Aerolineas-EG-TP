@@ -96,8 +96,36 @@ INSERT INTO `usuario` VALUES (1,'Mauro','Jimenez','DNI','42130241','$2y$10$qmETw
 UNLOCK TABLES;
 
 --
--- Dumping routines for database 'aerolinea'
+-- Table structure for table `vuelo`
 --
+
+DROP TABLE IF EXISTS `vuelo`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vuelo` (
+  `idVuelo` int NOT NULL AUTO_INCREMENT,
+  `idAerolinea` int NOT NULL,
+  `origenVuelo` varchar(245) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `destinoVuelo` varchar(245) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `fechaHoraSalidaVuelo` datetime NOT NULL,
+  `asientosDisponibles` int NOT NULL DEFAULT '0',
+  `precioVuelo` decimal(10,2) NOT NULL,
+  `fechaCreacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idVuelo`),
+  KEY `fk_vuelo_1_idx` (`idAerolinea`),
+  CONSTRAINT `fk_vuelo_1` FOREIGN KEY (`idAerolinea`) REFERENCES `aerolinea` (`idAerolinea`)
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vuelo`
+--
+
+LOCK TABLES `vuelo` WRITE;
+/*!40000 ALTER TABLE `vuelo` DISABLE KEYS */;
+INSERT INTO `vuelo` VALUES (1,4,'Buenos Aires','Lima','2026-10-28 13:00:00',300,334999.00,'2026-10-07 16:14:25'),(2,4,'Rosario','Buenos Aires','2026-10-31 12:30:00',140,100000.00,'2026-10-07 17:49:22'),(6,4,'Madrid','Buenos Aires','2026-10-19 12:30:00',340,1200000.00,'2026-10-08 22:09:00'),(7,4,'Buenos Aires','Nueva York','2026-11-02 22:15:00',340,1250000.00,'2026-10-08 22:18:43'),(8,4,'Buenos Aires','París','2026-11-04 21:00:00',320,1450000.00,'2026-10-08 22:18:43'),(9,4,'Buenos Aires','Londres','2026-11-06 20:30:00',300,1380000.00,'2026-10-08 22:18:43'),(10,4,'Buenos Aires','Roma','2026-11-08 19:45:00',310,1290000.00,'2026-10-08 22:18:43'),(11,4,'Buenos Aires','Tokio','2026-11-10 23:30:00',280,2100000.00,'2026-10-08 22:18:43'),(12,4,'Buenos Aires','Sídney','2026-11-12 01:00:00',290,1850000.00,'2026-10-08 22:18:43'),(13,4,'Buenos Aires','Toronto','2026-11-14 21:20:00',300,980000.00,'2026-10-08 22:18:43'),(14,4,'Buenos Aires','Ámsterdam','2026-11-16 22:50:00',310,1320000.00,'2026-10-08 22:18:43'),(15,4,'Buenos Aires','Dubái','2026-11-18 20:15:00',330,1680000.00,'2026-10-08 22:18:43'),(16,4,'Buenos Aires','Los Ángeles','2026-11-20 23:55:00',320,1100000.00,'2026-10-08 22:18:43'),(17,4,'Buenos Aires','Berlín','2026-11-22 21:40:00',300,1275000.00,'2026-10-08 22:18:43'),(18,4,'Córdoba','Miami','2026-11-24 20:30:00',250,875000.00,'2026-10-08 22:18:43'),(19,4,'Rosario','Madrid','2026-11-26 22:00:00',240,1180000.00,'2026-10-08 22:18:43'),(20,4,'Mendoza','Santiago','2026-11-28 11:15:00',160,145000.00,'2026-10-08 22:18:43'),(21,4,'Bariloche','São Paulo','2026-11-30 15:20:00',180,420000.00,'2026-10-08 22:18:43'),(22,4,'Salta','Lima','2026-12-02 08:30:00',170,380000.00,'2026-10-08 22:18:43'),(23,4,'Córdoba','Panamá','2026-12-04 13:45:00',210,520000.00,'2026-10-08 22:18:43'),(24,4,'Madrid','Buenos Aires','2026-12-06 14:00:00',320,1320000.00,'2026-10-08 22:18:43'),(25,4,'Miami','Buenos Aires','2026-12-08 11:30:00',300,950000.00,'2026-10-08 22:18:43'),(26,4,'París','Buenos Aires','2026-12-10 13:15:00',310,1480000.00,'2026-10-08 22:18:43');
+/*!40000 ALTER TABLE `vuelo` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -108,4 +136,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-10-06 19:59:02
+-- Dump completed on 2026-10-08 22:29:19
