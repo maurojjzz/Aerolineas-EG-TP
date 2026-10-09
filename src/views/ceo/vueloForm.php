@@ -141,6 +141,7 @@ if ($modoEditar) {
                                 </button>
                             </div>
                         </div>
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
 
                     </div>
 

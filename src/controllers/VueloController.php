@@ -24,6 +24,11 @@ class VueloController {
             redirect("index.php?pagina=vuelo");
         }
 
+        if (strcasecmp($origen, $destino) === 0) {
+            flash_set('error', 'El origen y el destino no pueden ser iguales.');
+            redirect("index.php?pagina=vuelo");
+        }
+
         // Validar que la fecha sea hoy o futura
         $fechaHora = $fecha . ' ' . $hora . ':00';
         if (strtotime($fechaHora) < time()) {
@@ -78,7 +83,17 @@ class VueloController {
             redirect("index.php?pagina=vuelo&id=$idVuelo");
         }
 
+        if (strcasecmp($origen, $destino) === 0) {
+            flash_set('error', 'El origen y el destino no pueden ser iguales.');
+            redirect("index.php?pagina=vuelo&id=$idVuelo");
+        }
+
         $fechaHora = $fecha . ' ' . $hora . ':00';
+
+        if (strtotime($fechaHora) < time()) {
+            flash_set('error', 'La fecha y hora de salida no puede ser en el pasado.');
+            redirect("index.php?pagina=vuelo&id=$idVuelo");
+        }
 
         $query = "UPDATE vuelo SET origenVuelo=?, destinoVuelo=?, fechaHoraSalidaVuelo=?, asientosDisponibles=?, precioVuelo=?
                 WHERE idVuelo=? AND idAerolinea=?";
@@ -119,7 +134,7 @@ class VueloController {
         $stmt = mysqli_prepare($this->conexion, $query);
         if (!$stmt) {
             flash_set('error', 'Error interno del servidor.');
-            redirect("index.php?pagina=ceo&tab=vuelos");
+            redirect("index.php?pagina=vuelos");
         }
 
         mysqli_stmt_bind_param($stmt, 'ii', $idVuelo, $idAerolinea);
@@ -129,7 +144,7 @@ class VueloController {
         } catch (mysqli_sql_exception $e) {
             mysqli_stmt_close($stmt);
             flash_set('error', 'Error al eliminar el vuelo.');
-            redirect("index.php?pagina=ceo&tab=vuelos");
+            redirect("index.php?pagina=vuelos");
         }
 
         mysqli_stmt_close($stmt);

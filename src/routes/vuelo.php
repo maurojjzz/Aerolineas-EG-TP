@@ -16,6 +16,15 @@ $ctrl   = new VueloController($link);
 $accion = $_GET['accion'] ?? '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $tokenEnviado = $_POST['csrf_token'] ?? '';
+    $tokenSesion  = $_SESSION['csrf_token'] ?? '';
+    
+    if (!$tokenEnviado || !$tokenSesion || !hash_equals($tokenSesion, $tokenEnviado)) {
+        flash_set('error', 'Token de seguridad inválido. Intentá de nuevo.');
+        redirect('index.php?pagina=vuelos');
+    }
+
     switch ($accion) {
         case 'crear':
             $ctrl->crearVuelo($idAerolinea);
