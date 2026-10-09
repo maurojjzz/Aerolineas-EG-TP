@@ -62,7 +62,7 @@ class VueloController {
 
         mysqli_stmt_close($stmt);
         flash_set('success', 'Vuelo creado correctamente.');
-        redirect("index.php?pagina=ceo&tab=vuelos");
+        redirect("index.php?pagina=vuelos");
     }
 
     public function editarVuelo(int $idVuelo, int $idAerolinea): void {
@@ -111,7 +111,7 @@ class VueloController {
 
         mysqli_stmt_close($stmt);
         flash_set('success', 'Vuelo actualizado correctamente.');
-        redirect("index.php?pagina=ceo&tab=vuelos");
+        redirect("index.php?pagina=vuelos");
     }
 
     public function eliminarVuelo(int $idVuelo, int $idAerolinea): void {
@@ -134,7 +134,7 @@ class VueloController {
 
         mysqli_stmt_close($stmt);
         flash_set('success', 'Vuelo eliminado correctamente.');
-        redirect("index.php?pagina=ceo&tab=vuelos");
+        redirect("index.php?pagina=vuelos");
     }
 
     public function obtenerVueloPorId(int $idVuelo): ?array {

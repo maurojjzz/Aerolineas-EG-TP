@@ -68,7 +68,7 @@ if ($rol === 'ceo') {
         [
             'label'  => 'Mi Aerolínea',
             'href'   => 'index.php?pagina=ceo',
-            'icon'   => 'avionSidebar.png',
+            'icon'   => 'casa.png',
             'activo' => $pagina === 'ceo',
         ],
         [
