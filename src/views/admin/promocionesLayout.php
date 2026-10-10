@@ -1,29 +1,26 @@
 <?php 
 date_default_timezone_set('America/Argentina/Buenos_Aires');
+requireRol('admin');
+
+// Si no viene seccion por GET, por defecto usamos 'listado'
 $seccion = $_GET['seccion'] ?? 'listado';
 
 $vistas = [
-    'alta'    => __DIR__ . '/aerolineaAlta.php',
-    'listado' => __DIR__ . '/aerolineaListado.php',
-    'detalle' => __DIR__ . '/aerolineaDetalle.php',
-    'editar'  => __DIR__ . '/aerolineaAlta.php',
+    'listado' => __DIR__ . '/promocionesAdminListado.php',
+    'detalle' => __DIR__ . '/promocionesAdminDetalle.php', 
 ];
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Administrador - Aerolínea</title>
+        <title>Administrador - Promociones</title>
 
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-        
         <link rel="stylesheet" href="<?= url('public/css/admin.css') ?>">
         <link rel="stylesheet" href="<?= url('public/css/layout/headerAdmin.css') ?>">
         <link rel="stylesheet" href="<?= url('public/css/components/tablaLista.css') ?>?v=<?= time() ?>">
-
-
     </head>
     <body>
         
@@ -57,8 +54,6 @@ $vistas = [
         <?php require __DIR__ . '/../components/menuMobileAdmin.php' ?>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-        <script src="<?=  url('public/js/admin/sidebar.js') ?>"></script>
-        <script src="<?=  url('public/js/admin/aerolineaView.js') ?>"></script>
-        <script src="<?=  url('public/js/admin/validaciones.js') ?>"></script>
+        <script src="<?= url('public/js/admin/sidebar.js') ?>"></script>
     </body>
 </html>

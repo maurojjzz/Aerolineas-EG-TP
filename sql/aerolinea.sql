@@ -109,3 +109,28 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2026-10-06 19:59:02
+
+DROP TABLE IF EXISTS `promocion`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `promocion` (
+  `idPromocion` int NOT NULL AUTO_INCREMENT,
+  `codigo` varchar(20) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `idAerolinea` int NOT NULL,
+  `idUsuarioCreador` int NOT NULL,
+  `nombre` varchar(150) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `descripcion` text COLLATE utf8mb4_unicode_520_ci,
+  `descuentoPorcentaje` decimal(5,2) NOT NULL,
+  `fechaInicio` date NOT NULL,
+  `fechaFin` date NOT NULL,
+  `estado` enum('Pendiente','Aprobada','Denegada') COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'Pendiente',
+  `condiciones` text COLLATE utf8mb4_unicode_520_ci,
+  `fechaCreacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idPromocion`),
+  UNIQUE KEY `codigo_UNIQUE` (`codigo`),
+  KEY `fk_promocion_aerolinea_idx` (`idAerolinea`),
+  KEY `fk_promocion_usuario_idx` (`idUsuarioCreador`),
+  CONSTRAINT `fk_promocion_aerolinea` FOREIGN KEY (`idAerolinea`) REFERENCES `aerolinea` (`idAerolinea`) ON DELETE CASCADE,
+  CONSTRAINT `fk_promocion_usuario` FOREIGN KEY (`idUsuarioCreador`) REFERENCES `usuario` (`idUsuario`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;

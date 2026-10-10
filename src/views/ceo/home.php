@@ -4,6 +4,7 @@ date_default_timezone_set('America/Argentina/Buenos_Aires');
 require_once __DIR__ . '/../../config/conexion.php';
 require_once __DIR__ . '/../../controllers/AerolineaController.php';
 require_once __DIR__ . '/../../config/auth.php';
+require_once __DIR__ . '/../../controllers/PromocionController.php';
 
 
 // El CEO tiene su aerolínea en la sesión
@@ -24,6 +25,9 @@ $tabActiva = $_GET['tab'] ?? 'resumen';
 $flechaImg   = 'flecha-up.png';
 $flechaTexto = '+2 vs mes anterior';
 $flechaColor = 'text-success';
+$promocionCtrl = new PromocionController($link);
+$promociones = $promocionCtrl->listarPorCEO();
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -155,10 +159,6 @@ $flechaColor = 'text-success';
                         <li class="nav-item">
                             <button class="nav-link <?= $tabActiva === 'vuelos' ? 'active' : '' ?>"
                                     data-bs-toggle="tab" data-bs-target="#tab-vuelos">Vuelos</button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="nav-link <?= $tabActiva === 'promociones' ? 'active' : '' ?>"
-                                    data-bs-toggle="tab" data-bs-target="#tab-promociones">Promociones</button>
                         </li>
                     </ul>
 
@@ -307,7 +307,7 @@ $flechaColor = 'text-success';
 
                         <!-- Tab Promociones -->
                         <div class="tab-pane fade <?= $tabActiva === 'promociones' ? 'show active' : '' ?>" id="tab-promociones">
-                            <p class="text-muted text-center py-4">Tabla de promociones — próximamente</p>
+                            <?php require __DIR__ . '/promocionesListado.php'; ?>
                         </div>
 
                     </div>

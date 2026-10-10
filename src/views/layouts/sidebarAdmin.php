@@ -26,7 +26,7 @@ if ($rol === 'admin') {
         ],
         [
             'label'  => 'Promociones',
-            'href'   => '#',
+            'href'   => 'index.php?pagina=promociones&seccion=listado',
             'icon'   => 'promoSidebar.png',
             'activo' => $pagina === 'promociones',
         ],
@@ -69,7 +69,7 @@ if ($rol === 'ceo') {
             'label'  => 'Mi Aerolínea',
             'href'   => 'index.php?pagina=ceo',
             'icon'   => 'avionSidebar.png',
-            'activo' => $pagina === 'ceo',
+            'activo' => $pagina === 'ceo' && $seccion === '',
         ],
         [
             'label'  => 'Vuelos',
@@ -79,9 +79,9 @@ if ($rol === 'ceo') {
         ],
         [
             'label'  => 'Promociones',
-            'href'   => '#',
+            'href'   => 'index.php?pagina=ceo&seccion=promociones',
             'icon'   => 'promoSidebar.png',
-            'activo' => $pagina === 'promociones',
+            'activo' => $pagina === 'ceo' && in_array($seccion, ['promociones', 'promocion-detalle']),
         ],
         [
             'label'  => 'Novedades',
