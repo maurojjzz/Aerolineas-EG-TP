@@ -38,7 +38,7 @@ if ($rol === 'admin') {
         ],
         [
             'label'  => 'Usuarios',
-            'href'   => '#',
+            'href'   => 'index.php?pagina=usuarios&seccion=listado',
             'icon'   => 'usuario.png',
             'activo' => $pagina === 'usuarios',
         ],
