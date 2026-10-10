@@ -55,6 +55,16 @@ switch ($pagina) {
         require __DIR__ . '/src/views/ceo/home.php';
         break;
 
+    case 'vuelos':
+        requireRol('ceo');
+        require __DIR__ . '/src/views/ceo/vueloListado.php';
+        break;
+        
+    case 'vuelo':
+        requireRol('ceo');
+        require __DIR__ . '/src/views/ceo/vueloForm.php';
+        break;
+
     case 'verificar':
         require __DIR__ . '/src/views/auth/verificarEmail.php';
         break;
