@@ -3,10 +3,13 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 date_default_timezone_set('America/Argentina/Buenos_Aires');
 
 require_once __DIR__ . '/src/config/app.php';
-
 
 $pagina = $_GET['pagina'] ?? 'inicio';
 
@@ -36,6 +39,12 @@ switch ($pagina) {
         require __DIR__ . '/src/views/admin/aerolineaLayout.php';
         break;
 
+    case 'usuario':
+    case 'usuarios':
+        requireRol('admin');
+        require __DIR__ . '/src/views/admin/usuarioLayout.php';
+        break;
+
     case 'cliente':
         requireRol('cliente');
         require __DIR__ . '/src/views/cliente/home.php';
@@ -44,6 +53,16 @@ switch ($pagina) {
     case 'ceo':
         requireRol('ceo');
         require __DIR__ . '/src/views/ceo/home.php';
+        break;
+
+    case 'vuelos':
+        requireRol('ceo');
+        require __DIR__ . '/src/views/ceo/vueloListado.php';
+        break;
+        
+    case 'vuelo':
+        requireRol('ceo');
+        require __DIR__ . '/src/views/ceo/vueloForm.php';
         break;
 
     case 'verificar':
@@ -64,5 +83,3 @@ switch ($pagina) {
         echo 'Página no encontrada';
         break;
 }
-
-?>

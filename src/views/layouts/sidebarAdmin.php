@@ -38,7 +38,7 @@ if ($rol === 'admin') {
         ],
         [
             'label'  => 'Usuarios',
-            'href'   => '#',
+            'href'   => 'index.php?pagina=usuarios&seccion=listado',
             'icon'   => 'usuario.png',
             'activo' => $pagina === 'usuarios',
         ],
@@ -68,7 +68,7 @@ if ($rol === 'ceo') {
         [
             'label'  => 'Mi Aerolínea',
             'href'   => 'index.php?pagina=ceo',
-            'icon'   => 'avionSidebar.png',
+            'icon'   => 'casa.png',
             'activo' => $pagina === 'ceo',
         ],
         [
