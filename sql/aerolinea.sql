@@ -137,3 +137,26 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2026-10-08 22:29:19
+
+--
+-- Table structure for table `novedades`
+--
+
+DROP TABLE IF EXISTS `novedades`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `novedades` (
+  `idNovedad` int NOT NULL AUTO_INCREMENT,
+  `titulo` varchar(150) COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `subtitulo` varchar(255) COLLATE utf8mb4_unicode_520_ci DEFAULT NULL,
+  `contenido` text COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `categoria` enum('general','promocion','vuelo','mantenimiento','importante') COLLATE utf8mb4_unicode_520_ci DEFAULT 'general',
+  `prioridad` enum('baja','media','alta') COLLATE utf8mb4_unicode_520_ci DEFAULT 'media',
+  `estado` enum('borrador','publicada','archivada') COLLATE utf8mb4_unicode_520_ci DEFAULT 'publicada',
+  `imagen` varchar(255) COLLATE utf8mb4_unicode_520_ci DEFAULT NULL,
+  `fechaPublicacion` datetime DEFAULT CURRENT_TIMESTAMP,
+  `fechaCreacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fechaActualizacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idNovedad`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;

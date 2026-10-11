@@ -13,6 +13,16 @@ $urlPanel = match($rol) {
     'ceo'   => url('index.php?pagina=ceo'),
     default => url('index.php?pagina=cliente')
 };
+
+// Determinar la URL del botón "Inicio" dependiendo de si está logueado y su rol
+if ($isLoggedIn && $rol === 'cliente') {
+    $urlInicio = url('index.php?pagina=cliente');
+} else {
+    $urlInicio = url('index.php?pagina=inicio');
+}
+
+// Obtener la página actual para marcar el menú activo
+$paginaActual = $_GET['pagina'] ?? 'inicio';
 ?>
 
 <header class="container-xxl">
@@ -23,15 +33,15 @@ $urlPanel = match($rol) {
         </div>
         
         <div class="col-1 d-flex justify-content-center align-items-center ">
-            <a class="navbar-brand logoLink" href="#">
+            <a class="navbar-brand logoLink" href="<?= $urlInicio ?>">
                 <img class="logo" src=" <?= url('public/img/aerologo.webp') ?>" alt="Logo de la pagina" >
             </a>
         </div>
         
         <div class="col d-none d-md-flex align-items-center justify-content-center">
                 <ul class="nav navbar-custom d-flex overflow-hidden rounded-2">
-                    <li class="nav-item active">
-                        <a href="<?= url('index.php?pagina=inicio') ?>" class="nav-link">Inicio</a>
+                    <li class="nav-item <?= ($paginaActual === 'inicio' || $paginaActual === 'cliente') ? 'active' : '' ?>">
+                        <a href="<?= $urlInicio ?>" class="nav-link">Inicio</a>
                     </li>
                     <li class="nav-item">
                         <a href="#" class="nav-link">Vuelos</a>
@@ -39,8 +49,8 @@ $urlPanel = match($rol) {
                     <li class="nav-item">
                         <a href="#" class="nav-link">Promociones</a>
                     </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">Novedades</a>
+                    <li class="nav-item <?= ($paginaActual === 'cliente-novedades' || $paginaActual === 'cliente-novedad-detalle') ? 'active' : '' ?>">
+                        <a href="<?= url('index.php?pagina=cliente-novedades') ?>" class="nav-link">Novedades</a>
                     </li>
                     <li class="nav-item">
                         <a href="#" class="nav-link">Ayuda</a>

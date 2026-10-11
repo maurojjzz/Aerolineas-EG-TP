@@ -4,6 +4,10 @@ body {
     background-size: cover;
     background-position: center;
     min-height: 100vh;
+    /* Columna flexible: el footer (mt-auto) queda pegado al fondo de la ventana
+       aunque la página tenga poco contenido, sin dejar espacio debajo */
+    display: flex;
+    flex-direction: column;
 }
 
 .hero-content h5 {

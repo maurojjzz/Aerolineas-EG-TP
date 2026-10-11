@@ -32,9 +32,9 @@ if ($rol === 'admin') {
         ],
         [
             'label'  => 'Novedades',
-            'href'   => '#',
+            'href'   => 'index.php?pagina=novedades&seccion=listado',
             'icon'   => 'novedadesSidebar.png',
-            'activo' => $pagina === 'novedades',
+            'activo' => $pagina === 'novedades' || $pagina === 'novedad',
         ],
         [
             'label'  => 'Usuarios',
@@ -85,7 +85,7 @@ if ($rol === 'ceo') {
         ],
         [
             'label'  => 'Novedades',
-            'href'   => '#',
+            'href'   => 'index.php?pagina=cliente-novedades',
             'icon'   => 'novedadesSidebar.png',
             'activo' => $pagina === 'novedades',
         ],

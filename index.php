@@ -39,6 +39,12 @@ switch ($pagina) {
         require __DIR__ . '/src/views/admin/aerolineaLayout.php';
         break;
 
+    case 'novedad':
+    case 'novedades':
+        requireRol('admin');
+        require __DIR__ . '/src/views/admin/novedadLayout.php';
+        break;
+
     case 'usuario':
     case 'usuarios':
         requireRol('admin');
@@ -48,6 +54,22 @@ switch ($pagina) {
     case 'cliente':
         requireRol('cliente');
         require __DIR__ . '/src/views/cliente/home.php';
+        break;
+
+    case 'cliente-novedades':
+        if (!isset($_SESSION['usuario']) || (!in_array($_SESSION['usuario']['rol'], ['cliente', 'ceo']))) {
+            header('Location: ' . url('index.php?pagina=login'));
+            exit;
+        }
+        require __DIR__ . '/src/views/cliente/novedadListado.php';
+        break;
+
+    case 'cliente-novedad-detalle':
+        if (!isset($_SESSION['usuario']) || (!in_array($_SESSION['usuario']['rol'], ['cliente', 'ceo']))) {
+            header('Location: ' . url('index.php?pagina=login'));
+            exit;
+        }
+        require __DIR__ . '/src/views/cliente/novedadDetalle.php';
         break;
 
     case 'ceo':
