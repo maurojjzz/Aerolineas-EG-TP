@@ -169,7 +169,6 @@ $esCeo = ($rolActual === 'ceo');
                         <select name="rol" id="selectRol" class="form-select ctm-inp" required>
                             <option value="cliente" <?= $rolActual === 'cliente' ? 'selected' : '' ?>>Cliente</option>
                             <option value="ceo" <?= $rolActual === 'ceo' ? 'selected' : '' ?>>CEO Aerolínea</option>
-                            <option value="admin" <?= $rolActual === 'admin' ? 'selected' : '' ?>>Administrador</option>
                         </select>
                         <p id="infoRol" class="form-text-info">Nivel de permisos en la plataforma.</p>
                     </div>
@@ -261,6 +260,7 @@ $esCeo = ($rolActual === 'ceo');
     </div>
 </div>
 
+<script src="<?= url('public/js/admin/validacionUsuarioEditar.js') ?>"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const selectRol = document.getElementById("selectRol");

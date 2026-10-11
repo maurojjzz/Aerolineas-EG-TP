@@ -422,38 +422,71 @@ if ($diff > 0) {
 <script src="<?=  url('public/js/admin/aerolineaListado.js') ?>"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+    // 1. Detener la propagación en todos los enlaces y botones de acción de forma individual
+    document.querySelectorAll(".fila-tabla a, .fila-tabla button").forEach(function(elemento) {
+        elemento.addEventListener("click", function(e) {
+            e.stopPropagation();
+        });
+    });
+
+    // 2. Desplegar fila de detalle al hacer clic en el resto de la fila
+    document.querySelectorAll(".fila-tabla").forEach(function(row) {
+        row.addEventListener("click", function(e) {
+            const id = this.dataset.id;
+            const detalleRowTarget = document.getElementById("detalle-" + id);
+
+            if (detalleRowTarget) {
+                const estaAbierto = !detalleRowTarget.classList.contains("d-none");
+
+                // Cierra todas las demás filas desplegadas
+                document.querySelectorAll(".fila-detalle").forEach(function(det) {
+                    det.classList.add("d-none");
+                });
+
+                // Si no estaba abierta, la muestra
+                if (!estaAbierto) {
+                    detalleRowTarget.classList.remov("d-none"); // Nota: asegurate de que diga remove
+                }
+            }
+        });
+    });
+
+    // 3. Modal de confirmación toggle estado para aerolíneas
     const modalEl     = document.getElementById("modalToggleEstado");
     const modalTitulo = document.getElementById("modalToggleTitulo");
     const modalTexto  = document.getElementById("modalToggleTexto");
     const modalId     = document.getElementById("modalToggleId");
     const modalBtn    = document.getElementById("modalToggleConfirmar");
-    const bsModal     = new bootstrap.Modal(modalEl);
+    
+    if (modalEl) {
+        const bsModal = new bootstrap.Modal(modalEl);
 
-    document.querySelectorAll(".btn-toggle-estado").forEach(function(btn) {
-        btn.addEventListener("click", function(e) {
-            e.preventDefault();
-            e.stopPropagation();
+        document.querySelectorAll(".btn-toggle-estado").forEach(function(btn) {
+            btn.addEventListener("click", function(e) {
+                e.preventDefault();
+                e.stopPropagation();
 
-            const id     = this.dataset.id;
-            const activo = this.dataset.activo === "1";
-            const nombre = this.dataset.nombre;
+                const id     = this.dataset.id;
+                const activo = this.dataset.activo === "1";
+                const nombre = this.dataset.nombre;
 
-            modalId.value = id;
+                modalId.value = id;
 
-            if (activo) {
-                modalTitulo.textContent = "Desactivar aerolínea";
-                modalTexto.textContent  = `¿Seguro que querés desactivar "${nombre}"?`;
-                modalBtn.textContent    = "Desactivar";
-                modalBtn.className      = "btn btn-danger btn-sm";
-            } else {
-                modalTitulo.textContent = "Activar aerolínea";
-                modalTexto.textContent  = `¿Seguro que querés activar "${nombre}"?`;
-                modalBtn.textContent    = "Activar";
-                modalBtn.className      = "btn btn-success btn-sm";
-            }
+                if (activo) {
+                    modalTitulo.textContent = "Desactivar aerolínea";
+                    modalTexto.textContent  = `¿Seguro que querés desactivar "${nombre}"?`;
+                    modalBtn.textContent    = "Desactivar";
+                    modalBtn.className      = "btn btn-danger btn-sm";
+                } else {
+                    modalTitulo.textContent = "Activar aerolínea";
+                    modalTexto.textContent  = `¿Seguro que querés activar "${nombre}"?`;
+                    modalBtn.textContent    = "Activar";
+                    modalBtn.className      = "btn btn-success btn-sm";
+                }
 
-            bsModal.show();
+                bsModal.show();
+            });
         });
-    });
+    }
 });
 </script>
