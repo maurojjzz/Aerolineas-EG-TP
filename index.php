@@ -78,6 +78,10 @@ switch ($pagina) {
         require __DIR__ . '/src/views/auth/olvideContrasena.php';
         break;
 
+    case 'perfil':
+        require __DIR__ . '/src/views/usuarioPerfil.php';
+        break;
+
     default:
         http_response_code(404);
         echo 'Página no encontrada';

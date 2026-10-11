@@ -35,6 +35,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ctrl->resetPassword();
             break;
 
+        case 'editarPerfilPropio':
+            $ctrl->actualizarPerfilPropio();
+            break;
+
         case 'editar':
             requireRol('admin');
             $tokenPost = $_POST['csrf_token'] ?? '';
@@ -56,7 +60,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         case 'toggleEstado':
             requireRol('admin');
             
-            // Protección CSRF agregada para la toggle de estado
             $tokenPost = $_POST['csrf_token'] ?? '';
             $tokenSession = $_SESSION['csrf_token'] ?? '';
             if (empty($tokenPost) || empty($tokenSession) || !hash_equals($tokenSession, $tokenPost)) {
