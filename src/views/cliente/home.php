@@ -1,4 +1,11 @@
-<?php date_default_timezone_set('America/Argentina/Buenos_Aires');?>
+<?php 
+date_default_timezone_set('America/Argentina/Buenos_Aires');
+require_once __DIR__ . '/../../controllers/NovedadController.php';
+require_once __DIR__ . '/../../config/conexion.php';
+
+$novedadCtrl = new NovedadController($link);
+$novedades = $novedadCtrl->obtenerUltimasPublicadas(3); // Obtiene las últimas 3 publicadas
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -35,7 +42,7 @@
             <?php require './src/views/components/searchDesktop.php' ?>
         </section>
 
-        <!-- Reservas + Novedades hecho con claude por el momento hasta q sea implementado reservas y novedades -->
+        <!-- Reservas + Novedades -->
         <section class="container px-3 px-lg-5 mb-5">
             <div class="row g-4">
 
@@ -127,50 +134,33 @@
                             <span class="text-primary fs-5">📢</span>
                             <h5 class="fw-bold m-0">Novedades</h5>
                         </div>
-                        <a href="#" class="text-primary text-decoration-none" style="font-size:0.875rem;">
+                        <a href="<?= url('index.php?pagina=cliente-novedades') ?>" class="text-primary text-decoration-none" style="font-size:0.875rem;">
                             Ver todas las novedades →
                         </a>
                     </div>
 
                     <div class="d-flex flex-column gap-3">
-
-                        <?php
-                        $novedades = [
-                            [
-                                'img'    => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=80&h=80&fit=crop',
-                                'titulo' => 'Nuevas rutas a destinos de ensueño',
-                                'desc'   => 'Descubrí nuestras nuevas rutas a Cancún, Punta Cana y más destinos increíbles.',
-                                'fecha'  => '18/05/2024',
-                            ],
-                            [
-                                'img'    => 'https://images.unsplash.com/photo-1553531384-411a247ccd73?w=80&h=80&fit=crop',
-                                'titulo' => 'Equipaje sin complicaciones',
-                                'desc'   => 'Conocé nuestras nuevas políticas de equipaje más flexibles y beneficiosas.',
-                                'fecha'  => '12/05/2024',
-                            ],
-                            [
-                                'img'    => 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=80&h=80&fit=crop',
-                                'titulo' => 'Check-in más fácil y rápido',
-                                'desc'   => 'Ahorrá tiempo con el check-in online desde nuestra app.',
-                                'fecha'  => '05/05/2024',
-                            ],
-                        ];
-                        ?>
-
-                        <?php foreach ($novedades as $nov): ?>
-                        <div class="bg-white rounded-3 border p-3 d-flex gap-3 align-items-start">
-                            <img src="<?= $nov['img'] ?>" alt="novedad"
-                                 class="rounded-2 flex-shrink-0"
-                                 style="width:70px;height:70px;object-fit:cover;">
-                            <div class="flex-grow-1 min-width-0">
-                                <p class="fw-semibold m-0" style="font-size:0.9rem;"><?= $nov['titulo'] ?></p>
-                                <p class="text-muted m-0 mt-1" style="font-size:0.8rem;line-height:1.3;"><?= $nov['desc'] ?></p>
-                                <p class="text-muted m-0 mt-1" style="font-size:0.75rem;"><?= $nov['fecha'] ?></p>
+                        <?php if (empty($novedades)): ?>
+                            <p class="text-muted small">No hay novedades registradas.</p>
+                        <?php else: ?>
+                            <?php foreach ($novedades as $nov): ?>
+                            <div class="bg-white rounded-3 border p-3 d-flex gap-3 align-items-start" style="cursor:pointer;" onclick="window.location.href='<?= url('index.php?pagina=cliente-novedad-detalle&id=' . $nov['idNovedad']) ?>'">
+                                <?php if (!empty($nov['imagen'])): ?>
+                                    <img src="<?= htmlspecialchars($nov['imagen']) ?>" alt="novedad" class="rounded-2 flex-shrink-0" style="width:70px;height:70px;object-fit:cover;">
+                                <?php else: ?>
+                                    <div class="rounded-2 bg-light d-flex align-items-center justify-content-center text-primary flex-shrink-0" style="width:70px;height:70px;">
+                                        <i class="bi bi-megaphone fs-4"></i>
+                                    </div>
+                                <?php endif; ?>
+                                <div class="flex-grow-1 min-width-0">
+                                    <p class="fw-semibold m-0 text-truncate" style="font-size:0.9rem;"><?= htmlspecialchars($nov['titulo']) ?></p>
+                                    <p class="text-muted m-0 mt-1 text-truncate" style="font-size:0.8rem;line-height:1.3;"><?= htmlspecialchars($nov['subtitulo'] ?? $nov['contenido']) ?></p>
+                                    <p class="text-muted m-0 mt-1" style="font-size:0.75rem;"><?= date('d/m/Y', strtotime($nov['fechaPublicacion'])) ?></p>
+                                </div>
+                                <span class="text-muted flex-shrink-0">›</span>
                             </div>
-                            <span class="text-muted flex-shrink-0">›</span>
-                        </div>
-                        <?php endforeach; ?>
-
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </div>
                 </div>
 
