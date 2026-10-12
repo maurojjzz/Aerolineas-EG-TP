@@ -12,7 +12,7 @@
 
             <img
                 src="<?= url('public/img/aerologo.webp') ?>"
-                alt="Logo"
+                alt="Logo de Volaré"
                 class="logo-sidebar"
             >
 

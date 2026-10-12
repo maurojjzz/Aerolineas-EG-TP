@@ -25,7 +25,7 @@
         <section class="container-xxl custom-main">
             
             <div class="hero-content text-center mt-3 mt-sm-4 mt-md-5 user-select-none">
-                <h5 >Vuela sin limites</h5>
+                <h5 >Volaré</h5>
                 <h2 >DONDE CADA <span>VIAJE</span> COMIENZA</h2>
                 <p>Conectamos personas y destinos con una experiencia rapida, segura y confiable.</p>
             </div>

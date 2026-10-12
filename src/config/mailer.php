@@ -19,7 +19,7 @@ function crearMailer(): PHPMailer {
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port       = $env['MAIL_PORT'];
     $mail->CharSet    = 'UTF-8';
-    $mail->setFrom($env['MAIL_FROM'], $env['MAIL_FROM_NAME'] ?? 'Vuela Sin Límites');
+    $mail->setFrom($env['MAIL_FROM'], $env['MAIL_FROM_NAME'] ?? 'Volaré');
 
     return $mail;
 }

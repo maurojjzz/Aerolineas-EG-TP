@@ -21,7 +21,7 @@
         <?php require './src/views/layouts/header.php' ?>
 
         <div class="hero-content text-center mt-4 user-select-none">
-            <h5 class="text-uppercase" >Vuela sin limites</h5>
+            <h5 class="text-uppercase" >Volaré</h5>
             <h2 >DONDE CADA <span>VIAJE</span> COMIENZA</h2>                
             <p>Busca vuelos, gestiona tus reservas y descubre destinos increibles.</p>
         </div>

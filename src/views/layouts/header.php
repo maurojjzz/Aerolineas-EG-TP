@@ -24,7 +24,7 @@ $urlPanel = match($rol) {
         
         <div class="col-1 d-flex justify-content-center align-items-center ">
             <a class="navbar-brand logoLink" href="#">
-                <img class="logo" src=" <?= url('public/img/aerologo.webp') ?>" alt="Logo de la pagina" >
+                <img class="logo" src=" <?= url('public/img/aerologo.webp') ?>" alt="Logo de Volaré" >
             </a>
         </div>
         
@@ -43,7 +43,7 @@ $urlPanel = match($rol) {
                         <a href="#" class="nav-link">Novedades</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link">Ayuda</a>
+                        <a href="<?= url('index.php?pagina=ayuda') ?>" class="nav-link">Ayuda</a>
                     </li>
                 </ul>
         </div>
