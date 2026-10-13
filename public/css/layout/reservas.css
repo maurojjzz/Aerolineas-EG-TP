@@ -1,0 +1,73 @@
+body {
+    background-image: url("../../img/fondo-cliente.webp");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    transition: all 0.3s ease-in-out;
+}
+
+.resultado-card {
+    transition: box-shadow 0.2s;
+    min-height: 110px;
+}
+
+
+.precio-principal {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0d3262;
+}
+
+.linea-vuelo {
+    height: 2px;
+    background: #d1d5db;
+    flex: 1;
+    position: relative;
+}
+
+.linea-vuelo::after {
+    content: "✈";
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.1rem;
+    color: #2066ba;
+}
+
+.filtro{
+    cursor:pointer;
+}
+
+#filtrosColumna {
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+#filtrosColumna.col-1 .filtro-toggle-icon,
+#filtrosColumna:not(.col-3) .filtro-toggle-icon {
+    display: block;
+    margin: 0 auto;
+}
+
+#filtrosColumna.col-1 #filtroBtn {
+    justify-content: center !important;
+}
+
+#resultadosColumna {
+    transition: all 0.3s ease;
+}
+
+.filtros-contenido {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+    white-space: nowrap;
+    min-width: 200px;
+}
+
+.filtros-sidebar-abierto .filtros-contenido {
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 0.2s ease 0.1s;
+}

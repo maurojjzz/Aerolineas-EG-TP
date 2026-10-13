@@ -33,30 +33,22 @@
         </div>
 
 
-        <form class="desktop-search-form d-flex align-items-center ">
+        <form  
+            class="desktop-search-form d-flex align-items-center "
+            action="<?= url('index.php?pagina=buscar-vuelos') ?>" 
+            method="GET"
+        >
+            <input type="hidden" name="pagina" value="buscar-vuelos">
 
             <div class="desktop-field desktop-airport position-relative">
-
                 <label for="from-desktop">Salida</label>
+                <input type="text" id="from-desktop" name="origen" class="desktop-main-input" placeholder="Ciudad" autocomplete="off">
 
-                <input
-                    type="text"
-                    id="from-desktop"
-                    class="desktop-main-input"
-                    placeholder="Ciudad"
-                    autocomplete="off"
-                >
-
-                <p id="from-location-desktop">
-                    Ingrese salida
-                </p>
+                <p id="from-location-desktop">Ingrese salida</p>
 
                 <span class="desktop-arrow">⌄</span>
 
-                <div
-                    id="from-results-desktop"
-                    class="autocomplete-results">
-                </div>
+                <div id="from-results-desktop" class="autocomplete-results"></div>
             </div>
 
 
@@ -74,6 +66,7 @@
                     class="desktop-main-input"
                     placeholder="Ciudad"
                     autocomplete="off"
+                    name="destino"
                 >
 
                 <p id="to-location-desktop">
@@ -104,6 +97,7 @@
                     id="fecha-desktop"
                     class="desktop-date-input"
                     min="<?php echo date('Y-m-d'); ?>"
+                    name="fecha"
                 >
 
                 <p id="fecha-sub-desktop">
@@ -127,6 +121,7 @@
                     id="fecha-vuelta-desktop"
                     class="desktop-date-input"
                     min="<?php echo date('Y-m-d'); ?>"
+                    name="fecha_vuelta"
                 >
 
                 <p id="fecha-vuelta-sub-desktop">
@@ -146,7 +141,7 @@
                 </label>
 
                 <select
-                    id="passengers-desktop" class="form-select desktop-passenger-select">
+                    id="passengers-desktop" class="form-select desktop-passenger-select" name="pasajeros">
                     <option value="1">1 Pasajero</option>
                     <option value="2">2 Pasajeros</option>
                     <option value="3">3 Pasajeros</option>
