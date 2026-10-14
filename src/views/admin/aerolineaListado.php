@@ -143,7 +143,7 @@ if ($diff > 0) {
                 </div>
 
                 <table class="table table-hover align-middle border-top mt-2 tabla-aerolineas">
-                    <thead class="">
+                    <thead>
                         <tr>
                             <th scope="col" class=" text-center  fw-bold " >CODIGO</th>
                             <th scope="col" class="fw-bold ">NOMBRE</th>

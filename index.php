@@ -55,6 +55,16 @@ switch ($pagina) {
         require __DIR__ . '/src/views/ceo/home.php';
         break;
 
+    case 'vuelos':
+        requireRol('ceo');
+        require __DIR__ . '/src/views/ceo/vueloListado.php';
+        break;
+        
+    case 'vuelo':
+        requireRol('ceo');
+        require __DIR__ . '/src/views/ceo/vueloForm.php';
+        break;
+
     case 'verificar':
         require __DIR__ . '/src/views/auth/verificarEmail.php';
         break;
@@ -67,6 +77,32 @@ switch ($pagina) {
         soloInvitados();
         require __DIR__ . '/src/views/auth/olvideContrasena.php';
         break;
+
+    case 'buscar-vuelos':
+        require __DIR__ . '/src/views/cliente/resultados.php';
+        break;
+
+    case 'reservar':
+        requireRol('cliente');
+        require __DIR__ . '/src/views/cliente/reservar.php';
+        break;
+
+    case 'mis-reservas':
+        requireRol('cliente');
+        require __DIR__ . '/src/views/cliente/misReservas.php';
+        break;
+    
+    case 'pago':
+        requireRol('cliente');
+        require __DIR__ . '/src/views/cliente/pago.php';
+        break;
+    
+    case 'aeropuertos-json':
+        header('Content-Type: application/json; charset=utf-8');
+        header('Cache-Control: public, max-age=86400');
+        $aeropuertos = require __DIR__ . '/src/data/aeropuertos.php';
+        echo json_encode($aeropuertos, JSON_UNESCAPED_UNICODE);
+        exit;
 
     default:
         http_response_code(404);
