@@ -166,16 +166,15 @@ class ReservaController {
         redirect('index.php?pagina=mis-reservas');
     }
 
-    // ── Listar reservas del usuario ───────────────────────────────────────────
     public function listarMisReservas(int $idUsuario): array {
         $stmt = mysqli_prepare($this->conexion,
             "SELECT r.*, v.origenVuelo, v.destinoVuelo, v.fechaHoraSalidaVuelo,
                     v.precioVuelo, a.nombreAerolinea, a.codigoIATA, a.logoUrl
-             FROM reserva r
-             JOIN vuelo v ON r.idVuelo = v.idVuelo
-             JOIN aerolinea a ON v.idAerolinea = a.idAerolinea
-             WHERE r.idUsuario = ?
-             ORDER BY r.fechaReserva DESC");
+            FROM reserva r
+            JOIN vuelo v ON r.idVuelo = v.idVuelo
+            JOIN aerolinea a ON v.idAerolinea = a.idAerolinea
+            WHERE r.idUsuario = ?
+            ORDER BY r.fechaReserva DESC");
         mysqli_stmt_bind_param($stmt, 'i', $idUsuario);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
@@ -185,17 +184,106 @@ class ReservaController {
         return $filas;
     }
 
-    // ── Obtener reserva por id (para pantalla de reservar) ────────────────────
+    // Obtener reserva por id (para pantalla de reservar)
     public function obtenerVueloParaReservar(int $idVuelo): ?array {
         $stmt = mysqli_prepare($this->conexion,
             "SELECT v.*, a.nombreAerolinea, a.codigoIATA, a.logoUrl
-             FROM vuelo v
-             JOIN aerolinea a ON v.idAerolinea = a.idAerolinea
-             WHERE v.idVuelo = ? AND v.asientosDisponibles > 0 AND v.fechaHoraSalidaVuelo > NOW()");
+            FROM vuelo v
+            JOIN aerolinea a ON v.idAerolinea = a.idAerolinea
+            WHERE v.idVuelo = ? AND v.asientosDisponibles > 0 AND v.fechaHoraSalidaVuelo > NOW()");
         mysqli_stmt_bind_param($stmt, 'i', $idVuelo);
         mysqli_stmt_execute($stmt);
         $fila = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
         mysqli_stmt_close($stmt);
         return $fila ?: null;
     }
+
+
+
+    // Validar y redirigir a pantalla de pago 
+    
+    public function irAPago(): void {
+        $idReserva = (int)($_POST['idReserva'] ?? 0);
+        $idUsuario = (int)($_SESSION['usuario']['idUsuario'] ?? 0);
+
+        if (!$idReserva) {
+            flash_set('error', 'Reserva inválida.');
+            redirect('index.php?pagina=mis-reservas');
+        }
+
+        $stmt = mysqli_prepare($this->conexion,
+            "SELECT idReserva FROM reserva
+            WHERE idReserva = ? AND idUsuario = ? AND estadoReserva = 'pendiente de pago'");
+        mysqli_stmt_bind_param($stmt, 'ii', $idReserva, $idUsuario);
+        mysqli_stmt_execute($stmt);
+        $existe = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+        mysqli_stmt_close($stmt);
+
+        if (!$existe) {
+            flash_set('error', 'Reserva no encontrada o ya procesada.');
+            redirect('index.php?pagina=mis-reservas');
+        }
+
+        redirect('index.php?pagina=pago&idReserva=' . $idReserva);
+    }
+
+    // Cancelar reservas pendientes con más de 3 días sin pagar y devolver los asientos en una sola transacción
+
+    public function limpiarReservasVencidas(): void {
+        
+        mysqli_begin_transaction($this->conexion);
+        try {
+            // Obtener las que van a cancelarse para devolver asientos
+            $stmt = mysqli_prepare($this->conexion,
+                "SELECT idVuelo, cantPasajeros FROM reserva
+                WHERE estadoReserva = 'pendiente de pago'
+                AND fechaReserva < NOW() - INTERVAL 3 DAY");
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+            $vencidas = [];
+            while ($row = mysqli_fetch_assoc($result)) $vencidas[] = $row;
+            mysqli_stmt_close($stmt);
+
+            if (!empty($vencidas)) {
+                // Cancelar
+                $stmt = mysqli_prepare($this->conexion,
+                    "UPDATE reserva SET estadoReserva = 'cancelada'
+                    WHERE estadoReserva = 'pendiente de pago'
+                    AND fechaReserva < NOW() - INTERVAL 3 DAY");
+                mysqli_stmt_execute($stmt);
+                mysqli_stmt_close($stmt);
+
+                // Devolver asientos por cada vuelo afectado
+                foreach ($vencidas as $v) {
+                    $stmt = mysqli_prepare($this->conexion,
+                        "UPDATE vuelo SET asientosDisponibles = asientosDisponibles + ?
+                        WHERE idVuelo = ?");
+                    mysqli_stmt_bind_param($stmt, 'ii', $v['cantPasajeros'], $v['idVuelo']);
+                    mysqli_stmt_execute($stmt);
+                    mysqli_stmt_close($stmt);
+                }
+            }
+
+            mysqli_commit($this->conexion);
+        } catch (Exception $e) {
+            mysqli_rollback($this->conexion);
+        }
+    }
+
+    public function obtenerReservaPorId(int $idReserva, int $idUsuario): ?array {
+        $stmt = mysqli_prepare($this->conexion,
+            "SELECT r.*, v.origenVuelo, v.codigoOrigen, v.destinoVuelo, v.codigoDestino,
+                    v.fechaHoraSalidaVuelo, v.fechaHoraLlegadaVuelo, v.asientosTotales,
+                    v.precioVuelo, a.nombreAerolinea, a.codigoIATA, a.logoUrl
+            FROM reserva r
+            JOIN vuelo v ON r.idVuelo = v.idVuelo
+            JOIN aerolinea a ON v.idAerolinea = a.idAerolinea
+            WHERE r.idReserva = ? AND r.idUsuario = ?");
+        mysqli_stmt_bind_param($stmt, 'ii', $idReserva, $idUsuario);
+        mysqli_stmt_execute($stmt);
+        $fila = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+        mysqli_stmt_close($stmt);
+        return $fila ?: null;
+    }
+    
 }

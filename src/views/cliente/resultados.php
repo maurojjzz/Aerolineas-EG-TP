@@ -68,7 +68,9 @@ function urlPaginaBusqueda(int $pag): string {
 <div style="min-height: 100vh;">
     <div class="container-xxl py-4 px-3 px-lg-5">
 
-        <h2 class="fw-bold mb-1 fs-1 text-center" style="color:#FFFFFF;">Vuelos</h2>
+        <div class="titulo-cuadro-resul text-center ">
+            <h2 >RESULTADO DE <span>VUELOS</span> </h2>
+        </div>
 
         <div class="d-flex flex-column mb-2">
             <p class="d-flex align-items-center justify-content-center gap-2 text-light ">
@@ -298,12 +300,11 @@ function urlPaginaBusqueda(int $pag): string {
 </script>
 
 <script>
-
-    console.log('Resultados de todos los vuelos', <?= json_encode($resultado['data']) ?>);
-    console.log('Origen:', <?= json_encode($origen) ?>);
-    console.log('Destino:', <?= json_encode($destino) ?>);
-    console.log('Fecha:', <?= json_encode($fecha) ?>);
-    console.log('Pasajeros:', <?= json_encode($pasajeros) ?>);
+    // console.log('Resultados de todos los vuelos', <?= json_encode($resultado['data']) ?>);
+    // console.log('Origen:', <?= json_encode($origen) ?>);
+    // console.log('Destino:', <?= json_encode($destino) ?>);
+    // console.log('Fecha:', <?= json_encode($fecha) ?>);
+    // console.log('Pasajeros:', <?= json_encode($pasajeros) ?>);
 
     const filtroBtn          = document.getElementById('filtroBtn');
     const filtrosColumna     = document.getElementById('filtrosColumna');
@@ -316,7 +317,6 @@ function urlPaginaBusqueda(int $pag): string {
         abierto = !abierto;
 
         if (abierto) {
-            // Abrir: col-1 → col-3, resultados col-11 → col-9
             filtrosColumna.classList.remove('col-1');
             filtrosColumna.classList.add('col-3');
             filtrosColumna.classList.add('filtros-sidebar-abierto');

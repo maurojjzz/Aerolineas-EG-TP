@@ -160,7 +160,7 @@ class VueloController {
 
         mysqli_stmt_bind_param(
             $stmt, 
-            'ssssssiidi',    
+            'ssssssiidii',    
             $origen,
             $codigoOrigen,
             $destino,
@@ -168,6 +168,7 @@ class VueloController {
             $fechaHoraSalida,
             $fechaHoraLlegada,
             $asientosTot,
+            $asientosDisp,
             $nuevosDisponibles,
             $precio,
             $idVuelo,

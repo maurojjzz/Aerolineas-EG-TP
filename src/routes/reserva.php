@@ -27,12 +27,19 @@ switch ($accion) {
     case 'crear':
         $ctrl->crearReserva();
         break;
+
     case 'confirmar':
         $ctrl->confirmarPago();
         break;
+
     case 'cancelar':
         $ctrl->cancelarReserva();
         break;
+
+    case 'ir-a-pago':
+        $ctrl->irAPago();
+        break;
+
     default:
         http_response_code(404);
         echo "Acción no encontrada";

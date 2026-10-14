@@ -92,6 +92,11 @@ switch ($pagina) {
         require __DIR__ . '/src/views/cliente/misReservas.php';
         break;
     
+    case 'pago':
+        requireRol('cliente');
+        require __DIR__ . '/src/views/cliente/pago.php';
+        break;
+    
     case 'aeropuertos-json':
         header('Content-Type: application/json; charset=utf-8');
         header('Cache-Control: public, max-age=86400');
