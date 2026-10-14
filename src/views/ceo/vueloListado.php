@@ -5,33 +5,35 @@ require_once __DIR__ . '/../../config/auth.php';
 require_once __DIR__ . '/../../controllers/VueloController.php';
 
 $idAerolinea = aerolineaCEO();
-if (!$idAerolinea) redirect('index.php?pagina=login'); // revisarlo mejor seria otra cosa como un mensaje o no se
+if (!$idAerolinea) redirect('index.php?pagina=login');
 
 $ctrl = new VueloController($link);
 
 $porPaginaPermitidos = [5, 10, 25, 50];
-$pagina      = max(1, (int)($_GET['pag'] ?? 1));
+$pagActual    = max(1, (int)($_GET['pag'] ?? 1));
 $porPaginaRaw = (int)($_GET['porPagina'] ?? 10);
-$porPagina   = in_array($porPaginaRaw, $porPaginaPermitidos) ? $porPaginaRaw : 10;
-$busqueda    = trim($_GET['busqueda'] ?? '');
+$porPagina    = in_array($porPaginaRaw, $porPaginaPermitidos) ?$porPaginaRaw : 10;
+$busqueda     = trim($_GET['busqueda'] ?? '');
 
-$resultado    = $ctrl->listarVuelosPaginado($idAerolinea, $pagina, $porPagina, $busqueda);
-$vuelos       = $resultado['data'];
-$total        = $resultado['total'];
-$totalPaginas = $resultado['totalPaginas'];
+$resultado    = $ctrl->listarVuelosPaginado($idAerolinea, $pagActual,$porPagina, $busqueda);$vuelos       = $resultado['data'];$total        = $resultado['total'];$totalPaginas = max(1, (int)($resultado['totalPaginas'] ?? ceil($total / $porPagina)));$pagActual    = min($pagActual,$totalPaginas);
 
-$desde = $total === 0 ? 0 : ($pagina - 1) * $porPagina + 1;
-$hasta = min($pagina * $porPagina, $total);
+$desde =$total === 0 ? 0 : ($pagActual - 1) *$porPagina + 1;
+$hasta = min($pagActual * $porPagina,$total);
 
 function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
-    $params = $_GET;
-    unset($params['pagina']); 
-    $params['pag'] = $pag;
-    if ($porPagina !== null) $params['porPagina'] = $porPagina;
-    return 'index.php?pagina=vuelos&' . http_build_query($params); 
+    $params = [];$params['pagina'] = 'vuelos';
+    $params['pag'] = (int)$pag;
+    
+    if ($porPagina !== null) {
+        $params['porPagina'] = (int)$porPagina;
+    }
+    
+    if (!empty($_GET['busqueda'])) {
+        $params['busqueda'] = trim($_GET['busqueda']);
+    }
+    
+    return 'index.php?' . http_build_query($params); 
 }
-
-
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -50,13 +52,11 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
     <body>
         <div class="d-flex min-vh-100 row g-0 m-0 p-2 pe-2">
             
-
-
-            <aside class="admin-sidebar text-white d-none d-md-block col-md-3 col-xxl-2 pe-1 ">
+            <aside class="admin-sidebar text-white d-none d-md-block col-md-3 col-xxl-1 pe-1 ">
                 <?php require __DIR__ . '/../layouts/sidebarAdmin.php'; ?>
             </aside>
 
-            <div class="admin-main col-12 col-md-9 col-xxl-10 bg-light rounded-3 overflow-hidden ">
+            <div class="admin-main col-12 col-md-11 col-xxl-11 bg-light rounded-3 overflow-hidden">
 
                 <header class="admin-header">
                     <?php require __DIR__ . '/../layouts/headerAdmin.php'; ?>
@@ -80,13 +80,14 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                                             placeholder="Buscar en la tabla..."
                                             autocomplete="off"
                                             style="max-width: 240px;"
+                                            value="<?= htmlspecialchars($busqueda) ?>"
                                         >
                                         <a href="<?= url('index.php?pagina=vuelo') ?>" class="btn btn-primary text-nowrap w-100">
                                             + Crear Vuelo
                                         </a>
                                     </div>
                                 </div>
-                                <table class="table table-hover align-middle border-top mt-2  tabla-vuelos">
+                                <table class="table table-hover align-middle border-top mt-2 tabla-vuelos">
                                     <thead>
                                         <tr>
                                             <th scope="col" class="fw-bold" >ORIGEN</th>
@@ -106,7 +107,7 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                                                     No hay vuelos registrados todavía.
                                                 </td>
                                             </tr>
-                                        <?php else: foreach ($vuelos as $v): ?>
+                                        <?php else: foreach ($vuelos as$v): ?>
                                         <tr class="fila-tabla" data-id="<?= $v['idVuelo'] ?>" style="cursor:pointer;">
                                             <td>
                                                 <div class="d-flex align-items-center gap-2">
@@ -137,10 +138,10 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                                             <td class="d-none d-sm-table-cell "><?= $v['asientosTotales'] ?></td>
                                             <td class="d-none d-sm-table-cell "><?= $v['asientosDisponibles'] ?></td>
                                             <td class="fw-semibold">
-                                                $ <?= number_format($v['precioVuelo'], 2, ',', '.') ?>
+                                                $<?= number_format($v['precioVuelo'], 2, ',', '.') ?>
                                             </td>
                                             <td>
-                                                <div class="d-flex justify-content-evenly w-100">
+                                                <div class="d-flex justify-content-center align-items-center gap-2">
                                                     <a href="<?= url('index.php?pagina=vuelo&id=' . $v['idVuelo']) ?>"
                                                     class="p-0 bg-transparent border-0"
                                                     title="Editar vuelo">
@@ -150,7 +151,7 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                                                     <button type="button"
                                                             class="p-0 bg-transparent border-0 btn-eliminar-vuelo"
                                                             data-id="<?= $v['idVuelo'] ?>"
-                                                            data-ruta="<?= htmlspecialchars($v['origenVuelo'] . ' → ' . $v['destinoVuelo']) ?>"
+                                                            data-ruta="<?= htmlspecialchars($v['origenVuelo'] . ' → ' .$v['destinoVuelo']) ?>"
                                                             title="Eliminar vuelo">
                                                         <img src="<?= url('public/img/icons/trash.png') ?>"
                                                             class="img-fluid btn-tabla" alt="eliminar">
@@ -162,8 +163,6 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                                             <td colspan="8" class="p-0">
                                                 <div class="detalle-aerolinea px-4 py-3">
                                                     <div class="row g-3 align-items-start">
-
-                                                        <!-- Col 1: ruta + datos -->
                                                         <div class="col-12 col-md-4">
                                                             <p class="fw-bold m-0" style="font-size:0.95rem;">
                                                                 <?= htmlspecialchars($v['origenVuelo']) ?> → <?= htmlspecialchars($v['destinoVuelo']) ?>
@@ -200,7 +199,7 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                                                                 <div>
                                                                     <span class="text-muted">Precio:</span>
                                                                     <span class="text-primary fw-medium ms-1">
-                                                                        $ <?= number_format($v['precioVuelo'], 2, ',', '.') ?>
+                                                                        $<?= number_format($v['precioVuelo'], 2, ',', '.') ?>
                                                                     </span>
                                                                 </div>
                                                                 <div>
@@ -211,11 +210,7 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                                                                 </div>
                                                             </div>
                                                         </div>
-
-                                                        <!-- Col 2: vacía / estado futuro -->
                                                         <div class="col-12 col-md-4"></div>
-
-                                                        <!-- Col 3: acciones -->
                                                         <div class="col-12 col-md-4 d-flex flex-column gap-2">
                                                             <p class="fw-semibold m-0 mb-1" style="font-size:0.85rem;">Acciones disponibles</p>
                                                             <a href="<?= url('index.php?pagina=vuelo&id=' . $v['idVuelo']) ?>"
@@ -225,28 +220,74 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                                                             <button type="button"
                                                                     class="btn btn-outline-danger btn-sm d-flex align-items-center gap-2 btn-eliminar-vuelo"
                                                                     data-id="<?= $v['idVuelo'] ?>"
-                                                                    data-ruta="<?= htmlspecialchars($v['origenVuelo'] . ' → ' . $v['destinoVuelo']) ?>">
+                                                                    data-ruta="<?= htmlspecialchars($v['origenVuelo'] . ' → ' .$v['destinoVuelo']) ?>">
                                                                 Eliminar vuelo
                                                             </button>
                                                         </div>
-
                                                     </div>
                                                 </div>
                                             </td>
                                         </tr>
                                         <?php endforeach; endif; ?>
                                     </tbody>
-                                    
                                 </table>
                                 
+                                <!-- Bloque de Paginación Estandarizado -->
                                 <div class="border-top px-3 py-3">
                                     <div class="d-flex flex-column flex-sm-row justify-content-center justify-content-sm-between align-items-center flex-wrap gap-3">
+
                                         <span class="text-muted" style="font-size:0.8rem;">
-                                            <strong><?= $desde ?></strong> a <strong><?= $hasta ?></strong> de <strong><?= $total ?></strong> vuelos
+                                            Mostrando <strong><?= $desde ?></strong> a <strong><?= $hasta ?></strong> de <strong><?= $total ?></strong> vuelos
                                         </span>
 
-                                        
+                                        <nav aria-label="Paginación">
+                                            <ul class="pagination pagination-sm m-0 gap-1">
 
+                                                <li class="page-item <?= $pagActual <= 1 ? 'disabled' : '' ?>">
+                                                    <a class="page-link rounded-2 border-0 <?= $pagActual <= 1 ? 'text-muted' : '' ?>" 
+                                                    href="<?= $pagActual > 1 ? urlPaginaVuelo(1) : '#' ?>">«</a>
+                                                </li>
+                                                <li class="page-item <?= $pagActual <= 1 ? 'disabled' : '' ?>">
+                                                    <a class="page-link rounded-2 border-0 <?= $pagActual <= 1 ? 'text-muted' : '' ?>" 
+                                                    href="<?= $pagActual > 1 ? urlPaginaVuelo($pagActual - 1) : '#' ?>">‹</a>
+                                                </li>
+
+                                                <?php
+                                                $rango  = 2;
+                                                $inicio = max(1, $pagActual -$rango);
+                                                $fin    = min($totalPaginas, $pagActual +$rango);
+                                                ?>
+
+                                                <?php if ($inicio > 1): ?>
+                                                    <li class="page-item disabled">
+                                                        <span class="page-link border-0 text-muted rounded-2">…</span>
+                                                    </li>
+                                                <?php endif; ?>
+
+                                                <?php for ($i = $inicio; $i <= $fin; $i++): ?>
+                                                    <li class="page-item">
+                                                        <a class="page-link rounded-2 border-0 <?= $i ===$pagActual ? 'active-pag' : 'text-secondary' ?>" 
+                                                        href="<?= urlPaginaVuelo($i) ?>"><?= $i ?></a>
+                                                    </li>
+                                                <?php endfor; ?>
+
+                                                <?php if ($fin <$totalPaginas): ?>
+                                                    <li class="page-item disabled">
+                                                        <span class="page-link border-0 text-muted rounded-2">…</span>
+                                                    </li>
+                                                <?php endif; ?>
+
+                                                <li class="page-item <?= $pagActual >=$totalPaginas ? 'disabled' : '' ?>">
+                                                    <a class="page-link rounded-2 border-0 <?= $pagActual >=$totalPaginas ? 'text-muted' : '' ?>" 
+                                                    href="<?= $pagActual < $totalPaginas ? urlPaginaVuelo($pagActual + 1) : '#' ?>">›</a>
+                                                </li>
+                                                <li class="page-item <?= $pagActual >=$totalPaginas ? 'disabled' : '' ?>">
+                                                    <a class="page-link rounded-2 border-0 <?= $pagActual >=$totalPaginas ? 'text-muted' : '' ?>" 
+                                                    href="<?= $pagActual < $totalPaginas ? urlPaginaVuelo($totalPaginas) : '#' ?>">»</a>
+                                                </li>
+
+                                            </ul>
+                                        </nav>
 
                                         <div class="d-flex align-items-center gap-2">
                                             <span class="text-muted" style="font-size:0.8rem;">Por página:</span>
@@ -255,30 +296,25 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                                                 style="width:auto; font-size:0.8rem; cursor:pointer;"
                                                 onchange="window.location.href=this.value"
                                             >
-                                                <?php foreach ([5, 10, 25, 50] as $op): ?>
-                                                    <option value="<?= urlPaginaVuelo(1, $op) ?>" <?= $op === $porPagina ? 'selected' : '' ?>>
-                                                        <?= $op ?>
+                                                <?php foreach ($porPaginaPermitidos as$op): ?>
+                                                    <option value="<?= urlPaginaVuelo(1, $op) ?>" <?= $op ===$porPagina ? 'selected' : '' ?>>
+                                                        <?= $op ?> por página
                                                     </option>
                                                 <?php endforeach; ?>
                                             </select>
                                         </div>
 
-
                                     </div>
-
-
                                 </div>
-                                
                                 
                             </div>
                         </div>
                     </div>
-                    
                 </main>
             </div>
         </div>
 
-                <!-- Modal eliminar vuelo -->
+        <!-- Modal eliminar vuelo -->
         <div class="modal fade" id="modalEliminarVuelo" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -299,12 +335,11 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                 </div>
             </div>
         </div>
-        
 
         <?php require __DIR__ . '/../components/menuMobileAdmin.php' ?>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-        <script src="<?=  url('public/js/admin/sidebar.js') ?>"></script>
+        <script src="<?= url('public/js/admin/sidebar.js') ?>"></script>
         <script>
         document.addEventListener("DOMContentLoaded", function () {
 

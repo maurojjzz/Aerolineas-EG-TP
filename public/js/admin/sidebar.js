@@ -13,40 +13,45 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    function toggleSidebar() {
+    function aplicarEstado(abierto) {
+        if (abierto) {
+            sidebar.classList.remove("col-md-1", "col-xxl-1");
+            sidebar.classList.add("col-md-3", "col-xxl-2");
 
-        sidebar.classList.toggle("col-xxl-2");
-        sidebar.classList.toggle("col-xxl-1");
+            main.classList.remove("col-md-11", "col-xxl-11");
+            main.classList.add("col-md-9", "col-xxl-10");
 
-        main.classList.toggle("col-xxl-10");
-        main.classList.toggle("col-xxl-11");
+            spans.forEach(span => span.classList.remove("d-none"));
+            titleSide.classList.remove("d-none");
+            logo.style.width = "80px";
+            logo.style.height = "58px";
+            links.forEach(link => link.classList.remove("justify-content-center"));
+        } else {
+            sidebar.classList.remove("col-md-3", "col-xxl-2");
+            sidebar.classList.add("col-md-1", "col-xxl-1");
 
-        sidebar.classList.toggle("col-md-3");
-        sidebar.classList.toggle("col-md-1");
+            main.classList.remove("col-md-9", "col-xxl-10");
+            main.classList.add("col-md-11", "col-xxl-11");
 
-        main.classList.toggle("col-md-9");
-        main.classList.toggle("col-md-11");
-
-        spans.forEach(span => {
-            span.classList.toggle("d-none");
-        });
-
-        titleSide.classList.toggle("d-none");
-
-        const cerrado = titleSide.classList.contains("d-none");
-
-        logo.style.width = cerrado ? "46px" : "80px";
-        logo.style.height = cerrado ? "35px" : "58px";
-
-        links.forEach(link => {
-            link.classList.toggle("justify-content-center", cerrado);
-        });
+            spans.forEach(span => span.classList.add("d-none"));
+            titleSide.classList.add("d-none");
+            logo.style.width = "46px";
+            logo.style.height = "35px";
+            links.forEach(link => link.classList.add("justify-content-center"));
+        }
     }
 
-    btn.addEventListener("click", toggleSidebar);
+    // 1. Leer el estado guardado al cargar (por defecto cerrado si no hay nada guardado: 'false')
+    const sidebarAbierto = localStorage.getItem("sidebar_abierto") === "true";
+    aplicarEstado(sidebarAbierto);
 
-    // Auto-colapsar una sola vez al cargar
-    setTimeout(() => {
-        toggleSidebar();
-    }, 1000);
+    // 2. Alternar y guardar en localStorage al hacer clic en la hamburguesa
+    btn.addEventListener("click", function () {
+        const actualmenteAbierto = titleSide.classList.contains("d-none") === false;
+        const nuevoEstado = !actualmenteAbierto;
+        
+        aplicarEstado(nuevoEstado);
+        localStorage.setItem("sidebar_abierto", nuevoEstado);
+    });
+
 });
