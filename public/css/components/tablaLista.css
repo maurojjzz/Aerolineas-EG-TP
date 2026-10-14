@@ -172,31 +172,41 @@
 
 .tabla-vuelos th:nth-child(1),  /* Origen */
 .tabla-vuelos td:nth-child(1) {
-    width: 24%;
+    width: 14%;
 }
 
 .tabla-vuelos th:nth-child(2),  /* DESTINO */
 .tabla-vuelos td:nth-child(2) {
-    width: 24%;
+    width: 14%;
 }
 
-.tabla-vuelos th:nth-child(3),  /* FECHA Y HORA */
+.tabla-vuelos th:nth-child(3),  /* FECHA Y HORA SALIDA*/
 .tabla-vuelos td:nth-child(3) {
-    width: 19%;
+    width: 14%;
 }
 
-.tabla-vuelos th:nth-child(4),  /* ASIENTOS */
+.tabla-vuelos th:nth-child(4),  /* FECHA Y HORA LLEGADA*/
 .tabla-vuelos td:nth-child(4) {
+    width: 14%;
+}
+
+.tabla-vuelos th:nth-child(5),  /* ASIENTOS */
+.tabla-vuelos td:nth-child(5) {
     width: 10%;
 }
 
-.tabla-vuelos th:nth-child(5),  /* PRECIO */
-.tabla-vuelos td:nth-child(5) {
+.tabla-vuelos th:nth-child(6),  /* ASIENTOS DISPONIBLES */
+.tabla-vuelos td:nth-child(6) {
+    width: 10%;
+}
+
+.tabla-vuelos th:nth-child(7),  /* PRECIO */
+.tabla-vuelos td:nth-child(7) {
     width: 13%;
 }
 
-.tabla-vuelos th:nth-child(6),  /* ACCIONES */
-.tabla-vuelos td:nth-child(6) {
+.tabla-vuelos th:nth-child(8),  /* ACCIONES */
+.tabla-vuelos td:nth-child(8) {
     width: 10%;
 }
 
@@ -212,8 +222,8 @@
 
 
 @media (max-width: 460px) {
-    .tabla-vuelos th:nth-child(5),  /* CEO */
-    .tabla-vuelos td:nth-child(5) {
+    .tabla-vuelos th:nth-child(7),  
+    .tabla-vuelos td:nth-child(7) {
         display: none;
     }
 }

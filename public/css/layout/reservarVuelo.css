@@ -1,0 +1,94 @@
+.step-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+.step-line {
+    flex: 1;
+    height: 2px;
+    background: #dee2e6;
+    margin: 0 8px;
+}
+.step-line.done {
+    background: #0d6efd;
+}
+.campo-readonly {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+}
+.campo-readonly label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+    display: block;
+}
+.campo-readonly p {
+    margin: 0;
+    font-weight: 500;
+    color: #212529;
+}
+.resumen-card {
+    position: sticky;
+    top: 20px;
+}
+.badge-estado-pend {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffc107;
+    font-size: 0.78rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+.linea-vuelo-sm {
+    height: 1px;
+    background: #dee2e6;
+    flex: 1;
+    position: relative;
+}
+.linea-vuelo-sm::after {
+    content: "✈";
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1rem;
+    color: #0d6efd;
+}
+
+.titulo-cuadro h5 {
+    text-transform: uppercase;
+    letter-spacing: 6px;
+    color: #082149;
+}
+
+.titulo-cuadro h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    min-width: 300px;
+    color: #082149;
+}
+
+.titulo-cuadro p {
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.7px;
+}
+
+.titulo-cuadro h2 span {
+    color: transparent;
+    -webkit-text-stroke: 1.7px #082149;
+    font-weight: 800;
+}

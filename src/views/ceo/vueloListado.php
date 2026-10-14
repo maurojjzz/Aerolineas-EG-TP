@@ -91,16 +91,18 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                                         <tr>
                                             <th scope="col" class="fw-bold" >ORIGEN</th>
                                             <th scope="col" class=" fw-bold ">DESTINO</th>
-                                            <th scope="col" class=" fw-bold d-none d-md-table-cell">FECHA Y HORA</th> 
+                                            <th scope="col" class=" fw-bold d-none d-md-table-cell">SALIDA</th> 
+                                            <th scope="col" class=" fw-bold d-none d-md-table-cell">LLEGADA</th> 
                                             <th scope="col" class=" fw-bold d-none d-sm-table-cell">ASIENTOS</th>
+                                            <th scope="col" class=" fw-bold d-none d-sm-table-cell">DISPONIBLES</th>
                                             <th scope="col" class="fw-bold ">PRECIO</th>
-                                            <th scope="col" class="fw-bold ">ACCIONES</th>
+                                            <th scope="col" class="fw-bold text-center">ACCIONES</th>
                                         </tr>
                                     </thead>
                                     <tbody id="vueloTableBody">
                                         <?php if (empty($vuelos)): ?>
                                             <tr>
-                                                <td colspan="6" class="text-center py-4 text-muted">
+                                                <td colspan="8" class="text-center py-4 text-muted">
                                                     No hay vuelos registrados todavía.
                                                 </td>
                                             </tr>
@@ -126,6 +128,13 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                                                     <?= date('H:i', strtotime($v['fechaHoraSalidaVuelo'])) ?>
                                                 </span>
                                             </td>
+                                            <td class="d-none d-md-table-cell">
+                                                <?= date('d/m/Y', strtotime($v['fechaHoraLlegadaVuelo'])) ?>
+                                                <span class="text-muted ms-1" style="font-size:0.85rem;">
+                                                    <?= date('H:i', strtotime($v['fechaHoraLlegadaVuelo'])) ?>
+                                                </span>
+                                            </td>
+                                            <td class="d-none d-sm-table-cell "><?= $v['asientosTotales'] ?></td>
                                             <td class="d-none d-sm-table-cell "><?= $v['asientosDisponibles'] ?></td>
                                             <td class="fw-semibold">
                                                 $ <?= number_format($v['precioVuelo'], 2, ',', '.') ?>
@@ -150,7 +159,7 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                                             </td>
                                         </tr>
                                         <tr class="fila-detalle d-none" id="detalle-<?= $v['idVuelo'] ?>">
-                                            <td colspan="6" class="p-0">
+                                            <td colspan="8" class="p-0">
                                                 <div class="detalle-aerolinea px-4 py-3">
                                                     <div class="row g-3 align-items-start">
 
@@ -161,15 +170,33 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                                                             </p>
                                                             <div class="mt-2 d-flex flex-column gap-1" style="font-size:0.8rem;">
                                                                 <div>
-                                                                    <span class="text-muted">Fecha y hora:</span>
+                                                                    <span class="text-muted">Fecha y hora salida:</span>
                                                                     <span class="text-primary fw-medium ms-1">
                                                                         <?= date('d/m/Y H:i', strtotime($v['fechaHoraSalidaVuelo'])) ?>
                                                                     </span>
                                                                 </div>
+
+                                                                <div>
+                                                                    <span class="text-muted">Fecha y hora llegada:</span>
+                                                                    <span class="text-primary fw-medium ms-1">
+                                                                        <?= date('d/m/Y H:i', strtotime($v['fechaHoraLlegadaVuelo'])) ?>
+                                                                    </span>
+                                                                </div>
+
+                                                                <div>
+                                                                    <span class="text-muted">Asientos totales:</span>
+                                                                    <span class="text-primary fw-medium ms-1">
+                                                                        <?= $v['asientosTotales'] ?>
+                                                                    </span>
+                                                                </div>
+
                                                                 <div>
                                                                     <span class="text-muted">Asientos disponibles:</span>
-                                                                    <span class="text-primary fw-medium ms-1"><?= $v['asientosDisponibles'] ?></span>
+                                                                    <span class="text-primary fw-medium ms-1">
+                                                                        <?= $v['asientosDisponibles'] ?> 
+                                                                    </span>
                                                                 </div>
+
                                                                 <div>
                                                                     <span class="text-muted">Precio:</span>
                                                                     <span class="text-primary fw-medium ms-1">
