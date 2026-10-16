@@ -12,7 +12,7 @@ class EmailService {
 
         $cuerpo = "
             <h2>Hola, {$nombre}!</h2>
-            <p>Gracias por registrarte en <strong>Vuela Sin Límites</strong>.</p>
+            <p>Gracias por registrarte en <strong>Volaré</strong>.</p>
             <p>Para activar tu cuenta hacé click en el botón de abajo:</p>
             <p style='text-align:center;margin:30px 0;'>
                 <a href='{$enlace}'
@@ -24,18 +24,18 @@ class EmailService {
             <p style='color:#888;font-size:0.85rem;'>El enlace expira en 24 horas.</p>
         ";
 
-        return self::enviar($email, 'Verificá tu cuenta - Vuela Sin Límites', $cuerpo);
+        return self::enviar($email, 'Verificá tu cuenta - Volaré', $cuerpo);
     }
 
     // ── Notificación CEO: pendiente de aprobación ─────────────────────────────
     public static function enviarNotificacionCEOPendiente(string $email, string $nombre): bool {
         $cuerpo = "
             <h2>Hola, {$nombre}!</h2>
-            <p>Recibimos tu solicitud de registro como CEO en <strong>Vuela Sin Límites</strong>.</p>
+            <p>Recibimos tu solicitud de registro como CEO en <strong>Volaré</strong>.</p>
             <p>Tu cuenta está siendo revisada por nuestro equipo. Te notificaremos cuando sea aprobada.</p>
         ";
 
-        return self::enviar($email, 'Solicitud de registro recibida - Vuela Sin Límites', $cuerpo);
+        return self::enviar($email, 'Solicitud de registro recibida - Volaré', $cuerpo);
     }
 
     // ── Notificación CEO: cuenta aprobada ─────────────────────────────────────
@@ -44,7 +44,7 @@ class EmailService {
 
         $cuerpo = "
             <h2>¡Buenas noticias, {$nombre}!</h2>
-            <p>Tu cuenta como CEO en <strong>Vuela Sin Límites</strong> fue aprobada.</p>
+            <p>Tu cuenta como CEO en <strong>Volaré</strong> fue aprobada.</p>
             <p style='text-align:center;margin:30px 0;'>
                 <a href='{$enlace}'
                     style='background:#2066ba;color:white;padding:12px 28px;border-radius:6px;text-decoration:none;font-weight:bold;'>
@@ -53,7 +53,7 @@ class EmailService {
             </p>
         ";
 
-        return self::enviar($email, '¡Tu cuenta fue aprobada! - Vuela Sin Límites', $cuerpo);
+        return self::enviar($email, '¡Tu cuenta fue aprobada! - Volaré', $cuerpo);
     }
 
     // ── Recuperación de contraseña ────────────────────────────────────────────
@@ -62,7 +62,7 @@ class EmailService {
 
         $cuerpo = "
             <h2>Hola, {$nombre}!</h2>
-            <p>Recibimos una solicitud para restablecer la contraseña de tu cuenta en <strong>Vuela Sin Límites</strong>.</p>
+            <p>Recibimos una solicitud para restablecer la contraseña de tu cuenta en <strong>Volaré</strong>.</p>
             <p style='text-align:center;margin:30px 0;'>
                 <a href='{$enlace}'
                     style='background:#2066ba;color:white;padding:12px 28px;border-radius:6px;text-decoration:none;font-weight:bold;'>
@@ -72,7 +72,7 @@ class EmailService {
             <p style='color:#888;font-size:0.85rem;'>Si no solicitaste esto, ignorá este correo. El enlace expira en 1 hora.</p>
         ";
 
-        return self::enviar($email, 'Restablecer contraseña - Vuela Sin Límites', $cuerpo);
+        return self::enviar($email, 'Restablecer contraseña - Volaré', $cuerpo);
     }
 
     // ── Método base de envío ──────────────────────────────────────────────────
@@ -90,5 +90,33 @@ class EmailService {
             error_log('Error enviando email a ' . $destinatario . ': ' . $e->getMessage());
             return false;
         }
+    }
+
+    // ── Consulta de Contacto ──────────────────────────────────────────────────
+    public static function enviarConsultaContacto(string $nombre, string $email, string $asunto, string $mensaje): bool {
+        // Mapear el asunto a un texto más legible para el mail
+        $motivos = [
+            'reservas' => 'Consultas sobre Vuelos y Reservas',
+            'equipaje' => 'Equipaje y Requisitos de Viaje',
+            'facturacion' => 'Facturación y Comprobantes',
+            'reclamos' => 'Reclamos o Sugerencias',
+            'otro' => 'Otro motivo'
+        ];
+        $motivoLegible = $motivos[$asunto] ?? 'Consulta general';
+
+        $cuerpo = "
+            <h2>Nueva consulta desde el Formulario de Contacto</h2>
+            <p><strong>Nombre:</strong> {$nombre}</p>
+            <p><strong>Correo Electrónico:</strong> {$email}</p>
+            <p><strong>Motivo / Asunto:</strong> {$motivoLegible}</p>
+            <hr style='border:0;border-top:1px solid #ddd;margin:20px 0;'>
+            <p><strong>Mensaje:</strong></p>
+            <p style='background:#f9f9f9;padding:15px;border-radius:6px;color:#333;'>" . nl2br(htmlspecialchars($mensaje)) . "</p>
+        ";
+
+        // Enviamos el correo al buzón de soporte o al administrador configurado en el sistema
+        $destinatarioSoporte = 'rodrigojmayer@gmail.com'; // O podés usar alguna constante de config si la tenés
+
+        return self::enviar($destinatarioSoporte, 'Nueva consulta de contacto: ' . $motivoLegible, $cuerpo);
     }
 }

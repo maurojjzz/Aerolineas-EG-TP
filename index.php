@@ -78,6 +78,10 @@ switch ($pagina) {
         require __DIR__ . '/src/views/auth/olvideContrasena.php';
         break;
 
+    case 'perfil':
+        require __DIR__ . '/src/views/usuarioPerfil.php';
+        break;
+
     case 'buscar-vuelos':
         require __DIR__ . '/src/views/cliente/resultados.php';
         break;
@@ -103,6 +107,27 @@ switch ($pagina) {
         $aeropuertos = require __DIR__ . '/src/data/aeropuertos.php';
         echo json_encode($aeropuertos, JSON_UNESCAPED_UNICODE);
         exit;
+
+    case 'ayuda':
+        require __DIR__ . '/src/views/ayuda.php';
+        break;
+
+    case 'terminos':
+        require __DIR__ . '/src/views/terminos.php';
+        break;
+
+    case 'privacidad':
+        require __DIR__ . '/src/views/privacidad.php';
+        break;
+
+    case 'contacto':
+        require __DIR__ . '/src/views/contacto.php';
+        break;
+        
+    case 'enviar-contacto':
+        // Controlador para procesar el formulario de contacto
+        $ctrl->procesarFormularioContacto(); 
+        break;
 
     default:
         http_response_code(404);
