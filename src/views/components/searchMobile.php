@@ -63,7 +63,12 @@
             </div>
 
             <div class="d-flex justify-content-center mt-4">
-                <button class="btn b-vuelos d-flex align-items-center justify-content-center gap-2 btn-primary btn-lg rounded-3  shadow-sm" id="search-button">
+                <button 
+                    class="btn b-vuelos d-flex align-items-center justify-content-center gap-2 btn-primary btn-lg rounded-3  shadow-sm" 
+                    id="search-button"
+                    aria-label="Buscar vuelos"
+                    onclick="buscarVuelosMobile()"
+                >
                     <img src="<?= url('public/img/icons/lupa.png') ?>" alt="icono pasajero" class="autocomplete-icon">
                     <span class="d-lg-none d-xl-block">Buscar Vuelos</span>
                 </button>   

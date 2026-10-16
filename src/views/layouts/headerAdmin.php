@@ -76,7 +76,7 @@ $usuario = usuarioActual();
                     </div>
                 </li>
                 <li>
-                    <a class="dropdown-item py-2" href="#">
+                    <a class="dropdown-item py-2" href="<?= url('index.php?pagina=perfil') ?>">
                         Mi perfil
                     </a>
                 </li>

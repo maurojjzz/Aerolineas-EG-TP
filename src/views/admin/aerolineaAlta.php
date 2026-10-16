@@ -16,21 +16,7 @@ if ($modoEditar) {
     }
 }
 
-$paises = [
-    ["codigo" => "ARG", "nombre" => "Argentina"],
-    ["codigo" => "BRA", "nombre" => "Brasil"],
-    ["codigo" => "CHL", "nombre" => "Chile"],
-    ["codigo" => "COL", "nombre" => "Colombia"],
-    ["codigo" => "ECU", "nombre" => "Ecuador"],
-    ["codigo" => "ESP", "nombre" => "España"],
-    ["codigo" => "USA", "nombre" => "Estados Unidos"],
-    ["codigo" => "MEX", "nombre" => "México"],
-    ["codigo" => "PAN", "nombre" => "Panamá"],
-    ["codigo" => "PRY", "nombre" => "Paraguay"],
-    ["codigo" => "PER", "nombre" => "Perú"],
-    ["codigo" => "URY", "nombre" => "Uruguay"],
-    ["codigo" => "VEN", "nombre" => "Venezuela"]
-];
+$paises = require __DIR__ . '/../../data/paises.php';
 
 ?>
 

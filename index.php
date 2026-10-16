@@ -78,6 +78,36 @@ switch ($pagina) {
         require __DIR__ . '/src/views/auth/olvideContrasena.php';
         break;
 
+    case 'perfil':
+        require __DIR__ . '/src/views/usuarioPerfil.php';
+        break;
+
+    case 'buscar-vuelos':
+        require __DIR__ . '/src/views/cliente/resultados.php';
+        break;
+
+    case 'reservar':
+        requireRol('cliente');
+        require __DIR__ . '/src/views/cliente/reservar.php';
+        break;
+
+    case 'mis-reservas':
+        requireRol('cliente');
+        require __DIR__ . '/src/views/cliente/misReservas.php';
+        break;
+    
+    case 'pago':
+        requireRol('cliente');
+        require __DIR__ . '/src/views/cliente/pago.php';
+        break;
+    
+    case 'aeropuertos-json':
+        header('Content-Type: application/json; charset=utf-8');
+        header('Cache-Control: public, max-age=86400');
+        $aeropuertos = require __DIR__ . '/src/data/aeropuertos.php';
+        echo json_encode($aeropuertos, JSON_UNESCAPED_UNICODE);
+        exit;
+
     case 'ayuda':
         require __DIR__ . '/src/views/ayuda.php';
         break;

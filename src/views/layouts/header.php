@@ -13,6 +13,9 @@ $urlPanel = match($rol) {
     'ceo'   => url('index.php?pagina=ceo'),
     default => url('index.php?pagina=cliente')
 };
+
+// Todos los roles apuntan a la misma vista unificada de perfil
+$urlPerfil = url('index.php?pagina=perfil');
 ?>
 
 <header class="container-xxl">
@@ -23,8 +26,8 @@ $urlPanel = match($rol) {
         </div>
         
         <div class="col-1 d-flex justify-content-center align-items-center ">
-            <a class="navbar-brand logoLink" href="#">
-                <img class="logo" src=" <?= url('public/img/aerologo.webp') ?>" alt="Logo de Volaré" >
+            <a class="navbar-brand logoLink" href="<?= url('index.php?pagina=inicio') ?>">
+                <img class="logo" src="<?= url('public/img/aerologo.webp') ?>" alt="Logo de Volaré">
             </a>
         </div>
         
@@ -58,9 +61,14 @@ $urlPanel = match($rol) {
                         <span><?= htmlspecialchars($usuario['nombre'] ?? 'Mi Cuenta') ?></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end shadow">
-                        <li><a class="dropdown-item" href="<?= $urlPanel ?>">Mi Panel (<?= strtoupper($rol) ?>)</a></li>
+                        <?php if ($rol === 'admin' || $rol === 'ceo'): ?>
+                            <li><a class="dropdown-item" href="<?= $urlPanel ?>">Mi Panel (<?= strtoupper($rol) ?>)</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                        <?php endif; ?>
+                        
+                        <li><a class="dropdown-item" href="<?= url('index.php?pagina=perfil') ?>">Mi Perfil</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="/src/routes/usuarios.php?accion=logout">Cerrar Sesión</a></li>
+                        <li><a class="dropdown-item text-danger" href="<?= url('src/routes/usuarios.php?accion=logout') ?>">Cerrar Sesión</a></li>
                     </ul>
                 </div>
 
