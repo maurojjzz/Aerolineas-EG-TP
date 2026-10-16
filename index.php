@@ -39,6 +39,11 @@ switch ($pagina) {
         require __DIR__ . '/src/views/admin/aerolineaLayout.php';
         break;
 
+    case 'promociones':
+        requireRol('admin');
+        require __DIR__ . '/src/views/admin/promocionesLayout.php';
+        break;
+
     case 'usuario':
     case 'usuarios':
         requireRol('admin');
@@ -52,7 +57,15 @@ switch ($pagina) {
 
     case 'ceo':
         requireRol('ceo');
-        require __DIR__ . '/src/views/ceo/home.php';
+        $seccion = $_GET['seccion'] ?? 'home';
+
+        if ($seccion === 'promociones') {
+            require __DIR__ . '/src/views/ceo/promocionesListado.php';
+        } elseif ($seccion === 'promocion-detalle') {
+            require __DIR__ . '/src/views/ceo/promocionDetalle.php';
+        } else {
+            require __DIR__ . '/src/views/ceo/home.php';
+        }
         break;
 
     case 'vuelos':
@@ -126,7 +139,7 @@ switch ($pagina) {
         
     case 'enviar-contacto':
         // Controlador para procesar el formulario de contacto
-        $ctrl->procesarFormularioContacto(); 
+        // $ctrl->procesarFormularioContacto(); 
         break;
 
     default:

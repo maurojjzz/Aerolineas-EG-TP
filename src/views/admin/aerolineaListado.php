@@ -52,7 +52,7 @@ if ($diff > 0) {
 ?>
 
 <?php require __DIR__ . '/../components/alertToast.php';  ?>
-<div >
+<div>
     <nav class="breadcrumbCont" aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="#">Inicio</a></li>
