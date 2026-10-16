@@ -8,7 +8,7 @@
         <div class="d-flex align-items-center justify-content-center w-100">
             <img
                 src="<?= url('public/img/aerologo.webp') ?>"
-                alt="Logo"
+                alt="Logo de Volaré"
                 class="logo-sidebar"
             >
         </div>

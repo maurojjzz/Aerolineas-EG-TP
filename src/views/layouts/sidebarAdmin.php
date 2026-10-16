@@ -38,7 +38,7 @@ if ($rol === 'admin') {
         ],
         [
             'label'  => 'Usuarios',
-            'href'   => '#',
+            'href'   => 'index.php?pagina=usuarios&seccion=listado',
             'icon'   => 'usuario.png',
             'activo' => $pagina === 'usuarios',
         ],
@@ -109,8 +109,8 @@ if ($rol === 'ceo') {
 
     <div class="d-flex flex-column align-items-center justify-content-center gap-2 py-3 px-3 custom-logo">
         <a class="navbar-brand logoLink d-flex flex-column align-items-center text-center" href="<?= url('index.php?pagina=inicio') ?>">
-            <img src="<?= url('public/img/aerologo.webp') ?>" alt="logo" class="logo-sidebar">
-            <h6 class="mb-0 mt-2">Vuela sin limites</h6>
+            <img src="<?= url('public/img/aerologo.webp') ?>" alt="Logo de Volaré" class="logo-sidebar">
+            <h6 class="mb-0 mt-2">Volaré</h6>
         </a>
     </div>
 

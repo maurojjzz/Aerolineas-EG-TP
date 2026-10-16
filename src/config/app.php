@@ -6,6 +6,10 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 // Compara la carpeta del proyecto contra la raíz del server (htdocs)
 // y saca el prefijo. Da igual qué archivo PHP se ejecute.
 $docRoot  = str_replace('\\', '/', realpath($_SERVER['DOCUMENT_ROOT'] ?? ''));

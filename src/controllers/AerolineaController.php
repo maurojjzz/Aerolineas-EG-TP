@@ -97,11 +97,11 @@ class AerolineaController {
 
 
     public function editarAerolinea(int $id): void {
-        $nombre      = trim($_POST['nombre']           ?? '');
-        $codPais     = trim($_POST['pais']             ?? '');
-        $email       = trim($_POST['email']            ?? '');
+        $nombre = trim($_POST['nombre']           ?? '');
+        $codPais = trim($_POST['pais']             ?? '');
+        $email = trim($_POST['email']            ?? '');
         $descripcion = trim($_POST['descripcion']      ?? '');
-        $activo      = ($_POST['estadoAerolinea'] ?? '') === 'activa' ? 1 : 0;
+        $activo = ($_POST['estadoAerolinea'] ?? '') === 'activa' ? 1 : 0;
 
         if (!$nombre || !$codPais || !$email) {
             flash_set('error', 'Faltan campos obligatorios.');
