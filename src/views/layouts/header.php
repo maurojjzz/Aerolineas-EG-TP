@@ -27,7 +27,7 @@ $urlPerfil = url('index.php?pagina=perfil');
         
         <div class="col-1 d-flex justify-content-center align-items-center ">
             <a class="navbar-brand logoLink" href="<?= url('index.php?pagina=inicio') ?>">
-                <img class="logo" src="<?= url('public/img/aerologo.webp') ?>" alt="Logo de la pagina">
+                <img class="logo" src="<?= url('public/img/aerologo.webp') ?>" alt="Logo de Volaré">
             </a>
         </div>
         
@@ -46,7 +46,7 @@ $urlPerfil = url('index.php?pagina=perfil');
                         <a href="#" class="nav-link">Novedades</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link">Ayuda</a>
+                        <a href="<?= url('index.php?pagina=ayuda') ?>" class="nav-link">Ayuda</a>
                     </li>
                 </ul>
         </div>

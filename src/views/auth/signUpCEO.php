@@ -32,7 +32,7 @@
             <div class="d-none d-lg-flex col-lg-4  mt-5 pt-3  h-100">
                 
                 <div class="hero-content text-left mt-5 user-select-none">
-                    <h5 class="fw-bold">Vuela sin limites</h5>
+                    <h5 class="fw-bold">Volaré</h5>
                     <h2 >SOLICITA TU <span>REGISTRO</span> COMO CEO  </h2>
                     <p class="fs-6">Se parte de nuestra comunidad de aerolineas. Completa el formulario y nuestro equipo revisara tu solicitud antes de activar tu cuenta.</p>
                 </div>
