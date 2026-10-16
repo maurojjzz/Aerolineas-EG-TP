@@ -13,13 +13,17 @@ class VueloController {
 
     public function crearVuelo(int $idAerolinea): void {
         $origen = trim($_POST['origen']   ?? '');
+        $codigoOrigen = trim($_POST['codigo_origen'] ?? '');
         $destino = trim($_POST['destino']  ?? '');
-        $fecha = trim($_POST['fecha']    ?? '');
-        $hora = trim($_POST['hora']     ?? '');
-        $asientos = (int)($_POST['asientos'] ?? 0);
+        $codigoDestino = trim($_POST['codigo_destino']  ?? '');
+        $fechaSalida = trim($_POST['fecha']    ?? '');
+        $horaSalida = trim($_POST['hora']     ?? '');
+        $fechaLlegada = trim($_POST['fecha_llegada'] ?? '');
+        $horaLlegada = trim($_POST['hora_llegada'] ?? '');
+        $asientosTot = (int)($_POST['asientos_totales'] ?? 0);
         $precio = (float)($_POST['precio'] ?? 0);
 
-        if (!$origen || !$destino || !$fecha || !$hora || $asientos <= 0 || $precio <= 0 ||  strcasecmp($origen, $destino) === 0) {
+        if (!$origen || !$codigoOrigen || !$destino || !$codigoDestino || !$fechaSalida || !$horaSalida || !$fechaLlegada || !$horaLlegada || $asientosTot <= 0 || $precio <= 0 ||  strcasecmp($origen, $destino) === 0) {
             flash_set('error', 'Faltan campos obligatorios o valores inválidos.');
             redirect("index.php?pagina=vuelo");
         }
@@ -29,33 +33,50 @@ class VueloController {
             redirect("index.php?pagina=vuelo");
         }
 
+        if ($codigoOrigen && $codigoDestino && $codigoOrigen === $codigoDestino) {
+            flash_set('error', 'El origen y el destino no pueden ser el mismo aeropuerto.');
+            redirect("index.php?pagina=vuelo");
+        }
+
         // Validar que la fecha sea hoy o futura
-        $fechaHora = $fecha . ' ' . $hora . ':00';
-        if (strtotime($fechaHora) < time()) {
+        $fechaHoraSalida = $fechaSalida . ' ' . $horaSalida . ':00';
+        if (strtotime($fechaHoraSalida) < time()) {
             flash_set('error', 'La fecha y hora de salida no puede ser en el pasado.');
             redirect("index.php?pagina=vuelo");
         }
 
-        $query = "INSERT INTO vuelo 
-                (idAerolinea, origenVuelo, destinoVuelo, fechaHoraSalidaVuelo, asientosDisponibles, precioVuelo)
-                VALUES (?, ?, ?, ?, ?, ?)";
+        $fechaHoraLlegada = $fechaLlegada . ' ' . $horaLlegada . ':00';
+
+        $asientosDisp = $asientosTot;
+
+        if (strtotime($fechaHoraLlegada) <= strtotime($fechaHoraSalida)) {
+            flash_set('error', 'La llegada debe ser posterior a la salida.');
+            redirect("index.php?pagina=vuelo");
+        }
+
+        $query = "INSERT INTO vuelo (idAerolinea, origenVuelo, codigoOrigen, destinoVuelo, codigoDestino, fechaHoraSalidaVuelo, fechaHoraLlegadaVuelo, asientosTotales, asientosDisponibles, precioVuelo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $stmt = mysqli_prepare($this->conexion, $query);
+        
+        mysqli_stmt_bind_param(
+            $stmt, 
+            'issssssiid',    
+            $idAerolinea, 
+            $origen, 
+            $codigoOrigen,
+            $destino, 
+            $codigoDestino,
+            $fechaHoraSalida, 
+            $fechaHoraLlegada, 
+            $asientosTot, 
+            $asientosDisp, 
+            $precio
+        );
+
         if (!$stmt) {
             flash_set('error', 'Error interno del servidor.');
             redirect("index.php?pagina=vuelo");
         }
-
-        mysqli_stmt_bind_param(
-            $stmt, 
-            'isssid',
-            $idAerolinea, 
-            $origen, 
-            $destino, 
-            $fechaHora, 
-            $asientos, 
-            $precio
-        );
 
         try {
             mysqli_stmt_execute($stmt);
@@ -72,14 +93,23 @@ class VueloController {
 
     public function editarVuelo(int $idVuelo, int $idAerolinea): void {
         $origen = trim($_POST['origen']   ?? '');
+        $codigoOrigen = trim($_POST['codigo_origen'] ?? '');
         $destino = trim($_POST['destino']  ?? '');
-        $fecha = trim($_POST['fecha']    ?? '');
-        $hora = trim($_POST['hora']     ?? '');
-        $asientos = (int)($_POST['asientos'] ?? 0);
+        $codigoDestino = trim($_POST['codigo_destino']  ?? '');
+        $fechaSalida = trim($_POST['fecha']    ?? '');
+        $horaSalida = trim($_POST['hora']     ?? '');
+        $fechaLlegada = trim($_POST['fecha_llegada'] ?? '');
+        $horaLlegada = trim($_POST['hora_llegada'] ?? '');
+        $asientosTot = (int)($_POST['asientos_totales'] ?? 0);
         $precio = (float)($_POST['precio'] ?? 0);
 
-        if (!$origen || !$destino || !$fecha || !$hora || $asientos <= 0 || $precio <= 0) {
+        if (!$origen || !$codigoOrigen || !$destino || !$codigoDestino || !$fechaSalida || !$horaSalida || !$fechaLlegada || !$horaLlegada || $asientosTot <= 0 || $precio <= 0) {
             flash_set('error', 'Faltan campos obligatorios o valores inválidos.');
+            redirect("index.php?pagina=vuelo&id=$idVuelo");
+        }
+
+        if ($codigoOrigen && $codigoDestino && $codigoOrigen === $codigoDestino) {
+            flash_set('error', 'El origen y el destino no pueden ser el mismo aeropuerto.');
             redirect("index.php?pagina=vuelo&id=$idVuelo");
         }
 
@@ -88,17 +118,41 @@ class VueloController {
             redirect("index.php?pagina=vuelo&id=$idVuelo");
         }
 
-        $fechaHora = $fecha . ' ' . $hora . ':00';
-
-        if (strtotime($fechaHora) < time()) {
+        $fechaHoraSalida = $fechaSalida . ' ' . $horaSalida . ':00';
+        if (strtotime($fechaHoraSalida) < time()) {
             flash_set('error', 'La fecha y hora de salida no puede ser en el pasado.');
             redirect("index.php?pagina=vuelo&id=$idVuelo");
         }
 
-        $query = "UPDATE vuelo SET origenVuelo=?, destinoVuelo=?, fechaHoraSalidaVuelo=?, asientosDisponibles=?, precioVuelo=?
+        $fechaHoraLlegada = $fechaLlegada . ' ' . $horaLlegada . ':00';
+        if (strtotime($fechaHoraLlegada) <= strtotime($fechaHoraSalida)) {
+            flash_set('error', 'La llegada debe ser posterior a la salida.');
+            redirect("index.php?pagina=vuelo&id=$idVuelo");
+        }
+
+        // aca se obtiene la cantidad de asientos disponibles disponibles = totales - reservados... re ver
+        $stmtRes = mysqli_prepare(
+            $this->conexion,
+            "SELECT COALESCE(SUM(cantPasajeros), 0) as reservados
+            FROM reserva 
+            WHERE idVuelo = ? AND estadoReserva != 'cancelada'"
+        );
+
+        mysqli_stmt_bind_param($stmtRes, 'i', $idVuelo);
+        
+        mysqli_stmt_execute($stmtRes);
+
+        $reservados = (int) mysqli_fetch_assoc(mysqli_stmt_get_result($stmtRes))['reservados'];
+        mysqli_stmt_close($stmtRes);
+
+        $asientosDisp = max(0, $asientosTot - $reservados);
+
+        $query = "UPDATE vuelo SET origenVuelo=?, codigoOrigen=?, destinoVuelo=?, codigoDestino=?, fechaHoraSalidaVuelo=?,
+                fechaHoraLlegadaVuelo=?, asientosTotales=?, asientosDisponibles=?, precioVuelo=?
                 WHERE idVuelo=? AND idAerolinea=?";
 
         $stmt = mysqli_prepare($this->conexion, $query);
+
         if (!$stmt) {
             flash_set('error', 'Error interno del servidor.');
             redirect("index.php?pagina=vuelo&id=$idVuelo");
@@ -106,16 +160,21 @@ class VueloController {
 
         mysqli_stmt_bind_param(
             $stmt, 
-            'sssidii',
-            $origen, 
-            $destino, 
-            $fechaHora, 
-            $asientos, 
-            $precio, 
-            $idVuelo, 
+            'ssssssiidii',    
+            $origen,
+            $codigoOrigen,
+            $destino,
+            $codigoDestino,
+            $fechaHoraSalida,
+            $fechaHoraLlegada,
+            $asientosTot,
+            $asientosDisp,
+            $nuevosDisponibles,
+            $precio,
+            $idVuelo,
             $idAerolinea
         );
-
+        
         try {
             mysqli_stmt_execute($stmt);
         } catch (mysqli_sql_exception $e) {
@@ -211,6 +270,53 @@ class VueloController {
             'pagina'       => $pagina,
             'porPagina'    => $porPagina,
             'totalPaginas' => (int) ceil($total / $porPagina),
+        ];
+    }
+
+    public function buscarVuelos(string $origen, string $destino, string $fecha,int $pasajeros, int $pagina = 1, int $porPagina = 10, string $orden = 'salida'
+    ): array {
+        $offset = ($pagina - 1) * $porPagina;
+        $condiciones = ["v.asientosDisponibles >= ?", "v.fechaHoraSalidaVuelo >= NOW()"];
+        $params = [$pasajeros];
+        $tipos  = 'i';
+
+        if ($origen  !== '') { $condiciones[] = "v.origenVuelo LIKE ?";  $params[] = "%$origen%";  $tipos .= 's'; }
+        if ($destino !== '') { $condiciones[] = "v.destinoVuelo LIKE ?"; $params[] = "%$destino%"; $tipos .= 's'; }
+        if ($fecha   !== '') { $condiciones[] = "DATE(v.fechaHoraSalidaVuelo) = ?"; $params[] = $fecha; $tipos .= 's'; }
+
+        $where = 'WHERE ' . implode(' AND ', $condiciones);
+
+        $orderBy = match($orden) {
+            'precio_asc'  => 'v.precioVuelo ASC',
+            'precio_desc' => 'v.precioVuelo DESC',
+            default       => 'v.fechaHoraSalidaVuelo ASC',  
+        };
+
+        $stmtTotal = mysqli_prepare($this->conexion, "SELECT COUNT(*) as total FROM vuelo v $where");
+        mysqli_stmt_bind_param($stmtTotal, $tipos, ...$params);
+        mysqli_stmt_execute($stmtTotal);
+        $total = (int) mysqli_fetch_assoc(mysqli_stmt_get_result($stmtTotal))['total'];
+        mysqli_stmt_close($stmtTotal);
+
+        $paramsData = [...$params, $porPagina, $offset];
+        $stmt = mysqli_prepare($this->conexion,
+            "SELECT v.*, a.nombreAerolinea, a.codigoIATA, a.logoUrl
+            FROM vuelo v JOIN aerolinea a ON v.idAerolinea = a.idAerolinea
+            $where ORDER BY $orderBy LIMIT ? OFFSET ?");
+        mysqli_stmt_bind_param($stmt, $tipos . 'ii', ...$paramsData);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $filas = [];
+        while ($row = mysqli_fetch_assoc($result)) $filas[] = $row;
+        mysqli_stmt_close($stmt);
+
+        return [
+            'data'         => $filas,
+            'total'        => $total,
+            'pagina'       => $pagina,
+            'porPagina'    => $porPagina,
+            'totalPaginas' => (int) ceil($total / $porPagina),
+            'orden'        => $orden,
         ];
     }
 }

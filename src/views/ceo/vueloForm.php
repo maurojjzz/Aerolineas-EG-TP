@@ -5,6 +5,8 @@ require_once __DIR__ . '/../../config/conexion.php';
 require_once __DIR__ . '/../../config/auth.php';
 require_once __DIR__ . '/../../controllers/VueloController.php';
 
+$aeropuertos = require __DIR__ . '/../../data/aeropuertos.php';
+
 $idAerolinea = aerolineaCEO();
 if (!$idAerolinea) redirect('index.php?pagina=login');
 
@@ -25,10 +27,15 @@ if ($modoEditar) {
 // Extraer fecha y hora del DATETIME
 $fechaVal = '';
 $horaVal  = '';
+$fechaLlegadaVal = '';
+$horaLlegadaVal  = '';
 if ($modoEditar) {
     $fechaVal = date('Y-m-d', strtotime($vuelo['fechaHoraSalidaVuelo']));
     $horaVal  = date('H:i',   strtotime($vuelo['fechaHoraSalidaVuelo']));
+    $fechaLlegadaVal = date('Y-m-d', strtotime($vuelo['fechaHoraLlegadaVuelo']));
+    $horaLlegadaVal  = date('H:i',   strtotime($vuelo['fechaHoraLlegadaVuelo']));
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="es-419">
@@ -43,11 +50,11 @@ if ($modoEditar) {
 <body>
 <div class="d-flex min-vh-100 row g-0 m-0 p-2 pe-2">
 
-    <aside class="admin-sidebar text-white d-none d-md-block col-md-3 col-xxl-2 pe-1">
+    <aside class="admin-sidebar text-white d-none d-md-block col-md-3 col-xxl-1 pe-1">
         <?php require __DIR__ . '/../layouts/sidebarAdmin.php'; ?>
     </aside>
 
-    <div class="admin-main col-12 col-md-9 col-xxl-10 bg-light rounded-3 overflow-hidden">
+    <div class="admin-main col-12 col-md-11 col-xxl-10 bg-light rounded-3 overflow-hidden">
         <header class="admin-header">
             <?php require __DIR__ . '/../layouts/headerAdmin.php'; ?>
         </header>
@@ -68,66 +75,109 @@ if ($modoEditar) {
                 <p class="text-muted"><?= $modoEditar ? 'Modificá los datos del vuelo.' : 'Registrá un nuevo vuelo para tu aerolínea.' ?></p>
 
                 <form id="formVuelo"
-                      action="<?= $modoEditar
-                          ? url('src/routes/vuelo.php?accion=editar&id=' . $id)
-                          : url('src/routes/vuelo.php?accion=crear') ?>"
-                      method="POST"
-                      class="row mt-2 m-0 g-0 p-0 gap-2">
-
+                    action="<?= $modoEditar
+                        ? url('src/routes/vuelo.php?accion=editar&id=' . $id)
+                        : url('src/routes/vuelo.php?accion=crear') ?>"
+                    method="POST"
+                    class="row mt-2 m-0 g-0 p-0 gap-2"
+                >
                     <div class="col-12 col-lg-9 border shadow rounded-2 py-4">
-
                         <div class="row d-flex justify-content-evenly m-0 g-0 p-0">
                             <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11">
                                 <label class="form-label-t" for="origen">Origen:</label>
                                 <input type="text" name="origen" id="origen"
-                                       class="form-control ctm-inp" required
-                                       placeholder="Buenos Aires"
-                                       value="<?= $modoEditar ? htmlspecialchars($vuelo['origenVuelo']) : '' ?>">
+                                    class="form-control ctm-inp"
+                                    list="lista-aeropuertos"
+                                    required
+                                    autocomplete="off"
+                                    placeholder="Buenos Aires (EZE)"
+                                    value="<?= $modoEditar ? htmlspecialchars($vuelo['origenVuelo'] . ' (' . ($vuelo['codigoOrigen'] ?? '') . ')') : '' ?>"
+                                >
+                                <input type="hidden" name="codigo_origen" id="codigo_origen"
+                                    value="<?= $modoEditar ? htmlspecialchars($vuelo['codigoOrigen'] ?? '') : '' ?>">
                                 <p id="infoOrigen" class="form-text-info">Ciudad o aeropuerto de salida.</p>
                             </div>
+
                             <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11">
                                 <label class="form-label-t" for="destino">Destino:</label>
                                 <input type="text" name="destino" id="destino"
-                                       class="form-control ctm-inp" required
-                                       placeholder="Madrid"
-                                       value="<?= $modoEditar ? htmlspecialchars($vuelo['destinoVuelo']) : '' ?>">
+                                    class="form-control ctm-inp"
+                                    list="lista-aeropuertos"
+                                    required
+                                    autocomplete="off"
+                                    placeholder="Madrid (MAD)"
+                                    value="<?= $modoEditar ? htmlspecialchars($vuelo['destinoVuelo'] . ' (' . ($vuelo['codigoDestino'] ?? '') . ')') : '' ?>"
+                                >
+                                <input type="hidden" name="codigo_destino" id="codigo_destino"
+                                    value="<?= $modoEditar ? htmlspecialchars($vuelo['codigoDestino'] ?? '') : '' ?>">
                                 <p id="infoDestino" class="form-text-info">Ciudad o aeropuerto de llegada.</p>
                             </div>
                         </div>
+
+                        <datalist id="lista-aeropuertos">
+                            <?php foreach ($aeropuertos as $a): ?>
+                                <option value="<?= htmlspecialchars($a['city'] . ' (' . $a['code'] . ')') ?>">
+                                    <?= htmlspecialchars($a['country']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </datalist>
 
                         <div class="row d-flex justify-content-evenly m-0 g-0 p-0">
                             <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11">
                                 <label class="form-label-t" for="fecha">Fecha de salida:</label>
                                 <input type="date" name="fecha" id="fecha"
-                                       class="form-control ctm-inp" required
-                                       min="<?= date('Y-m-d') ?>"
-                                       value="<?= $fechaVal ?>">
+                                    class="form-control ctm-inp" required
+                                    min="<?= date('Y-m-d') ?>"
+                                    value="<?= $fechaVal ?>">
                                 <p id="infoFecha" class="form-text-info"></p>
                             </div>
                             <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11">
                                 <label class="form-label-t" for="hora">Hora de salida:</label>
                                 <input type="time" name="hora" id="hora"
-                                       class="form-control ctm-inp" required
-                                       value="<?= $horaVal ?>">
+                                    class="form-control ctm-inp" required
+                                    value="<?= $horaVal ?>">
                                 <p id="infoHora" class="form-text-info"></p>
                             </div>
                         </div>
 
                         <div class="row d-flex justify-content-evenly m-0 g-0 p-0">
                             <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11">
-                                <label class="form-label-t" for="asientos">Asientos disponibles:</label>
-                                <input type="number" name="asientos" id="asientos"
-                                       class="form-control ctm-inp" required min="1"
-                                       placeholder="150"
-                                       value="<?= $modoEditar ? $vuelo['asientosDisponibles'] : '' ?>">
-                                <p id="infoAsientos" class="form-text-info">Cantidad de asientos a la venta.</p>
+                                <label class="form-label-t" for="fecha_llegada">Fecha de llegada: <span class="text-muted fw-normal">(opcional)</span></label>
+                                <input type="date" name="fecha_llegada" id="fecha_llegada"
+                                    class="form-control ctm-inp"
+                                    min="<?= date('Y-m-d') ?>"
+                                    value="<?= $fechaLlegadaVal ?>">
+                                <p id="infoFechaLlegada" class="form-text-info">Debe ser posterior a la salida.</p>
+                            </div>
+                            <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11">
+                                <label class="form-label-t" for="hora_llegada">Hora de llegada: <span class="text-muted fw-normal">(opcional)</span></label>
+                                <input type="time" name="hora_llegada" id="hora_llegada"
+                                    class="form-control ctm-inp"
+                                    value="<?= $horaLlegadaVal ?>">
+                                <p id="infoHoraLlegada" class="form-text-info"></p>
+                            </div>
+                        </div>
+
+                        <div class="row d-flex justify-content-evenly m-0 g-0 p-0">
+                            <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11">
+                                <label class="form-label-t" for="asientos_totales">Asientos totales:</label>
+                                <input type="number" name="asientos_totales" id="asientos_totales"
+                                    class="form-control ctm-inp" required min="1"
+                                    placeholder="150"
+                                    value="<?= $modoEditar ? $vuelo['asientosTotales'] : '' ?>">
+                                <p id="infoAsientos" class="form-text-info">
+                                    Capacidad total del avión.
+                                    <?php if ($modoEditar): ?>
+                                        Disponibles actuales: <strong><?= $vuelo['asientosDisponibles'] ?></strong>
+                                    <?php endif; ?>
+                                </p>
                             </div>
                             <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11">
                                 <label class="form-label-t" for="precio">Precio (ARS):</label>
                                 <input type="number" name="precio" id="precio"
-                                       class="form-control ctm-inp" required min="0.01" step="0.01"
-                                       placeholder="85000"
-                                       value="<?= $modoEditar ? $vuelo['precioVuelo'] : '' ?>">
+                                    class="form-control ctm-inp" required min="0.01" step="0.01"
+                                    placeholder="85000"
+                                    value="<?= $modoEditar ? $vuelo['precioVuelo'] : '' ?>">
                                 <p id="infoPrecio" class="form-text-info">Precio base por pasajero.</p>
                             </div>
                         </div>
@@ -135,7 +185,7 @@ if ($modoEditar) {
                         <div class="row d-flex justify-content-evenly m-0 g-0 p-0">
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end col-11">
                                 <a href="<?= url('index.php?pagina=vuelos') ?>"
-                                   class="btn btn-outline-danger me-md-2">Cancelar</a>
+                                    class="btn btn-outline-danger me-md-2">Cancelar</a>
                                 <button type="submit" class="btn btn-primary">
                                     <?= $modoEditar ? 'Guardar cambios' : 'Crear Vuelo' ?>
                                 </button>
@@ -197,6 +247,7 @@ if ($modoEditar) {
 </div>
 
 <?php require __DIR__ . '/../components/menuMobileAdmin.php'; ?>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 <script src="<?= url('public/js/admin/sidebar.js') ?>"></script>
 <script src="<?= url('public/js/ceo/validacionesVuelo.js') ?>"></script>
