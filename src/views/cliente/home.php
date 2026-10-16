@@ -43,7 +43,7 @@
                 <div class="col-12 col-lg-8">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div class="d-flex align-items-center gap-2">
-                            <img src="<?= url('public/img/icons/reserva.png') ?>" style="width:22px;height:22px;object-fit:contain;" alt="">
+                            <img src="<?= url('public/img/icons/reserva.png') ?>" style="width:30px;height:30px;object-fit:contain;" alt="">
                             <h5 class="fw-bold m-0">Mis próximas reservas</h5>
                         </div>
                         <a href="#" class="text-primary text-decoration-none" style="font-size:0.875rem;">

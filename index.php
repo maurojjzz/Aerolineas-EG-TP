@@ -78,6 +78,10 @@ switch ($pagina) {
         require __DIR__ . '/src/views/auth/olvideContrasena.php';
         break;
 
+    case 'perfil':
+        require __DIR__ . '/src/views/usuarioPerfil.php';
+        break;
+
     case 'buscar-vuelos':
         require __DIR__ . '/src/views/cliente/resultados.php';
         break;
