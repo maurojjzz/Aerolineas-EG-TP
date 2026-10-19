@@ -55,10 +55,11 @@ $urlPerfil = url('index.php?pagina=perfil');
 
             <?php if ($isLoggedIn): ?>
                 <!-- ESTADO LOGUEADO -->
-                <div class="dropdown d-none d-md-block">
+                <div class="dropdown">
                     <button class="btn btn-custom dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <img src="<?= url('public/img/icons/usuario.png') ?>" alt="Icono de perfil" class="icono_perfil">
-                        <span><?= htmlspecialchars($usuario['nombre'] ?? 'Mi Cuenta') ?></span>
+                        <!-- Muestra el nombre en desktop y lo oculta en mobile si querés ahorrar espacio -->
+                        <span class="d-none d-md-inline"><?= htmlspecialchars($usuario['nombre'] ?? 'Mi Cuenta') ?></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end shadow">
                         <?php if ($rol === 'admin' || $rol === 'ceo'): ?>
@@ -71,20 +72,11 @@ $urlPerfil = url('index.php?pagina=perfil');
                         <li><a class="dropdown-item text-danger" href="<?= url('src/routes/usuarios.php?accion=logout') ?>">Cerrar Sesión</a></li>
                     </ul>
                 </div>
-
-                <!-- Botón Mobile Logueado -->
-                <a href="<?= $urlPanel ?>" class="btn d-md-none btn-custom-perfil">
-                    <img src="<?= url('public/img/icons/usuario.png') ?>" alt="Icono de perfil" class="icono_perfil-mobile">
-                </a>
             <?php else: ?>
                 <!-- ESTADO NO LOGUEADO -->
-                <a href="<?= url('index.php?pagina=login') ?>" class="btn d-md-none btn-custom-perfil">
-                    <img src="<?= url('public/img/icons/usuario.png') ?>" alt="Icono de perfil" class="icono_perfil-mobile">
-                </a>
-                
-                <a href="<?= url('index.php?pagina=login') ?>" class="btn d-none d-md-flex px-lg-4 btn-custom align-items-center gap-2">
+                <a href="<?= url('index.php?pagina=login') ?>" class="btn btn-custom align-items-center gap-2">
                     <img src="<?= url('public/img/icons/usuario.png') ?>" alt="Icono de perfil" class="icono_perfil">
-                    Ingresar
+                    <span class="d-none d-md-inline">Ingresar</span>
                 </a>
             <?php endif; ?>
         </div>
