@@ -13,6 +13,7 @@
                 id="from"
                 placeholder="Pais o Ciudad"
                 autocomplete="off"
+                required
             >
 
             <p id="from-location" class="flight-location">
@@ -40,6 +41,7 @@
                 id="to"
                 placeholder="Pais o Ciudad"
                 autocomplete="off"
+                required
             >
 
             <p id="to-location" class="flight-location">
