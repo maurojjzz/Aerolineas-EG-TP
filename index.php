@@ -40,8 +40,16 @@ switch ($pagina) {
         break;
 
     case 'promociones':
-        requireRol('admin');
-        require __DIR__ . '/src/views/admin/promocionesLayout.php';
+        if (rolActual() === 'admin') {
+            requireRol('admin');
+            require __DIR__ . '/src/views/admin/promocionesLayout.php';
+        } elseif (rolActual() === 'ceo') {
+            requireRol('ceo');
+            require __DIR__ . '/src/views/ceo/promocionesListado.php';
+        } else {
+            requireAuth();
+            redirect('index.php?pagina=inicio');
+        }
         break;
 
     case 'usuario':

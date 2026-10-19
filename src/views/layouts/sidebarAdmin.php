@@ -133,7 +133,7 @@ if ($rol === 'ceo') {
         <?php endforeach; ?>
         <li class="nav-item">
             <a class="nav-link rounded-3" 
-                href="/src/routes/usuarios.php?accion=logout"
+                href="<?= url('src/routes/usuarios.php?accion=logout') ?>"
                 data-bs-toggle="tooltip"
                 data-bs-placement="top"
                 data-bs-title="Cerrar Sesion"
