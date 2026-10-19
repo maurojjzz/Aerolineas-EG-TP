@@ -26,7 +26,7 @@ if ($rol === 'admin') {
         ],
         [
             'label'  => 'Promociones',
-            'href'   => '#',
+            'href'   => 'index.php?pagina=promociones&seccion=listado',
             'icon'   => 'promoSidebar.png',
             'activo' => $pagina === 'promociones',
         ],
@@ -68,8 +68,8 @@ if ($rol === 'ceo') {
         [
             'label'  => 'Mi Aerolínea',
             'href'   => 'index.php?pagina=ceo',
-            'icon'   => 'casa.png',
-            'activo' => $pagina === 'ceo',
+            'icon'   => 'avionSidebar.png',
+            'activo' => $pagina === 'ceo' && $seccion === '',
         ],
         [
             'label'  => 'Vuelos',
@@ -79,9 +79,9 @@ if ($rol === 'ceo') {
         ],
         [
             'label'  => 'Promociones',
-            'href'   => '#',
+            'href'   => 'index.php?pagina=ceo&seccion=promociones',
             'icon'   => 'promoSidebar.png',
-            'activo' => $pagina === 'promociones',
+            'activo' => $pagina === 'ceo' && in_array($seccion, ['promociones', 'promocion-detalle']),
         ],
         [
             'label'  => 'Novedades',
@@ -133,7 +133,7 @@ if ($rol === 'ceo') {
         <?php endforeach; ?>
         <li class="nav-item">
             <a class="nav-link rounded-3" 
-                href="/src/routes/usuarios.php?accion=logout"
+                href="<?= url('src/routes/usuarios.php?accion=logout') ?>"
                 data-bs-toggle="tooltip"
                 data-bs-placement="top"
                 data-bs-title="Cerrar Sesion"

@@ -3,14 +3,13 @@ date_default_timezone_set('America/Argentina/Buenos_Aires');
 $seccion = $_GET['seccion'] ?? 'listado';
 
 $vistas = [
-    'alta' => __DIR__ . '/aerolineaAlta.php',
+    'alta'    => __DIR__ . '/aerolineaAlta.php',
     'listado' => __DIR__ . '/aerolineaListado.php',
     'detalle' => __DIR__ . '/aerolineaDetalle.php',
-    'editar' => __DIR__ . '/aerolineaAlta.php',
+    'editar'  => __DIR__ . '/aerolineaAlta.php',
 ];
-
-
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
     <head>
