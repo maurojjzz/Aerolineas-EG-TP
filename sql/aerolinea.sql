@@ -52,6 +52,39 @@ INSERT INTO `aerolinea` VALUES (1,'aeroflux','afx','asd','ARG','aeroflux@info.co
 UNLOCK TABLES;
 
 --
+-- Table structure for table `novedades`
+--
+
+DROP TABLE IF EXISTS `novedades`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `novedades` (
+  `idNovedad` int NOT NULL AUTO_INCREMENT,
+  `titulo` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `subtitulo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci DEFAULT NULL,
+  `contenido` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `categoria` enum('general','promocion','vuelo','mantenimiento','importante') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci DEFAULT 'general',
+  `prioridad` enum('baja','media','alta') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci DEFAULT 'media',
+  `estado` enum('borrador','publicada','archivada') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci DEFAULT 'publicada',
+  `imagen` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci DEFAULT NULL,
+  `fechaPublicacion` datetime DEFAULT CURRENT_TIMESTAMP,
+  `fechaCreacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fechaActualizacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idNovedad`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `novedades`
+--
+
+LOCK TABLES `novedades` WRITE;
+/*!40000 ALTER TABLE `novedades` DISABLE KEYS */;
+INSERT INTO `novedades` VALUES (1,'Nuevos hoteles 4 estrellas','Se ha inagurado un nuevo hotel para clientes exclusivos de volare en barcelona','Hotel con una exclusiva de 45 nuevas habitaciones incluyendo desde suite presidenciales hasta habitaciones compartidas','vuelo','baja','publicada','/public/img/nove3.webp','2026-10-19 17:17:39','2026-10-19 17:17:39','2026-10-19 17:17:39');
+/*!40000 ALTER TABLE `novedades` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `promocion`
 --
 
@@ -212,4 +245,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-10-19 15:04:16
+-- Dump completed on 2026-10-19 17:18:47
