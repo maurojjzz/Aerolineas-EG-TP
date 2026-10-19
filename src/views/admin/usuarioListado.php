@@ -13,7 +13,8 @@ $busqueda = trim($_GET['busqueda'] ?? '');
 $estado   = $_GET['estado'] ?? '';
 
 $resultado    = $ctrl->listarUsuariosPaginado($pagina, $porPagina, $estado, $busqueda);
-$usuarios     = $resultado['data'];
+$usuarios     = $resultado['data'] ?? [];
+$usuarios     = array_values(array_filter($usuarios, fn($u) => strtolower($u['rol'] ?? '') !== 'admin'));
 $total        = $resultado['total'];
 $totalPaginas = $resultado['totalPaginas'];
 

@@ -1,150 +1,56 @@
 <?php
+
 class Novedad {
-    private $db;
 
-    public function __construct($db) {
-        $this->db = $db;
+    private ?int    $idNovedad;
+    private string  $titulo;
+    private ?string $subtitulo;
+    private string  $contenido;
+    private string  $categoria;
+    private string  $prioridad;
+    private string  $estado;
+    private ?string $imagen;
+    private ?string $fechaPublicacion;
+
+    public function __construct(
+        string  $titulo,
+        string  $contenido,
+        string  $categoria      = 'general',
+        string  $prioridad      = 'media',
+        string  $estado         = 'publicada',
+        ?string $subtitulo      = null,
+        ?string $imagen         = null,
+        ?int    $idNovedad      = null,
+        ?string $fechaPublicacion = null
+    ) {
+        $this->titulo           = $titulo;
+        $this->contenido        = $contenido;
+        $this->categoria        = $categoria;
+        $this->prioridad        = $prioridad;
+        $this->estado           = $estado;
+        $this->subtitulo        = $subtitulo;
+        $this->imagen           = $imagen;
+        $this->idNovedad        = $idNovedad;
+        $this->fechaPublicacion = $fechaPublicacion;
     }
 
-    public function listarPaginado($pagina = 1, $porPagina = 10, $estado = '', $categoria = '', $busqueda = '') {
-        $offset = ($pagina - 1) * $porPagina;
-        $where = ["1=1"];
-        $params = [];
-        $types = "";
+    public function getIdNovedad(): ?int        { return $this->idNovedad; }
+    public function getTitulo(): string          { return $this->titulo; }
+    public function getSubtitulo(): ?string      { return $this->subtitulo; }
+    public function getContenido(): string       { return $this->contenido; }
+    public function getCategoria(): string       { return $this->categoria; }
+    public function getPrioridad(): string       { return $this->prioridad; }
+    public function getEstado(): string          { return $this->estado; }
+    public function getImagen(): ?string         { return $this->imagen; }
+    public function getFechaPublicacion(): ?string { return $this->fechaPublicacion; }
 
-        if ($estado !== '') {
-            $where[] = "estado = ?";
-            $params[] = $estado;
-            $types .= "s";
-        }
-
-        if ($categoria !== '') {
-            $where[] = "categoria = ?";
-            $params[] = $categoria;
-            $types .= "s";
-        }
-
-        if ($busqueda !== '') {
-            $where[] = "(titulo LIKE ? OR subtitulo LIKE ? OR contenido LIKE ?)";
-            $searchTerm = "%" . $busqueda . "%";
-            $params[] = $searchTerm;
-            $params[] = $searchTerm;
-            $params[] = $searchTerm;
-            $types .= "sss";
-        }
-
-        $whereClause = implode(" AND ", $where);
-
-        // Conteo total
-        $sqlTotal = "SELECT COUNT(*) as total FROM novedades WHERE $whereClause";
-        $stmtTotal = $this->db->prepare($sqlTotal);
-        if (!empty($params)) {
-            $stmtTotal->bind_param($types, ...$params);
-        }
-        $stmtTotal->execute();
-        $total = $stmtTotal->get_result()->fetch_assoc()['total'];
-
-        // Datos paginados (sin join de usuario)
-        $sqlData = "SELECT * FROM novedades 
-                    WHERE $whereClause 
-                    ORDER BY fechaPublicacion DESC 
-                    LIMIT ? OFFSET ?";
-        
-        $paramsData = array_merge($params, [$porPagina, $offset]);
-        $typesData = $types . "ii";
-
-        $stmtData = $this->db->prepare($sqlData);
-        $stmtData->bind_param($typesData, ...$paramsData);
-        $stmtData->execute();
-        $data = $stmtData->get_result()->fetch_all(MYSQLI_ASSOC);
-
-        return [
-            'data' => $data,
-            'total' => $total,
-            'totalPaginas' => ceil($total / $porPagina)
-        ];
-    }
-
-    public function obtenerPorId($id) {
-        $sql = "SELECT * FROM novedades WHERE idNovedad = ?";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        return $stmt->get_result()->fetch_assoc();
-    }
-
-    public function crear($datos) {
-        $sql = "INSERT INTO novedades (titulo, subtitulo, contenido, categoria, prioridad, estado, imagen) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $this->db->prepare($sql);
-        // Corregido a 7 "s" (7 strings)
-        $stmt->bind_param(
-            "sssssss", 
-            $datos['titulo'], 
-            $datos['subtitulo'], 
-            $datos['contenido'], 
-            $datos['categoria'], 
-            $datos['prioridad'], 
-            $datos['estado'], 
-            $datos['imagen']
-        );
-        return $stmt->execute();
-    }
-
-    public function actualizar($id, $datos) {
-        $sql = "UPDATE novedades SET titulo = ?, subtitulo = ?, contenido = ?, categoria = ?, prioridad = ?, estado = ?, imagen = ? WHERE idNovedad = ?";
-        $stmt = $this->db->prepare($sql);
-        // 7 strings y 1 entero al final ("sssssssi")
-        $stmt->bind_param(
-            "sssssssi", 
-            $datos['titulo'], 
-            $datos['subtitulo'], 
-            $datos['contenido'], 
-            $datos['categoria'], 
-            $datos['prioridad'], 
-            $datos['estado'], 
-            $datos['imagen'], 
-            $id
-        );
-        return $stmt->execute();
-    }
-
-    public function cambiarEstado($id, $nuevoEstado) {
-        $sql = "UPDATE novedades SET estado = ? WHERE idNovedad = ?";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bind_param("si", $nuevoEstado, $id);
-        return $stmt->execute();
-    }
-
-    public function eliminar($id) {
-        $sql = "DELETE FROM novedades WHERE idNovedad = ?";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bind_param("i", $id);
-        return $stmt->execute();
-    }
-
-    public function obtenerEstadisticas() {
-        $sql = "SELECT 
-                    COUNT(*) as total,
-                    SUM(CASE WHEN estado = 'publicada' THEN 1 ELSE 0 END) as publicadas,
-                    SUM(CASE WHEN estado = 'borrador' THEN 1 ELSE 0 END) as borradores,
-                    SUM(CASE WHEN estado = 'archivada' THEN 1 ELSE 0 END) as archivadas
-                FROM novedades";
-        $res = $this->db->query($sql);
-        return $res->fetch_assoc();
-    }
-
-    public function obtenerUltimasPublicadas($limite = 3) {
-        $sql = "SELECT * FROM novedades WHERE estado = 'publicada' ORDER BY fechaPublicacion DESC LIMIT ?";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bind_param("i", $limite);
-        $stmt->execute();
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-    }
-
-    public function listarTodasPublicadas() {
-        $sql = "SELECT * FROM novedades WHERE estado = 'publicada' ORDER BY fechaPublicacion DESC";
-        $resultado = $this->db->query($sql);
-        return $resultado ? $resultado->fetch_all(MYSQLI_ASSOC) : [];
-    }
+    public function setIdNovedad(?int $v): void        { $this->idNovedad = $v; }
+    public function setTitulo(string $v): void          { $this->titulo = $v; }
+    public function setSubtitulo(?string $v): void      { $this->subtitulo = $v; }
+    public function setContenido(string $v): void       { $this->contenido = $v; }
+    public function setCategoria(string $v): void       { $this->categoria = $v; }
+    public function setPrioridad(string $v): void       { $this->prioridad = $v; }
+    public function setEstado(string $v): void          { $this->estado = $v; }
+    public function setImagen(?string $v): void         { $this->imagen = $v; }
+    public function setFechaPublicacion(?string $v): void { $this->fechaPublicacion = $v; }
 }

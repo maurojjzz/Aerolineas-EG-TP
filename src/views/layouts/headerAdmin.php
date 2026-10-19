@@ -76,7 +76,7 @@ $usuario = usuarioActual();
                     </div>
                 </li>
                 <li>
-                    <a class="dropdown-item py-2" href="#">
+                    <a class="dropdown-item py-2" href="<?= url('index.php?pagina=perfil') ?>">
                         Mi perfil
                     </a>
                 </li>
@@ -87,7 +87,7 @@ $usuario = usuarioActual();
                 </li>
                 <li><hr class="dropdown-divider"></li>
                 <li>
-                    <a class="dropdown-item py-2 text-danger" href="/src/routes/usuarios.php?accion=logout">
+                    <a class="dropdown-item py-2 text-danger" href="<?= url('src/routes/usuarios.php?accion=logout') ?>">
                         Cerrar sesión
                     </a>
                 </li>

@@ -513,4 +513,72 @@ class UsuarioController {
         flash_set('success', "Usuario {$usuario['nombre']} {$usuario['apellido']} {$accionTexto} correctamente.");
         redirect('index.php?pagina=usuario&seccion=listado');
     }
+
+    public function actualizarPerfilPropio(): void {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $tokenPost = $_POST['csrf_token'] ?? '';
+        $tokenSession = $_SESSION['csrf_token'] ?? '';
+
+        if (empty($tokenPost) || empty($tokenSession) || !hash_equals($tokenSession, $tokenPost)) {
+            flash_set('error', 'Token de seguridad inválido o sesión expirada.');
+            redirect('index.php?pagina=perfil');
+        }
+
+        $idUsuario = (int)($_POST['idUsuario'] ?? 0);
+        if (!isset($_SESSION['usuario']) || (int)$_SESSION['usuario']['idUsuario'] !== $idUsuario) {
+            flash_set('error', 'Acción no autorizada.');
+            redirect('index.php?pagina=login');
+        }
+
+        $nombre        = trim($_POST['nombre'] ?? '');
+        $apellido      = trim($_POST['apellido'] ?? '');
+        $tipoDocumento = trim($_POST['tipoDocumento'] ?? '');
+        $nroDocumento  = trim($_POST['nroDocumento'] ?? '');
+        $email         = trim($_POST['email'] ?? '');
+        $telefono      = trim($_POST['telefono'] ?? '');
+        
+        $passActual = $_POST['passwordActual'] ?? null;
+        $passNueva  = $_POST['passwordNueva'] ?? null;
+
+        // Si quiere cambiar la contraseña, validamos la actual
+        if (!empty($passNueva)) {
+            $usuarioActual = $this->obtenerUsuarioPorId($idUsuario);
+            if (!password_verify($passActual, $usuarioActual['contrasena'])) {
+                flash_set('error', 'La contraseña actual es incorrecta.');
+                redirect('index.php?pagina=perfil');
+            }
+            $hash = password_hash($passNueva, PASSWORD_DEFAULT);
+            $sql = "UPDATE usuario SET nombre = ?, apellido = ?, tipoDocumento = ?, nroDocumento = ?, email = ?, telefono = ?, contrasena = ? WHERE idUsuario = ?";
+            $stmt = mysqli_prepare($this->conexion, $sql);
+            mysqli_stmt_bind_param($stmt, "sssssssi", $nombre, $apellido, $tipoDocumento, $nroDocumento, $email, $telefono, $hash, $idUsuario);
+        } else {
+            $sql = "UPDATE usuario SET nombre = ?, apellido = ?, tipoDocumento = ?, nroDocumento = ?, email = ?, telefono = ? WHERE idUsuario = ?";
+            $stmt = mysqli_prepare($this->conexion, $sql);
+            mysqli_stmt_bind_param($stmt, "ssssssi", $nombre, $apellido, $tipoDocumento, $nroDocumento, $email, $telefono, $idUsuario);
+        }
+
+        try {
+            $exito = mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+
+            if ($exito) {
+                // Actualizamos los datos en la sesión actual
+                $_SESSION['usuario']['nombre'] = $nombre;
+                $_SESSION['usuario']['apellido'] = $apellido;
+                $_SESSION['usuario']['email'] = $email;
+                flash_set('success', 'Perfil actualizado correctamente.');
+            }
+        } catch (mysqli_sql_exception $e) {
+            if ($e->getCode() === 1062) {
+                flash_set('error', 'El número de documento o el email ya pertenecen a otro usuario.');
+            } else {
+                flash_set('error', 'Ocurrió un error al intentar actualizar el perfil.');
+            }
+        }
+
+        redirect('index.php?pagina=perfil');
+    }
 }

@@ -4,7 +4,7 @@ date_default_timezone_set('America/Argentina/Buenos_Aires');
 require_once __DIR__ . '/../../config/conexion.php';
 require_once __DIR__ . '/../../controllers/AerolineaController.php';
 require_once __DIR__ . '/../../config/auth.php';
-
+// Quitamos el require de PromocionController porque ya no listamos promos acá directo
 
 // El CEO tiene su aerolínea en la sesión
 $idAerolinea = aerolineaCEO();
@@ -43,12 +43,12 @@ $flechaColor = 'text-success';
 
 <div class="d-flex min-vh-100 row g-0 m-0 p-2 pe-2">
 
+    <!-- Sidebar con los anchos correctos por defecto -->
     <aside class="admin-sidebar text-white d-none d-md-block col-md-3 col-xxl-2 pe-1">
         <?php require __DIR__ . '/../layouts/sidebarAdmin.php'; ?>
     </aside>
 
     <div class="admin-main col-12 col-md-9 col-xxl-10 bg-light rounded-3 overflow-hidden">
-
         <header class="admin-header">
             <?php require __DIR__ . '/../layouts/headerAdmin.php'; ?>
         </header>
@@ -158,6 +158,7 @@ $flechaColor = 'text-success';
                             <button class="nav-link <?= $tabActiva === 'vuelos' ? 'active' : '' ?>"
                                     data-bs-toggle="tab" data-bs-target="#tab-vuelos">Vuelos</button>
                         </li>
+                        <!-- Si querés mantener el tab de promos, lo dejamos aca -->
                         <li class="nav-item">
                             <button class="nav-link <?= $tabActiva === 'promociones' ? 'active' : '' ?>"
                                     data-bs-toggle="tab" data-bs-target="#tab-promociones">Promociones</button>
@@ -307,9 +308,14 @@ $flechaColor = 'text-success';
                             <p class="text-muted text-center py-4">Tabla de vuelos — próximamente</p>
                         </div>
 
-                        <!-- Tab Promociones -->
+                        <!-- Tab Promociones (AHORA SIN EL REQUIRE QUE ROMPIA TODO) -->
                         <div class="tab-pane fade <?= $tabActiva === 'promociones' ? 'show active' : '' ?>" id="tab-promociones">
-                            <p class="text-muted text-center py-4">Tabla de promociones — próximamente</p>
+                            <div class="text-center py-5">
+                                <p class="text-muted mb-3">La gestión completa de promociones está en tu menú lateral.</p>
+                                <a href="<?= url('index.php?pagina=ceo&seccion=promociones') ?>" class="btn btn-primary">
+                                    Ir a Gestión de Promociones
+                                </a>
+                            </div>
                         </div>
 
                     </div>

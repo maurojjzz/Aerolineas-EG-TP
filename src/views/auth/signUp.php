@@ -22,7 +22,7 @@
 
             <div class="d-none d-lg-flex col-lg-4  mt-5 pt-3  h-100">
                 <div class="hero-content text-left mt-5 user-select-none">
-                    <h5 class="fw-bold">Vuela sin limites</h5>
+                    <h5 class="fw-bold">Volaré</h5>
                     <h2 >CREA TU <span>CUENTA</span> </h2>
                     <p>Registrate y comienza a reservar vuelos, gestionar tus reservas y vivir nuevas experiencias.</p>
                 </div>

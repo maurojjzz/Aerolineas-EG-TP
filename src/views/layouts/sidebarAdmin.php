@@ -26,7 +26,7 @@ if ($rol === 'admin') {
         ],
         [
             'label'  => 'Promociones',
-            'href'   => '#',
+            'href'   => 'index.php?pagina=promociones&seccion=listado',
             'icon'   => 'promoSidebar.png',
             'activo' => $pagina === 'promociones',
         ],
@@ -68,8 +68,8 @@ if ($rol === 'ceo') {
         [
             'label'  => 'Mi Aerolínea',
             'href'   => 'index.php?pagina=ceo',
-            'icon'   => 'casa.png',
-            'activo' => $pagina === 'ceo',
+            'icon'   => 'avionSidebar.png',
+            'activo' => $pagina === 'ceo' && $seccion === '',
         ],
         [
             'label'  => 'Vuelos',
@@ -79,9 +79,9 @@ if ($rol === 'ceo') {
         ],
         [
             'label'  => 'Promociones',
-            'href'   => '#',
+            'href'   => 'index.php?pagina=ceo&seccion=promociones',
             'icon'   => 'promoSidebar.png',
-            'activo' => $pagina === 'promociones',
+            'activo' => $pagina === 'ceo' && in_array($seccion, ['promociones', 'promocion-detalle']),
         ],
         [
             'label'  => 'Novedades',
@@ -109,8 +109,8 @@ if ($rol === 'ceo') {
 
     <div class="d-flex flex-column align-items-center justify-content-center gap-2 py-3 px-3 custom-logo">
         <a class="navbar-brand logoLink d-flex flex-column align-items-center text-center" href="<?= url('index.php?pagina=inicio') ?>">
-            <img src="<?= url('public/img/aerologo.webp') ?>" alt="logo" class="logo-sidebar">
-            <h6 class="mb-0 mt-2">Vuela sin limites</h6>
+            <img src="<?= url('public/img/aerologo.webp') ?>" alt="Logo de Volaré" class="logo-sidebar">
+            <h6 class="mb-0 mt-2">Volaré</h6>
         </a>
     </div>
 
@@ -133,7 +133,7 @@ if ($rol === 'ceo') {
         <?php endforeach; ?>
         <li class="nav-item">
             <a class="nav-link rounded-3" 
-                href="/src/routes/usuarios.php?accion=logout"
+                href="<?= url('src/routes/usuarios.php?accion=logout') ?>"
                 data-bs-toggle="tooltip"
                 data-bs-placement="top"
                 data-bs-title="Cerrar Sesion"

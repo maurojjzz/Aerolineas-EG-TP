@@ -3,6 +3,7 @@ body {
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
+    background-attachment: fixed;
     min-height: 100vh;
     /* Columna flexible: el footer (mt-auto) queda pegado al fondo de la ventana
        aunque la página tenga poco contenido, sin dejar espacio debajo */

@@ -30,8 +30,13 @@ $paginaActual = $_GET['pagina'] ?? 'inicio';
 
     <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
         <div class="offcanvas-header">
+<<<<<<< HEAD
             <a class="navbar-brand logoLink" href="<?= $urlInicio ?>">
                 <img class="logo" src="<?= url('public/img/aerologo.webp') ?>" alt="Logo de la pagina" >
+=======
+            <a class="navbar-brand logoLink" href="#">
+                <img class="logo" src="<?= url('public/img/aerologo.webp') ?>" alt="Logo de Volaré" >
+>>>>>>> master
             </a>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>

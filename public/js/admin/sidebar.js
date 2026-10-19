@@ -1,52 +1,57 @@
 document.addEventListener("DOMContentLoaded", function () {
-
-    const btn = document.getElementById("sidebarToggleHamburguesa");
-    const sidebar = document.querySelector(".admin-sidebar");
-    const main = document.querySelector(".admin-main");
-    const links = document.querySelectorAll(".admin-sidebar .nav-link");
-    const spans = document.querySelectorAll(".admin-sidebar span");
+    const btn       = document.getElementById("sidebarToggleHamburguesa");
+    const sidebar   = document.querySelector(".admin-sidebar");
+    const main      = document.querySelector(".admin-main");
+    const links     = document.querySelectorAll(".admin-sidebar .nav-link");
+    const spans     = document.querySelectorAll(".admin-sidebar span");
     const titleSide = document.querySelector(".custom-logo h6");
-    const logo = document.querySelector(".logo-sidebar");
+    const logo      = document.querySelector(".logo-sidebar");
 
     if (!btn || !sidebar || !main || !titleSide || !logo) {
-        console.error("Sidebar: faltan elementos necesarios.");
+        console.warn("Sidebar: faltan elementos en esta vista.");
         return;
     }
 
-    function toggleSidebar() {
+    function aplicarEstado(abierto) {
+        if (abierto) {
+            sidebar.classList.remove("col-md-1", "col-xxl-1");
+            sidebar.classList.add("col-md-3", "col-xxl-2");
 
-        sidebar.classList.toggle("col-xxl-2");
-        sidebar.classList.toggle("col-xxl-1");
+            main.classList.remove("col-md-11", "col-xxl-11");
+            main.classList.add("col-md-9", "col-xxl-10");
 
-        main.classList.toggle("col-xxl-10");
-        main.classList.toggle("col-xxl-11");
+            spans.forEach(s => s.classList.remove("d-none"));
+            titleSide.classList.remove("d-none");
+            logo.style.width  = "80px";
+            logo.style.height = "58px";
+            links.forEach(l => l.classList.remove("justify-content-center"));
+        } else {
+            sidebar.classList.remove("col-md-3", "col-xxl-2");
+            sidebar.classList.add("col-md-1", "col-xxl-1");
 
-        sidebar.classList.toggle("col-md-3");
-        sidebar.classList.toggle("col-md-1");
+            main.classList.remove("col-md-9", "col-xxl-10");
+            main.classList.add("col-md-11", "col-xxl-11");
 
-        main.classList.toggle("col-md-9");
-        main.classList.toggle("col-md-11");
-
-        spans.forEach(span => {
-            span.classList.toggle("d-none");
-        });
-
-        titleSide.classList.toggle("d-none");
-
-        const cerrado = titleSide.classList.contains("d-none");
-
-        logo.style.width = cerrado ? "46px" : "80px";
-        logo.style.height = cerrado ? "35px" : "58px";
-
-        links.forEach(link => {
-            link.classList.toggle("justify-content-center", cerrado);
-        });
+            spans.forEach(s => s.classList.add("d-none"));
+            titleSide.classList.add("d-none");
+            logo.style.width  = "46px";
+            logo.style.height = "35px";
+            links.forEach(l => l.classList.add("justify-content-center"));
+        }
     }
 
-    btn.addEventListener("click", toggleSidebar);
+    // Leer el estado. Si no hay nada guardado (null), que arranque ABIERTO.
+    const guardado = localStorage.getItem("sidebar_abierto");
+    const abiertoPorDefecto = guardado === null ? true : guardado === "true";
+    
+    aplicarEstado(abiertoPorDefecto);
 
-    // Auto-colapsar una sola vez al cargar
-    setTimeout(() => {
-        toggleSidebar();
-    }, 1000);
+    // Al hacer clic, cambiar y guardar
+    btn.addEventListener("click", function () {
+        const actualmenteAbierto = !sidebar.classList.contains("col-md-1");
+        const nuevoEstado = !actualmenteAbierto;
+        
+        aplicarEstado(nuevoEstado);
+        localStorage.setItem("sidebar_abierto", nuevoEstado ? "true" : "false");
+    });
 });
