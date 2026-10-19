@@ -380,7 +380,7 @@ function badgeEstadoPromo(string $estado): string {
     <div class="modal fade" id="modalCrearPromocion" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form action="<?= url('src/routes/promociones.php?accion=guardar') ?>" method="POST" novalidate>
+                <form action="<?= url('src/routes/promociones.php?accion=crear') ?>" method="POST" novalidate>
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
                     <div class="modal-header border-0">
                         <h5 class="modal-title fw-bold">Crear Nueva Promoción</h5>

@@ -47,8 +47,47 @@ CREATE TABLE `aerolinea` (
 
 LOCK TABLES `aerolinea` WRITE;
 /*!40000 ALTER TABLE `aerolinea` DISABLE KEYS */;
-INSERT INTO `aerolinea` VALUES (1,'aeroflux','afx','asd','ARG','aeroflux@info.com',NULL,1,NULL,'2026-08-26 12:56:37'),(2,'prueba','prb','asd','ARG','pronando@as.com','https://res.cloudinary.com/dqydbsuuj/image/upload/v1788571037/aerolineas/logos/wqlocqj1glmzbrv3rka9.webp',1,NULL,'2026-08-15 12:56:37'),(3,'Adela','ADL','aint in la','USA','prima@adelane.com','https://res.cloudinary.com/dqydbsuuj/image/upload/v1788571246/aerolineas/logos/jlwfltef5dzcgrq05aco.webp',1,NULL,'2026-08-28 12:56:37'),(4,'Get Cloudy','testi','0','USA','getcloudy@airlines.com','https://res.cloudinary.com/dqydbsuuj/image/upload/v1788571758/aerolineas/logos/duroifzbuvd8atkkqsqm.png',1,'aerolineas/logos/duroifzbuvd8atkkqsqm','2026-09-26 12:56:37'),(5,'2da pru','ppllk','','BRA','asdff@llkm.com','https://res.cloudinary.com/dqydbsuuj/image/upload/v1788572611/aerolineas/logos/r2gidpxg4rqyq2rs9316.png',0,'aerolineas/logos/r2gidpxg4rqyq2rs9316','2026-09-26 12:56:37'),(6,'ART','fnk','Aerolinea  hecha para ver si funcionan los cambios que hice','ARG','fksa@gma.com','https://res.cloudinary.com/dqydbsuuj/image/upload/v1790625553/aerolineas/logos/tbkyf9pee7iqafjilddv.jpg',1,'aerolineas/logos/tbkyf9pee7iqafjilddv','2026-09-26 12:56:37'),(7,'asdasasdasd','asew','','BRA','asdas@dasd.a','0',1,'0','2026-09-26 12:56:37'),(8,'qePAs','KPS','asd','CHL','asd@ff.ca','https://res.cloudinary.com/dqydbsuuj/image/upload/v1789428192/aerolineas/logos/hbkfrov38m3str7q54ki.webp',0,'aerolineas/logos/hbkfrov38m3str7q54ki','2026-09-26 12:56:37'),(10,'nueva','nusda','','ARG','adas@as.com',NULL,0,NULL,'2026-09-26 12:56:37');
+INSERT INTO `aerolinea` VALUES (1,'aeroflux','afx','asd','ARG','aeroflux@info.com',NULL,1,NULL,'2026-08-26 12:56:37'),(2,'prueba','prb','asd','ARG','pronando@as.com','https://res.cloudinary.com/dqydbsuuj/image/upload/v1788571037/aerolineas/logos/wqlocqj1glmzbrv3rka9.webp',1,NULL,'2026-08-15 12:56:37'),(3,'Adela','ADL','aint in la','USA','prima@adelane.com','https://res.cloudinary.com/dqydbsuuj/image/upload/v1788571246/aerolineas/logos/jlwfltef5dzcgrq05aco.webp',1,NULL,'2026-08-28 12:56:37'),(4,'Get Cloudy','GTCLD','Get Cloudy Airline is based on Texas flying around all the world','USA','getcloudy@airlines.com','https://res.cloudinary.com/dqydbsuuj/image/upload/v1788571758/aerolineas/logos/duroifzbuvd8atkkqsqm.png',1,'aerolineas/logos/duroifzbuvd8atkkqsqm','2026-09-26 12:56:37'),(5,'2da pru','ppllk','','BRA','asdff@llkm.com','https://res.cloudinary.com/dqydbsuuj/image/upload/v1788572611/aerolineas/logos/r2gidpxg4rqyq2rs9316.png',0,'aerolineas/logos/r2gidpxg4rqyq2rs9316','2026-09-26 12:56:37'),(6,'ART','fnk','Aerolinea  hecha para ver si funcionan los cambios que hice','ARG','fksa@gma.com','https://res.cloudinary.com/dqydbsuuj/image/upload/v1790625553/aerolineas/logos/tbkyf9pee7iqafjilddv.jpg',1,'aerolineas/logos/tbkyf9pee7iqafjilddv','2026-09-26 12:56:37'),(7,'asdasasdasd','asew','','BRA','asdas@dasd.a','0',1,'0','2026-09-26 12:56:37'),(8,'qePAs','KPS','asd','CHL','asd@ff.ca','https://res.cloudinary.com/dqydbsuuj/image/upload/v1789428192/aerolineas/logos/hbkfrov38m3str7q54ki.webp',0,'aerolineas/logos/hbkfrov38m3str7q54ki','2026-09-26 12:56:37'),(10,'nueva','nusda','','ARG','adas@as.com',NULL,0,NULL,'2026-09-26 12:56:37');
 /*!40000 ALTER TABLE `aerolinea` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `promocion`
+--
+
+DROP TABLE IF EXISTS `promocion`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `promocion` (
+  `idPromocion` int NOT NULL AUTO_INCREMENT,
+  `codigo` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `idAerolinea` int NOT NULL,
+  `idUsuarioCreador` int NOT NULL,
+  `nombre` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `descripcion` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci,
+  `descuentoPorcentaje` decimal(5,2) NOT NULL,
+  `fechaInicio` date NOT NULL,
+  `fechaFin` date NOT NULL,
+  `estado` enum('Pendiente','Aprobada','Denegada') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'Pendiente',
+  `condiciones` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci,
+  `fechaCreacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idPromocion`),
+  UNIQUE KEY `codigo_UNIQUE` (`codigo`),
+  KEY `fk_promocion_aerolinea_idx` (`idAerolinea`),
+  KEY `fk_promocion_usuario_idx` (`idUsuarioCreador`),
+  CONSTRAINT `fk_promocion_aerolinea` FOREIGN KEY (`idAerolinea`) REFERENCES `aerolinea` (`idAerolinea`) ON DELETE CASCADE,
+  CONSTRAINT `fk_promocion_usuario` FOREIGN KEY (`idUsuarioCreador`) REFERENCES `usuario` (`idUsuario`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `promocion`
+--
+
+LOCK TABLES `promocion` WRITE;
+/*!40000 ALTER TABLE `promocion` DISABLE KEYS */;
+INSERT INTO `promocion` VALUES (1,'PROM-06B5',4,16,'Prueba','Prueba Condicion',43.00,'2026-10-15','2026-10-19','Aprobada','Prueba Condicion','2026-10-16 17:55:31'),(2,'PROM-B907',4,16,'Prueba','Prueba Condicion',12.00,'2026-10-19','2026-10-20','Denegada','Prueba Condicion','2026-10-19 14:30:51'),(3,'PROM-F8BF',4,16,'Prueba','Prueba Condicion',40.00,'2026-10-12','2026-10-26','Aprobada','Prueba Condicion','2026-10-19 14:37:45'),(4,'PROM-FEA4',4,16,'Prueba','Prueba Condicion',12.00,'2026-09-29','2026-10-29','Denegada','Prueba Condicion','2026-10-19 14:38:03'),(5,'PROM-738F',4,16,'Prueba','Prueba Condicion',70.00,'2026-10-27','2026-11-07','Denegada','Prueba Condicion','2026-10-19 15:00:13');
+/*!40000 ALTER TABLE `promocion` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -124,7 +163,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (1,'Mauro','Jimenez','DNI','42130241','$2y$10$qmETw0daBiM3.GnGjuSpeOE4zEE7XeksSZaFb2nNr3/pUtEycNj7q','maurojim123@gmail.com','3413417150','1999-10-15','cliente',0,0,NULL,'a41dedcba7dba463c1a06b7a9c5d011b39ca21eeefec927f1e2fe2674917b332',NULL,'2026-09-26 12:59:31'),(6,'Kim','Petras','pasaporte','PP45332424','$2y$10$LzAeQEUY3y2FqtOG8OVMh.7MURZQGXeog9VwLZ2Lwp4olP4odSaSW','dtla@detour.com','2339233923','1992-08-08','ceo',0,0,NULL,'814c2080baeec29302f0d42466789ad4ea8890f0e6f0e4062ecce266b6914e73',2,'2026-09-26 12:59:31'),(7,'Ejemplo','Jimenez','DNI','42130243','$2y$10$T6yOga/HlWghlG13qocc7eG15tyiPWWP/uJXOkaaXJHH5HGw0EuRG','ejejej@jojojo.com','2331233923','2008-09-09','ceo',0,0,NULL,'7c03dedfbcc64f2a7f0625264b229946271343c8752274d3628041c194a254ad',7,'2026-09-26 12:59:31'),(9,'Borrar','Proximamente','DNI','41776781','$2y$10$syq8os0psjpK89z9HOp5w.wWtcvr.p0Bm9bZnhJ2JDOaNEp5K/Qya','borrar@ceo.com','332332334','2008-09-02','ceo',0,0,'2026-09-26 12:59:31','5f33f0d7fc8564e483004ff35e75014016be585811527d44fd38e45983058d8d',6,'2026-09-26 12:59:31'),(13,'Tessa','Testing','DNI','83743554','$2y$10$fazr.0l/Qe8RDDy/i4uIjOC9qVVc7XkNaRfZqT9oSkuWXc3udd.Bq','nosoy@real.com','43223233','1996-01-01','cliente',0,0,NULL,'c281c35e3b8269d3b4a4b900177fca2d88c4b7c92f440f15827f6bb6e5bd924d',NULL,'2026-09-26 12:59:31'),(14,'admin','admin','DNI','99399939','$2y$10$dcW1FaEM96dcw8xzl1Awp.HTsrM8PJI3l7ZDw6DAscpKX0xDQXb/e','admin@admin.admin','54332212','2008-09-02','admin',1,1,NULL,'6dd6a9e9b6026fabb6e2e7ac195b6f045cbc330f7c05548b8859ce48d64d7df2',6,'2026-09-26 12:59:31'),(15,'proban','ndouseu','DNI','42312984','$2y$10$Tk4rDydj/F0qg5W9O9M7yOJUlFBQvuZWIS2TC1gpdiHffABDp.7yK','test@test.test','3413332211','1998-08-08','cliente',1,1,NULL,'017cce6bbd094ff7117fea76a4be0c8e0ec8f52b21b6cb1d992cf653dff51016',NULL,'2026-09-26 12:59:31'),(16,'CEO','CEO','DNI','1111222','$2y$10$AaKH0zImRtULoT9LnXjrqe5ilHNGdxemnojq/a46F..nM3UMRaAGe','ceo@ceo.ceo','22211222','2008-07-07','ceo',1,1,'2026-09-26 12:59:31','73d7a954d84e3fb3c3bb12b280dbbc11ccb9617f2df023d3de1dfe200093b410',4,'2026-10-02 17:14:35'),(17,'Moto','Rola','DNI','6767676','$2y$10$decOEDGxV/fsYGx7cAs3G.oaixxBNMtlHqFNFlaulXmZudiLUH8/G','sticclefalbre@gmail.com','67676776','1967-06-07','cliente',1,1,NULL,NULL,NULL,'2026-10-05 19:22:29'),(18,'Juan','Perez','DNI','54323456','$2y$10$nG25fKsga96KfvhWhyf2F.Jy32w5u8gv7T/buqktq/l/9pIYhcEMO','maurocrunchy1@gmail.com','344312223','2008-10-01','admin',1,1,NULL,NULL,NULL,'2026-10-05 19:34:09');
+INSERT INTO `usuario` VALUES (1,'Mauro','Jimenez','DNI','42130241','$2y$10$qmETw0daBiM3.GnGjuSpeOE4zEE7XeksSZaFb2nNr3/pUtEycNj7q','maurojim123@gmail.com','3413417150','1999-10-15','cliente',0,0,NULL,'a41dedcba7dba463c1a06b7a9c5d011b39ca21eeefec927f1e2fe2674917b332',NULL,'2026-09-26 12:59:31'),(6,'Kim','Petras','pasaporte','PP45332424','$2y$10$LzAeQEUY3y2FqtOG8OVMh.7MURZQGXeog9VwLZ2Lwp4olP4odSaSW','dtla@detour.com','2339233923','1992-08-08','ceo',1,0,NULL,'814c2080baeec29302f0d42466789ad4ea8890f0e6f0e4062ecce266b6914e73',2,'2026-09-26 12:59:31'),(7,'Ejemplo','Jimenez','DNI','42130243','$2y$10$T6yOga/HlWghlG13qocc7eG15tyiPWWP/uJXOkaaXJHH5HGw0EuRG','ejejej@jojojo.com','2331233923','2008-09-09','ceo',0,0,NULL,'7c03dedfbcc64f2a7f0625264b229946271343c8752274d3628041c194a254ad',7,'2026-09-26 12:59:31'),(9,'Borrar','Proximamente','DNI','41776781','$2y$10$syq8os0psjpK89z9HOp5w.wWtcvr.p0Bm9bZnhJ2JDOaNEp5K/Qya','borrar@ceo.com','332332334','2008-09-02','ceo',0,0,'2026-09-26 12:59:31','5f33f0d7fc8564e483004ff35e75014016be585811527d44fd38e45983058d8d',6,'2026-09-26 12:59:31'),(13,'Tessa','Testing','DNI','83743554','$2y$10$fazr.0l/Qe8RDDy/i4uIjOC9qVVc7XkNaRfZqT9oSkuWXc3udd.Bq','nosoy@real.com','43223233','1996-01-01','cliente',0,0,NULL,'c281c35e3b8269d3b4a4b900177fca2d88c4b7c92f440f15827f6bb6e5bd924d',NULL,'2026-09-26 12:59:31'),(14,'admin','admin','DNI','99399939','$2y$10$dcW1FaEM96dcw8xzl1Awp.HTsrM8PJI3l7ZDw6DAscpKX0xDQXb/e','admin@admin.admin','54332212','2008-09-02','admin',1,1,NULL,'6dd6a9e9b6026fabb6e2e7ac195b6f045cbc330f7c05548b8859ce48d64d7df2',6,'2026-09-26 12:59:31'),(15,'Damian','Perez','DNI','42312984','$2y$10$Tk4rDydj/F0qg5W9O9M7yOJUlFBQvuZWIS2TC1gpdiHffABDp.7yK','test@test.test','3413332211','1998-08-08','cliente',1,1,NULL,'017cce6bbd094ff7117fea76a4be0c8e0ec8f52b21b6cb1d992cf653dff51016',NULL,'2026-09-26 12:59:31'),(16,'CEO','CEO','DNI','1111222','$2y$10$AaKH0zImRtULoT9LnXjrqe5ilHNGdxemnojq/a46F..nM3UMRaAGe','ceo@ceo.ceo','22211222','2008-07-07','ceo',1,1,'2026-09-26 12:59:31','73d7a954d84e3fb3c3bb12b280dbbc11ccb9617f2df023d3de1dfe200093b410',4,'2026-10-02 17:14:35'),(17,'Moto','Rola','DNI','6767676','$2y$10$decOEDGxV/fsYGx7cAs3G.oaixxBNMtlHqFNFlaulXmZudiLUH8/G','sticclefalbre@gmail.com','67676776','1967-06-07','cliente',1,1,NULL,NULL,NULL,'2026-10-05 19:22:29'),(18,'Juan','Perez','DNI','54323456','$2y$10$nG25fKsga96KfvhWhyf2F.Jy32w5u8gv7T/buqktq/l/9pIYhcEMO','maurocrunchy1@gmail.com','344312223','2008-10-01','admin',1,1,NULL,NULL,NULL,'2026-10-05 19:34:09');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -173,33 +212,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
-<<<<<<< HEAD
--- Dump completed on 2026-10-06 19:59:02
-
-DROP TABLE IF EXISTS `promocion`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `promocion` (
-  `idPromocion` int NOT NULL AUTO_INCREMENT,
-  `codigo` varchar(20) COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `idAerolinea` int NOT NULL,
-  `idUsuarioCreador` int NOT NULL,
-  `nombre` varchar(150) COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `descripcion` text COLLATE utf8mb4_unicode_520_ci,
-  `descuentoPorcentaje` decimal(5,2) NOT NULL,
-  `fechaInicio` date NOT NULL,
-  `fechaFin` date NOT NULL,
-  `estado` enum('Pendiente','Aprobada','Denegada') COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'Pendiente',
-  `condiciones` text COLLATE utf8mb4_unicode_520_ci,
-  `fechaCreacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`idPromocion`),
-  UNIQUE KEY `codigo_UNIQUE` (`codigo`),
-  KEY `fk_promocion_aerolinea_idx` (`idAerolinea`),
-  KEY `fk_promocion_usuario_idx` (`idUsuarioCreador`),
-  CONSTRAINT `fk_promocion_aerolinea` FOREIGN KEY (`idAerolinea`) REFERENCES `aerolinea` (`idAerolinea`) ON DELETE CASCADE,
-  CONSTRAINT `fk_promocion_usuario` FOREIGN KEY (`idUsuarioCreador`) REFERENCES `usuario` (`idUsuario`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-=======
--- Dump completed on 2026-10-14  0:30:58
->>>>>>> master
+-- Dump completed on 2026-10-19 15:04:16

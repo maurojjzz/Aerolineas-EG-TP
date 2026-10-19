@@ -87,7 +87,6 @@ $usuario = usuarioActual();
                 </li>
                 <li><hr class="dropdown-divider"></li>
                 <li>
-                    // DESPUÉS:
                     <a class="dropdown-item py-2 text-danger" href="<?= url('src/routes/usuarios.php?accion=logout') ?>">
                         Cerrar sesión
                     </a>

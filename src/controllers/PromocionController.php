@@ -60,7 +60,7 @@ class PromocionController {
 
         mysqli_stmt_bind_param(
             $stmt,
-            'siissdss s',
+            'siissdsss',
             $codigo,
             $idAerolinea,
             $idUsuario,
@@ -159,13 +159,13 @@ class PromocionController {
     public function resolverEstado(string $estado): void {
         if (!in_array($estado, ['Aprobada', 'Denegada'], true)) {
             flash_set('error', 'Acción no válida.');
-            redirect('index.php?pagina=promociones');
+            redirect('index.php?pagina=promociones&seccion=listado');
         }
 
         $id = (int)($_POST['id'] ?? 0);
         if ($id <= 0) {
             flash_set('error', 'Promoción no válida.');
-            redirect('index.php?pagina=promociones');
+            redirect('index.php?pagina=promociones&seccion=listado');
         }
 
         $stmt = mysqli_prepare($this->conexion,
@@ -189,7 +189,7 @@ class PromocionController {
             flash_set('error', 'Error al actualizar la promoción.');
         }
 
-        redirect('index.php?pagina=promociones');
+        redirect('index.php?pagina=promociones&seccion=listado');
     }
 
     // ── CEO: eliminar promo propia (solo si está Pendiente) ───────────────────

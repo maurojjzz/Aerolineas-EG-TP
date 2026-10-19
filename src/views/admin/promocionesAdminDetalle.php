@@ -9,18 +9,17 @@ if (!$id) {
     redirect('index.php?pagina=promociones&seccion=listado');
 }
 
-$promo = $ctrl->obtenerPorId($id); // Asegurate de que tu controlador tenga este método (o el equivalente que use tu sistema)
+$promo = $ctrl->obtenerPorId($id);
 if (!$promo) {
-    http_response_code(404);
-    echo '<p class="text-center py-5 text-muted">Promoción no encontrada.</p>';
-    return;
+    flash_set('error', 'Promoción no encontrada.');
+    redirect('index.php?pagina=promociones&seccion=listado');
 }
 
-// Formateo de fechas y datos
 $fInicio = !empty($promo['fechaInicio']) ? date('d/m/Y', strtotime($promo['fechaInicio'])) : '—';
 $fFin = !empty($promo['fechaFin']) ? date('d/m/Y', strtotime($promo['fechaFin'])) : '—';
-$aerolinea = $promo['nombreAerolinea'] ?? ($promo['codigoIATA'] ?? '—');
+$aerolinea = $promo['nombreAerolinea'] ?? '—';
 $ceo = trim(($promo['ceoNombre'] ?? '') . ' ' . ($promo['ceoApellido'] ?? ''));
+$estado = $promo['estado'] ?? 'Pendiente';
 
 function badgeEstadoPromoDetalle(string $estado): string {
     return match ($estado) {
@@ -31,82 +30,100 @@ function badgeEstadoPromoDetalle(string $estado): string {
 }
 ?>
 
+<?php require __DIR__ . '/../components/alertToast.php'; ?>
+
 <div>
     <nav class="breadcrumbCont" aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">Inicio</a></li>
-            <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=promociones&seccion=listado') ?>">Gestión de Promociones</a></li>
-            <li class="breadcrumb-item active">Promoción: <?= htmlspecialchars($promo['codigo'] ?? 'Detalle') ?></li>
+            <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=inicio') ?>">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=promociones&seccion=listado') ?>">Promociones</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Detalle: <?= htmlspecialchars($promo['codigo'] ?? '') ?></li>
         </ol>
     </nav>
 
-    <div class="contForm col-12 d-flex flex-column p-2 gap-3">
-        <div class="p-0 m-0 d-flex flex-column flex-md-row justify-content-between gap-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="m-0 fs-2 fw-bold">Detalle de la Promoción</h2>
+        <a href="<?= url('index.php?pagina=promociones&seccion=listado') ?>" class="btn btn-outline-secondary btn-sm">
+            ← Volver al listado
+        </a>
+    </div>
 
-            <!-- Información Principal de la Promoción -->
-            <div class="bg-white shadow rounded-3 p-3 flex-grow-1">
-                <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
-                    <div class="d-flex flex-column flex-sm-row gap-3 align-items-center w-100">
-                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center flex-shrink-0" style="width:120px; height:120px;">
-                            <span class="text-white fw-bold text-uppercase fs-2"><?= htmlspecialchars(substr($promo['codigo'] ?? 'PR', 0, 2)) ?></span>
-                        </div>
-
-                        <div class="d-flex flex-column flex-grow-1 justify-content-between" style="min-height:120px;">
-                            <div class="d-flex align-items-center gap-3 flex-wrap">
-                                <h2 class="fw-bold m-0 text-uppercase"><?= htmlspecialchars($promo['codigo'] ?? '') ?></h2>
-                                <span class="badge <?= badgeEstadoPromoDetalle($promo['estado'] ?? 'Pendiente') ?> fs-6">
-                                    <?= htmlspecialchars($promo['estado'] ?? 'Pendiente') ?>
-                                </span>
-                            </div>
-
-                            <p class="text-dark fw-semibold m-0 mt-1" style="font-size:1.1rem;">
-                                <?= htmlspecialchars($promo['nombre'] ?? '') ?>
-                            </p>
-
-                            <p class="text-muted m-0" style="font-size:0.9rem;">
-                                <?= !empty($promo['descripcion']) ? htmlspecialchars($promo['descripcion']) : 'Sin descripción detallada.' ?>
-                            </p>
-
-                            <div class="d-flex flex-wrap gap-5 mt-3" style="font-size:0.85rem;">
-                                <span class="d-flex flex-column gap-1">
-                                    <span class="text-muted">Descuento</span> 
-                                    <strong class="text-success fs-6"><?= (float)($promo['descuentoPorcentaje'] ?? 0) ?>%</strong>
-                                </span>
-                                <span class="d-flex flex-column gap-1">
-                                    <span class="text-muted">Aerolínea</span> 
-                                    <strong class="text-primary"><?= htmlspecialchars($aerolinea) ?></strong>
-                                </span>
-                                <span class="d-flex flex-column gap-1">
-                                    <span class="text-muted">CEO responsable</span> 
-                                    <strong><?= $ceo !== '' ? htmlspecialchars($ceo) : '—' ?></strong>
-                                </span>
-                            </div>
-                        </div>
+    <div class="row g-4">
+        
+        <!-- Columna Izquierda: Información Principal -->
+        <div class="col-12 col-lg-8">
+            <div class="bg-white shadow rounded-3 p-4 h-100">
+                
+                <div class="d-flex align-items-center gap-3 mb-4 border-bottom pb-3">
+                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center flex-shrink-0" style="width:70px; height:70px;">
+                        <span class="text-white fw-bold text-uppercase fs-3"><?= htmlspecialchars(substr($promo['codigo'] ?? 'PR', 0, 2)) ?></span>
                     </div>
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <h3 class="fw-bold m-0 text-uppercase"><?= htmlspecialchars($promo['codigo'] ?? '') ?></h3>
+                            <span class="badge <?= badgeEstadoPromoDetalle($estado) ?> fs-6">
+                                <?= htmlspecialchars($estado) ?>
+                            </span>
+                        </div>
+                        <p class="text-muted m-0 fs-5"><?= htmlspecialchars($promo['nombre'] ?? '') ?></p>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h5 class="fw-semibold text-muted mb-2" style="font-size:0.9rem; text-transform:uppercase; letter-spacing:1px;">Descripción</h5>
+                    <p class="text-dark m-0" style="line-height:1.6;">
+                        <?= !empty($promo['descripcion']) ? nl2br(htmlspecialchars($promo['descripcion'])) : 'Sin descripción detallada.' ?>
+                    </p>
+                </div>
+
+                <div>
+                    <h5 class="fw-semibold text-muted mb-2" style="font-size:0.9rem; text-transform:uppercase; letter-spacing:1px;">Condiciones</h5>
+                    <div class="bg-light rounded-3 p-3">
+                        <p class="text-muted m-0" style="font-size:0.9rem; line-height:1.5;">
+                            <?= !empty($promo['condiciones']) ? nl2br(htmlspecialchars($promo['condiciones'])) : 'Sin condiciones especificadas.' ?>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Columna Derecha: Resumen y Datos -->
+        <div class="col-12 col-lg-4">
+            
+            <!-- Tarjeta de Descuento -->
+            <div class="bg-white shadow rounded-3 p-4 mb-4 text-center">
+                <p class="text-muted fw-semibold m-0 mb-2">Descuento Aplicado</p>
+                <h1 class="display-4 fw-bold text-success m-0"><?= (float)($promo['descuentoPorcentaje'] ?? 0) ?>%</h1>
+            </div>
+
+            <!-- Tarjeta de Fechas -->
+            <div class="bg-white shadow rounded-3 p-4 mb-4">
+                <h5 class="fw-semibold text-muted mb-3" style="font-size:0.9rem; text-transform:uppercase; letter-spacing:1px;">Vigencia</h5>
+                
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted"><i class="bi bi-calendar-event me-1"></i> Inicio</span>
+                    <span class="fw-semibold"><?= $fInicio ?></span>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted"><i class="bi bi-calendar-x me-1"></i> Fin</span>
+                    <span class="fw-semibold"><?= $fFin ?></span>
                 </div>
             </div>
 
-            <!-- Subinformación / Vigencia -->
-            <div class="d-flex flex-column p-3 rounded-3 bg-white shadow" style="min-width: 280px;">
-                <p class="d-flex flex-row align-items-center justify-content-between fw-semibold m-0 mb-3">
-                    Vigencia de la promo
-                </p>
-                <div class="d-flex flex-column justify-content-evenly gap-2 h-100" style="font-size:0.9rem;">
-                    <div class="d-flex flex-row align-items-center justify-content-between">
-                        <span class="text-muted">Fecha de inicio</span>
-                        <span class="fw-semibold"><?= $fInicio ?></span>
-                    </div>
-                    <div class="d-flex flex-row align-items-center justify-content-between">
-                        <span class="text-muted">Fecha de fin</span>
-                        <span class="fw-semibold"><?= $fFin ?></span>
-                    </div>
-                    <hr class="text-muted my-2">
-                    <div>
-                        <span class="text-muted d-block mb-1">Condiciones:</span>
-                        <p class="text-dark m-0" style="font-size:0.8rem; line-height: 1.4;">
-                            <?= !empty($promo['condiciones']) ? htmlspecialchars($promo['condiciones']) : 'Sin condiciones especificadas.' ?>
-                        </p>
-                    </div>
+            <!-- Tarjeta de Aerolínea / CEO -->
+            <div class="bg-white shadow rounded-3 p-4">
+                <h5 class="fw-semibold text-muted mb-3" style="font-size:0.9rem; text-transform:uppercase; letter-spacing:1px;">Información del Creador</h5>
+                
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted">Aerolínea</span>
+                    <span class="fw-semibold text-primary"><?= htmlspecialchars($aerolinea) ?></span>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted">CEO</span>
+                    <span class="fw-semibold"><?= $ceo !== '' ? htmlspecialchars($ceo) : '—' ?></span>
                 </div>
             </div>
 

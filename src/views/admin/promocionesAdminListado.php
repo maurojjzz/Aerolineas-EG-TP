@@ -176,34 +176,42 @@ function badgeEstadoPromoAdmin(string $estado): string {
                                 </td>
                             </tr>
                         <?php else:
-                            foreach ($promociones as $p):$idPromo   = $p['idPromocion'] ?? $p['codigo'];
+                            foreach ($promociones as $p):
+                                $idPromo   = $p['idPromocion'] ?? $p['codigo'];
                                 $fInicio   = date('d/m/Y', strtotime($p['fechaInicio']));
                                 $fFin      = date('d/m/Y', strtotime($p['fechaFin']));
-                                $aerolinea =$p['nombreAerolinea'] ?? ($p['codigoIATA'] ?? '—');$ceo       = trim(($p['ceoNombre'] ?? '') . ' ' . ($p['ceoApellido'] ?? ''));
+                                $aerolinea = $p['nombreAerolinea'] ?? ($p['codigoIATA'] ?? '—');
+                                $ceo       = trim(($p['ceoNombre'] ?? '') . ' ' . ($p['ceoApellido'] ?? ''));
                         ?>
                         <tr class="fila-tabla" data-id="<?= htmlspecialchars((string)$idPromo) ?>" style="cursor:pointer;">
-                            <td>
-                                <div class="d-flex align-items-center justify-content-center gap-2">
-                                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center" style="width:30px; height:30px; flex-shrink:0;">
-                                        <span class="text-white fw-bold text-uppercase" style="font-size:0.6rem;"><?= htmlspecialchars(substr($p['codigo'], 0, 2)) ?></span>
-                                    </div>
-                                    <span class="text-uppercase fw-medium"><?= htmlspecialchars($p['codigo']) ?></span>
-                                </div>
+                            
+                            <!-- CÓDIGO (Sin círculo) -->
+                            <td class="text-center text-uppercase fw-medium">
+                                <?= htmlspecialchars($p['codigo']) ?>
                             </td>
+                            
                             <td><?= htmlspecialchars($p['nombre']) ?></td>
+                            
                             <td class="d-none d-md-table-cell">
                                 <div><?= htmlspecialchars($aerolinea) ?></div>
                                 <?php if ($ceo !== ''): ?>
                                     <div class="text-muted" style="font-size:0.75rem;"><?= htmlspecialchars($ceo) ?></div>
                                 <?php endif; ?>
                             </td>
+                            
                             <td class="text-center fw-bold text-success"><?= (float)$p['descuentoPorcentaje'] ?>%</td>
+                            
                             <td class="d-none d-lg-table-cell text-muted" style="font-size:0.85rem;"><?= $fInicio ?> - <?= $fFin ?></td>
+                            
                             <td class="d-none d-sm-table-cell">
                                 <span class="badge <?= badgeEstadoPromoAdmin($p['estado']) ?>"><?= htmlspecialchars($p['estado']) ?></span>
                             </td>
+                            
+                            <!-- ACCIONES -->
                             <td>
                                 <div class="d-flex justify-content-center align-items-center w-100 gap-2">
+                                    
+                                    <!-- Ver detalle (SIEMPRE) -->
                                     <a
                                         href="<?= url('index.php?pagina=promociones&seccion=detalle&id=' . htmlspecialchars((string)$idPromo)) ?>"
                                         class="p-0 bg-transparent border-0 d-flex align-items-center justify-content-center text-decoration-none btn-ver-promo"
@@ -215,18 +223,23 @@ function badgeEstadoPromoAdmin(string $estado): string {
                                     >
                                         <img src="<?= url('public/img/icons/readTabla.png') ?>" class="img-fluid" alt="ver promoción" style="width: 20px; height: 20px; object-fit: contain;">
                                     </a>
-                                    <button type="button"
-                                        class="btn btn-sm btn-outline-success py-0 px-2 btn-resolver-promo"
-                                        data-id="<?= htmlspecialchars((string)$idPromo) ?>"
-                                        data-nombre="<?= htmlspecialchars($p['nombre']) ?>"
-                                        data-accion="aprobar"
-                                        data-bs-toggle="tooltip" data-bs-title="Aprobar" data-bs-trigger="hover">✓</button>
-                                    <button type="button"
-                                        class="btn btn-sm btn-outline-danger py-0 px-2 btn-resolver-promo"
-                                        data-id="<?= htmlspecialchars((string)$idPromo) ?>"
-                                        data-nombre="<?= htmlspecialchars($p['nombre']) ?>"
-                                        data-accion="denegar"
-                                        data-bs-toggle="tooltip" data-bs-title="Denegar" data-bs-trigger="hover">✕</button>
+
+                                    <!-- Aprobar / Denegar (SOLO SI ESTÁ PENDIENTE) -->
+                                    <?php if ($p['estado'] === 'Pendiente'): ?>
+                                        <button type="button"
+                                            class="btn btn-sm btn-outline-success py-0 px-2 btn-resolver-promo"
+                                            data-id="<?= htmlspecialchars((string)$idPromo) ?>"
+                                            data-nombre="<?= htmlspecialchars($p['nombre']) ?>"
+                                            data-accion="aprobar"
+                                            data-bs-toggle="tooltip" data-bs-title="Aprobar" data-bs-trigger="hover">✓</button>
+                                        
+                                        <button type="button"
+                                            class="btn btn-sm btn-outline-danger py-0 px-2 btn-resolver-promo"
+                                            data-id="<?= htmlspecialchars((string)$idPromo) ?>"
+                                            data-nombre="<?= htmlspecialchars($p['nombre']) ?>"
+                                            data-accion="denegar"
+                                            data-bs-toggle="tooltip" data-bs-title="Denegar" data-bs-trigger="hover">✕</button>
+                                    <?php endif; ?>
                                 </div>
                             </td>
                         </tr>
@@ -235,6 +248,8 @@ function badgeEstadoPromoAdmin(string $estado): string {
                             <td colspan="7" class="p-0">
                                 <div class="detalle-aerolinea px-4 py-3">
                                     <div class="row g-3 align-items-start">
+                                        
+                                        <!-- Col 1: Código, nombre y aerolínea -->
                                         <div class="col-12 col-md-4 d-flex gap-3">
                                             <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center flex-shrink-0" style="width:55px;height:55px;">
                                                 <span class="text-white fw-bold text-uppercase" style="font-size:0.9rem;"><?= htmlspecialchars(substr($p['codigo'], 0, 2)) ?></span>
@@ -252,10 +267,11 @@ function badgeEstadoPromoAdmin(string $estado): string {
                                             </div>
                                         </div>
 
+                                        <!-- Col 2: Datos -->
                                         <div class="col-12 col-md-4 d-flex flex-column gap-2" style="font-size:0.85rem;">
                                             <div class="d-flex justify-content-between">
                                                 <span class="text-muted">Estado</span>
-                                                <span class="fw-medium"><?= htmlspecialchars($p['estado']) ?></span>
+                                                <span class="badge <?= badgeEstadoPromoAdmin($p['estado']) ?>"><?= htmlspecialchars($p['estado']) ?></span>
                                             </div>
                                             <div class="d-flex justify-content-between">
                                                 <span class="text-muted">Descuento</span>
@@ -277,19 +293,36 @@ function badgeEstadoPromoAdmin(string $estado): string {
                                             </div>
                                         </div>
 
+                                        <!-- Col 3: Acciones -->
                                         <div class="col-12 col-md-4 d-flex flex-column gap-2">
                                             <p class="fw-semibold m-0 mb-1" style="font-size:0.85rem;">Acciones disponibles</p>
-                                            <button type="button"
-                                                class="btn btn-outline-success btn-sm btn-resolver-promo"
-                                                data-id="<?= htmlspecialchars((string)$idPromo) ?>"
-                                                data-nombre="<?= htmlspecialchars($p['nombre']) ?>"
-                                                data-accion="aprobar">Aprobar promoción</button>
-                                            <button type="button"
-                                                class="btn btn-outline-danger btn-sm btn-resolver-promo"
-                                                data-id="<?= htmlspecialchars((string)$idPromo) ?>"
-                                                data-nombre="<?= htmlspecialchars($p['nombre']) ?>"
-                                                data-accion="denegar">Denegar promoción</button>
+                                            
+                                            <?php if ($p['estado'] === 'Pendiente'): ?>
+                                                <!-- Si está pendiente, puede aprobar/denegar -->
+                                                <button type="button"
+                                                    class="btn btn-outline-success btn-sm btn-resolver-promo"
+                                                    data-id="<?= htmlspecialchars((string)$idPromo) ?>"
+                                                    data-nombre="<?= htmlspecialchars($p['nombre']) ?>"
+                                                    data-accion="aprobar">Aprobar promoción</button>
+                                                <button type="button"
+                                                    class="btn btn-outline-danger btn-sm btn-resolver-promo"
+                                                    data-id="<?= htmlspecialchars((string)$idPromo) ?>"
+                                                    data-nombre="<?= htmlspecialchars($p['nombre']) ?>"
+                                                    data-accion="denegar">Denegar promoción</button>
+                                            <?php else: ?>
+                                                <!-- Si ya fue aprobada o denegada, solo mostramos el acceso al detalle -->
+                                                <div class="alert alert-light border text-center m-0 p-2" style="font-size:0.8rem;">
+                                                    Esta promoción ya fue <strong><?= strtolower($p['estado']) ?></strong>.
+                                                </div>
+                                            <?php endif; ?>
+
+                                            <!-- Botón para ir a la vista completa de detalle (SIEMPRE visible) -->
+                                            <a href="<?= url('index.php?pagina=promociones&seccion=detalle&id=' . htmlspecialchars((string)$idPromo)) ?>" 
+                                            class="btn btn-outline-primary btn-sm mt-1">
+                                                Ver detalle completo
+                                            </a>
                                         </div>
+
                                     </div>
                                 </div>
                             </td>
