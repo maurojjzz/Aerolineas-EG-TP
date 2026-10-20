@@ -22,7 +22,7 @@
             type="date"  
             class="form-control form-control-lg custom-cal-in " 
             id="fecha-vuelta" 
-            name="fecha-vuelta" 
+            name="fecha_vuelta"
             placeholder="Fecha de vuelta"
             min="<?php echo date('Y-m-d'); ?>"
         >

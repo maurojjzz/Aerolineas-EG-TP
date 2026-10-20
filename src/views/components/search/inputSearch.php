@@ -11,6 +11,7 @@
                 class="w-100 border-0 bg-transparent custom-input-b2"
                 type="text"
                 id="from"
+                name="origen"
                 placeholder="Pais o Ciudad"
                 autocomplete="off"
                 required
@@ -39,6 +40,7 @@
                 class="w-100 border-0 bg-transparent custom-input-b2"
                 type="text"
                 id="to"
+                name="destino"
                 placeholder="Pais o Ciudad"
                 autocomplete="off"
                 required
