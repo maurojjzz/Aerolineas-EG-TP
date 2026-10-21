@@ -1,0 +1,376 @@
+.min-width-0 {
+    min-width: 0;
+}
+
+.titulo-cuadro h2 {
+    min-width: 0;
+    font-size: clamp(2rem, 6vw, 2.5rem);
+}
+
+.titulo-cuadro h5 {
+    letter-spacing: 3px;
+}
+
+/* Resumen */
+.historial-kpi {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    height: 100%;
+    padding: 1rem;
+    background: #fff;
+    border: 1px solid rgba(8, 33, 73, 0.05);
+    border-radius: 0.9rem;
+    box-shadow: 0 0.35rem 1.2rem rgba(8, 33, 73, 0.08);
+}
+
+.historial-kpi-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 48px;
+    height: 48px;
+    border-radius: 0.85rem;
+    background: #eaf2ff;
+    color: #0d6efd;
+    font-size: 1.3rem;
+}
+
+.historial-kpi-label {
+    margin: 0;
+    color: #6c757d;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.historial-kpi-value {
+    margin: 0;
+    color: #082149;
+    font-size: 1.45rem;
+    font-weight: 700;
+    line-height: 1.15;
+}
+
+.historial-kpi-value-money {
+    font-size: 1.2rem;
+    white-space: nowrap;
+}
+
+.historial-kpi-value-destination {
+    max-width: 100%;
+    font-size: 1.05rem;
+}
+
+.historial-kpi-hint {
+    margin: 0;
+    color: #8a94a6;
+    font-size: 0.72rem;
+}
+
+/* Filtros */
+.historial-filtros {
+    padding: 1rem 1.1rem;
+    background: #fff;
+    border: 1px solid rgba(8, 33, 73, 0.05);
+    border-radius: 0.9rem;
+    box-shadow: 0 0.35rem 1.2rem rgba(8, 33, 73, 0.07);
+}
+
+.historial-filtros .form-label {
+    margin-bottom: 0.3rem;
+    color: #6c757d;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+}
+
+.historial-filtros .form-control,
+.historial-filtros .form-select,
+.historial-filtros .input-group-text {
+    font-size: 0.85rem;
+}
+
+.historial-filtros .input-group-text {
+    border-right: 0;
+    color: #6c757d;
+}
+
+.historial-filtros .input-group .form-control {
+    border-left: 0;
+}
+
+.historial-filtros .form-control:focus,
+.historial-filtros .form-select:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.12);
+}
+
+.historial-resultado {
+    font-size: 0.8rem;
+}
+
+.historial-empty-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #eef4ff;
+    color: #0d6efd;
+    font-size: 1.7rem;
+}
+
+/* Tabla */
+.tabla-compras {
+    min-width: 1000px;
+}
+
+.tabla-compras tbody td {
+    padding-top: 0.85rem;
+    padding-bottom: 0.85rem;
+}
+
+.compra-codigo {
+    margin: 0;
+    color: #082149;
+    font-size: 0.88rem;
+    font-weight: 700;
+}
+
+.compra-fecha {
+    margin: 0;
+    color: #6c757d;
+    font-size: 0.72rem;
+}
+
+.ruta-compra {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    white-space: nowrap;
+}
+
+.ruta-punto {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+}
+
+.ruta-codigo {
+    color: #082149;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.ruta-ciudad {
+    overflow: hidden;
+    max-width: 90px;
+    color: #6c757d;
+    font-size: 0.72rem;
+    text-overflow: ellipsis;
+}
+
+.ruta-flecha {
+    color: #0d6efd;
+    font-size: 0.8rem;
+}
+
+.airline-logo,
+.airline-logo-fallback {
+    flex: 0 0 auto;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: contain;
+}
+
+.airline-logo-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0d6efd;
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+}
+
+.airline-name {
+    overflow: hidden;
+    max-width: 150px;
+    margin: 0;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.airline-code {
+    margin: 0;
+    color: #6c757d;
+    font-size: 0.72rem;
+}
+
+.flight-time {
+    margin: 0;
+    color: #6c757d;
+    font-size: 0.73rem;
+    white-space: nowrap;
+}
+
+.flight-arrow {
+    margin: 0 0.1rem;
+    color: #0d6efd;
+}
+
+.passengers-count {
+    font-size: 0.82rem;
+}
+
+.precio-unitario {
+    color: #6c757d;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.compra-total {
+    color: #0d3262;
+    font-size: 0.9rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.tabla-compras td:last-child .btn {
+    white-space: nowrap;
+}
+
+/* Paginación */
+.historial-paginacion .page-link {
+    color: #0d3262;
+    border-color: #e3e8f0;
+    font-size: 0.85rem;
+}
+
+.historial-paginacion .page-item.active .page-link {
+    background: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.historial-paginacion .page-link:focus {
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.12);
+}
+
+/* Modal */
+.detalle-etiqueta {
+    margin: 0;
+    color: #6c757d;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.detalle-codigo {
+    margin: 0;
+    color: #082149;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.detalle-meta {
+    margin: 0;
+    color: #6c757d;
+    font-size: 0.78rem;
+}
+
+.detalle-airline-logo,
+.detalle-airline-fallback {
+    flex: 0 0 auto;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: contain;
+}
+
+.detalle-airline-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0d6efd;
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+}
+
+.detalle-ruta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.detalle-ruta > div {
+    flex: 1;
+    min-width: 0;
+}
+
+.detalle-iata {
+    display: block;
+    color: #082149;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.detalle-ciudad {
+    margin: 0;
+    color: #495057;
+    font-size: 0.85rem;
+}
+
+.detalle-fecha {
+    margin: 0;
+    color: #6c757d;
+    font-size: 0.75rem;
+}
+
+.detalle-flecha {
+    flex: 0 0 auto;
+    color: #0d6efd;
+    font-size: 1.1rem;
+}
+
+.detalle-nota {
+    padding: 0.7rem 0.9rem;
+    background: #f0f4ff;
+    border-radius: 0.6rem;
+    color: #495057;
+    font-size: 0.78rem;
+}
+
+@media (max-width: 575.98px) {
+    .historial-kpi {
+        gap: 0.7rem;
+        padding: 0.85rem;
+    }
+
+    .historial-kpi-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+
+    .historial-kpi-value {
+        font-size: 1.2rem;
+    }
+
+    .historial-kpi-value-money {
+        font-size: 1.05rem;
+    }
+
+    .detalle-codigo {
+        font-size: 1.3rem;
+    }
+}

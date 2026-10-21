@@ -1,10 +1,13 @@
+<?php
+require_once __DIR__ . '/../components/navLinks.php';
+?>
 <footer class="bg-dark text-light pt-4 pb-2 mt-auto">
     <div class="container-xxl">
         <div class="row gy-4 justify-content-between">
             
             <!-- Columna 1: Brand & Slogan -->
             <div class="col-12 col-md-2">
-                <a class="d-inline-block mb-1" href="#">
+                <a class="d-inline-block mb-1" href="<?= htmlspecialchars($urlInicio) ?>">
                     <img class="logo" src="<?= url('public/img/aerologo.webp') ?>" alt="Logo de Volaré" style="max-height: 45px;">
                 </a>
                 <p class="text-secondary small">
@@ -16,10 +19,17 @@
             <div class="col-6 col-md-2">
                 <h6 class="text-uppercase text-white fw-bold mb-3">Navegación</h6>
                 <ul class="list-unstyled text-small">
-                    <li class="mb-2"><a class="link-secondary text-decoration-none" href="<?= url('index.php?pagina=inicio') ?>">Inicio</a></li>
-                    <li class="mb-2"><a class="link-secondary text-decoration-none" href="<?= url('index.php?pagina=vuelos') ?>">Vuelos</a></li>
-                    <li class="mb-2"><a class="link-secondary text-decoration-none" href="<?= url('index.php?pagina=promociones') ?>">Promociones</a></li>
-                    <li class="mb-2"><a class="link-secondary text-decoration-none" href="<?= url('index.php?pagina=novedades') ?>">Novedades</a></li>
+                    <?php if (!$isLoggedIn): ?>
+                        <li class="mb-2"><a class="link-secondary text-decoration-none" href="<?= url('index.php?pagina=inicio') ?>">Inicio</a></li>
+                        <li class="mb-2"><a class="link-secondary text-decoration-none" href="<?= url('index.php?pagina=buscar-vuelos') ?>">Vuelos</a></li>
+                    <?php elseif ($rol === 'cliente'): ?>
+                        <li class="mb-2"><a class="link-secondary text-decoration-none" href="<?= htmlspecialchars($urlInicio) ?>">Inicio</a></li>
+                        <li class="mb-2"><a class="link-secondary text-decoration-none" href="<?= url('index.php?pagina=mis-reservas') ?>">Mis reservas</a></li>
+                        <li class="mb-2"><a class="link-secondary text-decoration-none" href="<?= url('index.php?pagina=historial-compras') ?>">Historial de compras</a></li>
+                    <?php else: ?>
+                        <li class="mb-2"><a class="link-secondary text-decoration-none" href="<?= htmlspecialchars($urlPanel) ?>">Mi Panel</a></li>
+                        <li class="mb-2"><a class="link-secondary text-decoration-none" href="<?= htmlspecialchars($urlPerfil) ?>">Mi Perfil</a></li>
+                    <?php endif; ?>
                 </ul>
             </div>
 

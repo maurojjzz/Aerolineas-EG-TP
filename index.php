@@ -138,6 +138,11 @@ switch ($pagina) {
         requireRol('cliente');
         require __DIR__ . '/src/views/cliente/misReservas.php';
         break;
+
+    case 'historial-compras':
+        requireRol('cliente');
+        require __DIR__ . '/src/views/cliente/historialCompras.php';
+        break;
     
     case 'pago':
         requireRol('cliente');

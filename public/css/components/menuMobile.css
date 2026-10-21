@@ -22,3 +22,74 @@
     font-weight: 500;
     font-size: 1.2rem;
 }
+
+.offcanvas {
+    width: min(320px, 88vw);
+}
+
+.offcanvas-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.offcanvas-body {
+    padding-top: 1rem;
+}
+
+.offcanvas .navbar-nav {
+    gap: 0.2rem;
+}
+
+.offcanvas .navbar-nav .nav-link {
+    color: #fff;
+    font-size: 1.05rem;
+    padding: 0.7rem 0.75rem;
+    border-radius: 0.6rem;
+}
+
+.offcanvas .navbar-nav .nav-link:hover,
+.offcanvas .navbar-nav .nav-link:focus {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.offcanvas .navbar-nav .nav-link.active {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.mobile-user-box {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 0.9rem;
+    border-radius: 0.8rem;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.mobile-user-box .min-width-0 {
+    min-width: 0;
+}
+
+.mobile-user-name {
+    margin: 0;
+    font-weight: 600;
+    color: #fff;
+    font-size: 0.95rem;
+}
+
+.mobile-user-role {
+    margin: 0;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.mobile-logout {
+    color: #ffe08a;
+}
+
+.mobile-logout:hover,
+.mobile-logout:focus {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.12);
+}

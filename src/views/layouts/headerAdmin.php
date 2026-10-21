@@ -76,13 +76,18 @@ $usuario = usuarioActual();
                     </div>
                 </li>
                 <li>
+                    <a class="dropdown-item py-2" href="<?= $rol === 'ceo' ? url('index.php?pagina=ceo') : url('index.php?pagina=aerolinea&seccion=listado') ?>">
+                        Mi Panel
+                    </a>
+                </li>
+                <li>
                     <a class="dropdown-item py-2" href="<?= url('index.php?pagina=perfil') ?>">
                         Mi perfil
                     </a>
                 </li>
                 <li>
-                    <a class="dropdown-item py-2" href="#">
-                        Configuración
+                    <a class="dropdown-item py-2" href="<?= url('index.php?pagina=ayuda') ?>">
+                        Ayuda
                     </a>
                 </li>
                 <li><hr class="dropdown-divider"></li>
