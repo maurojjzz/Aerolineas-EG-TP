@@ -13,73 +13,152 @@ class ReservaController {
 
     // ── Crear reserva ─────────────────────────────────────────────────────────
     public function crearReserva(): void {
-        $idVuelo      = (int)($_POST['idVuelo']      ?? 0);
+        $idVuelo       = (int)($_POST['idVuelo'] ?? 0);
+        $idVueloVuelta = (int)($_POST['idVueloVuelta'] ?? 0);
         $cantPasajeros = (int)($_POST['cantPasajeros'] ?? 1);
-        $idUsuario    = (int)($_SESSION['usuario']['idUsuario'] ?? 0);
+        $idUsuario     = (int)($_SESSION['usuario']['idUsuario'] ?? 0);
 
         if (!$idVuelo || !$idUsuario || $cantPasajeros < 1) {
             flash_set('error', 'Datos inválidos.');
             redirect('index.php?pagina=cliente');
         }
 
-        // Obtener vuelo y verificar disponibilidad
-        $stmt = mysqli_prepare($this->conexion,
-            "SELECT * FROM vuelo WHERE idVuelo = ? AND asientosDisponibles >= ? AND fechaHoraSalidaVuelo > NOW()");
-        mysqli_stmt_bind_param($stmt, 'ii', $idVuelo, $cantPasajeros);
-        mysqli_stmt_execute($stmt);
-        $vuelo = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
-        mysqli_stmt_close($stmt);
-
-        if (!$vuelo) {
-            flash_set('error', 'El vuelo no está disponible o no tiene suficientes asientos.');
+        if ($idVueloVuelta > 0 && $idVueloVuelta === $idVuelo) {
+            flash_set('error', 'Los vuelos de ida y vuelta deben ser distintos.');
             redirect('index.php?pagina=buscar-vuelos');
         }
 
-        $precioTotal = (float)$vuelo['precioVuelo'] * $cantPasajeros;
-
-        // Verificar que el usuario no tenga ya una reserva activa para este vuelo
-        $stmt = mysqli_prepare($this->conexion,
-            "SELECT idReserva FROM reserva WHERE idUsuario = ? AND idVuelo = ? AND estadoReserva != 'cancelada'");
-        mysqli_stmt_bind_param($stmt, 'ii', $idUsuario, $idVuelo);
-        mysqli_stmt_execute($stmt);
-        $existente = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
-        mysqli_stmt_close($stmt);
-
-        if ($existente) {
-            flash_set('error', 'Ya tenés una reserva activa para este vuelo.');
-            redirect('index.php?pagina=mis-reservas');
+        $ids = [$idVuelo];
+        if ($idVueloVuelta > 0) {
+            $ids[] = $idVueloVuelta;
         }
 
-        // Iniciar transacción
         mysqli_begin_transaction($this->conexion);
 
         try {
-            // Insertar reserva
-            $stmt = mysqli_prepare($this->conexion,
-                "INSERT INTO reserva (idUsuario, idVuelo, cantPasajeros, precioTotal, estadoReserva)
-                 VALUES (?, ?, ?, ?, 'pendiente de pago')");
-            mysqli_stmt_bind_param($stmt, 'iiid', $idUsuario, $idVuelo, $cantPasajeros, $precioTotal);
-            mysqli_stmt_execute($stmt);
-            $idReserva = mysqli_insert_id($this->conexion);
-            mysqli_stmt_close($stmt);
+            // Bloquear las filas de los vuelos para evitar sobreventa entre requests.
+            $vuelos = [];
+            foreach ($ids as $id) {
+                $stmt = mysqli_prepare($this->conexion,
+                    "SELECT * FROM vuelo
+                     WHERE idVuelo = ? AND fechaHoraSalidaVuelo > NOW()
+                     FOR UPDATE");
+                mysqli_stmt_bind_param($stmt, 'i', $id);
+                mysqli_stmt_execute($stmt);
+                $vuelo = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+                mysqli_stmt_close($stmt);
 
-            // Decrementar asientos
-            $stmt = mysqli_prepare($this->conexion,
-                "UPDATE vuelo SET asientosDisponibles = asientosDisponibles - ? WHERE idVuelo = ?");
-            mysqli_stmt_bind_param($stmt, 'ii', $cantPasajeros, $idVuelo);
-            mysqli_stmt_execute($stmt);
-            mysqli_stmt_close($stmt);
+                if (!$vuelo) {
+                    throw new DomainException('El vuelo no está disponible.');
+                }
+
+                if ((int)$vuelo['asientosDisponibles'] < $cantPasajeros) {
+                    throw new DomainException('No hay suficientes asientos disponibles para uno de los vuelos seleccionados.');
+                }
+
+                $vuelos[] = $vuelo;
+            }
+
+            if (count($vuelos) === 2) {
+                $errorVuelta = $this->validarVueloVuelta($vuelos[0], $vuelos[1]);
+                if ($errorVuelta !== null) {
+                    throw new DomainException($errorVuelta);
+                }
+            }
+
+            // Verificar que el usuario no tenga ya una reserva activa para ninguno de los vuelos.
+            foreach ($vuelos as $vuelo) {
+                $id = (int)$vuelo['idVuelo'];
+                $stmt = mysqli_prepare($this->conexion,
+                    "SELECT idReserva FROM reserva
+                     WHERE idUsuario = ? AND idVuelo = ? AND estadoReserva != 'cancelada'
+                     LIMIT 1");
+                mysqli_stmt_bind_param($stmt, 'ii', $idUsuario, $id);
+                mysqli_stmt_execute($stmt);
+                $existente = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+                mysqli_stmt_close($stmt);
+
+                if ($existente) {
+                    throw new DomainException('Ya tenés una reserva activa para uno de los vuelos seleccionados.');
+                }
+            }
+
+            // Insertar una reserva por cada tramo y descontar sus asientos.
+            foreach ($vuelos as $vuelo) {
+                $id = (int)$vuelo['idVuelo'];
+                $precioTotal = (float)$vuelo['precioVuelo'] * $cantPasajeros;
+
+                $stmt = mysqli_prepare($this->conexion,
+                    "INSERT INTO reserva (idUsuario, idVuelo, cantPasajeros, precioTotal, estadoReserva)
+                     VALUES (?, ?, ?, ?, 'pendiente de pago')");
+                mysqli_stmt_bind_param($stmt, 'iiid', $idUsuario, $id, $cantPasajeros, $precioTotal);
+                mysqli_stmt_execute($stmt);
+                mysqli_stmt_close($stmt);
+
+                $stmt = mysqli_prepare($this->conexion,
+                    "UPDATE vuelo
+                     SET asientosDisponibles = asientosDisponibles - ?
+                     WHERE idVuelo = ? AND asientosDisponibles >= ?");
+                mysqli_stmt_bind_param($stmt, 'iii', $cantPasajeros, $id, $cantPasajeros);
+                mysqli_stmt_execute($stmt);
+                $asientosActualizados = mysqli_affected_rows($this->conexion);
+                mysqli_stmt_close($stmt);
+
+                if ($asientosActualizados !== 1) {
+                    throw new DomainException('No hay suficientes asientos disponibles para uno de los vuelos seleccionados.');
+                }
+            }
 
             mysqli_commit($this->conexion);
 
-            flash_set('success', '¡Reserva creada! Confirmá el pago para asegurar tu lugar.');
-            redirect('index.php?pagina=mis-reservas');
+            $mensaje = count($vuelos) > 1
+                ? '¡Reservas creadas! Se generaron dos reservas independientes (ida y vuelta). Pagalas por separado desde Mis Reservas.'
+                : '¡Reserva creada! Confirmá el pago para asegurar tu lugar.';
 
-        } catch (Exception $e) {
+            flash_set('success', $mensaje);
+            redirect('index.php?pagina=mis-reservas&tab=pendientes');
+
+        } catch (DomainException $e) {
+            mysqli_rollback($this->conexion);
+            flash_set('error', $e->getMessage());
+            redirect('index.php?pagina=buscar-vuelos');
+        } catch (Throwable $e) {
             mysqli_rollback($this->conexion);
             flash_set('error', 'Error al crear la reserva. Intentá de nuevo.');
             redirect('index.php?pagina=buscar-vuelos');
         }
+    }
+
+    // ── Validar que un vuelo sea realmente la vuelta del otro ─────────────────
+    private function mismoValor(?string $a, ?string $b): bool {
+        $a = trim((string)$a);
+        $b = trim((string)$b);
+        return $a !== '' && $b !== '' && strcasecmp($a, $b) === 0;
+    }
+
+    public function validarVueloVuelta(array $vueloIda, array $vueloVuelta): ?string {
+        $rutaOk = $this->mismoValor($vueloVuelta['codigoOrigen'] ?? null, $vueloIda['codigoDestino'] ?? null)
+               && $this->mismoValor($vueloVuelta['codigoDestino'] ?? null, $vueloIda['codigoOrigen'] ?? null);
+
+        // Fallback por si algún vuelo viejo no tiene códigos IATA cargados.
+        if (!$rutaOk) {
+            $rutaOk = $this->mismoValor($vueloVuelta['origenVuelo'] ?? null, $vueloIda['destinoVuelo'] ?? null)
+                   && $this->mismoValor($vueloVuelta['destinoVuelo'] ?? null, $vueloIda['origenVuelo'] ?? null);
+        }
+
+        if (!$rutaOk) {
+            return 'El vuelo de vuelta no corresponde a la ruta inversa del vuelo de ida.';
+        }
+
+        if (empty($vueloIda['fechaHoraLlegadaVuelo']) || empty($vueloVuelta['fechaHoraSalidaVuelo'])) {
+            return 'No se pudieron validar los horarios de los vuelos seleccionados.';
+        }
+
+        if (strtotime($vueloVuelta['fechaHoraSalidaVuelo']) <= strtotime($vueloIda['fechaHoraLlegadaVuelo'])) {
+            return 'El vuelo de vuelta debe salir después de la llegada del vuelo de ida.';
+        }
+
+        return null;
     }
 
     // ── Confirmar pago ────────────────────────────────────────────────────────
