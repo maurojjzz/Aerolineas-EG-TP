@@ -145,7 +145,9 @@ class UsuarioController {
             redirect("index.php?pagina=login");
         }
 
-        $query = "SELECT idUsuario, nombre, apellido, contrasena, rol, activo, emailVerificado, idAerolinea FROM usuario WHERE email = ?";
+        $query = "SELECT idUsuario, nombre, apellido, contrasena, rol, activo, emailVerificado,
+                         fecha_hora_autorizacion, idAerolinea
+                  FROM usuario WHERE email = ?";
         $stmt = mysqli_prepare($this->conexion, $query);
 
         if (!$stmt) {
@@ -165,12 +167,23 @@ class UsuarioController {
             redirect("index.php?pagina=login");
         }
 
+        $esCEO       = $usuario['rol'] === 'ceo';
+        $fechaEstado = $usuario['fecha_hora_autorizacion'] ?? null;
+
+        $esCEODenegado  = $esCEO && $fechaEstado === FECHA_DENEGACION_CEO;
+        $esCEOPendiente = $esCEO && $fechaEstado === null && (int)$usuario['activo'] === 0;
+
+        if ($esCEODenegado) {
+            flash_set('error', 'Tu solicitud para registrarte como CEO fue denegada. Si creés que es un error, contactá al administrador.');
+            redirect('index.php?pagina=login');
+        }
+
         if (!$usuario['emailVerificado']) {
             flash_set('error', 'Debe verificar su correo electrónico antes de iniciar sesión.');
             redirect("index.php?pagina=login");
         }
 
-        if ($usuario['rol'] === 'ceo' && (int)$usuario['activo'] === 0) {
+        if ($esCEOPendiente) {
             flash_set('error', 'Tu solicitud está pendiente de aprobación.');
             redirect('index.php?pagina=login');
         }
@@ -227,8 +240,18 @@ class UsuarioController {
             redirect('index.php?pagina=olvide-contrasena');
         }
 
-        $stmt = mysqli_prepare($this->conexion, "SELECT idUsuario, nombre FROM usuario WHERE email = ? AND activo = 1");
-        mysqli_stmt_bind_param($stmt, 's', $email);
+        // Solo cuentas activas o CEOs ya aprobados (aunque estén inactivos).
+        // Pendientes y denegados quedan expresamente fuera.
+        $stmt = mysqli_prepare($this->conexion,
+            "SELECT idUsuario, nombre
+             FROM usuario
+             WHERE email = ?
+               AND (
+                   activo = 1
+                   OR (rol = 'ceo' AND fecha_hora_autorizacion IS NOT NULL AND fecha_hora_autorizacion <> ?)
+               )");
+        $fechaDenegacion = FECHA_DENEGACION_CEO;
+        mysqli_stmt_bind_param($stmt, 'ss', $email, $fechaDenegacion);
         mysqli_stmt_execute($stmt);
         $usuario = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
         mysqli_stmt_close($stmt);
@@ -263,8 +286,16 @@ class UsuarioController {
             redirect('index.php?pagina=reset-password&token=' . urlencode($token));
         }
 
-        $stmt = mysqli_prepare($this->conexion, "SELECT idUsuario FROM usuario WHERE tokenVerificacion = ? AND activo = 1");
-        mysqli_stmt_bind_param($stmt, 's', $token);
+        $stmt = mysqli_prepare($this->conexion,
+            "SELECT idUsuario, activo
+             FROM usuario
+             WHERE tokenVerificacion = ?
+               AND (
+                   activo = 1
+                   OR (rol = 'ceo' AND fecha_hora_autorizacion IS NOT NULL AND fecha_hora_autorizacion <> ?)
+               )");
+        $fechaDenegacion = FECHA_DENEGACION_CEO;
+        mysqli_stmt_bind_param($stmt, 'ss', $token, $fechaDenegacion);
         mysqli_stmt_execute($stmt);
         $usuario = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
         mysqli_stmt_close($stmt);
@@ -280,7 +311,12 @@ class UsuarioController {
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
 
-        flash_set('success', 'Contraseña actualizada correctamente. Ya podés iniciar sesión.');
+        if ((int)$usuario['activo'] === 1) {
+            flash_set('success', 'Contraseña actualizada correctamente. Ya podés iniciar sesión.');
+        } else {
+            flash_set('success', 'Contraseña actualizada correctamente. Tu cuenta está inactiva; contactá al administrador para reactivarla.');
+        }
+
         redirect('index.php?pagina=login');
     }
 
@@ -304,6 +340,12 @@ class UsuarioController {
         $rol           = strtolower(trim($_POST['rol'] ?? ''));
         $idAerolinea   = !empty($_POST['idAerolinea']) ? (int)$_POST['idAerolinea'] : null;
         $activo        = isset($_POST['activo']) ? (int)$_POST['activo'] : 0;
+
+        $actual = $this->obtenerUsuarioPorId($id);
+        if (!$actual) {
+            flash_set('error', 'Usuario no encontrado.');
+            redirect('index.php?pagina=usuario&seccion=listado');
+        }
 
         // 1. Evitar que un Admin desactive su propia cuenta
         if ($activo === 0 && isset($_SESSION['usuario']['idUsuario']) && (int)$_SESSION['usuario']['idUsuario'] === $id) {
@@ -332,33 +374,64 @@ class UsuarioController {
             redirect('index.php?pagina=usuario&seccion=editar&id=' . $id);
         }
 
-        // 4. Actualización en BD con manejo de excepciones por clave duplicada
+        // 4. Resolver el estado de aprobación del CEO
+        $rolActual    = strtolower(trim($actual['rol'] ?? ''));
+        $fechaActual  = $actual['fecha_hora_autorizacion'] ?? null;
+        $activoActual = (int)($actual['activo'] ?? 0);
+
+        $esCEOPendiente = $rolActual === 'ceo'
+            && $fechaActual === null
+            && $activoActual === 0;
+        $esCEODenegado = $rolActual === 'ceo'
+            && $fechaActual === FECHA_DENEGACION_CEO;
+
+        if ($rol !== 'ceo') {
+            // Si deja de ser CEO, se limpia cualquier estado de aprobación.
+            $fechaAutorizacion = null;
+        } elseif ($rolActual !== 'ceo') {
+            // Nuevo CEO desde edición: si se marca activo, queda aprobado; si no, pendiente.
+            $fechaAutorizacion = $activo === 1 ? date('Y-m-d H:i:s') : null;
+        } elseif ($esCEOPendiente || $esCEODenegado) {
+            // Pendientes y denegados se resuelven únicamente desde la pantalla de CEOs.
+            $activo            = $activoActual;
+            $fechaAutorizacion = $fechaActual;
+        } elseif ($fechaActual === null && $activoActual === 1) {
+            // CEO activo legacy sin fecha: al editarlo se fija su fecha de aprobación.
+            $fechaAutorizacion = $actual['fechaCreacion'] ?? date('Y-m-d H:i:s');
+        } else {
+            // CEO ya aprobado: se conserva su fecha y se permite activar/desactivar.
+            $fechaAutorizacion = $fechaActual;
+        }
+
+        // 5. Actualización en BD con manejo de excepciones por clave duplicada
         try {
-            $sql = "UPDATE usuario SET 
-                        nombre = ?, 
-                        apellido = ?, 
-                        tipoDocumento = ?, 
-                        nroDocumento = ?, 
-                        email = ?, 
-                        telefono = ?, 
-                        rol = ?, 
-                        idAerolinea = ?, 
-                        activo = ? 
+            $sql = "UPDATE usuario SET
+                        nombre = ?,
+                        apellido = ?,
+                        tipoDocumento = ?,
+                        nroDocumento = ?,
+                        email = ?,
+                        telefono = ?,
+                        rol = ?,
+                        idAerolinea = ?,
+                        activo = ?,
+                        fecha_hora_autorizacion = ?
                     WHERE idUsuario = ?";
 
             $stmt = mysqli_prepare($this->conexion, $sql);
             mysqli_stmt_bind_param(
-                $stmt, 
-                "sssssssiii", 
-                $nombre, 
-                $apellido, 
-                $tipoDocumento, 
-                $nroDocumento, 
-                $email, 
-                $telefono, 
-                $rol, 
-                $idAerolinea, 
-                $activo, 
+                $stmt,
+                "sssssssiisi",
+                $nombre,
+                $apellido,
+                $tipoDocumento,
+                $nroDocumento,
+                $email,
+                $telefono,
+                $rol,
+                $idAerolinea,
+                $activo,
+                $fechaAutorizacion,
                 $id
             );
 
@@ -383,14 +456,34 @@ class UsuarioController {
         int $pagina = 1,
         int $porPagina = 10,
         string $estado = '',
-        string $busqueda = ''
+        string $busqueda = '',
+        string $rol = ''
     ): array {
         $offset = ($pagina - 1) * $porPagina;
-        $where = ["1=1"];
+        $where = ["u.rol <> 'admin'"];
         $params = [];
         $types = "";
 
-        if ($estado !== '') {
+        // Los CEOs pendientes y denegados se gestionan en la pantalla de CEOs.
+        $where[] = "NOT (
+                        u.rol = 'ceo'
+                        AND (
+                            (u.activo = 0 AND u.fecha_hora_autorizacion IS NULL)
+                            OR (u.fecha_hora_autorizacion IS NOT NULL AND u.fecha_hora_autorizacion = ?)
+                        )
+                    )";
+        $params[] = FECHA_DENEGACION_CEO;
+        $types .= "s";
+
+        if (in_array($rol, ['cliente', 'ceo'], true)) {
+            $where[] = "u.rol = ?";
+            $params[] = $rol;
+            $types .= "s";
+        }
+
+        if ($estado === 'sin-verificar') {
+            $where[] = "u.emailVerificado = 0";
+        } elseif ($estado === '1' || $estado === '0') {
             $where[] = "u.activo = ?";
             $params[] = (int)$estado;
             $types .= "i";
@@ -420,7 +513,7 @@ class UsuarioController {
 
         $queryData = "SELECT u.idUsuario, u.nombre, u.apellido, u.tipoDocumento, u.nroDocumento, 
                              u.email, u.telefono, u.rol, u.activo, u.emailVerificado, u.fechaCreacion,
-                             a.nombreAerolinea
+                             u.fecha_hora_autorizacion, a.nombreAerolinea
                       FROM usuario u
                       LEFT JOIN aerolinea a ON u.idAerolinea = a.idAerolinea
                       WHERE {$whereClause}
@@ -453,19 +546,43 @@ class UsuarioController {
     }
 
     public function obtenerEstadisticasUsuarios(): array {
-        $resTotal = mysqli_query($this->conexion, "SELECT COUNT(*) as total FROM usuario");
+        $fechaDenegacion = FECHA_DENEGACION_CEO;
+
+        // Universo visible del listado: sin administradores y sin CEOs
+        // pendientes o denegados (esos se gestionan en la pantalla de CEOs).
+        $visibles = "u.rol <> 'admin'
+                     AND NOT (
+                         u.rol = 'ceo'
+                         AND (
+                             (u.activo = 0 AND u.fecha_hora_autorizacion IS NULL)
+                             OR (u.fecha_hora_autorizacion IS NOT NULL AND u.fecha_hora_autorizacion = '{$fechaDenegacion}')
+                         )
+                     )";
+
+        $resTotal = mysqli_query($this->conexion, "SELECT COUNT(*) as total FROM usuario u WHERE {$visibles}");
         $total = mysqli_fetch_assoc($resTotal)['total'] ?? 0;
 
-        $resNuevos = mysqli_query($this->conexion, "SELECT COUNT(*) as nuevos FROM usuario WHERE MONTH(fechaCreacion) = MONTH(CURRENT_DATE()) AND YEAR(fechaCreacion) = YEAR(CURRENT_DATE())");
+        $resNuevos = mysqli_query($this->conexion, "SELECT COUNT(*) as nuevos FROM usuario u WHERE {$visibles} AND MONTH(u.fechaCreacion) = MONTH(CURRENT_DATE()) AND YEAR(u.fechaCreacion) = YEAR(CURRENT_DATE())");
         $nuevosEsteMes = mysqli_fetch_assoc($resNuevos)['nuevos'] ?? 0;
 
-        $resAnterior = mysqli_query($this->conexion, "SELECT COUNT(*) as anterior FROM usuario WHERE MONTH(fechaCreacion) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(fechaCreacion) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH)");
+        $resAnterior = mysqli_query($this->conexion, "SELECT COUNT(*) as anterior FROM usuario u WHERE {$visibles} AND MONTH(u.fechaCreacion) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(u.fechaCreacion) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH)");
         $mesAnterior = mysqli_fetch_assoc($resAnterior)['anterior'] ?? 0;
 
         $diff = $nuevosEsteMes - $mesAnterior;
 
-        $resRoles = mysqli_query($this->conexion, "SELECT rol, COUNT(*) as cantidad FROM usuario GROUP BY rol");
-        $roles = ['cliente' => 0, 'ceo' => 0, 'admin' => 0];
+        // El KPI de roles refleja los usuarios visibles en el listado:
+        // clientes y CEOs aprobados. Los admins quedan fuera del panel.
+        $resRoles = mysqli_query($this->conexion,
+            "SELECT u.rol, COUNT(*) as cantidad
+             FROM usuario u
+             WHERE u.rol IN ('cliente', 'ceo')
+               AND (
+                   u.rol <> 'ceo'
+                   OR (u.fecha_hora_autorizacion IS NOT NULL AND u.fecha_hora_autorizacion <> '{$fechaDenegacion}')
+                   OR (u.fecha_hora_autorizacion IS NULL AND u.activo = 1)
+               )
+             GROUP BY u.rol");
+        $roles = ['cliente' => 0, 'ceo' => 0];
         while ($row = mysqli_fetch_assoc($resRoles)) {
             $roles[$row['rol']] = (int)$row['cantidad'];
         }
@@ -475,9 +592,265 @@ class UsuarioController {
             'nuevosEsteMes' => (int)$nuevosEsteMes,
             'diff'          => (int)$diff,
             'clientes'      => $roles['cliente'] ?? 0,
-            'ceos'          => $roles['ceo'] ?? 0,
-            'admins'        => $roles['admin'] ?? 0
+            'ceos'          => $roles['ceo'] ?? 0
         ];
+    }
+
+    /**
+     * Listado paginado de CEOs por estado.
+     *
+     * Estados admitidos:
+     * - todos / ''  : sin filtro de estado.
+     * - revision    : pendientes y denegados (comportamiento histórico).
+     * - aprobado    : fecha real distinta de la centinela, o CEO activo legacy sin fecha.
+     * - pendiente   : activo = 0 y fecha NULL.
+     * - denegado    : fecha centinela.
+     */
+    public function listarCEOsPaginado(
+        int $pagina = 1,
+        int $porPagina = 10,
+        string $estado = '',
+        string $busqueda = ''
+    ): array {
+        $porPagina = max(1, $porPagina);
+        $where = ["u.rol = 'ceo'"];
+        $params = [];
+        $types = "";
+
+        if ($estado === 'pendiente') {
+            $where[] = "u.activo = 0 AND u.fecha_hora_autorizacion IS NULL";
+        } elseif ($estado === 'denegado') {
+            $where[] = "u.fecha_hora_autorizacion = ?";
+            $params[] = FECHA_DENEGACION_CEO;
+            $types .= "s";
+        } elseif ($estado === 'aprobado') {
+            $where[] = "(
+                (u.fecha_hora_autorizacion IS NOT NULL AND u.fecha_hora_autorizacion <> ?)
+                OR (u.fecha_hora_autorizacion IS NULL AND u.activo = 1)
+            )";
+            $params[] = FECHA_DENEGACION_CEO;
+            $types .= "s";
+        } elseif ($estado === 'revision') {
+            $where[] = "(
+                (u.activo = 0 AND u.fecha_hora_autorizacion IS NULL)
+                OR u.fecha_hora_autorizacion = ?
+            )";
+            $params[] = FECHA_DENEGACION_CEO;
+            $types .= "s";
+        }
+
+        if ($busqueda !== '') {
+            $where[] = "(u.nombre LIKE ?
+                         OR u.apellido LIKE ?
+                         OR u.email LIKE ?
+                         OR u.nroDocumento LIKE ?
+                         OR a.nombreAerolinea LIKE ?)";
+            $like = "%{$busqueda}%";
+            $params[] = $like;
+            $params[] = $like;
+            $params[] = $like;
+            $params[] = $like;
+            $params[] = $like;
+            $types .= "sssss";
+        }
+
+        $whereClause = implode(" AND ", $where);
+        $from = "FROM usuario u
+                 LEFT JOIN aerolinea a ON u.idAerolinea = a.idAerolinea
+                 WHERE {$whereClause}";
+
+        $stmtCount = mysqli_prepare($this->conexion, "SELECT COUNT(*) AS total {$from}");
+        if (!$stmtCount) {
+            return [
+                'data'         => [],
+                'total'        => 0,
+                'pagina'       => 1,
+                'porPagina'    => $porPagina,
+                'totalPaginas' => 1
+            ];
+        }
+        if ($params) {
+            mysqli_stmt_bind_param($stmtCount, $types, ...$params);
+        }
+        mysqli_stmt_execute($stmtCount);
+        $total = (int)(mysqli_fetch_assoc(mysqli_stmt_get_result($stmtCount))['total'] ?? 0);
+        mysqli_stmt_close($stmtCount);
+
+        $totalPaginas = max(1, (int)ceil($total / $porPagina));
+        $pagina       = min(max(1, $pagina), $totalPaginas);
+        $offset       = ($pagina - 1) * $porPagina;
+
+        $queryData = "SELECT u.idUsuario, u.nombre, u.apellido, u.tipoDocumento, u.nroDocumento,
+                             u.email, u.telefono, u.fechaNacimiento, u.rol, u.activo,
+                             u.emailVerificado, u.fecha_hora_autorizacion, u.fechaCreacion,
+                             a.nombreAerolinea
+                      {$from}
+                      ORDER BY u.fechaCreacion DESC, u.idUsuario DESC
+                      LIMIT ? OFFSET ?";
+
+        $paramsData = $params;
+        $paramsData[] = $porPagina;
+        $paramsData[] = $offset;
+        $typesData = $types . "ii";
+
+        $stmtData = mysqli_prepare($this->conexion, $queryData);
+        if (!$stmtData) {
+            return [
+                'data'         => [],
+                'total'        => $total,
+                'pagina'       => $pagina,
+                'porPagina'    => $porPagina,
+                'totalPaginas' => $totalPaginas
+            ];
+        }
+        mysqli_stmt_bind_param($stmtData, $typesData, ...$paramsData);
+        mysqli_stmt_execute($stmtData);
+        $resData = mysqli_stmt_get_result($stmtData);
+
+        $ceos = [];
+        while ($row = mysqli_fetch_assoc($resData)) {
+            $ceos[] = $row;
+        }
+        mysqli_stmt_close($stmtData);
+
+        return [
+            'data'         => $ceos,
+            'total'        => $total,
+            'pagina'       => $pagina,
+            'porPagina'    => $porPagina,
+            'totalPaginas' => $totalPaginas
+        ];
+    }
+
+    public function obtenerEstadisticasCEOs(): array {
+        $fechaDenegacion = FECHA_DENEGACION_CEO;
+
+        $query = "SELECT
+                    COUNT(*) AS total,
+                    SUM(CASE WHEN activo = 0 AND fecha_hora_autorizacion IS NULL THEN 1 ELSE 0 END) AS pendientes,
+                    SUM(CASE WHEN fecha_hora_autorizacion = ? THEN 1 ELSE 0 END) AS denegados
+                  FROM usuario
+                  WHERE rol = 'ceo'";
+
+        $stmt = mysqli_prepare($this->conexion, $query);
+        if (!$stmt) {
+            return ['total' => 0, 'pendientes' => 0, 'denegados' => 0, 'aprobados' => 0];
+        }
+
+        mysqli_stmt_bind_param($stmt, 's', $fechaDenegacion);
+        mysqli_stmt_execute($stmt);
+        $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt)) ?: [];
+        mysqli_stmt_close($stmt);
+
+        $total      = (int)($row['total'] ?? 0);
+        $pendientes = (int)($row['pendientes'] ?? 0);
+        $denegados  = (int)($row['denegados'] ?? 0);
+
+        return [
+            'total'      => $total,
+            'pendientes' => $pendientes,
+            'denegados'  => $denegados,
+            'aprobados'  => max(0, $total - $pendientes - $denegados)
+        ];
+    }
+
+    /**
+     * Aprueba o deniega un CEO pendiente.
+     * Solo actúa sobre CEOs con activo=0 y fecha_hora_autorizacion NULL.
+     */
+    public function resolverEstadoCEO(string $estado): void {
+        if (!in_array($estado, ['aprobado', 'denegado'], true)) {
+            flash_set('error', 'Acción no válida.');
+            redirect('index.php?pagina=ceos&seccion=listado');
+        }
+
+        $id = (int)($_POST['id'] ?? 0);
+        if ($id <= 0) {
+            flash_set('error', 'CEO no válido.');
+            redirect('index.php?pagina=ceos&seccion=listado');
+        }
+
+        $stmt = mysqli_prepare($this->conexion,
+            "SELECT nombre, apellido, email
+             FROM usuario
+             WHERE idUsuario = ? AND rol = 'ceo'");
+
+        if (!$stmt) {
+            flash_set('error', 'No se pudo consultar el CEO.');
+            redirect('index.php?pagina=ceos&seccion=listado');
+        }
+
+        mysqli_stmt_bind_param($stmt, 'i', $id);
+        mysqli_stmt_execute($stmt);
+        $ceo = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+        mysqli_stmt_close($stmt);
+
+        if (!$ceo) {
+            flash_set('error', 'CEO no encontrado.');
+            redirect('index.php?pagina=ceos&seccion=listado');
+        }
+
+        try {
+            if ($estado === 'aprobado') {
+                $stmt = mysqli_prepare($this->conexion,
+                    "UPDATE usuario
+                     SET activo = 1, fecha_hora_autorizacion = NOW()
+                     WHERE idUsuario = ?
+                       AND rol = 'ceo'
+                       AND activo = 0
+                       AND fecha_hora_autorizacion IS NULL");
+
+                if (!$stmt) {
+                    flash_set('error', 'No se pudo actualizar el estado del CEO.');
+                    redirect('index.php?pagina=ceos&seccion=listado');
+                }
+
+                mysqli_stmt_bind_param($stmt, 'i', $id);
+            } else {
+                $fechaDenegacion = FECHA_DENEGACION_CEO;
+                $stmt = mysqli_prepare($this->conexion,
+                    "UPDATE usuario
+                     SET activo = 0, fecha_hora_autorizacion = ?
+                     WHERE idUsuario = ?
+                       AND rol = 'ceo'
+                       AND activo = 0
+                       AND fecha_hora_autorizacion IS NULL");
+
+                if (!$stmt) {
+                    flash_set('error', 'No se pudo actualizar el estado del CEO.');
+                    redirect('index.php?pagina=ceos&seccion=listado');
+                }
+
+                mysqli_stmt_bind_param($stmt, 'si', $fechaDenegacion, $id);
+            }
+
+            mysqli_stmt_execute($stmt);
+            $afectadas = mysqli_stmt_affected_rows($stmt);
+            mysqli_stmt_close($stmt);
+
+            if ($afectadas <= 0) {
+                flash_set('error', 'No se pudo resolver: el CEO no existe o su solicitud ya fue resuelta.');
+                redirect('index.php?pagina=ceos&seccion=listado');
+            }
+
+            $emailOk = $estado === 'aprobado'
+                ? EmailService::enviarAprobacionCEO($ceo['email'], $ceo['nombre'])
+                : EmailService::enviarDenegacionCEO($ceo['email'], $ceo['nombre']);
+
+            $mensaje = $estado === 'aprobado'
+                ? 'CEO aprobado correctamente.'
+                : 'CEO denegado correctamente.';
+
+            $mensaje .= $emailOk
+                ? ' Se envió la notificación por email.'
+                : ' No se pudo enviar la notificación por email.';
+
+            flash_set('success', $mensaje);
+        } catch (mysqli_sql_exception $e) {
+            flash_set('error', 'Ocurrió un error al actualizar el estado del CEO.');
+        }
+
+        redirect('index.php?pagina=ceos&seccion=listado');
     }
 
     public function toggleEstadoUsuario(int $id): void {
@@ -491,7 +864,9 @@ class UsuarioController {
             redirect('index.php?pagina=usuario&seccion=listado');
         }
 
-        $stmt = mysqli_prepare($this->conexion, "SELECT nombre, apellido, activo FROM usuario WHERE idUsuario = ?");
+        $stmt = mysqli_prepare($this->conexion,
+            "SELECT nombre, apellido, rol, activo, fecha_hora_autorizacion
+             FROM usuario WHERE idUsuario = ?");
         mysqli_stmt_bind_param($stmt, "i", $id);
         mysqli_stmt_execute($stmt);
         $res = mysqli_stmt_get_result($stmt);
@@ -503,8 +878,28 @@ class UsuarioController {
             redirect('index.php?pagina=usuario&seccion=listado');
         }
 
+        $esCEO          = strtolower($usuario['rol'] ?? '') === 'ceo';
+        $fechaEstado    = $usuario['fecha_hora_autorizacion'] ?? null;
+        $esCEOPendiente = $esCEO && $fechaEstado === null && (int)$usuario['activo'] === 0;
+        $esCEODenegado  = $esCEO && $fechaEstado === FECHA_DENEGACION_CEO;
+
+        if ($esCEOPendiente || $esCEODenegado) {
+            flash_set('error', 'Los CEOs pendientes o denegados se resuelven desde la pantalla de CEOs.');
+            redirect('index.php?pagina=usuario&seccion=listado');
+        }
+
         $nuevoEstado = $usuario['activo'] ? 0 : 1;
-        $stmtUpdate = mysqli_prepare($this->conexion, "UPDATE usuario SET activo = ? WHERE idUsuario = ?");
+
+        // CEO activo legacy sin fecha: al desactivarlo se fija su fecha de aprobación
+        // para que no vuelva a aparecer como pendiente.
+        if ($esCEO && $nuevoEstado === 0 && $fechaEstado === null) {
+            $stmtUpdate = mysqli_prepare($this->conexion,
+                "UPDATE usuario SET activo = ?, fecha_hora_autorizacion = NOW() WHERE idUsuario = ?");
+        } else {
+            $stmtUpdate = mysqli_prepare($this->conexion,
+                "UPDATE usuario SET activo = ? WHERE idUsuario = ?");
+        }
+
         mysqli_stmt_bind_param($stmtUpdate, "ii", $nuevoEstado, $id);
         mysqli_stmt_execute($stmtUpdate);
         mysqli_stmt_close($stmtUpdate);

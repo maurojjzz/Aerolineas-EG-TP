@@ -6,6 +6,29 @@ body {
     transition: all 0.3s ease-in-out;
 }
 
+.step-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.step-line {
+    flex: 1;
+    height: 2px;
+    background: #dee2e6;
+    margin: 0 8px;
+}
+
+.step-line.done {
+    background: #0d6efd;
+}
+
 .resultado-card {
     transition: box-shadow 0.2s;
     min-height: 110px;

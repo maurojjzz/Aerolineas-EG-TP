@@ -1,10 +1,10 @@
 <?php $paginaActual = $_GET['pagina'] ?? 'inicio';?>
 
-<div class="container d-flex flex-column  gap-3 p-0">
+<div class="container d-flex flex-column gap-3 p-0">
 
     <div class="options-line container-fluid d-flex align-items-center bg-light rounded-4 shadow">
         
-         <?php if ($paginaActual === 'inicio'): ?>
+        <?php if ($paginaActual === 'inicio'): ?>
 
             <div class="active col option-line-item d-flex flex-column align-items-center pt-3" data-option="vuelos">
                 <img src="<?= url('public/img/icons/avion.png') ?>" alt="icono avion" class="iconos-search">
@@ -25,9 +25,9 @@
 
             <div class="d-flex w-100 flex-row justify-content-start align-items-center gap-3 py-2">
                 <img class="img-fluid ms-3 d-none d-sm-block"
-                     src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>"
-                     alt="Icono avion titulo"
-                     style="width: 42px; height: 42px;">
+                    src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>"
+                    alt="Icono avion titulo"
+                    style="width: 42px; height: 42px;">
                 <div class="d-flex flex-column justify-content-center align-items-start ms-2">
                     <span class="fw-semibold fs-5 p-0 m-0" style="color:#137AFF;">Buscar vuelos</span>
                     <span class="text-muted" style="font-size: 14px;">Encuentra las mejores opciones para tu próximo viaje</span>
@@ -35,47 +35,60 @@
             </div>
 
         <?php endif; ?>
-
-
     </div>
 
-    <div id="box2" class="container-fluid d-flex flex-column flex-lg-row justify-content-lg-center rounded-3 gap-lg-3 shadow pb-3">
+    <!-- FORMULARIO MOBILE -->
+    <form action="<?= url('index.php?pagina=buscar-vuelos') ?>" method="GET" id="formMobile" class="w-100">
+        <input type="hidden" name="pagina" value="buscar-vuelos">
+        <input type="hidden" name="tipo_viaje" id="mobileTipoViajeHidden" value="solo_ida">
 
-        <?php require './src/views/components/search/inputSearch.php' ?>
+        <div id="box2" class="container-fluid d-flex flex-column flex-lg-row justify-content-lg-center rounded-3 pt-2 gap-lg-3 shadow pb-3">
 
-        <?php require './src/views/components/search/inputcalendar.php' ?>
-
-        <div class="d-flex flex-column flex-lg-row gap-lg-3  ctm-box-pas-btn">
-            <div class="inputPasajeros d-flex align-items-center  w-100 mt-3 p-2 rounded-3 shadow-sm position-relative" >
-
-                <label for="passengers" class="cal-label-pas position-absolute">Pasajeros</label>
-
-                <img src="<?= url('public/img/icons/pasajeroicon.png') ?>" alt="icono pasajero" class="btn-icon-vuelos">
-
-                <select name="passengers" class="form-select selectPasenger" aria-label="select pasajeros" id="passengers">
-                    <option selected value="1">1 Pasajero</option>
-                    <option value="2">2 Pasajeros</option>
-                    <option value="3">3 Pasajeros</option>
-                    <option value="4">4 Pasajeros</option>
-                    <option value="5">5 Pasajeros</option>
-                </select>
-                
+            <!-- RADIOS IDA / IDA Y VUELTA -->
+            <div class="d-flex align-items-center gap-4 px-3 pb-2 col-12">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="tipo_viaje_radio" id="mobileSoloIda" value="solo_ida" checked>
+                    <label class="form-check-label fw-semibold" for="mobileSoloIda" style="font-size:0.9rem;">Solo ida</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="tipo_viaje_radio" id="mobileIdaVuelta" value="ida_vuelta">
+                    <label class="form-check-label fw-semibold" for="mobileIdaVuelta" style="font-size:0.9rem;">Ida y vuelta</label>
+                </div>
             </div>
 
-            <div class="d-flex justify-content-center mt-4">
-                <button 
-                    class="btn b-vuelos d-flex align-items-center justify-content-center gap-2 btn-primary btn-lg rounded-3  shadow-sm" 
-                    id="search-button"
-                    aria-label="Buscar vuelos"
-                    onclick="buscarVuelosMobile()"
-                >
-                    <img src="<?= url('public/img/icons/lupa.png') ?>" alt="icono pasajero" class="autocomplete-icon">
-                    <span class="d-lg-none d-xl-block">Buscar Vuelos</span>
-                </button>   
+            <?php require './src/views/components/search/inputSearch.php' ?>
+
+            <?php require './src/views/components/search/inputcalendar.php' ?>
+
+            <div class="d-flex flex-column flex-lg-row gap-lg-3  ctm-box-pas-btn">
+                <div class="inputPasajeros d-flex align-items-center  w-100 mt-3 p-2 rounded-3 shadow-sm position-relative" >
+
+                    <label for="passengers" class="cal-label-pas position-absolute">Pasajeros</label>
+                    <img src="<?= url('public/img/icons/pasajeroicon.png') ?>" alt="icono pasajero" class="btn-icon-vuelos">
+
+                    <select name="pasajeros" class="form-select selectPasenger" aria-label="select pasajeros" id="passengers">
+                        <option selected value="1">1 Pasajero</option>
+                        <option value="2">2 Pasajeros</option>
+                        <option value="3">3 Pasajeros</option>
+                        <option value="4">4 Pasajeros</option>
+                        <option value="5">5 Pasajeros</option>
+                    </select>
+                    
+                </div>
+
+                <div class="d-flex justify-content-center mt-4">
+                    <button 
+                        type="submit" 
+                        class="btn b-vuelos d-flex align-items-center justify-content-center gap-2 btn-primary btn-lg rounded-3  shadow-sm" 
+                        id="search-button"
+                        aria-label="Buscar vuelos"
+                    >
+                        <img src="<?= url('public/img/icons/lupa.png') ?>" alt="icono pasajero" class="autocomplete-icon">
+                        <span class="d-lg-none d-xl-block">Buscar Vuelos</span>
+                    </button>   
+                </div>
             </div>
+
         </div>
-
-    </div>
-
-
+    </form>
 </div>

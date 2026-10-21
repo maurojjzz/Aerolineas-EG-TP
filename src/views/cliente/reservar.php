@@ -5,10 +5,16 @@ require_once __DIR__ . '/../../config/auth.php';
 require_once __DIR__ . '/../../controllers/ReservaController.php';
 require_once __DIR__ . '/../../controllers/UsuarioController.php';
 
-$idVuelo   = (int)($_GET['idVuelo']   ?? 0);
-$pasajeros = max(1, min(9, (int)($_GET['pasajeros'] ?? 1)));
+$idVuelo       = (int)($_GET['idVuelo'] ?? 0);
+$idVueloVuelta = (int)($_GET['idVueloVuelta'] ?? 0);
+$pasajeros     = max(1, min(9, (int)($_GET['pasajeros'] ?? 1)));
 
 if (!$idVuelo) redirect('index.php?pagina=buscar-vuelos');
+
+if ($idVueloVuelta > 0 && $idVueloVuelta === $idVuelo) {
+    flash_set('error', 'Los vuelos de ida y vuelta deben ser distintos.');
+    redirect('index.php?pagina=buscar-vuelos');
+}
 
 $ctrl  = new ReservaController($link);
 $ctrlUsu = new UsuarioController($link);
@@ -20,26 +26,67 @@ if (!$vuelo) {
 }
 
 if ($pasajeros > $vuelo['asientosDisponibles']) {
-    flash_set('error', 'No hay suficientes asientos disponibles.');
+    flash_set('error', 'No hay suficientes asientos disponibles para el vuelo de ida.');
     redirect('index.php?pagina=buscar-vuelos');
+}
+
+$vueloVuelta = null;
+if ($idVueloVuelta > 0) {
+    $vueloVuelta = $ctrl->obtenerVueloParaReservar($idVueloVuelta);
+
+    if (!$vueloVuelta) {
+        flash_set('error', 'El vuelo de vuelta no está disponible.');
+        redirect('index.php?pagina=buscar-vuelos');
+    }
+
+    if ($pasajeros > $vueloVuelta['asientosDisponibles']) {
+        flash_set('error', 'No hay suficientes asientos disponibles para el vuelo de vuelta.');
+        redirect('index.php?pagina=buscar-vuelos');
+    }
+
+    $errorVuelta = $ctrl->validarVueloVuelta($vuelo, $vueloVuelta);
+    if ($errorVuelta !== null) {
+        flash_set('error', $errorVuelta);
+        redirect('index.php?pagina=buscar-vuelos');
+    }
 }
 
 $user = usuarioActual();
 
 $u = $ctrlUsu->obtenerUsuarioPorId($user['idUsuario']);
 
-$precioTotal = (float)$vuelo['precioVuelo'] * $pasajeros;
+$esIdaVuelta = $vueloVuelta !== null;
+$precioTotal = 0.0;
 
-$fechaSalida  = date('d/m/Y', strtotime($vuelo['fechaHoraSalidaVuelo']));
-$horaSalida   = date('H:i',   strtotime($vuelo['fechaHoraSalidaVuelo']));
-$fechaLlegada = date('d/m/Y', strtotime($vuelo['fechaHoraLlegadaVuelo']));
-$horaLlegada  = date('H:i',   strtotime($vuelo['fechaHoraLlegadaVuelo']));
+$tramos = [
+    ['vuelo' => $vuelo, 'titulo' => 'Vuelo de ida'],
+];
 
-// Calcular duración aproximada
-$diffMin = (strtotime($vuelo['fechaHoraLlegadaVuelo']) - strtotime($vuelo['fechaHoraSalidaVuelo'])) / 60;
-$durH    = floor($diffMin / 60);
-$durM    = $diffMin % 60;
-$duracion = $durH . 'h ' . str_pad($durM, 2, '0', STR_PAD_LEFT) . 'm';
+if ($vueloVuelta) {
+    $tramos[] = ['vuelo' => $vueloVuelta, 'titulo' => 'Vuelo de vuelta'];
+}
+
+$tramosData = [];
+foreach ($tramos as $tramo) {
+    $vueloResumen = $tramo['vuelo'];
+
+    $salidaTs   = strtotime($vueloResumen['fechaHoraSalidaVuelo']);
+    $llegadaTs  = strtotime($vueloResumen['fechaHoraLlegadaVuelo']);
+    $diffMin    = max(0, (int)round(($llegadaTs - $salidaTs) / 60));
+    $subtotal   = (float)$vueloResumen['precioVuelo'] * $pasajeros;
+    $precioTotal += $subtotal;
+
+    $tramosData[] = [
+        'vuelo'        => $vueloResumen,
+        'titulo'       => $tramo['titulo'],
+        'fechaSalida'  => date('d/m/Y', $salidaTs),
+        'horaSalida'   => date('H:i', $salidaTs),
+        'fechaLlegada' => date('d/m/Y', $llegadaTs),
+        'horaLlegada'  => date('H:i', $llegadaTs),
+        'duracion'     => intdiv($diffMin, 60) . 'h ' . str_pad((string)($diffMin % 60), 2, '0', STR_PAD_LEFT) . 'm',
+        'subtotal'     => $subtotal,
+    ];
+}
 
 
 ?>
@@ -165,78 +212,93 @@ $duracion = $durH . 'h ' . str_pad($durM, 2, '0', STR_PAD_LEFT) . 'm';
                     <span class="badge-estado-pend">Pendiente de pago</span>
                 </div>
 
-                <!-- Aerolínea -->
-                <div class="d-flex align-items-center gap-2 mb-3">
-                    <?php if ($vuelo['logoUrl'] && $vuelo['logoUrl'] !== '0'): ?>
-                        <img src="<?= htmlspecialchars($vuelo['logoUrl']) ?>"
-                            style="width:40px;height:40px;object-fit:contain;" alt="logo">
-                    <?php else: ?>
-                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center"
-                            style="width:40px;height:40px;">
-                            <span class="text-white fw-bold" style="font-size:0.7rem;">
-                                <?= htmlspecialchars(substr($vuelo['codigoIATA'],0,2)) ?>
-                            </span>
+                <?php foreach ($tramosData as $i => $tramo): ?>
+                    <div class="<?= $i > 0 ? 'border-top pt-4 mt-4' : '' ?>">
+                        <?php if ($esIdaVuelta): ?>
+                            <p class="text-uppercase text-muted fw-bold mb-3" style="font-size:0.75rem;letter-spacing:1px;">
+                                <?= htmlspecialchars($tramo['titulo']) ?>
+                            </p>
+                        <?php endif; ?>
+
+                        <!-- Aerolínea -->
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <?php if ($tramo['vuelo']['logoUrl'] && $tramo['vuelo']['logoUrl'] !== '0'): ?>
+                                <img src="<?= htmlspecialchars($tramo['vuelo']['logoUrl']) ?>"
+                                    style="width:40px;height:40px;object-fit:contain;" alt="logo">
+                            <?php else: ?>
+                                <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center"
+                                    style="width:40px;height:40px;">
+                                    <span class="text-white fw-bold" style="font-size:0.7rem;">
+                                        <?= htmlspecialchars(substr($tramo['vuelo']['codigoIATA'], 0, 2)) ?>
+                                    </span>
+                                </div>
+                            <?php endif; ?>
+                            <div>
+                                <p class="fw-semibold m-0" style="font-size:0.9rem;"><?= htmlspecialchars($tramo['vuelo']['nombreAerolinea']) ?></p>
+                                <p class="text-muted m-0" style="font-size:0.75rem;"><?= htmlspecialchars($tramo['vuelo']['codigoIATA']) ?></p>
+                            </div>
                         </div>
-                    <?php endif; ?>
-                    <div>
-                        <p class="fw-semibold m-0" style="font-size:0.9rem;"><?= htmlspecialchars($vuelo['nombreAerolinea']) ?></p>
-                        <p class="text-muted m-0" style="font-size:0.75rem;"><?= htmlspecialchars($vuelo['codigoIATA']) ?></p>
-                    </div>
-                </div>
 
-                <!-- Ruta -->
-                <div class="d-flex align-items-center gap-2 mb-3">
-                    <div class="text-center" style="min-width:80px;">
-                        <p class="fw-bold fs-5 m-0"><?= $horaSalida ?></p>
-                        <p class="fw-semibold m-0" style="font-size:0.85rem;">
-                            <?= htmlspecialchars($vuelo['origenVuelo']) ?>
-                        </p>
-                        <p class="text-muted m-0" style="font-size:0.75rem;"><?= $fechaSalida ?></p>
-                    </div>
-                    <div class="linea-vuelo-sm mx-2"></div>
-                    <div class="text-center" style="min-width:80px;">
-                        <p class="fw-bold fs-5 m-0"><?= $horaLlegada ?></p>
-                        <p class="fw-semibold m-0" style="font-size:0.85rem;">
-                            <?= htmlspecialchars($vuelo['destinoVuelo']) ?>
-                        </p>
-                        <p class="text-muted m-0" style="font-size:0.75rem;"><?= $fechaLlegada ?></p>
-                    </div>
-                </div>
+                        <!-- Ruta -->
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div class="text-center" style="min-width:80px;">
+                                <p class="fw-bold fs-5 m-0"><?= $tramo['horaSalida'] ?></p>
+                                <p class="fw-semibold m-0" style="font-size:0.85rem;">
+                                    <?= htmlspecialchars($tramo['vuelo']['origenVuelo']) ?>
+                                </p>
+                                <p class="text-muted m-0" style="font-size:0.75rem;"><?= $tramo['fechaSalida'] ?></p>
+                            </div>
+                            <div class="linea-vuelo-sm mx-2"></div>
+                            <div class="text-center" style="min-width:80px;">
+                                <p class="fw-bold fs-5 m-0"><?= $tramo['horaLlegada'] ?></p>
+                                <p class="fw-semibold m-0" style="font-size:0.85rem;">
+                                    <?= htmlspecialchars($tramo['vuelo']['destinoVuelo']) ?>
+                                </p>
+                                <p class="text-muted m-0" style="font-size:0.75rem;"><?= $tramo['fechaLlegada'] ?></p>
+                            </div>
+                        </div>
 
-                <hr class="my-2">
+                        <hr class="my-2">
 
-                <!-- Detalles -->
-                <div class="d-flex flex-column gap-2 mb-3" style="font-size:0.85rem;">
-                    <div class="d-flex justify-content-between">
-                        <span class="text-muted">📅 Fecha de salida</span>
-                        <span><?= $fechaSalida ?> · <?= $horaSalida ?></span>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <span class="text-muted">📅 Fecha de llegada</span>
-                        <span><?= $fechaLlegada ?> · <?= $horaLlegada ?></span>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <span class="text-muted">⏱ Duración</span>
-                        <span><?= $duracion ?></span>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <span class="text-muted">👥 Pasajeros</span>
-                        <span><?= $pasajeros ?> pasajero<?= $pasajeros > 1 ? 's' : '' ?></span>
-                    </div>
-                    
-                </div>
+                        <!-- Detalles -->
+                        <div class="d-flex flex-column gap-2 mb-3" style="font-size:0.85rem;">
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">📅 Fecha de salida</span>
+                                <span><?= $tramo['fechaSalida'] ?> · <?= $tramo['horaSalida'] ?></span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">📅 Fecha de llegada</span>
+                                <span><?= $tramo['fechaLlegada'] ?> · <?= $tramo['horaLlegada'] ?></span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">⏱ Duración</span>
+                                <span><?= $tramo['duracion'] ?></span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">👥 Pasajeros</span>
+                                <span><?= $pasajeros ?> pasajero<?= $pasajeros > 1 ? 's' : '' ?></span>
+                            </div>
+                        </div>
 
-                <hr class="my-2">
+                        <hr class="my-2">
 
-                <!-- Precio -->
-                <div class="d-flex flex-column gap-1 mb-3" style="font-size:0.85rem;">
-                    <div class="d-flex justify-content-between">
-                        <span class="text-muted">Tarifa base (x<?= $pasajeros ?>)</span>
-                        <span>$ <?= number_format($vuelo['precioVuelo'], 2, ',', '.') ?> c/u</span>
+                        <!-- Precio -->
+                        <div class="d-flex flex-column gap-1 mb-3" style="font-size:0.85rem;">
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">Tarifa base (x<?= $pasajeros ?>)</span>
+                                <span>$ <?= number_format((float)$tramo['vuelo']['precioVuelo'], 2, ',', '.') ?> c/u</span>
+                            </div>
+                            <?php if ($esIdaVuelta): ?>
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-muted">Subtotal <?= htmlspecialchars($tramo['titulo']) ?></span>
+                                    <span class="fw-semibold">$ <?= number_format($tramo['subtotal'], 2, ',', '.') ?></span>
+                                </div>
+                            <?php endif; ?>
+                        </div>
                     </div>
-                </div>
+                <?php endforeach; ?>
 
-                <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-3 mt-4">
                     <span class="fw-bold fs-5">TOTAL FINAL</span>
                     <span class="fw-bold fs-5" style="color:#0d3262;">
                         $ <?= number_format($precioTotal, 2, ',', '.') ?>
@@ -244,20 +306,29 @@ $duracion = $durH . 'h ' . str_pad($durM, 2, '0', STR_PAD_LEFT) . 'm';
                 </div>
 
                 <div class="alert alert-info p-2 mb-3" style="font-size:0.8rem;">
-                    Una vez confirmes la reserva, pasará a estado <strong>pendiente de pago</strong>.
-                    Podrás confirmar el pago desde "Mis Reservas".
+                    <?php if ($esIdaVuelta): ?>
+                        Se crearán <strong>dos reservas independientes</strong>, una por la ida y otra por la vuelta.
+                        Cada tramo se paga por separado desde "Mis Reservas". Si pagás solo uno, el otro queda
+                        pendiente y se cancela a los 3 días.
+                    <?php else: ?>
+                        Una vez confirmes la reserva, pasará a estado <strong>pendiente de pago</strong>.
+                        Podrás confirmar el pago desde "Mis Reservas".
+                    <?php endif; ?>
                 </div>
 
                 <!-- Form oculto -->
                 <form method="POST" action="<?= url('src/routes/reserva.php?accion=crear') ?>" id="formReserva">
                     <input type="hidden" name="csrf_token"    value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
                     <input type="hidden" name="idVuelo"       value="<?= $idVuelo ?>">
+                    <?php if ($idVueloVuelta > 0): ?>
+                        <input type="hidden" name="idVueloVuelta" value="<?= $idVueloVuelta ?>">
+                    <?php endif; ?>
                     <input type="hidden" name="cantPasajeros" value="<?= $pasajeros ?>">
                 </form>
 
                 <button type="submit" form="formReserva"
                         class="btn btn-primary w-100 fw-semibold py-2 mb-2" style="font-size:1rem;">
-                    Confirmar y reservar
+                    <?= $esIdaVuelta ? 'Confirmar y reservar ambos vuelos' : 'Confirmar y reservar' ?>
                 </button>
                 <a href="javascript:history.back()" class="btn btn-outline-secondary w-100">
                     Cancelar

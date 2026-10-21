@@ -75,6 +75,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ctrl->toggleEstadoUsuario($id);
             break;
 
+        case 'aprobar-ceo':
+        case 'denegar-ceo':
+            requireRol('admin');
+
+            $tokenPost = $_POST['csrf_token'] ?? '';
+            $tokenSession = $_SESSION['csrf_token'] ?? '';
+            if (empty($tokenPost) || empty($tokenSession) || !hash_equals($tokenSession, $tokenPost)) {
+                flash_set('error', 'Token de seguridad inválido o sesión expirada.');
+                redirect('index.php?pagina=ceos&seccion=listado');
+            }
+
+            $id = (int)($_POST['id'] ?? 0);
+            if (!$id) {
+                flash_set('error', 'ID de CEO inválido.');
+                redirect('index.php?pagina=ceos&seccion=listado');
+            }
+
+            $ctrl->resolverEstadoCEO($accion === 'aprobar-ceo' ? 'aprobado' : 'denegado');
+            break;
+
         default:
             http_response_code(404);
             echo "Acción no encontrada";
@@ -99,8 +119,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $estado = $_GET['estado'] ?? '';
             $busqueda = trim($_GET['busqueda'] ?? '');
+            $rol = $_GET['rol'] ?? '';
 
-            $resultado = $ctrl->listarUsuariosPaginado($pagina, $porPagina, $estado, $busqueda);
+            $resultado = $ctrl->listarUsuariosPaginado($pagina, $porPagina, $estado, $busqueda, $rol);
 
             header('Content-Type: application/json');
             echo json_encode($resultado);

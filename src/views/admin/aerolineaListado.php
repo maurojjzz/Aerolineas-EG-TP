@@ -10,14 +10,23 @@ $porPaginaRaw = (int)($_GET['porPagina'] ?? 10);
 $porPagina    = in_array($porPaginaRaw, $porPaginaPermitidos) ? $porPaginaRaw : 10;
 
 $busqueda = trim($_GET['busqueda'] ?? '');
-$estado   = $_GET['estado']  ?? '';
-$pais     = $_GET['pais']    ?? '';
-$conCeo   = $_GET['conCeo']  ?? '';
+$estado   = in_array($_GET['estado'] ?? '', ['activa', 'inactiva'], true)
+    ? $_GET['estado']
+    : '';
+$conCeo   = in_array($_GET['conCeo'] ?? '', ['con', 'sin'], true)
+    ? $_GET['conCeo']
+    : '';
+$paises   = $ctrl->obtenerPaisesDisponibles();
+$pais     = in_array($_GET['pais'] ?? '', $paises, true)
+    ? $_GET['pais']
+    : '';
 
 $resultado    = $ctrl->listarAerolineasPaginado($pagina, $porPagina, $estado, $pais, $conCeo, $busqueda);
 $aerolineas   = $resultado['data'];
 $total        = $resultado['total'];
 $totalPaginas = $resultado['totalPaginas'];
+
+$filtrosActivos = ($estado !== '' ? 1 : 0) + ($pais !== '' ? 1 : 0) + ($conCeo !== '' ? 1 : 0);
 
 function urlPagina(int $pag, ?int $porPagina = null): string {
     $params = $_GET;
@@ -127,18 +136,53 @@ if ($diff > 0) {
             <div class="table-responsive bg-white shadow rounded-3 pt-3 tablaContenedor">
                 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center px-2 mb-3 gap-3 gap-sm-0">
                     <h3 class="m-0 p-0 fs-4 fw-bold">Listado de Aerolíneas</h3>
-                    <div class="d-flex flex-column flex-sm-row gap-3 align-items-center">
-                        <input
-                            type="text"
-                            id="buscadorAerolinea"
-                            class="form-control ctm-inp"
-                            placeholder="Buscar en la tabla..."
-                            autocomplete="off"
-                            style="max-width: 240px;"
+
+                    <div class="filtros-aerolineas d-flex flex-column flex-sm-row gap-2 align-items-stretch align-items-sm-center">
+                        <button
+                            type="button"
+                            id="btnFiltrosAerolinea"
+                            class="btn btn-outline-primary text-nowrap"
+                            aria-expanded="false"
+                            aria-controls="panelFiltrosAerolinea"
                         >
-                        <a href="<?= url('index.php?pagina=aerolinea&seccion=alta') ?>" class="btn btn-primary text-nowrap w-100">
+                            <i class="bi bi-funnel me-1"></i>
+                            Filtros
+                            <?php if ($filtrosActivos > 0): ?>
+                                <span class="badge text-bg-primary ms-1"><?= $filtrosActivos ?></span>
+                            <?php endif; ?>
+                        </button>
+
+                        <form method="GET" action="index.php" class="d-flex flex-column flex-sm-row gap-2">
+                            <input type="hidden" name="pagina" value="aerolinea">
+                            <input type="hidden" name="seccion" value="listado">
+                            <input type="hidden" name="porPagina" value="<?= $porPagina ?>">
+                            <?php if ($estado !== ''): ?>
+                                <input type="hidden" name="estado" value="<?= htmlspecialchars($estado) ?>">
+                            <?php endif; ?>
+                            <?php if ($pais !== ''): ?>
+                                <input type="hidden" name="pais" value="<?= htmlspecialchars($pais) ?>">
+                            <?php endif; ?>
+                            <?php if ($conCeo !== ''): ?>
+                                <input type="hidden" name="conCeo" value="<?= htmlspecialchars($conCeo) ?>">
+                            <?php endif; ?>
+
+                            <input
+                                type="text"
+                                name="busqueda"
+                                id="buscadorAerolinea"
+                                class="form-control ctm-inp"
+                                placeholder="Buscar..."
+                                autocomplete="off"
+                                value="<?= htmlspecialchars($busqueda) ?>"
+                                style="max-width: 240px;"
+                            >
+                            <button type="submit" class="btn btn-sm btn-outline-primary">Buscar</button>
+                        </form>
+
+                        <a href="<?= url('index.php?pagina=aerolinea&seccion=alta') ?>" class="btn btn-primary text-nowrap">
                             + Crear Aerolínea
                         </a>
+
                     </div>
                 </div>
 
@@ -396,6 +440,105 @@ if ($diff > 0) {
 
     </div>
 
+    <!-- Panel de filtros -->
+    <div id="backdropFiltrosAerolinea" class="filtros-aerolineas-backdrop d-none"></div>
+
+    <div
+        id="panelFiltrosAerolinea"
+        class="filtros-aerolineas-panel d-none"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Filtros de aerolíneas"
+    >
+        <form method="GET" action="index.php" class="bg-white border rounded-3 shadow p-3 m-0">
+            <input type="hidden" name="pagina" value="aerolinea">
+            <input type="hidden" name="seccion" value="listado">
+            <input type="hidden" name="porPagina" value="<?= $porPagina ?>">
+            <?php if ($busqueda !== ''): ?>
+                <input type="hidden" name="busqueda" value="<?= htmlspecialchars($busqueda) ?>">
+            <?php endif; ?>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <p class="fw-semibold m-0">Filtros</p>
+                <button type="button" class="btn-close" data-cerrar-filtros aria-label="Cerrar"></button>
+            </div>
+
+            <div class="mb-3">
+                <label for="filtroEstadoAerolinea" class="form-label fw-semibold mb-1" style="font-size:0.85rem;">Estado</label>
+                <select id="filtroEstadoAerolinea" name="estado" class="form-select form-select-sm">
+                    <option value="">Todas</option>
+                    <option value="activa" <?= $estado === 'activa' ? 'selected' : '' ?>>Activas</option>
+                    <option value="inactiva" <?= $estado === 'inactiva' ? 'selected' : '' ?>>Inactivas</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="filtroPaisAerolinea" class="form-label fw-semibold mb-1" style="font-size:0.85rem;">País</label>
+                <select id="filtroPaisAerolinea" name="pais" class="form-select form-select-sm">
+                    <option value="">Todos los países</option>
+                    <?php foreach ($paises as $paisOpcion): ?>
+                        <option value="<?= htmlspecialchars($paisOpcion) ?>" <?= $pais === $paisOpcion ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($paisOpcion) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="filtroCeoAerolinea" class="form-label fw-semibold mb-1" style="font-size:0.85rem;">CEO asociado</label>
+                <select id="filtroCeoAerolinea" name="conCeo" class="form-select form-select-sm">
+                    <option value="">Todas</option>
+                    <option value="con" <?= $conCeo === 'con' ? 'selected' : '' ?>>Con CEO asociado</option>
+                    <option value="sin" <?= $conCeo === 'sin' ? 'selected' : '' ?>>Sin CEO asociado</option>
+                </select>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary btn-sm flex-grow-1">Aplicar filtros</button>
+                <a href="<?= url('index.php?pagina=aerolinea&seccion=listado') ?>" class="btn btn-outline-secondary btn-sm">Limpiar</a>
+            </div>
+        </form>
+    </div>
+
+    <style>
+        .filtros-aerolineas {
+            width: 100%;
+        }
+
+        @media (min-width: 576px) {
+            .filtros-aerolineas {
+                width: auto;
+            }
+        }
+
+        .filtros-aerolineas-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 1050;
+            background: rgba(3, 31, 71, 0.25);
+        }
+
+        .filtros-aerolineas-panel {
+            position: fixed;
+            z-index: 1055;
+            width: 340px;
+            max-width: calc(100vw - 1rem);
+            max-height: calc(100vh - 1rem);
+            overflow-y: auto;
+        }
+
+        @media (max-width: 575.98px) {
+            .filtros-aerolineas-panel {
+                left: 0.5rem !important;
+                right: 0.5rem;
+                top: auto !important;
+                bottom: 0.5rem;
+                width: auto !important;
+                max-width: none;
+            }
+        }
+    </style>
+
     <div class="modal fade" id="modalToggleEstado" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -408,7 +551,7 @@ if ($diff > 0) {
                 </div>
                 <div class="modal-footer border-0">
                     <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
-                    <form method="POST" action="<?= url('src/routes/aerolinea.php?accion=toggleEstado') ?>">
+                    <form method="POST" action="<?= url('src/routes/aerolinea.php?accion=toggleEstado') ?>" data-loading-form>
                         <input type="hidden" name="id" id="modalToggleId">
                         <button type="submit" class="btn btn-sm" id="modalToggleConfirmar">Confirmar</button>
                     </form>
@@ -419,7 +562,9 @@ if ($diff > 0) {
 
 </div>
 
-<script src="<?=  url('public/js/admin/aerolineaListado.js') ?>"></script>
+<script src="<?= url('public/js/admin/aerolineaListado.js') ?>"></script>
+<script src="<?= url('public/js/admin/aerolineaFiltros.js') ?>"></script>
+<script src="<?= url('public/js/admin/actionLoading.js') ?>"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     // 1. Detener la propagación en todos los enlaces y botones de acción de forma individual
@@ -429,29 +574,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // 2. Desplegar fila de detalle al hacer clic en el resto de la fila
-    document.querySelectorAll(".fila-tabla").forEach(function(row) {
-        row.addEventListener("click", function(e) {
-            const id = this.dataset.id;
-            const detalleRowTarget = document.getElementById("detalle-" + id);
-
-            if (detalleRowTarget) {
-                const estaAbierto = !detalleRowTarget.classList.contains("d-none");
-
-                // Cierra todas las demás filas desplegadas
-                document.querySelectorAll(".fila-detalle").forEach(function(det) {
-                    det.classList.add("d-none");
-                });
-
-                // Si no estaba abierta, la muestra
-                if (!estaAbierto) {
-                    detalleRowTarget.classList.remov("d-none"); // Nota: asegurate de que diga remove
-                }
-            }
-        });
-    });
-
-    // 3. Modal de confirmación toggle estado para aerolíneas
+    // 2. Modal de confirmación toggle estado para aerolíneas
     const modalEl     = document.getElementById("modalToggleEstado");
     const modalTitulo = document.getElementById("modalToggleTitulo");
     const modalTexto  = document.getElementById("modalToggleTexto");

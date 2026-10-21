@@ -32,34 +32,40 @@
         <?php endif;?>
         </div>
 
+        <!-- RADIOS IDA / IDA Y VUELTA -->
+        <div class="d-flex align-items-center gap-4 px-4 pt-3">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="tipo_viaje_desktop" id="desktopSoloIda" value="solo_ida" checked>
+                <label class="form-check-label fw-semibold" for="desktopSoloIda" style="font-size:0.9rem;">Solo ida</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="tipo_viaje_desktop" id="desktopIdaVuelta" value="ida_vuelta">
+                <label class="form-check-label fw-semibold" for="desktopIdaVuelta" style="font-size:0.9rem;">Ida y vuelta</label>
+            </div>
+        </div>
 
         <form  
-            class="desktop-search-form d-flex align-items-center "
+            class="desktop-search-form d-flex align-items-center"
             action="<?= url('index.php?pagina=buscar-vuelos') ?>" 
             method="GET"
         >
             <input type="hidden" name="pagina" value="buscar-vuelos">
+            <input type="hidden" name="tipo_viaje" id="desktopTipoViajeHidden" value="solo_ida">
 
             <div class="desktop-field desktop-airport position-relative">
                 <label for="from-desktop">Salida</label>
-                <input type="text" id="from-desktop" name="origen" class="desktop-main-input" placeholder="Ciudad" autocomplete="off">
-
+                <input type="text" id="from-desktop" name="origen" class="desktop-main-input" placeholder="Ciudad" autocomplete="off" required>
                 <p id="from-location-desktop">Ingrese salida</p>
-
                 <span class="desktop-arrow">⌄</span>
-
                 <div id="from-results-desktop" class="autocomplete-results"></div>
             </div>
-
 
             <button type="button" class="swap-btn d-flex align-items-center justify-content-center" id="swap-desktop" aria-label="intercambiar origen y destino">
                 ⇄
             </button>
 
-
             <div class="desktop-field desktop-airport position-relative">
                 <label for="to-desktop">Destino</label>
-
                 <input
                     type="text"
                     id="to-desktop"
@@ -67,100 +73,47 @@
                     placeholder="Ciudad"
                     autocomplete="off"
                     name="destino"
+                    required
                 >
-
-                <p id="to-location-desktop">
-                    Ingrese destino
-                </p>
-
+                <p id="to-location-desktop">Ingrese destino</p>
                 <span class="desktop-arrow">⌄</span>
-
-                <div
-                    id="to-results-desktop"
-                    class="autocomplete-results">
-                </div>
-
+                <div id="to-results-desktop" class="autocomplete-results"></div>
             </div>
 
-
             <div class="desktop-divider"></div>
-
 
             <div class="desktop-field desktop-date">
-
-                <label for="fecha-desktop">
-                    Salida
-                </label>
-
-                <input
-                    type="date"
-                    id="fecha-desktop"
-                    class="desktop-date-input"
-                    min="<?php echo date('Y-m-d'); ?>"
-                    name="fecha"
-                >
-
-                <p id="fecha-sub-desktop">
-                    Seleccione fecha
-                </p>
-
+                <label for="fecha-desktop">Salida</label>
+                <input type="date" id="fecha-desktop" class="desktop-date-input" min="<?php echo date('Y-m-d'); ?>" name="fecha" >
+                <p id="fecha-sub-desktop">Seleccione fecha</p>
             </div>
 
+            <!-- BLOQUE DE VUELTA -->
+            <div class="desktop-divider d-none" id="dividerVueltaDesktop"></div>
 
-            <div class="desktop-divider"></div>
-
-
-            <div class="desktop-field desktop-date">
-
-                <label for="fecha-vuelta-desktop">
-                    Vuelta
-                </label>
-
-                <input
-                    type="date"
-                    id="fecha-vuelta-desktop"
-                    class="desktop-date-input"
-                    min="<?php echo date('Y-m-d'); ?>"
-                    name="fecha_vuelta"
-                >
-
-                <p id="fecha-vuelta-sub-desktop">
-                    Seleccione fecha
-                </p>
-
+            <div class="desktop-field desktop-date d-none" id="contenedorFechaVueltaDesktop">
+                <label for="fecha-vuelta-desktop">Vuelta</label>
+                <input type="date" id="fecha-vuelta-desktop" class="desktop-date-input" min="<?php echo date('Y-m-d'); ?>" name="fecha_vuelta">
+                <p id="fecha-vuelta-sub-desktop">Seleccione fecha</p>
             </div>
 
-
             <div class="desktop-divider"></div>
-
 
             <div class="desktop-field desktop-passengers">
-
-                <label for="passengers-desktop">
-                    Pasajeros
-                </label>
-
-                <select
-                    id="passengers-desktop" class="form-select desktop-passenger-select" name="pasajeros">
+                <label for="passengers-desktop">Pasajeros</label>
+                <select id="passengers-desktop" class="form-select desktop-passenger-select" name="pasajeros">
                     <option value="1">1 Pasajero</option>
                     <option value="2">2 Pasajeros</option>
                     <option value="3">3 Pasajeros</option>
                     <option value="4">4 Pasajeros</option>
                     <option value="5">5 Pasajeros</option>
-
                 </select>
-
-
             </div>
-
 
             <button type="submit" class="btn desktop-search-btn ms-auto gap-2">
                 <img src="<?= url('public/img/icons/lupa.png') ?>" alt="icono pasajero" class="autocomplete-icon">
                 Buscar Vuelos
             </button>
-
         </form>
-
     </div>
-
 </div>

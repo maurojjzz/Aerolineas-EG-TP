@@ -10,11 +10,15 @@ $porPaginaRaw = (int)($_GET['porPagina'] ?? 10);
 $porPagina    = in_array($porPaginaRaw, $porPaginaPermitidos) ? $porPaginaRaw : 10;
 
 $busqueda = trim($_GET['busqueda'] ?? '');
-$estado   = $_GET['estado'] ?? '';
+$estado   = in_array($_GET['estado'] ?? '', ['1', '0', 'sin-verificar'], true)
+    ? $_GET['estado']
+    : '';
+$rol      = in_array($_GET['rol'] ?? '', ['cliente', 'ceo'], true)
+    ? $_GET['rol']
+    : '';
 
-$resultado    = $ctrl->listarUsuariosPaginado($pagina, $porPagina, $estado, $busqueda);
+$resultado    = $ctrl->listarUsuariosPaginado($pagina, $porPagina, $estado, $busqueda, $rol);
 $usuarios     = $resultado['data'] ?? [];
-$usuarios     = array_values(array_filter($usuarios, fn($u) => strtolower($u['rol'] ?? '') !== 'admin'));
 $total        = $resultado['total'];
 $totalPaginas = $resultado['totalPaginas'];
 
@@ -72,7 +76,7 @@ if ($diff > 0) {
                         </div>
                         <div class="d-flex flex-column justify-content-center p-0 m-0">
                             <p class="fw-semibold m-0 p-0 text-muted" style="font-size:14px;">Total Usuarios</p>
-                            <p class="fs-3 fw-bold text-dark m-0 p-0"><?= $total ?></p>
+                            <p class="fs-3 fw-bold text-dark m-0 p-0"><?= $stats['total'] ?></p>
                         </div>
                     </div>
                     <div class="d-flex flex-row justify-content-start p-0 m-0 gap-2 mt-1">
@@ -107,8 +111,8 @@ if ($diff > 0) {
                             <i class="bi bi-person-badge-fill text-primary fs-3"></i>
                         </div>
                         <div class="d-flex flex-column justify-content-center p-0 m-0">
-                            <p class="fw-semibold m-0 p-0 text-muted" style="font-size:14px;">Clientes / CEOs / Admins</p>
-                            <p class="fs-5 fw-bold text-dark m-0 p-0"><?= $stats['clientes'] ?> / <?= $stats['ceos'] ?> / <?= $stats['admins'] ?></p>
+                            <p class="fw-semibold m-0 p-0 text-muted" style="font-size:14px;">Clientes / CEOs</p>
+                            <p class="fs-5 fw-bold text-dark m-0 p-0"><?= $stats['clientes'] ?> / <?= $stats['ceos'] ?></p>
                         </div>
                     </div>
                     <div class="d-flex flex-row justify-content-start p-0 m-0 gap-2 mt-1">
@@ -125,19 +129,46 @@ if ($diff > 0) {
                 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center px-2 mb-3 gap-3 gap-sm-0">
                     <h3 class="m-0 p-0 fs-4 fw-bold">Listado de Usuarios</h3>
                     <div class="d-flex flex-column flex-sm-row gap-3 align-items-center">
-                        <form method="GET" action="index.php" class="d-flex gap-2">
+                        <form method="GET" action="index.php" class="d-flex flex-column flex-sm-row gap-2 align-items-stretch align-items-sm-center">
                             <input type="hidden" name="pagina" value="usuarios">
                             <input type="hidden" name="seccion" value="listado">
+                            <input type="hidden" name="porPagina" value="<?= $porPagina ?>">
+
+                            <select
+                                name="rol"
+                                class="form-select ctm-inp"
+                                aria-label="Filtrar por rol"
+                                style="max-width: 170px; cursor:pointer;"
+                                onchange="this.form.submit()"
+                            >
+                                <option value="">Todos los roles</option>
+                                <option value="cliente" <?= $rol === 'cliente' ? 'selected' : '' ?>>Clientes</option>
+                                <option value="ceo" <?= $rol === 'ceo' ? 'selected' : '' ?>>CEOs</option>
+                            </select>
+
+                            <select
+                                name="estado"
+                                class="form-select ctm-inp"
+                                aria-label="Filtrar por estado"
+                                style="max-width: 190px; cursor:pointer;"
+                                onchange="this.form.submit()"
+                            >
+                                <option value="">Todos los estados</option>
+                                <option value="1" <?= $estado === '1' ? 'selected' : '' ?>>Activos</option>
+                                <option value="0" <?= $estado === '0' ? 'selected' : '' ?>>Inactivos</option>
+                                <option value="sin-verificar" <?= $estado === 'sin-verificar' ? 'selected' : '' ?>>Email sin verificar</option>
+                            </select>
+
                             <input 
                                 type="text" 
                                 name="busqueda" 
                                 id="buscadorUsuario" 
                                 class="form-control ctm-inp" 
                                 placeholder="Buscar..." 
-                                value="<?= htmlspecialchars($_GET['busqueda'] ?? '') ?>"
+                                value="<?= htmlspecialchars($busqueda) ?>"
                                 style="max-width: 240px;"
                             >
-                            <button type="submit" class="btn btn-sm btn-outline-primary">Buscar</button>
+                            <button type="submit" class="btn btn-sm btn-outline-primary text-nowrap">Buscar</button>
                         </form>
                     </div>
                 </div>
@@ -183,6 +214,9 @@ if ($diff > 0) {
                                         <span class="badge text-bg-success">Activo</span>
                                     <?php else: ?>
                                         <span class="badge text-bg-secondary">Inactivo</span>
+                                    <?php endif; ?>
+                                    <?php if (empty($u['emailVerificado'])): ?>
+                                        <span class="badge text-bg-warning d-inline-block mt-1" title="El email todavía no fue verificado">Email sin verificar</span>
                                     <?php endif; ?>
                                 </td>
                                 <td>
@@ -255,6 +289,12 @@ if ($diff > 0) {
                                                     <span class="text-muted">Estado</span>
                                                     <span class="fw-medium <?= $u['activo'] ? 'text-success' : 'text-secondary' ?>">
                                                         <?= $u['activo'] ? '● Activo' : '● Inactivo' ?>
+                                                    </span>
+                                                </div>
+                                                <div class="d-flex justify-content-between">
+                                                    <span class="text-muted">Email verificado</span>
+                                                    <span class="fw-medium <?= $u['emailVerificado'] ? 'text-success' : 'text-warning' ?>">
+                                                        <?= $u['emailVerificado'] ? 'Sí' : 'No' ?>
                                                     </span>
                                                 </div>
                                             </div>
@@ -360,7 +400,7 @@ if ($diff > 0) {
                 </div>
                 <div class="modal-footer border-0">
                     <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
-                    <form method="POST" action="<?= url('src/routes/usuarios.php?accion=toggleEstado') ?>">
+                    <form method="POST" action="<?= url('src/routes/usuarios.php?accion=toggleEstado') ?>" data-loading-form>
                         <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                         <input type="hidden" name="id" id="modalToggleIdUsuario">
                         <button type="submit" class="btn btn-sm" id="modalToggleConfirmarUsuario">Confirmar</button>
@@ -371,6 +411,7 @@ if ($diff > 0) {
     </div>
 </div>
 
+<script src="<?= url('public/js/admin/actionLoading.js') ?>"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     // Desplegar fila de detalle al hacer clic en la fila
