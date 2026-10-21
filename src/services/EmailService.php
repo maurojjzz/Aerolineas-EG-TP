@@ -56,6 +56,17 @@ class EmailService {
         return self::enviar($email, '¡Tu cuenta fue aprobada! - Volaré', $cuerpo);
     }
 
+    // ── Notificación CEO: cuenta denegada ─────────────────────────────────────
+    public static function enviarDenegacionCEO(string $email, string $nombre): bool {
+        $cuerpo = "
+            <h2>Hola, {$nombre}!</h2>
+            <p>Después de revisar tu solicitud para registrarte como CEO en <strong>Volaré</strong>, lamentablemente no pudimos aprobarla.</p>
+            <p>Si creés que se trata de un error o querés ampliar la información, podés contactar a nuestro equipo desde la sección de contacto.</p>
+        ";
+
+        return self::enviar($email, 'Solicitud de registro como CEO denegada - Volaré', $cuerpo);
+    }
+
     // ── Recuperación de contraseña ────────────────────────────────────────────
     public static function enviarRecuperacionContrasena(string $email, string $nombre, string $token): bool {
         $enlace = urlAbsoluta('index.php?pagina=reset-password&token=' . $token);

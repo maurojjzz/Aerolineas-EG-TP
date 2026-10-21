@@ -12,6 +12,21 @@ class AerolineaController {
         $this->conexion = $conexion;
     }
 
+    /**
+     * Condición SQL para considerar a un CEO como aprobado.
+     * Incluye CEOs activos legacy sin fecha y excluye pendientes/denegados.
+     */
+    private function condicionCEOAprobado(string $alias = 'u'): string {
+        $fechaDenegacion = defined('FECHA_DENEGACION_CEO')
+            ? FECHA_DENEGACION_CEO
+            : '1970-01-01 00:00:00';
+
+        return "(
+            ({$alias}.fecha_hora_autorizacion IS NOT NULL AND {$alias}.fecha_hora_autorizacion <> '{$fechaDenegacion}')
+            OR ({$alias}.fecha_hora_autorizacion IS NULL AND {$alias}.activo = 1)
+        )";
+    }
+
     public function crearAerolinea(): void {
         $nombre = trim($_POST['nombre'] ?? null);
         $codigoIATA = trim($_POST['codigo'] ?? null);
@@ -189,10 +204,11 @@ class AerolineaController {
     }
 
     public function listarAerolineasConCEO(): array {
+        $ceoAprobado = $this->condicionCEOAprobado();
         $query = "SELECT a.*, u.nombre as ceoNombre, u.apellido as ceoApellido, u.email as ceoEmail
                 FROM aerolinea a
                 LEFT JOIN usuario u 
-                    ON u.idAerolinea = a.idAerolinea AND u.rol = 'ceo'
+                    ON u.idAerolinea = a.idAerolinea AND u.rol = 'ceo' AND {$ceoAprobado}
                 ORDER BY a.nombreAerolinea;";
 
         $result = mysqli_query($this->conexion, $query);
@@ -247,11 +263,12 @@ class AerolineaController {
         }
 
         $where = count($condiciones) ? 'WHERE ' . implode(' AND ', $condiciones) : '';
+        $ceoAprobado = $this->condicionCEOAprobado();
 
         // Total sin LIMIT para calcular páginas
         $queryTotal = "SELECT COUNT(*) as total
                     FROM aerolinea a
-                    LEFT JOIN usuario u ON u.idAerolinea = a.idAerolinea AND u.rol = 'ceo'
+                    LEFT JOIN usuario u ON u.idAerolinea = a.idAerolinea AND u.rol = 'ceo' AND {$ceoAprobado}
                     $where";
 
         $stmtTotal = mysqli_prepare($this->conexion, $queryTotal);
@@ -268,7 +285,7 @@ class AerolineaController {
         // Query paginada
         $query = "SELECT a.*, u.nombre as ceoNombre, u.apellido as ceoApellido
                 FROM aerolinea a
-                LEFT JOIN usuario u ON u.idAerolinea = a.idAerolinea AND u.rol = 'ceo'
+                LEFT JOIN usuario u ON u.idAerolinea = a.idAerolinea AND u.rol = 'ceo' AND {$ceoAprobado}
                 $where
                 ORDER BY a.nombreAerolinea
                 LIMIT ? OFFSET ?";
@@ -297,10 +314,28 @@ class AerolineaController {
         ];
     }
 
+    public function obtenerPaisesDisponibles(): array {
+        $paises = [];
+        $query = "SELECT DISTINCT codPais
+                  FROM aerolinea
+                  WHERE codPais IS NOT NULL AND codPais <> ''
+                  ORDER BY codPais";
+        $resultado = mysqli_query($this->conexion, $query);
+
+        if ($resultado) {
+            while ($fila = mysqli_fetch_assoc($resultado)) {
+                $paises[] = $fila['codPais'];
+            }
+        }
+
+        return $paises;
+    }
+
     public function obtenerAerolineaPorId(int $id): ?array {
+        $ceoAprobado = $this->condicionCEOAprobado();
         $query = "SELECT a.*, u.nombre as ceoNombre, u.apellido as ceoApellido, u.email as ceoEmail
                 FROM aerolinea a
-                LEFT JOIN usuario u ON u.idAerolinea = a.idAerolinea AND u.rol = 'ceo'
+                LEFT JOIN usuario u ON u.idAerolinea = a.idAerolinea AND u.rol = 'ceo' AND {$ceoAprobado}
                 WHERE a.idAerolinea = ?";
 
         $stmt = mysqli_prepare($this->conexion, $query);
@@ -325,9 +360,10 @@ class AerolineaController {
                         WHERE MONTH(fechaCreacion) = MONTH(DATE_SUB(NOW(), INTERVAL 1 MONTH)) 
                         AND YEAR(fechaCreacion) = YEAR(DATE_SUB(NOW(), INTERVAL 1 MONTH))";
 
-        // Total CEOs 
-        $queryCeos = "SELECT COUNT(*) as total FROM usuario 
-                    WHERE rol = 'ceo' AND idAerolinea IS NOT NULL";
+        // Total CEOs aprobados con aerolínea asignada
+        $ceoAprobado = $this->condicionCEOAprobado();
+        $queryCeos = "SELECT COUNT(*) as total FROM usuario u
+                    WHERE u.rol = 'ceo' AND u.idAerolinea IS NOT NULL AND {$ceoAprobado}";
 
         $esteMes   = (int) mysqli_fetch_assoc(mysqli_query($this->conexion, $queryEsteMes))['total'];
         $mesPasado = (int) mysqli_fetch_assoc(mysqli_query($this->conexion, $queryMesPasado))['total'];

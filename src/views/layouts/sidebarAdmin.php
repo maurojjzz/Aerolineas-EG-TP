@@ -44,7 +44,7 @@ if ($rol === 'admin') {
         ],
         [
             'label'  => 'CEOs',
-            'href'   => '#',
+            'href'   => 'index.php?pagina=ceos&seccion=listado',
             'icon'   => 'ceo.png',
             'activo' => $pagina === 'ceos',
         ],
