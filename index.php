@@ -64,6 +64,11 @@ switch ($pagina) {
         require __DIR__ . '/src/views/admin/usuarioLayout.php';
         break;
 
+    case 'ceos':
+        requireRol('admin');
+        require __DIR__ . '/src/views/admin/ceoLayout.php';
+        break;
+
     case 'cliente':
         requireRol('cliente');
         require __DIR__ . '/src/views/cliente/home.php';

@@ -415,7 +415,7 @@ function badgeEstadoPromoAdmin(string $estado): string {
                 </div>
                 <div class="modal-footer border-0">
                     <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
-                    <form method="POST" id="formResolverPromo"
+                    <form method="POST" id="formResolverPromo" data-loading-form
                           data-url-aprobar="<?= url('src/routes/promociones.php?accion=aprobar') ?>"
                           data-url-denegar="<?= url('src/routes/promociones.php?accion=denegar') ?>">
                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
@@ -428,6 +428,7 @@ function badgeEstadoPromoAdmin(string $estado): string {
     </div>
 </div>
 
+<script src="<?= url('public/js/admin/actionLoading.js') ?>"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const tbody = document.getElementById("promocionTableBody");

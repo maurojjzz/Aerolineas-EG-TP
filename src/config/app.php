@@ -2,6 +2,16 @@
 
 date_default_timezone_set('America/Argentina/Buenos_Aires');
 
+/*
+ * Estado de aprobación de CEOs sin cambios de esquema:
+ * - Pendiente: activo = 0 y fecha_hora_autorizacion IS NULL
+ * - Aprobado:  fecha_hora_autorizacion con fecha real, o CEO activo legacy
+ * - Denegado:  fecha_hora_autorizacion = FECHA_DENEGACION_CEO
+ */
+if (!defined('FECHA_DENEGACION_CEO')) {
+    define('FECHA_DENEGACION_CEO', '1970-01-01 00:00:00');
+}
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
