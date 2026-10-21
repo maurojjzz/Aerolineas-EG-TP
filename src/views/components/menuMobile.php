@@ -1,73 +1,61 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-$isLoggedIn = isset($_SESSION['usuario']);
-$usuario = $isLoggedIn ? $_SESSION['usuario'] : null;
-$rol = $usuario['rol'] ?? 'cliente';
-
-// Definir la ruta del panel según el rol
-$urlPanel = match($rol) {
-    'admin' => url('index.php?pagina=aerolinea&seccion=listado'),
-    'ceo'   => url('index.php?pagina=ceo'),
-    default => url('index.php?pagina=cliente')
-};
-
-// Determinar la URL de Inicio
-if ($isLoggedIn && $rol === 'cliente') {
-    $urlInicio = url('index.php?pagina=cliente');
-} else {
-    $urlInicio = url('index.php?pagina=inicio');
-}
-
-$paginaActual = $_GET['pagina'] ?? 'inicio';
+require_once __DIR__ . '/navLinks.php';
 ?>
 <nav class="navbar">
-    <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+    <button class="navbar-toggler custom-toggler"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasNavbar"
+            aria-controls="offcanvasNavbar"
+            aria-label="Abrir menú de navegación">
         <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+    <div class="offcanvas offcanvas-start"
+         tabindex="-1"
+         id="offcanvasNavbar"
+         aria-labelledby="offcanvasNavbarLabel">
         <div class="offcanvas-header">
-<<<<<<< HEAD
-            <a class="navbar-brand logoLink" href="<?= $urlInicio ?>">
-                <img class="logo" src="<?= url('public/img/aerologo.webp') ?>" alt="Logo de la pagina" >
-=======
-            <a class="navbar-brand logoLink" href="#">
-                <img class="logo" src="<?= url('public/img/aerologo.webp') ?>" alt="Logo de Volaré" >
->>>>>>> master
+            <a class="navbar-brand logoLink m-0" href="<?= htmlspecialchars($urlInicio) ?>">
+                <img class="logo" src="<?= url('public/img/aerologo.webp') ?>" alt="Logo de Volaré">
             </a>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Cerrar menú"></button>
         </div>
 
-        <div class="offcanvas-body">
-            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                <li class="nav-item">
-                    <a class="nav-link text-white <?= ($paginaActual === 'inicio' || $paginaActual === 'cliente') ? 'active fw-bold' : '' ?>" href="<?= $urlInicio ?>">Inicio</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#">Vuelos</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#">Promociones</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white <?= ($paginaActual === 'cliente-novedades' || $paginaActual === 'cliente-novedad-detalle') ? 'active fw-bold' : '' ?>" href="<?= url('index.php?pagina=cliente-novedades') ?>">Novedades</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#">Ayuda</a>
-                </li>
-                
-                <li class="nav-item mt-5">
-                    <?php if ($isLoggedIn): ?>
-                        <a class="nav-link text-white fw-semibold" href="<?= $urlPanel ?>">Mi Panel (<?= strtoupper($rol) ?>)</a>
-                        <a class="nav-link text-danger mt-2" href="/src/routes/usuarios.php?accion=logout">Cerrar Sesión</a>
-                    <?php else: ?>
-                        <a class="nav-link text-white" href="<?= url('index.php?pagina=login') ?>">Iniciar sesión</a>
-                    <?php endif; ?>
-                </li>
+        <div class="offcanvas-body d-flex flex-column">
+            <h5 class="visually-hidden" id="offcanvasNavbarLabel">Menú de navegación</h5>
+
+            <?php if ($isLoggedIn): ?>
+                <div class="mobile-user-box mb-3">
+                    <img src="<?= url('public/img/icons/usuario.png') ?>" alt="" class="icono_perfil-mobile">
+                    <div class="min-width-0">
+                        <p class="mobile-user-name text-truncate"><?= htmlspecialchars($usuario['nombre'] ?? 'Mi Cuenta') ?></p>
+                        <p class="mobile-user-role"><?= htmlspecialchars($rolLabel) ?></p>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <ul class="navbar-nav pe-1">
+                <?php foreach ($navLinks as $link): ?>
+                    <li class="nav-item">
+                        <a class="nav-link text-white <?= $link['active'] ? 'active fw-bold' : '' ?>"
+                           href="<?= htmlspecialchars($link['href']) ?>"
+                           <?= $link['active'] ? 'aria-current="page"' : '' ?>>
+                            <?= htmlspecialchars($link['label']) ?>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
             </ul>
+
+            <div class="mt-auto pt-4">
+                <hr class="border-light opacity-25">
+                <?php if ($isLoggedIn): ?>
+                    <a class="nav-link mobile-logout fw-semibold px-2" href="<?= htmlspecialchars($urlLogout) ?>">Cerrar Sesión</a>
+                <?php else: ?>
+                    <a class="btn btn-light w-100 fw-semibold" href="<?= htmlspecialchars($urlLogin) ?>">Iniciar sesión</a>
+                    <a class="nav-link text-white text-center mt-2" href="<?= htmlspecialchars($urlRegistro) ?>">Crear cuenta</a>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
 </nav>

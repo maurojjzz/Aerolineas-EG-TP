@@ -247,8 +247,9 @@ class ReservaController {
 
     public function listarMisReservas(int $idUsuario): array {
         $stmt = mysqli_prepare($this->conexion,
-            "SELECT r.*, v.origenVuelo, v.destinoVuelo, v.fechaHoraSalidaVuelo,
-                    v.precioVuelo, a.nombreAerolinea, a.codigoIATA, a.logoUrl
+            "SELECT r.*, v.origenVuelo, v.codigoOrigen, v.destinoVuelo, v.codigoDestino,
+                    v.fechaHoraSalidaVuelo, v.fechaHoraLlegadaVuelo,
+                    v.precioVuelo, a.idAerolinea, a.nombreAerolinea, a.codigoIATA, a.logoUrl
             FROM reserva r
             JOIN vuelo v ON r.idVuelo = v.idVuelo
             JOIN aerolinea a ON v.idAerolinea = a.idAerolinea

@@ -16,7 +16,9 @@
 .navbar-custom .nav-link {
     color: white;
     font-weight: 500;
-    font-size: 18px;
+    font-size: 16px;
+    padding: 0.5rem 0.85rem;
+    white-space: nowrap;
 }
 
 .nav-item {
@@ -46,7 +48,7 @@
     font-weight: 500;
     font-size: 18px;
     transition: all 0.25s ease;
-    margin-right: 35px;
+    margin-right: 0;
 }
 
 .icono_perfil {

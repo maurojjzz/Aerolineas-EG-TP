@@ -53,7 +53,7 @@ $novedades = $novedadCtrl->obtenerUltimasPublicadas(3); // Obtiene las últimas 
                             <img src="<?= url('public/img/icons/reserva.png') ?>" style="width:30px;height:30px;object-fit:contain;" alt="">
                             <h5 class="fw-bold m-0">Mis próximas reservas</h5>
                         </div>
-                        <a href="#" class="text-primary text-decoration-none" style="font-size:0.875rem;">
+                        <a href="<?= url('index.php?pagina=mis-reservas') ?>" class="text-primary text-decoration-none" style="font-size:0.875rem;">
                             Ver todas mis reservas →
                         </a>
                     </div>
@@ -87,7 +87,7 @@ $novedades = $novedadCtrl->obtenerUltimasPublicadas(3); // Obtiene las últimas 
 
                                 <div class="d-flex justify-content-between align-items-center">
                                     <p class="text-muted m-0" style="font-size:0.8rem;">1 pasajero &nbsp;|&nbsp; Económica &nbsp;|&nbsp; Ida</p>
-                                    <a href="#" class="btn btn-outline-primary btn-sm" style="font-size:0.8rem;">Ver detalles</a>
+                                    <a href="<?= url('index.php?pagina=mis-reservas') ?>" class="btn btn-outline-primary btn-sm" style="font-size:0.8rem;">Ver detalles</a>
                                 </div>
                             </div>
                         </div>
@@ -119,7 +119,7 @@ $novedades = $novedadCtrl->obtenerUltimasPublicadas(3); // Obtiene las últimas 
 
                                 <div class="d-flex justify-content-between align-items-center">
                                     <p class="text-muted m-0" style="font-size:0.8rem;">2 pasajeros &nbsp;|&nbsp; Económica &nbsp;|&nbsp; Ida y vuelta</p>
-                                    <a href="#" class="btn btn-primary btn-sm" style="font-size:0.8rem;">Continuar pago</a>
+                                    <a href="<?= url('index.php?pagina=mis-reservas') ?>" class="btn btn-primary btn-sm" style="font-size:0.8rem;">Continuar pago</a>
                                 </div>
                             </div>
                         </div>
