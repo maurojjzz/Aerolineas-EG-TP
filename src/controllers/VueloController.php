@@ -2,13 +2,16 @@
 
 require_once __DIR__ . '/../config/conexion.php';
 require_once __DIR__ . '/../models/Vuelos.php';
+require_once __DIR__ . '/PromocionController.php';
 
 class VueloController {
 
     private $conexion;
+    private $promoCtrl;
 
     public function __construct($conexion) {
         $this->conexion = $conexion;
+        $this->promoCtrl = new PromocionController($conexion);
     }
 
     public function crearVuelo(int $idAerolinea): void {
@@ -307,7 +310,36 @@ class VueloController {
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
         $filas = [];
-        while ($row = mysqli_fetch_assoc($result)) $filas[] = $row;
+        while ($row = mysqli_fetch_assoc($result)) {
+            // Calcular promos aplicables para este vuelo
+            $promos = $this->promoCtrl->obtenerPromosAplicables(
+                (int)$row['idVuelo'],
+                (int)$row['idAerolinea'],
+                $row['codigoOrigen'] ?? '',
+                $row['codigoDestino'] ?? ''
+            );
+            
+            $descuentoTotal = 0;
+            $promosNombres = [];
+            foreach ($promos as $p) {
+                if ($p['acumulable']) {
+                    $descuentoTotal += (float)$p['descuentoPorcentaje'];
+                    $promosNombres[] = $p['nombre'] . ' (-' . $p['descuentoPorcentaje'] . '%)';
+                } else {
+                    $descuentoTotal = (float)$p['descuentoPorcentaje'];
+                    $promosNombres = [$p['nombre'] . ' (-' . $p['descuentoPorcentaje'] . '%)'];
+                    break;
+                }
+            }
+            $descuentoTotal = min($descuentoTotal, 100);
+            
+            $row['promo_descuento_total'] = $descuentoTotal;
+            $row['promo_nombres'] = $promosNombres;
+            $row['precio_original'] = (float)$row['precioVuelo'];
+            $row['precio_con_descuento'] = $row['precio_original'] * (1 - $descuentoTotal / 100);
+            
+            $filas[] = $row;
+        }
         mysqli_stmt_close($stmt);
 
         return [

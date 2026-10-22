@@ -2,13 +2,16 @@
 
 require_once __DIR__ . '/../config/conexion.php';
 require_once __DIR__ . '/../models/Reserva.php';
+require_once __DIR__ . '/PromocionController.php';
 
 class ReservaController {
 
     private $conexion;
+    private $promoCtrl;
 
     public function __construct($conexion) {
         $this->conexion = $conexion;
+        $this->promoCtrl = new PromocionController($conexion);
     }
 
     // ── Crear reserva ─────────────────────────────────────────────────────────
@@ -86,12 +89,37 @@ class ReservaController {
             // Insertar una reserva por cada tramo y descontar sus asientos.
             foreach ($vuelos as $vuelo) {
                 $id = (int)$vuelo['idVuelo'];
-                $precioTotal = (float)$vuelo['precioVuelo'] * $cantPasajeros;
+
+                // Obtener TODAS las promos aplicables (stacking)
+                $promos = $this->promoCtrl->obtenerPromosAplicables(
+                    $id,
+                    (int)$vuelo['idAerolinea'],
+                    $vuelo['codigoOrigen'] ?? '',
+                    $vuelo['codigoDestino'] ?? ''
+                );
+
+                $descuentoTotal = 0;
+                $promosIds = [];
+                foreach ($promos as $p) {
+                    if ($p['acumulable']) {
+                        $descuentoTotal += (float)$p['descuentoPorcentaje'];
+                        $promosIds[] = (int)$p['idPromocion'];
+                    } else {
+                        $descuentoTotal = (float)$p['descuentoPorcentaje'];
+                        $promosIds = [(int)$p['idPromocion']];
+                        break;
+                    }
+                }
+                $descuentoTotal = min($descuentoTotal, 100);
+                
+                // Guardar IDs de promos como JSON
+                $idPromocionAplicada = !empty($promosIds) ? json_encode($promosIds) : null;
+                $precioTotal = (float)$vuelo['precioVuelo'] * $cantPasajeros * (1 - $descuentoTotal / 100);
 
                 $stmt = mysqli_prepare($this->conexion,
-                    "INSERT INTO reserva (idUsuario, idVuelo, cantPasajeros, precioTotal, estadoReserva)
-                     VALUES (?, ?, ?, ?, 'pendiente de pago')");
-                mysqli_stmt_bind_param($stmt, 'iiid', $idUsuario, $id, $cantPasajeros, $precioTotal);
+                    "INSERT INTO reserva (idUsuario, idVuelo, cantPasajeros, precioTotal, estadoReserva, idPromocion)
+                     VALUES (?, ?, ?, ?, 'pendiente de pago', ?)");
+                mysqli_stmt_bind_param($stmt, 'iiids', $idUsuario, $id, $cantPasajeros, $precioTotal, $idPromocionAplicada);
                 mysqli_stmt_execute($stmt);
                 mysqli_stmt_close($stmt);
 
@@ -259,7 +287,26 @@ class ReservaController {
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
         $filas = [];
-        while ($row = mysqli_fetch_assoc($result)) $filas[] = $row;
+        while ($row = mysqli_fetch_assoc($result)) {
+            // Decodificar promos aplicadas (JSON array)
+            $promosData = [];
+            if (!empty($row['idPromocion'])) {
+                $ids = json_decode($row['idPromocion'], true);
+                if (is_array($ids)) {
+                    $placeholders = implode(',', array_fill(0, count($ids), '?'));
+                    $stmtP = mysqli_prepare($this->conexion,
+                        "SELECT idPromocion, nombre, descuentoPorcentaje FROM promocion WHERE idPromocion IN ($placeholders)");
+                    $types = str_repeat('i', count($ids));
+                    mysqli_stmt_bind_param($stmtP, $types, ...$ids);
+                    mysqli_stmt_execute($stmtP);
+                    $resP = mysqli_stmt_get_result($stmtP);
+                    while ($p = mysqli_fetch_assoc($resP)) $promosData[] = $p;
+                    mysqli_stmt_close($stmtP);
+                }
+            }
+            $row['promos_aplicadas'] = $promosData;
+            $filas[] = $row;
+        }
         mysqli_stmt_close($stmt);
         return $filas;
     }
@@ -363,7 +410,28 @@ class ReservaController {
         mysqli_stmt_execute($stmt);
         $fila = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
         mysqli_stmt_close($stmt);
-        return $fila ?: null;
+        
+        if (!$fila) return null;
+        
+        // Decodificar promos aplicadas (JSON array)
+        $promosData = [];
+        if (!empty($fila['idPromocion'])) {
+            $ids = json_decode($fila['idPromocion'], true);
+            if (is_array($ids)) {
+                $placeholders = implode(',', array_fill(0, count($ids), '?'));
+                $stmtP = mysqli_prepare($this->conexion,
+                    "SELECT idPromocion, nombre, descuentoPorcentaje FROM promocion WHERE idPromocion IN ($placeholders)");
+                $types = str_repeat('i', count($ids));
+                mysqli_stmt_bind_param($stmtP, $types, ...$ids);
+                mysqli_stmt_execute($stmtP);
+                $resP = mysqli_stmt_get_result($stmtP);
+                while ($p = mysqli_fetch_assoc($resP)) $promosData[] = $p;
+                mysqli_stmt_close($stmtP);
+            }
+        }
+        $fila['promos_aplicadas'] = $promosData;
+        
+        return $fila;
     }
     
 }

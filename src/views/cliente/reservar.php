@@ -4,6 +4,7 @@ require_once __DIR__ . '/../../config/conexion.php';
 require_once __DIR__ . '/../../config/auth.php';
 require_once __DIR__ . '/../../controllers/ReservaController.php';
 require_once __DIR__ . '/../../controllers/UsuarioController.php';
+require_once __DIR__ . '/../../controllers/PromocionController.php';
 
 $idVuelo       = (int)($_GET['idVuelo'] ?? 0);
 $idVueloVuelta = (int)($_GET['idVueloVuelta'] ?? 0);
@@ -18,6 +19,7 @@ if ($idVueloVuelta > 0 && $idVueloVuelta === $idVuelo) {
 
 $ctrl  = new ReservaController($link);
 $ctrlUsu = new UsuarioController($link);
+$promoCtrl = new PromocionController($link);
 $vuelo = $ctrl->obtenerVueloParaReservar($idVuelo);
 
 if (!$vuelo) {
@@ -74,17 +76,45 @@ foreach ($tramos as $tramo) {
     $llegadaTs  = strtotime($vueloResumen['fechaHoraLlegadaVuelo']);
     $diffMin    = max(0, (int)round(($llegadaTs - $salidaTs) / 60));
     $subtotal   = (float)$vueloResumen['precioVuelo'] * $pasajeros;
-    $precioTotal += $subtotal;
+
+    // Obtener TODAS las promos aplicables (stacking)
+    $promos = $promoCtrl->obtenerPromosAplicables(
+        (int)$vueloResumen['idVuelo'],
+        (int)$vueloResumen['idAerolinea'],
+        $vueloResumen['codigoOrigen'] ?? '',
+        $vueloResumen['codigoDestino'] ?? ''
+    );
+
+    $descuentoTotal = 0;
+    $promosNombres = [];
+    foreach ($promos as $p) {
+        if ($p['acumulable']) {
+            $descuentoTotal += (float)$p['descuentoPorcentaje'];
+            $promosNombres[] = $p['nombre'] . ' (-' . $p['descuentoPorcentaje'] . '%)';
+        } else {
+            $descuentoTotal = (float)$p['descuentoPorcentaje'];
+            $promosNombres = [$p['nombre'] . ' (-' . $p['descuentoPorcentaje'] . '%)'];
+            break;
+        }
+    }
+    $descuentoTotal = min($descuentoTotal, 100);
+    $subtotalConDescuento = $subtotal * (1 - $descuentoTotal / 100);
+    $precioTotal += $subtotalConDescuento;
 
     $tramosData[] = [
-        'vuelo'        => $vueloResumen,
-        'titulo'       => $tramo['titulo'],
-        'fechaSalida'  => date('d/m/Y', $salidaTs),
-        'horaSalida'   => date('H:i', $salidaTs),
-        'fechaLlegada' => date('d/m/Y', $llegadaTs),
-        'horaLlegada'  => date('H:i', $llegadaTs),
-        'duracion'     => intdiv($diffMin, 60) . 'h ' . str_pad((string)($diffMin % 60), 2, '0', STR_PAD_LEFT) . 'm',
-        'subtotal'     => $subtotal,
+        'vuelo'            => $vueloResumen,
+        'titulo'           => $tramo['titulo'],
+        'fechaSalida'      => date('d/m/Y', $salidaTs),
+        'horaSalida'       => date('H:i', $salidaTs),
+        'fechaLlegada'     => date('d/m/Y', $llegadaTs),
+        'horaLlegada'      => date('H:i', $llegadaTs),
+        'duracion'         => intdiv($diffMin, 60) . 'h ' . str_pad((string)($diffMin % 60), 2, '0', STR_PAD_LEFT) . 'm',
+        'subtotal'         => $subtotalConDescuento,
+        'precioBase'       => $subtotal,
+        'promocion'        => !empty($promos) ? $promos[0] : null,
+        'descuentoPct'     => $descuentoTotal,
+        'promos_aplicadas' => $promos,
+        'promos_nombres'   => $promosNombres,
     ];
 }
 
@@ -288,6 +318,26 @@ foreach ($tramos as $tramo) {
                                 <span class="text-muted">Tarifa base (x<?= $pasajeros ?>)</span>
                                 <span>$ <?= number_format((float)$tramo['vuelo']['precioVuelo'], 2, ',', '.') ?> c/u</span>
                             </div>
+                            <?php if (!empty($tramo['promos_aplicadas'])): ?>
+                                <div class="mb-2">
+                                    <span class="badge bg-success me-1">🎉 -<?= (float)$tramo['descuentoPct'] ?>%</span>
+                                    <?php if (count($tramo['promos_nombres']) > 1): ?>
+                                        <span class="text-muted small" title="<?= htmlspecialchars(implode(' + ', $tramo['promos_nombres'])) ?>">
+                                            <?= count($tramo['promos_nombres']) ?> promos
+                                        </span>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-muted">Descuento</span>
+                                    <span class="text-success fw-semibold">- $ <?= number_format($tramo['precioBase'] - $tramo['subtotal'], 2, ',', '.') ?></span>
+                                </div>
+                                <?php foreach ($tramo['promos_aplicadas'] as $idx => $p): ?>
+                                    <div class="d-flex justify-content-between small text-muted">
+                                        <span><?= $idx + 1 ?>. <?= htmlspecialchars($p['nombre']) ?></span>
+                                        <span>-<?= (float)$p['descuentoPorcentaje'] ?>%</span>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                             <?php if ($esIdaVuelta): ?>
                                 <div class="d-flex justify-content-between">
                                     <span class="text-muted">Subtotal <?= htmlspecialchars($tramo['titulo']) ?></span>
