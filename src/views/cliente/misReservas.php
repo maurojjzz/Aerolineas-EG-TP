@@ -113,6 +113,7 @@ $conteos = [
                         <th>Fecha salida</th>
                         <th>Estado</th>
                         <th>Pasajeros</th>
+                        <th>Promoción</th>
                         <th>Total</th>
                         <th>Acciones</th>
                     </tr>
@@ -189,6 +190,20 @@ $conteos = [
                         <span style="font-size:0.85rem;">
                             <?= $r['cantPasajeros'] ?> pasajero<?= $r['cantPasajeros'] > 1 ? 's' : '' ?>
                         </span>
+                    </td>
+                    <td>
+                        <?php if (!empty($r['promos_aplicadas'])): ?>
+                            <div class="d-flex flex-wrap gap-1">
+                                <span class="badge bg-success" style="font-size:0.65rem;">🎉 -<?= array_sum(array_column($r['promos_aplicadas'], 'descuentoPorcentaje')) ?>%</span>
+                                <?php foreach ($r['promos_aplicadas'] as $idx => $p): ?>
+                                    <span class="badge bg-light text-dark border" style="font-size:0.6rem;" title="<?= htmlspecialchars($p['nombre']) ?>">
+                                        <?= $idx + 1 ?>. -<?= (float)$p['descuentoPorcentaje'] ?>%
+                                    </span>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php else: ?>
+                            <span class="text-muted" style="font-size:0.75rem;">—</span>
+                        <?php endif; ?>
                     </td>
                     <td>
                         <span class="fw-bold" style="color:#0d3262;font-size:0.9rem;">
@@ -345,6 +360,15 @@ function abrirDetalle(idReserva) {
                 <label>Estado</label>
                 <p>${r.estadoReserva}</p>
             </div>
+            ${(r.promos_aplicadas && r.promos_aplicadas.length > 0) ? `
+            <div class="col-12 detalle-campo">
+                <label>Promociones aplicadas</label>
+                <div class="d-flex flex-wrap gap-1 mb-1">
+                    <span class="badge bg-success">🎉 -${r.promos_aplicadas.reduce((sum, p) => sum + parseFloat(p.descuentoPorcentaje), 0).toFixed(2)}%</span>
+                    ${r.promos_aplicadas.map((p, i) => `<span class="badge bg-light text-dark border" style="font-size:0.65rem;">${i+1}. ${escapeHtml(p.nombre)} (-${parseFloat(p.descuentoPorcentaje).toFixed(2)}%)</span>`).join('')}
+                </div>
+            </div>
+            ` : ''}
         </div>
     `;
 

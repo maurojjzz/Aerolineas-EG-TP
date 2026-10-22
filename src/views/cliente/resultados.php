@@ -345,8 +345,31 @@ $textoVacio = !$esIdaVuelta
 
                                 <!-- Precio y botón -->
                                 <div class="col-12 col-sm-6 col-md-3 text-center text-sm-end">
-                                    <p class="precio-principal m-0"><?= $precioFmt ?></p>
-                                    <p class="text-muted m-0" style="font-size:0.75rem;">Por pasajero</p>
+                                    <?php if (!empty($v['promo_descuento_total']) && $v['promo_descuento_total'] > 0): ?>
+                                        <!-- Badge de descuento -->
+                                        <div class="mb-1">
+                                            <span class="badge bg-success fs-6 px-3 py-1">
+                                                🎉 -<?= number_format($v['promo_descuento_total'], 2) ?>%
+                                            </span>
+                                            <?php if (!empty($v['promo_nombres']) && count($v['promo_nombres']) > 1): ?>
+                                                <div class="text-muted small mt-1" title="<?= htmlspecialchars(implode(' + ', $v['promo_nombres'])) ?>">
+                                                    <?= count($v['promo_nombres']) ?> promos
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                        <!-- Precio original tachado -->
+                                        <p class="text-muted text-decoration-line-through m-0" style="font-size:0.85rem;">
+                                            $ <?= number_format($v['precio_original'], 2, ',', '.') ?>
+                                        </p>
+                                        <!-- Precio con descuento -->
+                                        <p class="fw-bold text-success fs-6 m-0">
+                                            $ <?= number_format($v['precio_con_descuento'], 2, ',', '.') ?>
+                                        </p>
+                                        <p class="text-muted m-0" style="font-size:0.7rem;">Por pasajero</p>
+                                    <?php else: ?>
+                                        <p class="precio-principal m-0"><?= $precioFmt ?></p>
+                                        <p class="text-muted m-0" style="font-size:0.75rem;">Por pasajero</p>
+                                    <?php endif; ?>
                                     <?php if (estaLogueado() && rolActual() === 'cliente'): ?>
                                         <a href="<?= urlSeleccionarVuelo($v, $paso, $esIdaVuelta, $idVueloIda, $pasajeros) ?>"
                                         class="btn btn-primary btn-sm mt-2 px-4">

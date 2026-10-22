@@ -96,6 +96,9 @@ CREATE TABLE `promocion` (
   `codigo` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
   `idAerolinea` int NOT NULL,
   `idUsuarioCreador` int NOT NULL,
+  `idVuelo` int DEFAULT NULL,
+  `codigoOrigen` char(3) DEFAULT NULL,
+  `codigoDestino` char(3) DEFAULT NULL,
   `nombre` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
   `descripcion` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci,
   `descuentoPorcentaje` decimal(5,2) NOT NULL,
@@ -103,13 +106,17 @@ CREATE TABLE `promocion` (
   `fechaFin` date NOT NULL,
   `estado` enum('Pendiente','Aprobada','Denegada') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'Pendiente',
   `condiciones` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci,
+  `acumulable` tinyint(1) NOT NULL DEFAULT '0',
   `fechaCreacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idPromocion`),
   UNIQUE KEY `codigo_UNIQUE` (`codigo`),
   KEY `fk_promocion_aerolinea_idx` (`idAerolinea`),
   KEY `fk_promocion_usuario_idx` (`idUsuarioCreador`),
+  KEY `fk_promocion_vuelo_idx` (`idVuelo`),
+  KEY `idx_promocion_alcance` (`idAerolinea`,`idVuelo`,`codigoOrigen`,`codigoDestino`),
   CONSTRAINT `fk_promocion_aerolinea` FOREIGN KEY (`idAerolinea`) REFERENCES `aerolinea` (`idAerolinea`) ON DELETE CASCADE,
-  CONSTRAINT `fk_promocion_usuario` FOREIGN KEY (`idUsuarioCreador`) REFERENCES `usuario` (`idUsuario`) ON DELETE CASCADE
+  CONSTRAINT `fk_promocion_usuario` FOREIGN KEY (`idUsuarioCreador`) REFERENCES `usuario` (`idUsuario`) ON DELETE CASCADE,
+  CONSTRAINT `fk_promocion_vuelo` FOREIGN KEY (`idVuelo`) REFERENCES `vuelo` (`idVuelo`) ON DELETE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -119,7 +126,7 @@ CREATE TABLE `promocion` (
 
 LOCK TABLES `promocion` WRITE;
 /*!40000 ALTER TABLE `promocion` DISABLE KEYS */;
-INSERT INTO `promocion` VALUES (1,'PROM-06B5',4,16,'Prueba','Prueba Condicion',43.00,'2026-10-15','2026-10-19','Aprobada','Prueba Condicion','2026-10-16 17:55:31'),(2,'PROM-B907',4,16,'Prueba','Prueba Condicion',12.00,'2026-10-19','2026-10-20','Denegada','Prueba Condicion','2026-10-19 14:30:51'),(3,'PROM-F8BF',4,16,'Prueba','Prueba Condicion',40.00,'2026-10-12','2026-10-26','Aprobada','Prueba Condicion','2026-10-19 14:37:45'),(4,'PROM-FEA4',4,16,'Prueba','Prueba Condicion',12.00,'2026-09-29','2026-10-29','Denegada','Prueba Condicion','2026-10-19 14:38:03'),(5,'PROM-738F',4,16,'Prueba','Prueba Condicion',70.00,'2026-10-27','2026-11-07','Denegada','Prueba Condicion','2026-10-19 15:00:13');
+INSERT INTO `promocion` VALUES (1,'PROM-06B5',4,16,NULL,NULL,NULL,'Prueba','Prueba Condicion',43.00,'2026-10-15','2026-10-19','Aprobada','Prueba Condicion',0,'2026-10-16 17:55:31'),(2,'PROM-B907',4,16,NULL,NULL,NULL,'Prueba','Prueba Condicion',12.00,'2026-10-19','2026-10-20','Denegada','Prueba Condicion',0,'2026-10-19 14:30:51'),(3,'PROM-F8BF',4,16,NULL,NULL,NULL,'Prueba','Prueba Condicion',40.00,'2026-10-12','2026-10-26','Aprobada','Prueba Condicion',0,'2026-10-19 14:37:45'),(4,'PROM-FEA4',4,16,NULL,NULL,NULL,'Prueba','Prueba Condicion',12.00,'2026-09-29','2026-10-29','Denegada','Prueba Condicion',0,'2026-10-19 14:38:03'),(5,'PROM-738F',4,16,NULL,NULL,NULL,'Prueba','Prueba Condicion',70.00,'2026-10-27','2026-11-07','Denegada','Prueba Condicion',0,'2026-10-19 15:00:13');
 /*!40000 ALTER TABLE `promocion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -138,11 +145,13 @@ CREATE TABLE `reserva` (
   `estadoReserva` enum('pendiente de pago','confirmada','cancelada') COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'pendiente de pago',
   `cantPasajeros` int NOT NULL DEFAULT '1',
   `precioTotal` decimal(12,2) NOT NULL,
+  `idPromocion` int DEFAULT NULL,
   PRIMARY KEY (`idReserva`),
   KEY `fk_reserva_usuario` (`idUsuario`),
   KEY `fk_reserva_vuelo` (`idVuelo`),
   CONSTRAINT `fk_reserva_usuario` FOREIGN KEY (`idUsuario`) REFERENCES `usuario` (`idUsuario`),
-  CONSTRAINT `fk_reserva_vuelo` FOREIGN KEY (`idVuelo`) REFERENCES `vuelo` (`idVuelo`)
+  CONSTRAINT `fk_reserva_vuelo` FOREIGN KEY (`idVuelo`) REFERENCES `vuelo` (`idVuelo`),
+  CONSTRAINT `fk_reserva_promocion` FOREIGN KEY (`idPromocion`) REFERENCES `promocion` (`idPromocion`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

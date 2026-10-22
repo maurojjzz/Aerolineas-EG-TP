@@ -350,6 +350,7 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
                                 <th>Vuelo</th>
                                 <th>Pasajeros</th>
                                 <th>Precio unitario</th>
+                                <th>Promoción</th>
                                 <th>Total</th>
                                 <th>Estado</th>
                                 <th>Acción</th>
@@ -412,6 +413,20 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
                                 </td>
                                 <td>
                                     <span class="precio-unitario"><?= $fmtPesos($compra['precioVuelo'] ?? 0) ?></span>
+                                </td>
+                                <td>
+                                    <?php if (!empty($compra['promos_aplicadas'])): ?>
+                                        <div class="d-flex flex-wrap gap-1">
+                                            <span class="badge bg-success" style="font-size:0.65rem;">🎉 -<?= array_sum(array_column($compra['promos_aplicadas'], 'descuentoPorcentaje')) ?>%</span>
+                                            <?php foreach ($compra['promos_aplicadas'] as $idx => $p): ?>
+                                                <span class="badge bg-light text-dark border" style="font-size:0.6rem;" title="<?= htmlspecialchars($p['nombre']) ?>">
+                                                    <?= $idx + 1 ?>. -<?= (float)$p['descuentoPorcentaje'] ?>%
+                                                </span>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php else: ?>
+                                        <span class="text-muted" style="font-size:0.75rem;">—</span>
+                                    <?php endif; ?>
                                 </td>
                                 <td>
                                     <span class="compra-total"><?= $fmtPesos($compra['precioTotal'] ?? 0) ?></span>
@@ -582,6 +597,15 @@ function abrirDetalleCompra(idCompra) {
                 <label>Total</label>
                 <p class="fw-bold" style="color:#0d3262;">${fmtPrecio(compra.precioTotal)}</p>
             </div>
+            ${compra.promos_aplicadas && compra.promos_aplicadas.length > 0 ? `
+            <div class="col-12 detalle-campo">
+                <label>Promociones aplicadas</label>
+                <div class="d-flex flex-wrap gap-1 mb-1">
+                    <span class="badge bg-success">🎉 -${compra.promos_aplicadas.reduce((sum, p) => sum + parseFloat(p.descuentoPorcentaje), 0).toFixed(2)}%</span>
+                    ${compra.promos_aplicadas.map((p, i) => `<span class="badge bg-light text-dark border" style="font-size:0.65rem;">${i+1}. ${escapeHtml(p.nombre)} (-${parseFloat(p.descuentoPorcentaje).toFixed(2)}%)</span>`).join('')}
+                </div>
+            </div>
+            ` : ''}
             <div class="col-6 col-md-4 detalle-campo">
                 <label>Salida</label>
                 <p>${fmtFecha(compra.fechaHoraSalidaVuelo)}</p>
