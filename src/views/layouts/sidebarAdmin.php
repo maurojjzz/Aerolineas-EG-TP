@@ -12,12 +12,6 @@ $navLinks = [];
 if ($rol === 'admin') {
     $navLinks = [
         [
-            'label'  => 'Inicio',
-            'href'   => 'index.php?pagina=inicio',
-            'icon'   => 'casa.png',
-            'activo' => $pagina === 'inicio',
-        ],
-        [
             'label'  => 'Aerolíneas',
             'href'   => 'index.php?pagina=aerolinea&seccion=listado',
             'icon'   => 'avionSidebar.png',
@@ -43,30 +37,25 @@ if ($rol === 'admin') {
             'activo' => $pagina === 'usuarios',
         ],
         [
-            'label'  => 'CEOs',
+            'label'  => 'Aprobar CEOs',
             'href'   => 'index.php?pagina=ceos&seccion=listado',
             'icon'   => 'ceo.png',
             'activo' => $pagina === 'ceos',
         ],
         [
             'label'  => 'Reportes',
-            'href'   => '#',
+            'href'   => 'index.php?pagina=reportes&seccion=listado',
             'icon'   => 'reporteSidebar.png',
             'activo' => $pagina === 'reportes',
         ],
-        [
-            'label'  => 'Configuración',
-            'href'   => '#',
-            'icon'   => 'configuracionSidebar.png',
-            'activo' => $pagina === 'configuracion',
-        ],
+        
     ];
 }
 
 if ($rol === 'ceo') {
     $navLinks = [
         [
-            'label'  => 'Mi Aerolínea',
+            'label'  => 'Aerolínea',
             'href'   => 'index.php?pagina=ceo',
             'icon'   => 'avionSidebar.png',
             'activo' => $pagina === 'ceo' && $seccion === '',
@@ -84,22 +73,10 @@ if ($rol === 'ceo') {
             'activo' => $pagina === 'ceo' && in_array($seccion, ['promociones', 'promocion-detalle']),
         ],
         [
-            'label'  => 'Novedades',
-            'href'   => 'index.php?pagina=cliente-novedades',
-            'icon'   => 'novedadesSidebar.png',
-            'activo' => $pagina === 'novedades',
-        ],
-        [
             'label'  => 'Reportes',
-            'href'   => '#',
+            'href'   => 'index.php?pagina=ceo&seccion=reportes',
             'icon'   => 'reporteSidebar.png',
-            'activo' => $pagina === 'reportes',
-        ],
-        [
-            'label'  => 'Configuración',
-            'href'   => '#',
-            'icon'   => 'configuracionSidebar.png',
-            'activo' => $pagina === 'configuracion',
+            'activo' => $pagina === 'ceo' && $seccion === 'reportes',
         ],
     ];
 }

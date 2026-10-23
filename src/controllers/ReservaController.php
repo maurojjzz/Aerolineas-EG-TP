@@ -166,26 +166,77 @@ class ReservaController {
         $idReserva = (int)($_POST['idReserva'] ?? 0);
         $idUsuario = (int)($_SESSION['usuario']['idUsuario'] ?? 0);
 
-        $stmt = mysqli_prepare($this->conexion,
-            "SELECT * FROM reserva WHERE idReserva = ? AND idUsuario = ? AND estadoReserva = 'pendiente de pago'");
-        mysqli_stmt_bind_param($stmt, 'ii', $idReserva, $idUsuario);
-        mysqli_stmt_execute($stmt);
-        $reserva = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
-        mysqli_stmt_close($stmt);
+        mysqli_begin_transaction($this->conexion);
 
-        if (!$reserva) {
-            flash_set('error', 'No se puede confirmar esta reserva.');
+        try {
+            // 1. Obtener reserva con lock para verificar integridad
+            $stmt = mysqli_prepare($this->conexion,
+                "SELECT r.*, v.idVuelo, v.asientosDisponibles, v.asientosTotales
+                 FROM reserva r
+                 JOIN vuelo v ON r.idVuelo = v.idVuelo
+                 WHERE r.idReserva = ? AND r.idUsuario = ?
+                 FOR UPDATE");
+            mysqli_stmt_bind_param($stmt, 'ii', $idReserva, $idUsuario);
+            mysqli_stmt_execute($stmt);
+            $reserva = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+            mysqli_stmt_close($stmt);
+
+            if (!$reserva) {
+                throw new DomainException('No se puede confirmar esta reserva.');
+            }
+
+            if ($reserva['estadoReserva'] === 'cancelada') {
+                throw new DomainException('Esta reserva fue cancelada y sus asientos fueron liberados. Creá una nueva reserva para volver a comprar.');
+            }
+
+            if ($reserva['estadoReserva'] !== 'pendiente de pago') {
+                throw new DomainException('Esta reserva ya se encuentra confirmada.');
+            }
+
+            // 2. Verificación de integridad: los asientos ya se descontaron al crear la reserva.
+            // Comparamos los asientos efectivamente ocupados del vuelo contra la suma de
+            // reservas activas. Si hay más reservas activas que asientos descontados, la
+            // reserva quedó desactualizada (por ejemplo, venció y los asientos se liberaron)
+            // y confirmarla produciría una sobreventa.
+            $stmt = mysqli_prepare($this->conexion,
+                "SELECT COALESCE(SUM(cantPasajeros), 0) AS reservados
+                 FROM reserva
+                 WHERE idVuelo = ? AND estadoReserva IN ('pendiente de pago', 'confirmada')");
+            mysqli_stmt_bind_param($stmt, 'i', $reserva['idVuelo']);
+            mysqli_stmt_execute($stmt);
+            $activas = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+            mysqli_stmt_close($stmt);
+
+            $asientosOcupados = (int)$reserva['asientosTotales'] - (int)$reserva['asientosDisponibles'];
+            $asientosReservados = (int)($activas['reservados'] ?? 0);
+
+            if ($asientosReservados > $asientosOcupados) {
+                throw new DomainException('Los asientos de este vuelo ya no están disponibles. No pudimos confirmar el pago; la reserva sigue pendiente o fue cancelada por vencimiento.');
+            }
+
+            // 3. Confirmar pago: cambiar estado a 'confirmada'
+            // Los asientos YA se descontaron al crear la reserva (crearReserva), 
+            // así que solo cambiamos el estado.
+            $stmt = mysqli_prepare($this->conexion,
+                "UPDATE reserva SET estadoReserva = 'confirmada' WHERE idReserva = ?");
+            mysqli_stmt_bind_param($stmt, 'i', $idReserva);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+
+            mysqli_commit($this->conexion);
+
+            flash_set('success', '¡Pago confirmado! Tu reserva está asegurada.');
+            redirect('index.php?pagina=mis-reservas');
+
+        } catch (DomainException $e) {
+            mysqli_rollback($this->conexion);
+            flash_set('error', $e->getMessage());
+            redirect('index.php?pagina=mis-reservas');
+        } catch (Throwable $e) {
+            mysqli_rollback($this->conexion);
+            flash_set('error', 'Error al confirmar el pago. Intentá de nuevo.');
             redirect('index.php?pagina=mis-reservas');
         }
-
-        $stmt = mysqli_prepare($this->conexion,
-            "UPDATE reserva SET estadoReserva = 'confirmada' WHERE idReserva = ?");
-        mysqli_stmt_bind_param($stmt, 'i', $idReserva);
-        mysqli_stmt_execute($stmt);
-        mysqli_stmt_close($stmt);
-
-        flash_set('success', '¡Pago confirmado! Tu reserva está asegurada.');
-        redirect('index.php?pagina=mis-reservas');
     }
 
     // ── Cancelar reserva ──────────────────────────────────────────────────────

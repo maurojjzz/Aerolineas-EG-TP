@@ -69,6 +69,11 @@ switch ($pagina) {
         require __DIR__ . '/src/views/admin/ceoLayout.php';
         break;
 
+    case 'reportes':
+        requireRol('admin');
+        require __DIR__ . '/src/views/admin/reportesLayout.php';
+        break;
+
     case 'cliente':
         requireRol('cliente');
         require __DIR__ . '/src/views/cliente/home.php';
@@ -98,6 +103,8 @@ switch ($pagina) {
             require __DIR__ . '/src/views/ceo/promocionesListado.php';
         } elseif ($seccion === 'promocion-detalle') {
             require __DIR__ . '/src/views/ceo/promocionDetalle.php';
+        } elseif ($seccion === 'reportes') {
+            require __DIR__ . '/src/views/ceo/reportes.php';
         } else {
             require __DIR__ . '/src/views/ceo/home.php';
         }
