@@ -26,17 +26,17 @@ $flechaColor = 'text-success';
 <div>
     <nav class="breadcrumbCont" aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">Inicio</a></li>
-            <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=usuario&seccion=listado') ?>">Listado de usuarios</a></li>
-            <li class="breadcrumb-item active">Usuario: <?= htmlspecialchars($u['nombre'] . ' ' . $u['apellido']) ?></li>
+            <!-- <li class="breadcrumb-item"><a href="#">Inicio</a></li> -->
+            <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=usuario&seccion=listado') ?>">Usuarios</a></li>
+            <li class="breadcrumb-item active">Detalle: <?= htmlspecialchars($u['nombre'] . ' ' . $u['apellido']) ?></li>
         </ol>
     </nav>
 
-    <div class="d-flex justify-content-between align-items-center gap-2 my-2">
-        <a href="<?= url('index.php?pagina=usuario&seccion=listado') ?>" class="btn btn-sm d-flex flex-row gap-1 btn-atras ms-3">
+    <div class="d-flex justify-content-end align-items-center gap-2 my-2">
+        <!-- <a href="<?= url('index.php?pagina=usuario&seccion=listado') ?>" class="btn btn-sm d-flex flex-row gap-1 btn-atras ms-3">
             <img src="<?= url('public/img/icons/flecha-izquierda.png') ?>" class="img-fluid" style="width: 18px;height: 18px;" alt="icono flecha atras"> 
             <span class="text-dark fw-semibold text-decoration-none text-uppercase">Volver a listado</span>
-        </a>
+        </a> -->
         <a href="<?= url('index.php?pagina=usuario&seccion=editar&id=' . $u['idUsuario']) ?>" class="btn btn-primary btn-sm me-4 fw-semibold fs-6 text-decoration-none text-capitalize">Editar Usuario</a>
     </div>
 

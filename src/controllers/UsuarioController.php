@@ -976,4 +976,40 @@ class UsuarioController {
 
         redirect('index.php?pagina=perfil');
     }
+
+    public function obtenerNotificacionesPendientes(): array {
+        // 1. CEOs pendientes
+        $sqlCEOs = "SELECT idUsuario AS id, nombre, apellido, email, fechaCreacion, 'ceo' AS tipo 
+                    FROM usuario 
+                    WHERE rol = 'ceo' AND activo = 0 AND fecha_hora_autorizacion IS NULL AND notificacion_vista = 0
+                    ORDER BY fechaCreacion DESC LIMIT 5";
+        $resCEOs = mysqli_query($this->conexion, $sqlCEOs);
+        $ceos = [];
+        if ($resCEOs) {
+            while ($row = mysqli_fetch_assoc($resCEOs)) {
+                $ceos[] = $row;
+            }
+        }
+
+        // 2. Promociones pendientes
+        $sqlPromos = "SELECT p.idPromocion AS id, p.codigo, p.nombre, a.nombreAerolinea, p.fechaCreacion, 'promocion' AS tipo 
+                      FROM promocion p 
+                      JOIN aerolinea a ON p.idAerolinea = a.idAerolinea 
+                      WHERE p.estado = 'Pendiente' AND p.notificacion_vista = 0
+                      ORDER BY p.fechaCreacion DESC LIMIT 5";
+        $resPromos = mysqli_query($this->conexion, $sqlPromos);
+        $promos = [];
+        if ($resPromos) {
+            while ($row = mysqli_fetch_assoc($resPromos)) {
+                $promos[] = $row;
+            }
+        }
+
+        return [
+            'ceos' => $ceos,
+            'promociones' => $promos,
+            'total' => count($ceos) + count($promos)
+        ];
+    }
 }
+

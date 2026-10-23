@@ -58,7 +58,7 @@ $flechaColor = 'text-success';
             <!-- Breadcrumb -->
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">Inicio</a></li>
+                    <!-- <li class="breadcrumb-item"><a href="#">Inicio</a></li> -->
                     <li class="breadcrumb-item active">Mi Aerolínea</li>
                 </ol>
             </nav>
@@ -148,7 +148,7 @@ $flechaColor = 'text-success';
                 <!-- Tabs -->
                 <div class="bg-white shadow rounded-3">
 
-                    <ul class="nav nav-tabs px-3 d-flex align-items-center justify-content-center justify-content-md-start"
+                    <!-- <ul class="nav nav-tabs px-3 d-flex align-items-center justify-content-center justify-content-md-start"
                         id="detalleTab">
                         <li class="nav-item">
                             <button class="nav-link <?= $tabActiva === 'resumen' ? 'active' : '' ?>"
@@ -158,12 +158,11 @@ $flechaColor = 'text-success';
                             <button class="nav-link <?= $tabActiva === 'vuelos' ? 'active' : '' ?>"
                                     data-bs-toggle="tab" data-bs-target="#tab-vuelos">Vuelos</button>
                         </li>
-                        <!-- Si querés mantener el tab de promos, lo dejamos aca -->
                         <li class="nav-item">
                             <button class="nav-link <?= $tabActiva === 'promociones' ? 'active' : '' ?>"
                                     data-bs-toggle="tab" data-bs-target="#tab-promociones">Promociones</button>
                         </li>
-                    </ul>
+                    </ul> -->
 
                     <div class="tab-content p-4">
 
@@ -175,7 +174,7 @@ $flechaColor = 'text-success';
                                 $cards = [
                                     ['icon' => 'avion.png',    'label' => 'Vuelos totales',         'valor' => '25',         'extra' => $flechaTexto],
                                     ['icon' => 'etiqueta.png', 'label' => 'Promociones activas',     'valor' => '3',          'extra' => $flechaTexto],
-                                    ['icon' => 'ceo.png',      'label' => 'Pasajeros transportados', 'valor' => '58.420',     'extra' => $flechaTexto],
+                                    ['icon' => 'ceo.png',      'label' => 'Total Pasajeros', 'valor' => '58.420',     'extra' => $flechaTexto],
                                     ['icon' => 'ceo.png',      'label' => 'Ventas totales',          'valor' => '$2.840.500', 'extra' => '+18% vs mes anterior'],
                                 ];
                                 foreach ($cards as $c): ?>
@@ -208,7 +207,7 @@ $flechaColor = 'text-success';
                                     <div class="bg-white border rounded-3 h-100">
                                         <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
                                             <span class="fw-semibold" style="font-size:0.9rem;">Vuelos más vendidos</span>
-                                            <button class="btn btn-outline-secondary btn-sm" style="font-size:0.75rem;">Ver todos</button>
+                                            <!-- <button class="btn btn-outline-secondary btn-sm" style="font-size:0.75rem;">Ver todos</button> -->
                                         </div>
                                         <div class="px-3 py-2">
                                             <table class="table table-sm table-hover align-middle mb-0" style="font-size:0.82rem;">
@@ -244,7 +243,7 @@ $flechaColor = 'text-success';
                                     <div class="bg-white border rounded-3 h-100">
                                         <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
                                             <span class="fw-semibold" style="font-size:0.9rem;">Promociones activas</span>
-                                            <button class="btn btn-outline-secondary btn-sm" style="font-size:0.75rem;">Ver todas</button>
+                                            <!-- <button class="btn btn-outline-secondary btn-sm" style="font-size:0.75rem;">Ver todas</button> -->
                                         </div>
                                         <div class="px-3 py-2 d-flex flex-column gap-2">
                                             <?php foreach ([
@@ -271,7 +270,7 @@ $flechaColor = 'text-success';
                                     <div class="bg-white border rounded-3 h-100">
                                         <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
                                             <span class="fw-semibold" style="font-size:0.9rem;">Tramos más recaudados</span>
-                                            <button class="btn btn-outline-secondary btn-sm" style="font-size:0.75rem;">Ver todos</button>
+                                            <!-- <button class="btn btn-outline-secondary btn-sm" style="font-size:0.75rem;">Ver todos</button> -->
                                         </div>
                                         <div class="px-3 py-2">
                                             <table class="table table-sm table-hover align-middle mb-0" style="font-size:0.82rem;">

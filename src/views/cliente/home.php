@@ -152,7 +152,7 @@ $novedades = $novedadCtrl->obtenerUltimasPublicadas(3); // Obtiene las últimas 
                                         <i class="bi bi-megaphone fs-4"></i>
                                     </div>
                                 <?php endif; ?>
-                                <div class="flex-grow-1 min-width-0">
+                                <div class="flex-grow-1" style="min-width: 0;">
                                     <p class="fw-semibold m-0 text-truncate" style="font-size:0.9rem;"><?= htmlspecialchars($nov['titulo']) ?></p>
                                     <p class="text-muted m-0 mt-1 text-truncate" style="font-size:0.8rem;line-height:1.3;"><?= htmlspecialchars($nov['subtitulo'] ?? $nov['contenido']) ?></p>
                                     <p class="text-muted m-0 mt-1" style="font-size:0.75rem;"><?= date('d/m/Y', strtotime($nov['fechaPublicacion'])) ?></p>

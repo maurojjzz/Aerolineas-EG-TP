@@ -1,238 +1,192 @@
 const iNombre = document.getElementById("nombre");
 const infoNombre = document.getElementById("infoNombre");
 
-const validarNombre = () => {
-    const valor = iNombre.value.trim();
+if (iNombre && infoNombre) {
+    const validarNombre = () => {
+        const valor = iNombre.value.trim();
 
-    if (valor === "") {
-        iNombre.classList.add("is-invalid");
+        if (valor === "") {
+            iNombre.classList.add("is-invalid");
+            infoNombre.textContent = "El nombre es obligatorio.";
+            infoNombre.classList.add("text-danger");
+            agregarError("nombre", "Nombre de la Aerolinea", "es obligatorio.");
+            return false;
+        }
 
-        infoNombre.textContent = "El nombre es obligatorio.";
+        if (valor.length < 3 || valor.length > 50) {
+            iNombre.classList.add("is-invalid");
+            infoNombre.textContent = "El nombre debe tener entre 3 y 50 caracteres.";
+            infoNombre.classList.add("text-danger");
+            agregarError("nombre", "Nombre de la Aerolinea", "debe tener entre 3 y 50 caracteres.");
+            return false;
+        }
 
-        infoNombre.classList.add("text-danger");
+        iNombre.classList.remove("is-invalid");
+        infoNombre.classList.remove("text-danger");
+        infoNombre.textContent = "Nombre con el que operará comercialmente.";
+        quitarError("nombre");
+        return true;
+    };
 
-        agregarError("nombre", "Nombre de la Aerolinea", "es obligatorio.");
-
-        return false;
-    }
-
-    if (valor.length < 3 || valor.length > 50) {
-        iNombre.classList.add("is-invalid");
-
-        infoNombre.textContent = "El nombre debe tener entre 3 y 50 caracteres.";
-
-        infoNombre.classList.add("text-danger");
-
-        agregarError("nombre", "Nombre de la Aerolinea", "debe tener entre 3 y 50 caracteres.");
-
-        return false;
-    }
-
-    iNombre.classList.remove("is-invalid");
-    infoNombre.classList.remove("text-danger");
-    infoNombre.textContent = "Nombre con el que operará comercialmente.";
-
-    quitarError("nombre");
-
-    return true;
-};
-
-iNombre.addEventListener("blur", validarNombre);
+    iNombre.addEventListener("blur", validarNombre);
+}
 
 const iCodigo = document.getElementById("codigo");
 const infoCodigo = document.getElementById("infoCodigo");
 
-const validarCodigo = () => {
-    const valor = iCodigo.value.trim();
+if (iCodigo && infoCodigo) {
+    const validarCodigo = () => {
+        const valor = iCodigo.value.trim();
 
-    if (valor === "") {
-        iCodigo.classList.add("is-invalid");
+        if (valor === "") {
+            iCodigo.classList.add("is-invalid");
+            infoCodigo.textContent = "El código es obligatorio.";
+            infoCodigo.classList.add("text-danger");
+            agregarError("codigo", "Código", "es obligatorio.");
+            return false;
+        }
 
-        infoCodigo.textContent = "El código es obligatorio.";
+        if (valor.length < 3 || valor.length > 5) {
+            iCodigo.classList.add("is-invalid");
+            infoCodigo.textContent = "El código debe tener entre 3 y 5 caracteres.";
+            infoCodigo.classList.add("text-danger");
+            agregarError("codigo", "Código", "debe tener entre 3 y 5 caracteres.");
+            return false;
+        }
 
-        infoCodigo.classList.add("text-danger");
+        iCodigo.classList.remove("is-invalid");
+        infoCodigo.classList.remove("text-danger");
+        infoCodigo.textContent = "Codigo unico de la aerolínea.";
+        quitarError("codigo");
+        return true;
+    };
 
-        agregarError("codigo", "Código", "es obligatorio.");
-
-        return false;
-    }
-
-    if (valor.length < 3 || valor.length > 5) {
-        iCodigo.classList.add("is-invalid");
-
-        infoCodigo.textContent = "El código debe tener entre 3 y 5 caracteres.";
-
-        infoCodigo.classList.add("text-danger");
-
-        agregarError("codigo", "Código", "debe tener entre 3 y 5 caracteres.");
-
-        return false;
-    }
-
-    iCodigo.classList.remove("is-invalid");
-    infoCodigo.classList.remove("text-danger");
-    infoCodigo.textContent = "Codigo unico de la aerolínea.";
-
-    quitarError("codigo");
-
-    return true;
-};
-
-iCodigo.addEventListener("blur", validarCodigo);
+    iCodigo.addEventListener("blur", validarCodigo);
+}
 
 const iPais = document.getElementById("pais");
 const infoPais = document.getElementById("infoPais");
 const opcionesPais = document.querySelectorAll(".pais-option");
 
-const validarPais = () => {
-    const valor = iPais.value.trim().toLowerCase();
+if (iPais && infoPais) {
+    const validarPais = () => {
+        const valor = iPais.value.trim().toLowerCase();
 
-    if (valor === "") {
-        iPais.classList.add("is-invalid");
+        if (valor === "") {
+            iPais.classList.add("is-invalid");
+            infoPais.textContent = "El país es obligatorio.";
+            infoPais.classList.add("text-danger");
+            agregarError("pais", "País", "es obligatorio.");
+            return false;
+        }
 
-        infoPais.textContent = "El país es obligatorio.";
+        const paisEncontrado = [...opcionesPais].find((option) => {
+            const nombre = option.dataset.nombre.toLowerCase();
+            const codigo = option.dataset.codigo.toLowerCase();
+            return nombre === valor || codigo === valor;
+        });
 
-        infoPais.classList.add("text-danger");
+        if (!paisEncontrado) {
+            iPais.classList.add("is-invalid");
+            infoPais.textContent = "El país ingresado no es válido.";
+            infoPais.classList.add("text-danger");
+            agregarError("pais", "País", "no es válido.");
+            return false;
+        }
 
-        agregarError("pais", "País", "es obligatorio.");
+        iPais.value = paisEncontrado.dataset.nombre;
+        iPais.dataset.codigo = paisEncontrado.dataset.codigo;
 
-        return false;
-    }
+        iPais.classList.remove("is-invalid");
+        infoPais.classList.remove("text-danger");
+        infoPais.textContent = "País de origen de la aerolínea.";
+        quitarError("pais");
+        return true;
+    };
 
-    const paisEncontrado = [...opcionesPais].find((option) => {
-        const nombre = option.dataset.nombre.toLowerCase();
-        const codigo = option.dataset.codigo.toLowerCase();
-
-        return nombre === valor || codigo === valor;
-    });
-
-    if (!paisEncontrado) {
-        iPais.classList.add("is-invalid");
-
-        infoPais.textContent = "El país ingresado no es válido.";
-
-        infoPais.classList.add("text-danger");
-
-        agregarError("pais", "País", "no es válido.");
-
-        return false;
-    }
-
-    iPais.value = paisEncontrado.dataset.nombre;
-    iPais.dataset.codigo = paisEncontrado.dataset.codigo;
-
-    iPais.classList.remove("is-invalid");
-    infoPais.classList.remove("text-danger");
-    infoPais.textContent = "País de origen de la aerolínea.";
-
-    quitarError("pais");
-
-    return true;
-};
-
-iPais.addEventListener("blur", validarPais);
+    iPais.addEventListener("blur", validarPais);
+}
 
 const iEmail = document.getElementById("email");
 const infoEmail = document.getElementById("infoEmail");
 
-const validarEmail = () => {
-    const valor = iEmail.value.trim();
+if (iEmail && infoEmail) {
+    const validarEmail = () => {
+        const valor = iEmail.value.trim();
 
-    if (valor === "") {
-        iEmail.classList.add("is-invalid");
+        if (valor === "") {
+            iEmail.classList.add("is-invalid");
+            infoEmail.textContent = "El email es obligatorio.";
+            infoEmail.classList.add("text-danger");
+            agregarError("email", "Email de contacto", "es obligatorio.");
+            return false;
+        }
 
-        infoEmail.textContent = "El email es obligatorio.";
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        infoEmail.classList.add("text-danger");
+        if (!emailRegex.test(valor)) {
+            iEmail.classList.add("is-invalid");
+            infoEmail.textContent = "El email ingresado no es válido.";
+            infoEmail.classList.add("text-danger");
+            agregarError("email", "Email de contacto", "no es válido.");
+            return false;
+        }
 
-        agregarError("email", "Email de contacto", "es obligatorio.");
+        iEmail.classList.remove("is-invalid");
+        infoEmail.classList.remove("text-danger");
+        infoEmail.textContent = "Email de contacto de la aerolínea.";
+        quitarError("email");
+        return true;
+    };
 
-        return false;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!emailRegex.test(valor)) {
-        iEmail.classList.add("is-invalid");
-
-        infoEmail.textContent = "El email ingresado no es válido.";
-
-        infoEmail.classList.add("text-danger");
-
-        agregarError("email", "Email de contacto", "no es válido.");
-
-        return false;
-    }
-
-    iEmail.classList.remove("is-invalid");
-    infoEmail.classList.remove("text-danger");
-    infoEmail.textContent = "Email de contacto de la aerolínea.";
-
-    quitarError("email");
-
-    return true;
-};
-
-iEmail.addEventListener("blur", validarEmail);
+    iEmail.addEventListener("blur", validarEmail);
+}
 
 const iLogo = document.getElementById("logo");
 const infoLogo = document.getElementById("infoLogo");
 
-const validarLogo = () => {
-    const archivo = iLogo.files[0];
+if (iLogo && infoLogo) {
+    const validarLogo = () => {
+        const archivo = iLogo.files[0];
+        const cuadroLogo = document.getElementById("logoPreview");
 
-    const cuadroLogo = document.getElementById("logoPreview");
+        if (!archivo) {
+            if (cuadroLogo) cuadroLogo.classList.remove("border-danger");
+            infoLogo.classList.remove("text-danger");
+            infoLogo.textContent = "Formatos: JPG, PNG, WEBP. Max: 2MB";
+            return true;
+        }
 
-    if (!archivo) {
-        cuadroLogo.classList.remove("border-danger");
+        const tiposPermitidos = ["image/jpeg", "image/png", "image/webp"];
+        const tamanoMaximo = 2 * 1024 * 1024;
+
+        if (!tiposPermitidos.includes(archivo.type)) {
+            if (cuadroLogo) cuadroLogo.classList.add("border-danger");
+            infoLogo.textContent = "Solo se permiten imágenes JPG, PNG o WEBP.";
+            infoLogo.classList.add("text-danger");
+            agregarError("logo", "Logotipo", "solo se permiten imágenes JPG, PNG o WEBP.");
+            return false;
+        }
+
+        if (archivo.size > tamanoMaximo) {
+            if (cuadroLogo) cuadroLogo.classList.add("border-danger");
+            infoLogo.textContent = "La imagen no puede superar los 2MB.";
+            infoLogo.classList.add("text-danger");
+            agregarError("logo", "Logotipo", "no puede superar los 2MB.");
+            return false;
+        }
+
+        if (cuadroLogo) cuadroLogo.classList.remove("border-danger");
         infoLogo.classList.remove("text-danger");
-
         infoLogo.textContent = "Formatos: JPG, PNG, WEBP. Max: 2MB";
-
-        
+        quitarError("logo");
         return true;
-    }
+    };
 
-    const tiposPermitidos = ["image/jpeg", "image/png", "image/webp"];
-    const tamanoMaximo = 2 * 1024 * 1024;
+    iLogo.addEventListener("change", validarLogo);
+}
 
-    if (!tiposPermitidos.includes(archivo.type)) {
-        cuadroLogo.classList.add("border-danger");
-
-        infoLogo.textContent = "Solo se permiten imágenes JPG, PNG o WEBP.";
-
-        infoLogo.classList.add("text-danger");
-
-        agregarError("logo", "Logotipo", "solo se permiten imágenes JPG, PNG o WEBP.");
-
-        return false;
-    }
-
-    if (archivo.size > tamanoMaximo) {
-        cuadroLogo.classList.add("border-danger");
-
-        infoLogo.textContent = "La imagen no puede superar los 2MB.";
-
-        infoLogo.classList.add("text-danger");
-
-        agregarError("logo", "Logotipo", "no puede superar los 2MB.");
-
-        return false;
-    }
-
-    cuadroLogo.classList.remove("border-danger");
-    infoLogo.classList.remove("text-danger");
-    infoLogo.textContent = "Formatos: JPG, PNG, WEBP. Max: 2MB";
-
-    quitarError("logo");
-
-    return true;
-};
-
-iLogo.addEventListener("change", validarLogo);
-
-// logica para el cuadro del costado en desktp
-
+// Lógica para el cuadro del costado en desktop
 const errorBox = document.getElementById("erroresBox");
 const recomendacionesBox = document.getElementById("recomendacionesBox");
 const cantidadErrores = document.getElementById("cantidadErrores");
@@ -245,44 +199,39 @@ const agregarError = (campo, titulo, mensaje) => {
         titulo: titulo,
         mensaje: mensaje,
     };
-
     actualizarCajaErrores();
 };
 
 const quitarError = (campo) => {
     delete errores[campo];
-
     actualizarCajaErrores();
 };
 
 const actualizarCajaErrores = () => {
+    if (!errorBox || !recomendacionesBox || !cantidadErrores || !listaErrores) return;
+
     const lista = Object.values(errores);
 
-    // no hay errores
+    // No hay errores
     if (lista.length === 0) {
         errorBox.classList.add("d-none");
         recomendacionesBox.classList.remove("d-none");
-
         return;
     }
 
-    // hay errores
+    // Hay errores
     errorBox.classList.remove("d-none");
     recomendacionesBox.classList.add("d-none");
 
-    // contador
+    // Contador
     cantidadErrores.textContent = `${lista.length} ${lista.length === 1 ? "error pendiente" : "errores pendientes"}`;
 
-    // lista
+    // Lista
     listaErrores.innerHTML = "";
 
     lista.forEach((error) => {
         const li = document.createElement("li");
-
-        li.innerHTML = `
-            <b>${error.titulo}:</b> ${error.mensaje}
-        `;
-
+        li.innerHTML = `<b>${error.titulo}:</b> ${error.mensaje}`;
         listaErrores.appendChild(li);
     });
 };

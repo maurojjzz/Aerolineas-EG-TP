@@ -2,6 +2,7 @@ Aeropuertos.cargar();
 
 const tabs= document.querySelectorAll(".desktop-tab");
 const boxContent = document.getElementsByClassName("desktop-search-form")[0];
+const contenedorRadios = document.getElementById("contenedorRadiosViaje");
 
 if (tabs.length > 0 && boxContent) {
     const copiaVuelos = boxContent.cloneNode(true);
@@ -11,9 +12,81 @@ if (tabs.length > 0 && boxContent) {
             tab.classList.add("active");
 
             const selected = tab.querySelector("span").textContent.toLowerCase();
-            if (selected === "vuelos") boxContent.innerHTML = copiaVuelos.innerHTML;
-            if (selected === "promociones") boxContent.textContent = "Seleccionaste Promociones";
-            if (selected === "novedades") boxContent.textContent = "Seleccionaste Novedades";
+            if (selected === "vuelos") {
+                boxContent.innerHTML = copiaVuelos.innerHTML;
+                if (contenedorRadios) contenedorRadios.classList.remove("d-none");
+            }
+            if (selected === "promociones") {
+                boxContent.textContent = "Seleccionaste Promociones";
+                if (contenedorRadios) contenedorRadios.classList.add("d-none");
+            }
+            // if (selected === "novedades") boxContent.textContent = "Seleccionaste Novedades";
+            if (selected === "novedades") {
+                if (contenedorRadios) contenedorRadios.classList.add("d-none");
+
+                boxContent.innerHTML = `<div class="p-4 w-100 text-center text-muted">Cargando novedades...</div>`;
+                
+                fetch(URL_NOVEDADES_JSON)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data.success || !data.novedades || data.novedades.length === 0) {
+                            boxContent.innerHTML = `
+                                <div class=" w-100">
+                                    <div class="d-flex justify-content-between align-items-center ">
+                                        <a href="${URL_CLIENTE_NOVEDADES}" class="text-primary text-decoration-none" style="font-size:0.875rem;">
+                                            Ver todas las novedades →
+                                        </a>
+                                    </div>
+                                    <p class="text-muted small m-0">No hay novedades registradas.</p>
+                                </div>`;
+                            return;
+                        }
+
+                        let html = `
+                            <div class="w-100">
+                                <div class="d-flex justify-content-between align-items-center ">
+                                    <div class="d-flex align-items-center gap-2">
+                                    </div> 
+                                    <a href="${URL_CLIENTE_NOVEDADES}" class="text-primary text-decoration-none" style="font-size:0.875rem;">
+                                        Ver todas las novedades →
+                                    </a>
+                                </div>
+                                <div class="d-flex flex-column gap-3" style="max-height: 380px; overflow-y: auto;">`;
+
+                        data.novedades.forEach(nov => {
+                            const fecha = new Date(nov.fechaPublicacion).toLocaleDateString('es-AR');
+                            const textoSubtitulo = nov.subtitulo || nov.contenido || '';
+                            
+                            let imagenHtml = '';
+                            if (nov.imagen && nov.imagen.trim() !== '') {
+                                imagenHtml = `<img src="${nov.imagen}" alt="novedad" class="rounded-2 flex-shrink-0" style="width:70px;height:70px;object-fit:cover;">`;
+                            } else {
+                                imagenHtml = `
+                                    <div class="rounded-2 bg-light d-flex align-items-center justify-content-center text-primary flex-shrink-0" style="width:70px;height:70px;">
+                                        <i class="bi bi-megaphone fs-4"></i>
+                                    </div>`;
+                            }
+
+                            html += `
+                                <div class="bg-white rounded-3 border p-3 d-flex gap-3 align-items-start text-start" style="cursor:pointer;" onclick="window.location.href='${URL_CLIENTE_NOVEDAD_DETALLE}${nov.idNovedad}'">
+                                    ${imagenHtml}
+                                    <div class="flex-grow-1" style="min-width: 0;">
+                                        <p class="fw-semibold m-0 text-truncate" style="font-size:0.9rem;">${nov.titulo}</p>
+                                        <p class="text-muted m-0 mt-1 text-truncate" style="font-size:0.8rem;line-height:1.3;">${textoSubtitulo}</p>
+                                        <p class="text-muted m-0 mt-1" style="font-size:0.75rem;">${fecha}</p>
+                                    </div>
+                                    <span class="text-muted flex-shrink-0">›</span>
+                                </div>`;
+                        });
+
+                        html += `</div></div>`;
+                        boxContent.innerHTML = html;
+                    })
+                    .catch(err => {
+                        console.error("Error al cargar novedades:", err);
+                        boxContent.innerHTML = `<div class="p-4 w-100 text-danger text-center">Error al cargar las novedades.</div>`;
+                    });
+            }
         });
     });
 }

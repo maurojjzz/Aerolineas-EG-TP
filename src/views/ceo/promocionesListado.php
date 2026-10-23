@@ -182,678 +182,676 @@ function badgeVigenciaPromo(array $p): string {
         </header>
 
         <main class="container-fluid d-flex flex-column gap-3 p-3 admin-content">
+            <?php require __DIR__ . '/../components/alertToast.php'; ?>
+          
+                <nav class="breadcrumbCont" aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <!-- <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=ceo') ?>">Inicio</a></li> -->
+                        <li class="breadcrumb-item active" aria-current="page">Promociones</li>
+                    </ol>
+                </nav>
 
-<?php require __DIR__ . '/../components/alertToast.php'; ?>
-<div>
-    <nav class="breadcrumbCont" aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=ceo') ?>">Inicio</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Promociones</li>
-        </ol>
-    </nav>
+                <div class="contForm col-12 d-flex flex-column p-2 admin-content h-100">
+                    <h2 class="m-0 p-0 fs-2 fw-bold">Gestión de Promociones</h2>
+                    <p class="m-0 p-0 mb-1 subt">Administra y crea las promociones de tu aerolínea.</p>
 
-    <div class="contForm col-12 d-flex flex-column p-2 admin-content h-100">
-        <h2 class="m-0 p-0 fs-2 fw-bold">Gestión de Promociones</h2>
-        <p class="m-0 p-0 mb-1 subt">Administra y crea las promociones de tu aerolínea.</p>
-
-        <!-- KPIs -->
-        <div class="d-flex flex-column flex-md-row justify-content-md-between row p-0 m-0 gap-3 gap-md-0 mb-3">
-            <div class="col-md-4">
-                <div class="bg-white shadow rounded-3 py-2 px-4">
-                    <div class="d-flex flex-row align-items-center justify-content-start gap-3">
-                        <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:55px;height:55px;background-color:#E3F0FE;">
-                            <img src="<?= url('public/img/icons/placeholdersCards/etiqueta.png') ?>" class="img-fluid" alt="total" style="width:32px;height:32px;object-fit:contain;">
-                        </div>
-                        <div class="d-flex flex-column justify-content-center p-0 m-0">
-                            <p class="fw-semibold m-0 p-0 text-muted" style="font-size:14px;">Promociones totales</p>
-                            <p class="fs-3 fw-bold text-dark m-0 p-0"><?= $total ?></p>
-                        </div>
-                    </div>
-                    <div class="d-flex flex-row justify-content-start p-0 m-0 gap-2 mt-1">
-                        <img src="<?= url('public/img/icons/placeholdersCards/simbolo-igual.png') ?>" class="img-fluid" alt="igual" style="width:20px;height:20px;object-fit:contain;">
-                        <p class="fw-normal m-0 p-0 text-muted" style="font-size:14px;"><?= $denegadas ?> denegada<?= $denegadas === 1 ? '' : 's' ?></p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="bg-white shadow rounded-3 py-2 px-4">
-                    <div class="d-flex flex-row align-items-center justify-content-start gap-3">
-                        <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:55px;height:55px;background-color:#E3F0FE;">
-                            <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>" class="img-fluid" alt="activas" style="width:32px;height:32px;object-fit:contain;">
-                        </div>
-                        <div class="d-flex flex-column justify-content-center p-0 m-0">
-                            <p class="fw-semibold m-0 p-0 text-muted" style="font-size:14px;">Activas / Aprobadas</p>
-                            <p class="fs-3 fw-bold text-success m-0 p-0"><?= $aprobadas ?></p>
-                        </div>
-                    </div>
-                    <div class="d-flex flex-row justify-content-start p-0 m-0 gap-2 mt-1">
-                        <img src="<?= url('public/img/icons/placeholdersCards/' . ($aprobadas > 0 ? 'flecha-up.png' : 'simbolo-igual.png')) ?>" class="img-fluid" alt="tendencia" style="width:20px;height:20px;object-fit:contain;">
-                        <p class="fw-normal m-0 p-0 <?= $aprobadas > 0 ? 'text-success' : 'text-muted' ?>" style="font-size:14px;"><?= $pctAprob ?>% del total</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="bg-white shadow rounded-3 py-2 px-4">
-                    <div class="d-flex flex-row align-items-center justify-content-start gap-3">
-                        <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:55px;height:55px;background-color:#E3F0FE;">
-                            <img src="<?= url('public/img/icons/placeholdersCards/ceo.png') ?>" class="img-fluid" alt="pendientes" style="width:32px;height:32px;object-fit:contain;">
-                        </div>
-                        <div class="d-flex flex-column justify-content-center p-0 m-0">
-                            <p class="fw-semibold m-0 p-0 text-muted" style="font-size:14px;">Pendientes</p>
-                            <p class="fs-3 fw-bold text-warning m-0 p-0"><?= $pendientes ?></p>
-                        </div>
-                    </div>
-                    <div class="d-flex flex-row justify-content-start p-0 m-0 gap-2 mt-1">
-                        <img src="<?= url('public/img/icons/placeholdersCards/simbolo-igual.png') ?>" class="img-fluid" alt="igual" style="width:20px;height:20px;object-fit:contain;">
-                        <p class="fw-normal m-0 p-0 text-muted" style="font-size:14px;">En espera de aprobación</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tabla -->
-        <div class="d-flex flex-column gap-2">
-            <div class="table-responsive bg-white shadow rounded-3 pt-3 tablaContenedor">
-                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center px-2 mb-3 gap-3 gap-sm-0">
-                    <h3 class="m-0 p-0 fs-4 fw-bold">Listado de Promociones</h3>
-                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 flex-wrap">
-                        <div class="d-flex flex-column flex-sm-row gap-2 align-items-center flex-grow-1">
-                            <select
-                                id="filtroEstadoPromo"
-                                class="form-select form-select-sm"
-                                style="min-width: 220px;"
-                            >
-                                <option value="pendientes_aprobadas_vigentes" selected>Pendientes y Aprobadas vigentes</option>
-                                <option value="todas">Todas</option>
-                                <option value="canceladas">Canceladas (Denegadas)</option>
-                                <option value="en_vigencia">En vigencia (Aprobadas vigentes)</option>
-                                <option value="vencidas">Ya vencidas</option>
-                                <option value="denegadas">Denegadas</option>
-                            </select>
-                            <input
-                                type="text"
-                                id="buscadorPromocion"
-                                class="form-control ctm-inp"
-                                placeholder="Buscar código, nombre, alcance..."
-                                autocomplete="off"
-                                style="flex: 1; min-width: 280px; max-width: 100%;"
-                            >
-                        </div>
-                        <button type="button" class="btn btn-primary text-nowrap btn-crear-promocion" data-bs-toggle="modal" data-bs-target="#modalCrearPromocion">
-                            + Crear
-                        </button>
-                    </div>
-                </div>
-
-                <table class="table table-hover align-middle border-top mt-2 tabla-aerolineas">
-                    <thead>
-                        <tr>
-                            <th scope="col" class="text-center fw-bold">CODIGO</th>
-                            <th scope="col" class="fw-bold">NOMBRE</th>
-                            <th scope="col" class="fw-bold text-center">DESCUENTO</th>
-                            <th scope="col" class="fw-bold d-none d-md-table-cell">ALCANCE</th>
-                            <th scope="col" class="fw-bold d-none d-md-table-cell">VIGENCIA</th>
-                            <th scope="col" class="fw-bold d-none d-md-table-cell">ESTADO VIGENCIA</th>
-                            <th scope="col" class="fw-bold d-none d-sm-table-cell">ESTADO</th>
-                            <th scope="col" class="text-center fw-bold">ACCIONES</th>
-                        </tr>
-                    </thead>
-                    <tbody id="promocionTableBody">
-                        <?php if (empty($promociones)): ?>
-                            <tr>
-                                <td colspan="8" class="text-center py-4 text-muted">
-                                    No tenés promociones registradas todavía.
-                                </td>
-                            </tr>
-                        <?php else:
-                            foreach ($promociones as $p):
-                                $idPromo = $p['idPromocion'] ?? $p['codigo'];
-                                $inicio  = date('d/m/Y', strtotime($p['fechaInicio']));
-                                $fin     = date('d/m/Y', strtotime($p['fechaFin']));
-                                $alcanceTexto = textoAlcancePromo($p);
-                        ?>
-                        <tr class="fila-tabla" 
-                            data-id="<?= htmlspecialchars((string)$idPromo) ?>" 
-                            data-estado="<?= htmlspecialchars($p['estado']) ?>"
-                            data-vigencia="<?= htmlspecialchars($p['estado'] === 'Denegada' ? 'denegada' : ($p['estado'] === 'Pendiente' ? 'pendiente' : (new DateTime($p['fechaFin']) < new DateTime() ? 'vencida' : ((new DateTime())->diff(new DateTime($p['fechaFin']))->days <= 7 ? 'proxima' : 'vigente')))) ?>"
-                            style="cursor:pointer;">
-                            <td>
-                                <div class="d-flex align-items-center justify-content-center gap-2">
-                                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center" style="width:30px; height:30px; flex-shrink:0;">
-                                        <span class="text-white fw-bold text-uppercase" style="font-size:0.6rem;"><?= htmlspecialchars(substr($p['codigo'], 0, 2)) ?></span>
+                    <!-- KPIs -->
+                    <div class="d-flex flex-column flex-md-row justify-content-md-between row p-0 m-0 gap-3 gap-md-0 mb-3">
+                        <div class="col-md-4">
+                            <div class="bg-white shadow rounded-3 py-2 px-4">
+                                <div class="d-flex flex-row align-items-center justify-content-start gap-3">
+                                    <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:55px;height:55px;background-color:#E3F0FE;">
+                                        <img src="<?= url('public/img/icons/placeholdersCards/etiqueta.png') ?>" class="img-fluid" alt="total" style="width:32px;height:32px;object-fit:contain;">
                                     </div>
-                                    <span class="text-uppercase fw-medium"><?= htmlspecialchars($p['codigo']) ?></span>
+                                    <div class="d-flex flex-column justify-content-center p-0 m-0">
+                                        <p class="fw-semibold m-0 p-0 text-muted" style="font-size:14px;">Promociones totales</p>
+                                        <p class="fs-3 fw-bold text-dark m-0 p-0"><?= $total ?></p>
+                                    </div>
                                 </div>
-                            </td>
-                            <td><?= htmlspecialchars($p['nombre']) ?></td>
-                            <td class="text-center fw-bold text-success"><?= (float)$p['descuentoPorcentaje'] ?>%</td>
-                            <td class="d-none d-md-table-cell text-muted" style="font-size:0.8rem;"><?= htmlspecialchars($alcanceTexto) ?></td>
-                            <td class="d-none d-md-table-cell text-muted" style="font-size:0.85rem;"><?= $inicio ?> - <?= $fin ?></td>
-                            <td class="d-none d-md-table-cell">
-                                <?= badgeVigenciaPromo($p) ?>
-                            </td>
-                            <td class="d-none d-sm-table-cell">
-                                <span class="badge <?= badgeEstadoPromo($p['estado']) ?>"><?= htmlspecialchars($p['estado']) ?></span>
-                            </td>
-                            <td>
-                                <div class="d-flex justify-content-evenly w-100 gap-2">
-                                    <!-- Ver detalle (siempre) -->
-                                    <a
-                                        href="<?= url('index.php?pagina=ceo&seccion=promocion-detalle&id=' . urlencode((string)$idPromo)) ?>"
-                                        class="p-0 bg-transparent border-0 btn-ver-promo"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        data-bs-title="Ver detalle"
-                                        data-bs-trigger="hover"
-                                    >
-                                        <img
-                                            src="<?= url('public/img/icons/readTabla.png') ?>"
-                                            class="img-fluid btn-tabla"
-                                            alt="icono ver promoción"
-                                        >
-                                    </a>
-
-                                    <?php if ($p['estado'] === 'Pendiente'): ?>
-                                        <!-- Editar -->
-                                        <button type="button"
-                                                class="p-0 bg-transparent border-0 btn-editar-promo"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#modalEditarPromocion"
-                                                data-id="<?= htmlspecialchars((string)$idPromo) ?>"
-                                                data-bs-toggle="tooltip"
-                                                data-bs-placement="top"
-                                                data-bs-title="Editar"
-                                                data-bs-trigger="hover"
-                                        >
-                                            <img
-                                                src="<?= url('public/img/icons/lapiz-editar.png') ?>"
-                                                class="img-fluid btn-tabla"
-                                                alt="icono editar promoción"
-                                            >
-                                        </button>
-
-                                        <!-- Eliminar -->
-                                        <form method="POST"
-                                              action="<?= url('src/routes/promociones.php?accion=eliminar') ?>"
-                                              onsubmit="return confirm('¿Seguro que querés eliminar esta promoción pendiente?');"
-                                              class="d-inline">
-                                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
-                                            <input type="hidden" name="id" value="<?= htmlspecialchars((string)$idPromo) ?>">
-                                            <button type="submit"
-                                                    class="p-0 bg-transparent border-0 btn-eliminar-promo"
-                                                    data-bs-toggle="tooltip"
-                                                    data-bs-placement="top"
-                                                    data-bs-title="Eliminar"
-                                                    data-bs-trigger="hover"
-                                            >
-                                                <img
-                                                    src="<?= url('public/img/icons/trash.png') ?>"
-                                                    class="img-fluid btn-tabla"
-                                                    alt="icono eliminar promoción"
-                                                >
-                                            </button>
-                                        </form>
-                                    <?php elseif ($p['estado'] === 'Denegada'): ?>
-                                        <!-- Eliminar para denegadas -->
-                                        <form method="POST"
-                                              action="<?= url('src/routes/promociones.php?accion=eliminar') ?>"
-                                              onsubmit="return confirm('¿Seguro que querés eliminar esta promoción denegada?');"
-                                              class="d-inline">
-                                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
-                                            <input type="hidden" name="id" value="<?= htmlspecialchars((string)$idPromo) ?>">
-                                            <button type="submit"
-                                                    class="p-0 bg-transparent border-0 btn-eliminar-promo"
-                                                    data-bs-toggle="tooltip"
-                                                    data-bs-placement="top"
-                                                    data-bs-title="Eliminar"
-                                                    data-bs-trigger="hover"
-                                            >
-                                                <img
-                                                    src="<?= url('public/img/icons/trash.png') ?>"
-                                                    class="img-fluid btn-tabla"
-                                                    alt="icono eliminar promoción"
-                                                >
-                                            </button>
-                                        </form>
-                                    <?php endif; ?>
+                                <div class="d-flex flex-row justify-content-start p-0 m-0 gap-2 mt-1">
+                                    <img src="<?= url('public/img/icons/placeholdersCards/simbolo-igual.png') ?>" class="img-fluid" alt="igual" style="width:20px;height:20px;object-fit:contain;">
+                                    <p class="fw-normal m-0 p-0 text-muted" style="font-size:14px;"><?= $denegadas ?> denegada<?= $denegadas === 1 ? '' : 's' ?></p>
                                 </div>
-                            </td>
-                        </tr>
+                            </div>
+                        </div>
 
-                        <tr class="fila-detalle d-none" id="detalle-<?= htmlspecialchars((string)$idPromo) ?>">
-                            <td colspan="7" class="p-0">
-                                <div class="detalle-aerolinea px-4 py-3">
-                                    <div class="row g-3 align-items-start">
+                        <div class="col-md-4">
+                            <div class="bg-white shadow rounded-3 py-2 px-4">
+                                <div class="d-flex flex-row align-items-center justify-content-start gap-3">
+                                    <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:55px;height:55px;background-color:#E3F0FE;">
+                                        <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>" class="img-fluid" alt="activas" style="width:32px;height:32px;object-fit:contain;">
+                                    </div>
+                                    <div class="d-flex flex-column justify-content-center p-0 m-0">
+                                        <p class="fw-semibold m-0 p-0 text-muted" style="font-size:14px;">Activas / Aprobadas</p>
+                                        <p class="fs-3 fw-bold text-success m-0 p-0"><?= $aprobadas ?></p>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-row justify-content-start p-0 m-0 gap-2 mt-1">
+                                    <img src="<?= url('public/img/icons/placeholdersCards/' . ($aprobadas > 0 ? 'flecha-up.png' : 'simbolo-igual.png')) ?>" class="img-fluid" alt="tendencia" style="width:20px;height:20px;object-fit:contain;">
+                                    <p class="fw-normal m-0 p-0 <?= $aprobadas > 0 ? 'text-success' : 'text-muted' ?>" style="font-size:14px;"><?= $pctAprob ?>% del total</p>
+                                </div>
+                            </div>
+                        </div>
 
-                                        <!-- Columna 1: código + nombre + descripción -->
-                                        <div class="col-12 col-md-4 d-flex gap-3">
-                                            <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center flex-shrink-0" style="width:55px;height:55px;">
-                                                <span class="text-white fw-bold text-uppercase" style="font-size:0.9rem;"><?= htmlspecialchars(substr($p['codigo'], 0, 2)) ?></span>
+                        <div class="col-md-4">
+                            <div class="bg-white shadow rounded-3 py-2 px-4">
+                                <div class="d-flex flex-row align-items-center justify-content-start gap-3">
+                                    <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:55px;height:55px;background-color:#E3F0FE;">
+                                        <img src="<?= url('public/img/icons/placeholdersCards/ceo.png') ?>" class="img-fluid" alt="pendientes" style="width:32px;height:32px;object-fit:contain;">
+                                    </div>
+                                    <div class="d-flex flex-column justify-content-center p-0 m-0">
+                                        <p class="fw-semibold m-0 p-0 text-muted" style="font-size:14px;">Pendientes</p>
+                                        <p class="fs-3 fw-bold text-warning m-0 p-0"><?= $pendientes ?></p>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-row justify-content-start p-0 m-0 gap-2 mt-1">
+                                    <img src="<?= url('public/img/icons/placeholdersCards/simbolo-igual.png') ?>" class="img-fluid" alt="igual" style="width:20px;height:20px;object-fit:contain;">
+                                    <p class="fw-normal m-0 p-0 text-muted" style="font-size:14px;">En espera de aprobación</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabla -->
+                    <div class="d-flex flex-column gap-2">
+                        <div class="table-responsive bg-white shadow rounded-3 pt-3 tablaContenedor">
+                            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center px-2 mb-3 gap-3 gap-sm-0">
+                                <h3 class="m-0 p-0 fs-4 fw-bold">Listado de Promociones</h3>
+                                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 flex-wrap">
+                                    <div class="d-flex flex-column flex-sm-row gap-2 align-items-center flex-grow-1">
+                                        <select
+                                            id="filtroEstadoPromo"
+                                            class="form-select form-select-sm"
+                                            style="min-width: 220px;"
+                                        >
+                                            <option value="pendientes_aprobadas_vigentes" selected>Pendientes y Aprobadas vigentes</option>
+                                            <option value="todas">Todas</option>
+                                            <option value="canceladas">Canceladas (Denegadas)</option>
+                                            <option value="en_vigencia">En vigencia (Aprobadas vigentes)</option>
+                                            <option value="vencidas">Ya vencidas</option>
+                                            <option value="denegadas">Denegadas</option>
+                                        </select>
+                                        <input
+                                            type="text"
+                                            id="buscadorPromocion"
+                                            class="form-control ctm-inp"
+                                            placeholder="Buscar código, nombre, alcance..."
+                                            autocomplete="off"
+                                            style="flex: 1; min-width: 280px; max-width: 100%;"
+                                        >
+                                    </div>
+                                    <button type="button" class="btn btn-primary text-nowrap btn-crear-promocion" data-bs-toggle="modal" data-bs-target="#modalCrearPromocion">
+                                        + Crear
+                                    </button>
+                                </div>
+                            </div>
+
+                            <table class="table table-hover align-middle border-top mt-2 tabla-aerolineas">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="text-center fw-bold">CODIGO</th>
+                                        <th scope="col" class="fw-bold">NOMBRE</th>
+                                        <th scope="col" class="fw-bold text-center">DESCUENTO</th>
+                                        <th scope="col" class="fw-bold d-none d-md-table-cell">ALCANCE</th>
+                                        <th scope="col" class="fw-bold d-none d-md-table-cell">VIGENCIA</th>
+                                        <th scope="col" class="fw-bold d-none d-md-table-cell">ESTADO VIGENCIA</th>
+                                        <th scope="col" class="fw-bold d-none d-sm-table-cell">ESTADO</th>
+                                        <th scope="col" class="text-center fw-bold">ACCIONES</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="promocionTableBody">
+                                    <?php if (empty($promociones)): ?>
+                                        <tr>
+                                            <td colspan="8" class="text-center py-4 text-muted">
+                                                No tenés promociones registradas todavía.
+                                            </td>
+                                        </tr>
+                                    <?php else:
+                                        foreach ($promociones as $p):
+                                            $idPromo = $p['idPromocion'] ?? $p['codigo'];
+                                            $inicio  = date('d/m/Y', strtotime($p['fechaInicio']));
+                                            $fin     = date('d/m/Y', strtotime($p['fechaFin']));
+                                            $alcanceTexto = textoAlcancePromo($p);
+                                    ?>
+                                    <tr class="fila-tabla" 
+                                        data-id="<?= htmlspecialchars((string)$idPromo) ?>" 
+                                        data-estado="<?= htmlspecialchars($p['estado']) ?>"
+                                        data-vigencia="<?= htmlspecialchars($p['estado'] === 'Denegada' ? 'denegada' : ($p['estado'] === 'Pendiente' ? 'pendiente' : (new DateTime($p['fechaFin']) < new DateTime() ? 'vencida' : ((new DateTime())->diff(new DateTime($p['fechaFin']))->days <= 7 ? 'proxima' : 'vigente')))) ?>"
+                                        style="cursor:pointer;">
+                                        <td>
+                                            <div class="d-flex align-items-center justify-content-center gap-2">
+                                                <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center" style="width:30px; height:30px; flex-shrink:0;">
+                                                    <span class="text-white fw-bold text-uppercase" style="font-size:0.6rem;"><?= htmlspecialchars(substr($p['codigo'], 0, 2)) ?></span>
+                                                </div>
+                                                <span class="text-uppercase fw-medium"><?= htmlspecialchars($p['codigo']) ?></span>
                                             </div>
-                                            <div>
-                                                <p class="fw-bold m-0 text-uppercase" style="font-size:0.95rem;"><?= htmlspecialchars($p['codigo']) ?></p>
-                                                <p class="text-muted m-0" style="font-size:0.8rem;"><?= htmlspecialchars($p['nombre']) ?></p>
-                                                <?php if (!empty($p['descripcion'])): ?>
-                                                    <p class="m-0 mt-2 text-muted" style="font-size:0.8rem; line-height:1.4;"><?= htmlspecialchars($p['descripcion']) ?></p>
+                                        </td>
+                                        <td><?= htmlspecialchars($p['nombre']) ?></td>
+                                        <td class="text-center fw-bold text-success"><?= (float)$p['descuentoPorcentaje'] ?>%</td>
+                                        <td class="d-none d-md-table-cell text-muted" style="font-size:0.8rem;"><?= htmlspecialchars($alcanceTexto) ?></td>
+                                        <td class="d-none d-md-table-cell text-muted" style="font-size:0.85rem;"><?= $inicio ?> - <?= $fin ?></td>
+                                        <td class="d-none d-md-table-cell">
+                                            <?= badgeVigenciaPromo($p) ?>
+                                        </td>
+                                        <td class="d-none d-sm-table-cell">
+                                            <span class="badge <?= badgeEstadoPromo($p['estado']) ?>"><?= htmlspecialchars($p['estado']) ?></span>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex justify-content-evenly w-100 gap-2">
+                                                <!-- Ver detalle (siempre) -->
+                                                <a
+                                                    href="<?= url('index.php?pagina=ceo&seccion=promocion-detalle&id=' . urlencode((string)$idPromo)) ?>"
+                                                    class="p-0 bg-transparent border-0 btn-ver-promo"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="top"
+                                                    data-bs-title="Ver detalle"
+                                                    data-bs-trigger="hover"
+                                                >
+                                                    <img
+                                                        src="<?= url('public/img/icons/readTabla.png') ?>"
+                                                        class="img-fluid btn-tabla"
+                                                        alt="icono ver promoción"
+                                                    >
+                                                </a>
+
+                                                <?php if ($p['estado'] === 'Pendiente'): ?>
+                                                    <!-- Editar -->
+                                                    <button type="button"
+                                                            class="p-0 bg-transparent border-0 btn-editar-promo"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#modalEditarPromocion"
+                                                            data-id="<?= htmlspecialchars((string)$idPromo) ?>"
+                                                            data-bs-toggle="tooltip"
+                                                            data-bs-placement="top"
+                                                            data-bs-title="Editar"
+                                                            data-bs-trigger="hover"
+                                                    >
+                                                        <img
+                                                            src="<?= url('public/img/icons/lapiz-editar.png') ?>"
+                                                            class="img-fluid btn-tabla"
+                                                            alt="icono editar promoción"
+                                                        >
+                                                    </button>
+
+                                                    <!-- Eliminar -->
+                                                    <form method="POST"
+                                                        action="<?= url('src/routes/promociones.php?accion=eliminar') ?>"
+                                                        onsubmit="return confirm('¿Seguro que querés eliminar esta promoción pendiente?');"
+                                                        class="d-inline">
+                                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
+                                                        <input type="hidden" name="id" value="<?= htmlspecialchars((string)$idPromo) ?>">
+                                                        <button type="submit"
+                                                                class="p-0 bg-transparent border-0 btn-eliminar-promo"
+                                                                data-bs-toggle="tooltip"
+                                                                data-bs-placement="top"
+                                                                data-bs-title="Eliminar"
+                                                                data-bs-trigger="hover"
+                                                        >
+                                                            <img
+                                                                src="<?= url('public/img/icons/trash.png') ?>"
+                                                                class="img-fluid btn-tabla"
+                                                                alt="icono eliminar promoción"
+                                                            >
+                                                        </button>
+                                                    </form>
+                                                <?php elseif ($p['estado'] === 'Denegada'): ?>
+                                                    <!-- Eliminar para denegadas -->
+                                                    <form method="POST"
+                                                        action="<?= url('src/routes/promociones.php?accion=eliminar') ?>"
+                                                        onsubmit="return confirm('¿Seguro que querés eliminar esta promoción denegada?');"
+                                                        class="d-inline">
+                                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
+                                                        <input type="hidden" name="id" value="<?= htmlspecialchars((string)$idPromo) ?>">
+                                                        <button type="submit"
+                                                                class="p-0 bg-transparent border-0 btn-eliminar-promo"
+                                                                data-bs-toggle="tooltip"
+                                                                data-bs-placement="top"
+                                                                data-bs-title="Eliminar"
+                                                                data-bs-trigger="hover"
+                                                        >
+                                                            <img
+                                                                src="<?= url('public/img/icons/trash.png') ?>"
+                                                                class="img-fluid btn-tabla"
+                                                                alt="icono eliminar promoción"
+                                                            >
+                                                        </button>
+                                                    </form>
                                                 <?php endif; ?>
                                             </div>
-                                        </div>
+                                        </td>
+                                    </tr>
 
-                                        <!-- Columna 2: datos -->
-                                        <div class="col-12 col-md-4 d-flex flex-column gap-2" style="font-size:0.85rem;">
-                                            <div class="d-flex justify-content-between">
-                                                <span class="text-muted">Estado</span>
-                                                <span class="fw-medium"><?= htmlspecialchars($p['estado']) ?></span>
-                                            </div>
-                                            <div class="d-flex justify-content-between">
-                                                <span class="text-muted">Descuento</span>
-                                                <span class="fw-medium text-success"><?= (float)$p['descuentoPorcentaje'] ?>%</span>
-                                            </div>
-                                            <div class="d-flex justify-content-between">
-                                                <span class="text-muted">Fecha inicio</span>
-                                                <span class="fw-medium"><?= $inicio ?></span>
-                                            </div>
-                                            <div class="d-flex justify-content-between">
-                                                <span class="text-muted">Fecha fin</span>
-                                                <span class="fw-medium"><?= $fin ?></span>
-                                            </div>
-                                        </div>
+                                    <tr class="fila-detalle d-none" id="detalle-<?= htmlspecialchars((string)$idPromo) ?>">
+                                        <td colspan="7" class="p-0">
+                                            <div class="detalle-aerolinea px-4 py-3">
+                                                <div class="row g-3 align-items-start">
 
-                                        <!-- Columna 3: condiciones -->
-                                        <div class="col-12 col-md-4 d-flex flex-column gap-2">
-                                            <p class="fw-semibold m-0 mb-1" style="font-size:0.85rem;">Condiciones</p>
-                                            <p class="m-0 text-muted" style="font-size:0.8rem; line-height:1.4;">
-                                                <?= !empty($p['condiciones']) ? htmlspecialchars($p['condiciones']) : 'Sin condiciones especificadas.' ?>
-                                            </p>
-                                        </div>
+                                                    <!-- Columna 1: código + nombre + descripción -->
+                                                    <div class="col-12 col-md-4 d-flex gap-3">
+                                                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center flex-shrink-0" style="width:55px;height:55px;">
+                                                            <span class="text-white fw-bold text-uppercase" style="font-size:0.9rem;"><?= htmlspecialchars(substr($p['codigo'], 0, 2)) ?></span>
+                                                        </div>
+                                                        <div>
+                                                            <p class="fw-bold m-0 text-uppercase" style="font-size:0.95rem;"><?= htmlspecialchars($p['codigo']) ?></p>
+                                                            <p class="text-muted m-0" style="font-size:0.8rem;"><?= htmlspecialchars($p['nombre']) ?></p>
+                                                            <?php if (!empty($p['descripcion'])): ?>
+                                                                <p class="m-0 mt-2 text-muted" style="font-size:0.8rem; line-height:1.4;"><?= htmlspecialchars($p['descripcion']) ?></p>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    </div>
 
+                                                    <!-- Columna 2: datos -->
+                                                    <div class="col-12 col-md-4 d-flex flex-column gap-2" style="font-size:0.85rem;">
+                                                        <div class="d-flex justify-content-between">
+                                                            <span class="text-muted">Estado</span>
+                                                            <span class="fw-medium"><?= htmlspecialchars($p['estado']) ?></span>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between">
+                                                            <span class="text-muted">Descuento</span>
+                                                            <span class="fw-medium text-success"><?= (float)$p['descuentoPorcentaje'] ?>%</span>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between">
+                                                            <span class="text-muted">Fecha inicio</span>
+                                                            <span class="fw-medium"><?= $inicio ?></span>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between">
+                                                            <span class="text-muted">Fecha fin</span>
+                                                            <span class="fw-medium"><?= $fin ?></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Columna 3: condiciones -->
+                                                    <div class="col-12 col-md-4 d-flex flex-column gap-2">
+                                                        <p class="fw-semibold m-0 mb-1" style="font-size:0.85rem;">Condiciones</p>
+                                                        <p class="m-0 text-muted" style="font-size:0.8rem; line-height:1.4;">
+                                                            <?= !empty($p['condiciones']) ? htmlspecialchars($p['condiciones']) : 'Sin condiciones especificadas.' ?>
+                                                        </p>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+
+                            <!-- Paginación -->
+                            <div class="border-top px-3 py-3">
+                                <div class="d-flex flex-column flex-sm-row justify-content-center justify-content-sm-between align-items-center flex-wrap gap-3">
+
+                                    <span class="text-muted" style="font-size:0.8rem;">
+                                        Mostrando <strong><?= $desde ?></strong> a <strong><?= $hasta ?></strong> de <strong><?= $total ?></strong> promociones
+                                    </span>
+
+                                    <nav aria-label="Paginación">
+                                        <ul class="pagination pagination-sm m-0 gap-1">
+
+                                            <li class="page-item <?= $pagActual <= 1 ? 'disabled' : '' ?>">
+                                                <a class="page-link rounded-2 border-0 <?= $pagActual <= 1 ? 'text-muted' : '' ?>"
+                                                href="<?= $pagActual > 1 ? urlPaginaPromos(1, $porPagina) : '#' ?>">«</a>
+                                            </li>
+                                            <li class="page-item <?= $pagActual <= 1 ? 'disabled' : '' ?>">
+                                                <a class="page-link rounded-2 border-0 <?= $pagActual <= 1 ? 'text-muted' : '' ?>"
+                                                href="<?= $pagActual > 1 ? urlPaginaPromos($pagActual - 1, $porPagina) : '#' ?>">‹</a>
+                                            </li>
+
+                                            <?php
+                                            $rango  = 2;
+                                            $inicio = max(1, $pagActual - $rango);
+                                            $fin    = min($totalPaginas, $pagActual + $rango);
+                                            ?>
+
+                                            <?php if ($inicio > 1): ?>
+                                                <li class="page-item disabled">
+                                                    <span class="page-link border-0 text-muted rounded-2">…</span>
+                                                </li>
+                                            <?php endif; ?>
+
+                                            <?php for ($i = $inicio; $i <= $fin; $i++): ?>
+                                                <li class="page-item">
+                                                    <a class="page-link rounded-2 border-0 <?= $i === $pagActual ? 'active-pag' : 'text-secondary' ?>"
+                                                    href="<?= urlPaginaPromos($i, $porPagina) ?>"><?= $i ?></a>
+                                                </li>
+                                            <?php endfor; ?>
+
+                                            <?php if ($fin < $totalPaginas): ?>
+                                                <li class="page-item disabled">
+                                                    <span class="page-link border-0 text-muted rounded-2">…</span>
+                                                </li>
+                                            <?php endif; ?>
+
+                                            <li class="page-item <?= $pagActual >= $totalPaginas ? 'disabled' : '' ?>">
+                                                <a class="page-link rounded-2 border-0 <?= $pagActual >= $totalPaginas ? 'text-muted' : '' ?>"
+                                                href="<?= $pagActual < $totalPaginas ? urlPaginaPromos($pagActual + 1, $porPagina) : '#' ?>">›</a>
+                                            </li>
+                                            <li class="page-item <?= $pagActual >= $totalPaginas ? 'disabled' : '' ?>">
+                                                <a class="page-link rounded-2 border-0 <?= $pagActual >= $totalPaginas ? 'text-muted' : '' ?>"
+                                                href="<?= $pagActual < $totalPaginas ? urlPaginaPromos($totalPaginas, $porPagina) : '#' ?>">»</a>
+                                            </li>
+
+                                        </ul>
+                                    </nav>
+
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="text-muted" style="font-size:0.8rem;">Por página:</span>
+                                        <select
+                                            class="form-select form-select-sm border-0 bg-light rounded-2"
+                                            style="width:auto; font-size:0.8rem; cursor:pointer;"
+                                            onchange="window.location.href=this.value"
+                                        >
+                                            <?php foreach ($porPaginaPermitidos as $op): ?>
+                                                <option value="<?= urlPaginaPromos(1, $op) ?>" <?= $op === $porPagina ? 'selected' : '' ?>>
+                                                    <?= $op ?> por página
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
                                     </div>
+
                                 </div>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-
-                <!-- Paginación -->
-                <div class="border-top px-3 py-3">
-                    <div class="d-flex flex-column flex-sm-row justify-content-center justify-content-sm-between align-items-center flex-wrap gap-3">
-
-                        <span class="text-muted" style="font-size:0.8rem;">
-                            Mostrando <strong><?= $desde ?></strong> a <strong><?= $hasta ?></strong> de <strong><?= $total ?></strong> promociones
-                        </span>
-
-                        <nav aria-label="Paginación">
-                            <ul class="pagination pagination-sm m-0 gap-1">
-
-                                <li class="page-item <?= $pagActual <= 1 ? 'disabled' : '' ?>">
-                                    <a class="page-link rounded-2 border-0 <?= $pagActual <= 1 ? 'text-muted' : '' ?>"
-                                       href="<?= $pagActual > 1 ? urlPaginaPromos(1, $porPagina) : '#' ?>">«</a>
-                                </li>
-                                <li class="page-item <?= $pagActual <= 1 ? 'disabled' : '' ?>">
-                                    <a class="page-link rounded-2 border-0 <?= $pagActual <= 1 ? 'text-muted' : '' ?>"
-                                       href="<?= $pagActual > 1 ? urlPaginaPromos($pagActual - 1, $porPagina) : '#' ?>">‹</a>
-                                </li>
-
-                                <?php
-                                $rango  = 2;
-                                $inicio = max(1, $pagActual - $rango);
-                                $fin    = min($totalPaginas, $pagActual + $rango);
-                                ?>
-
-                                <?php if ($inicio > 1): ?>
-                                    <li class="page-item disabled">
-                                        <span class="page-link border-0 text-muted rounded-2">…</span>
-                                    </li>
-                                <?php endif; ?>
-
-                                <?php for ($i = $inicio; $i <= $fin; $i++): ?>
-                                    <li class="page-item">
-                                        <a class="page-link rounded-2 border-0 <?= $i === $pagActual ? 'active-pag' : 'text-secondary' ?>"
-                                           href="<?= urlPaginaPromos($i, $porPagina) ?>"><?= $i ?></a>
-                                    </li>
-                                <?php endfor; ?>
-
-                                <?php if ($fin < $totalPaginas): ?>
-                                    <li class="page-item disabled">
-                                        <span class="page-link border-0 text-muted rounded-2">…</span>
-                                    </li>
-                                <?php endif; ?>
-
-                                <li class="page-item <?= $pagActual >= $totalPaginas ? 'disabled' : '' ?>">
-                                    <a class="page-link rounded-2 border-0 <?= $pagActual >= $totalPaginas ? 'text-muted' : '' ?>"
-                                       href="<?= $pagActual < $totalPaginas ? urlPaginaPromos($pagActual + 1, $porPagina) : '#' ?>">›</a>
-                                </li>
-                                <li class="page-item <?= $pagActual >= $totalPaginas ? 'disabled' : '' ?>">
-                                    <a class="page-link rounded-2 border-0 <?= $pagActual >= $totalPaginas ? 'text-muted' : '' ?>"
-                                       href="<?= $pagActual < $totalPaginas ? urlPaginaPromos($totalPaginas, $porPagina) : '#' ?>">»</a>
-                                </li>
-
-                            </ul>
-                        </nav>
-
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="text-muted" style="font-size:0.8rem;">Por página:</span>
-                            <select
-                                class="form-select form-select-sm border-0 bg-light rounded-2"
-                                style="width:auto; font-size:0.8rem; cursor:pointer;"
-                                onchange="window.location.href=this.value"
-                            >
-                                <?php foreach ($porPaginaPermitidos as $op): ?>
-                                    <option value="<?= urlPaginaPromos(1, $op) ?>" <?= $op === $porPagina ? 'selected' : '' ?>>
-                                        <?= $op ?> por página
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
+                            </div>
                         </div>
-
                     </div>
                 </div>
+
+                <!-- Modal Crear Promoción -->
+                <div class="modal fade" id="modalCrearPromocion" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <form action="<?= url('src/routes/promociones.php?accion=crear') ?>" method="POST" novalidate id="formCrearPromocion">
+                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
+                                <div class="modal-header border-0">
+                                    <h5 class="modal-title fw-bold">Crear Nueva Promoción</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                </div>
+                                <div class="modal-body d-flex flex-column gap-3">
+                                    <!-- Selector de alcance -->
+                                    <div class="p-3 rounded-3" style="background:#f8f9fa;">
+                                        <label class="form-label fw-semibold mb-2 d-block" style="font-size:0.9rem;">Alcance de la promoción *</label>
+                                        <div class="d-flex flex-column flex-md-row gap-2" id="alcanceOptions">
+                                            <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option active" data-alcance="aerolinea">
+                                                <input type="radio" name="alcance" value="aerolinea" checked class="d-none">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <i class="bi bi-building fs-4"></i>
+                                                    <div>
+                                                        <div class="fw-semibold alcance-title">Aerolínea completa</div>
+                                                        <div class="alcance-subtitle small">Aplica a todos los vuelos de tu aerolínea</div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                            <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option" data-alcance="ruta">
+                                                <input type="radio" name="alcance" value="ruta" class="d-none">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <i class="bi bi-geo-alt fs-4"></i>
+                                                    <div>
+                                                        <div class="fw-semibold alcance-title">Ruta específica</div>
+                                                        <div class="alcance-subtitle small">Origen → Destino (todos los vuelos de esa ruta)</div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                            <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option" data-alcance="vuelo">
+                                                <input type="radio" name="alcance" value="vuelo" class="d-none">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <i class="bi bi-airplane fs-4"></i>
+                                                    <div>
+                                                        <div class="fw-semibold alcance-title">Vuelo individual</div>
+                                                        <div class="alcance-subtitle small">Un solo vuelo específico</div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Campos según alcance: AEROLÍNEA (default) -->
+                                    <div id="alcance-aerolinea" class="alcance-panel">
+                                        <div class="text-muted small text-center py-2">
+                                            La promoción se aplicará a <strong>todos los vuelos</strong> de tu aerolínea durante el período seleccionado.
+                                        </div>
+                                    </div>
+
+                                    <!-- Campos según alcance: RUTA -->
+                                    <div id="alcance-ruta" class="alcance-panel d-none">
+                                        <div class="row g-2">
+                                            <div class="col-6">
+                                                <label class="form-label fw-semibold" style="font-size:0.9rem;">Origen *</label>
+                                                <select name="codigoOrigen" id="codigoOrigen" class="form-control" required disabled>
+                                                    <option value="">Seleccioná origen</option>
+                                                    <?php foreach ($origenesCEO as $o): ?>
+                                                        <option value="<?= htmlspecialchars($o['codigoOrigen']) ?>">
+                                                            <?= htmlspecialchars($o['origenVuelo']) ?> (<?= htmlspecialchars($o['codigoOrigen']) ?>)
+                                                        </option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label fw-semibold" style="font-size:0.9rem;">Destino *</label>
+                                                <select name="codigoDestino" id="codigoDestino" class="form-control" required disabled>
+                                                    <option value="">Primero elegí un origen</option>
+                                                </select>
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Campos según alcance: VUELO -->
+                                    <div id="alcance-vuelo" class="alcance-panel d-none">
+                                        <div>
+                                            <label class="form-label fw-semibold" style="font-size:0.9rem;">Vuelo *</label>
+                                            <select name="idVuelo" id="idVuelo" class="form-control" required disabled>
+                                                <option value="">Seleccioná un vuelo</option>
+                                                <?php foreach ($vuelosCEO as $v): ?>
+                                                    <option value="<?= (int)$v['idVuelo'] ?>" data-fecha-salida="<?= date('Y-m-d', strtotime($v['fechaHoraSalidaVuelo'])) ?>">
+                                                        #<?= (int)$v['idVuelo'] ?> · <?= htmlspecialchars($v['origenVuelo']) ?> → <?= htmlspecialchars($v['destinoVuelo']) ?>
+                                                        · <?= date('d/m/Y H:i', strtotime($v['fechaHoraSalidaVuelo'])) ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                            <div class="invalid-feedback"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Campos comunes -->
+                                    <div>
+                                        <label class="form-label fw-semibold" style="font-size:0.9rem;">Nombre de la promoción *</label>
+                                        <input type="text" name="nombre" class="form-control" placeholder="Ej. Verano Sin Límites" maxlength="150" required>
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                    <div>
+                                        <label class="form-label fw-semibold" style="font-size:0.9rem;">Descuento (%) *</label>
+                                        <input type="number" step="0.01" min="1" max="100" name="descuentoPorcentaje" class="form-control" placeholder="Ej. 20" required>
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <label class="form-label fw-semibold" style="font-size:0.9rem;">Fecha Inicio *</label>
+                                            <input type="date" name="fechaInicio" id="fechaInicio" class="form-control" required min="<?= date('Y-m-d') ?>">
+                                            <div class="invalid-feedback"></div>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label fw-semibold" style="font-size:0.9rem;">Fecha Fin *</label>
+                                            <input type="date" name="fechaFin" id="fechaFin" class="form-control" required min="<?= date('Y-m-d') ?>">
+                                            <div class="invalid-feedback"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="form-label fw-semibold" style="font-size:0.9rem;">Descripción / Alcance</label>
+                                        <textarea name="descripcion" class="form-control" rows="2" placeholder="Ej. Válido para todos los destinos nacionales."></textarea>
+                                    </div>
+                                    <div>
+                                        <label class="form-label fw-semibold" style="font-size:0.9rem;">Condiciones</label>
+                                        <textarea name="condiciones" class="form-control" rows="2" placeholder="Ej. Compras anticipadas con al menos 7 días de antelación."></textarea>
+                                    </div>
+                                    <div class="form-check mt-3">
+                                        <input type="checkbox" name="acumulable" value="1" id="chkAcumulable" class="form-check-input">
+                                        <label class="form-check-label small" for="chkAcumulable">
+                                            <i class="bi bi-layers"></i> Acumular con otras promociones (vuelo/ruta/aerolínea)
+                                        </label>
+                                        <div class="form-text text-muted small">
+                                            Si está activado, esta promo se suma a otras vigentes. Si no, tiene prioridad y bloquea las demás.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer border-0">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary btn-sm">Enviar a Aprobación</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Modal Editar Promoción -->
+                <div class="modal fade" id="modalEditarPromocion" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <form action="<?= url('src/routes/promociones.php?accion=editar') ?>" method="POST" novalidate id="formEditarPromocion">
+                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
+                                <input type="hidden" name="id" id="editar_id">
+                                <div class="modal-header border-0">
+                                    <h5 class="modal-title fw-bold">Editar Promoción</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                </div>
+                                <div class="modal-body d-flex flex-column gap-3">
+                                    <!-- Selector de alcance -->
+                                    <div class="p-3 rounded-3" style="background:#f8f9fa;">
+                                        <label class="form-label fw-semibold mb-2 d-block" style="font-size:0.9rem;">Alcance de la promoción *</label>
+                                        <div class="d-flex flex-column flex-md-row gap-2" id="alcanceOptionsEditar">
+                                            <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option" data-alcance="aerolinea">
+                                                <input type="radio" name="alcance" value="aerolinea" class="d-none">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <i class="bi bi-building fs-4"></i>
+                                                    <div>
+                                                        <div class="fw-semibold alcance-title">Aerolínea completa</div>
+                                                        <div class="alcance-subtitle small">Aplica a todos los vuelos de tu aerolínea</div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                            <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option" data-alcance="ruta">
+                                                <input type="radio" name="alcance" value="ruta" class="d-none">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <i class="bi bi-geo-alt fs-4"></i>
+                                                    <div>
+                                                        <div class="fw-semibold alcance-title">Ruta específica</div>
+                                                        <div class="alcance-subtitle small">Origen → Destino (todos los vuelos de esa ruta)</div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                            <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option" data-alcance="vuelo">
+                                                <input type="radio" name="alcance" value="vuelo" class="d-none">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <i class="bi bi-airplane fs-4"></i>
+                                                    <div>
+                                                        <div class="fw-semibold alcance-title">Vuelo individual</div>
+                                                        <div class="alcance-subtitle small">Un solo vuelo específico</div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Campos según alcance: AEROLÍNEA (default) -->
+                                    <div id="alcance-aerolinea-editar" class="alcance-panel">
+                                        <div class="text-muted small text-center py-2">
+                                            La promoción se aplicará a <strong>todos los vuelos</strong> de tu aerolínea durante el período seleccionado.
+                                        </div>
+                                    </div>
+
+                                    <!-- Campos según alcance: RUTA -->
+                                    <div id="alcance-ruta-editar" class="alcance-panel d-none">
+                                        <div class="row g-2">
+                                            <div class="col-6">
+                                                <label class="form-label fw-semibold" style="font-size:0.9rem;">Origen *</label>
+                                                <select name="codigoOrigen" id="codigoOrigenEditar" class="form-control" required disabled>
+                                                    <option value="">Seleccioná origen</option>
+                                                    <?php foreach ($origenesCEO as $o): ?>
+                                                        <option value="<?= htmlspecialchars($o['codigoOrigen']) ?>">
+                                                            <?= htmlspecialchars($o['origenVuelo']) ?> (<?= htmlspecialchars($o['codigoOrigen']) ?>)
+                                                        </option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label fw-semibold" style="font-size:0.9rem;">Destino *</label>
+                                                <select name="codigoDestino" id="codigoDestinoEditar" class="form-control" required disabled>
+                                                    <option value="">Primero elegí un origen</option>
+                                                </select>
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Campos según alcance: VUELO -->
+                                    <div id="alcance-vuelo-editar" class="alcance-panel d-none">
+                                        <div>
+                                            <label class="form-label fw-semibold" style="font-size:0.9rem;">Vuelo *</label>
+                                            <select name="idVuelo" id="idVueloEditar" class="form-control" required disabled>
+                                                <option value="">Seleccioná un vuelo</option>
+                                                <?php foreach ($vuelosCEO as $v): ?>
+                                                    <option value="<?= (int)$v['idVuelo'] ?>" data-fecha-salida="<?= date('Y-m-d', strtotime($v['fechaHoraSalidaVuelo'])) ?>">
+                                                        #<?= (int)$v['idVuelo'] ?> · <?= htmlspecialchars($v['origenVuelo']) ?> → <?= htmlspecialchars($v['destinoVuelo']) ?>
+                                                        · <?= date('d/m/Y H:i', strtotime($v['fechaHoraSalidaVuelo'])) ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                            <div class="invalid-feedback"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Campos comunes -->
+                                    <div>
+                                        <label class="form-label fw-semibold" style="font-size:0.9rem;">Nombre de la promoción *</label>
+                                        <input type="text" name="nombre" id="editar_nombre" class="form-control" placeholder="Ej. Verano Sin Límites" maxlength="150" required>
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                    <div>
+                                        <label class="form-label fw-semibold" style="font-size:0.9rem;">Descuento (%) *</label>
+                                        <input type="number" step="0.01" min="1" max="100" name="descuentoPorcentaje" id="editar_descuentoPorcentaje" class="form-control" placeholder="Ej. 20" required>
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <label class="form-label fw-semibold" style="font-size:0.9rem;">Fecha Inicio *</label>
+                                            <input type="date" name="fechaInicio" id="editar_fechaInicio" class="form-control" required min="<?= date('Y-m-d') ?>">
+                                            <div class="invalid-feedback"></div>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label fw-semibold" style="font-size:0.9rem;">Fecha Fin *</label>
+                                            <input type="date" name="fechaFin" id="editar_fechaFin" class="form-control" required min="<?= date('Y-m-d') ?>">
+                                            <div class="invalid-feedback"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="form-label fw-semibold" style="font-size:0.9rem;">Descripción / Alcance</label>
+                                        <textarea name="descripcion" id="editar_descripcion" class="form-control" rows="2" placeholder="Ej. Válido para todos los destinos nacionales."></textarea>
+                                    </div>
+                                    <div>
+                                        <label class="form-label fw-semibold" style="font-size:0.9rem;">Condiciones</label>
+                                        <textarea name="condiciones" id="editar_condiciones" class="form-control" rows="2" placeholder="Ej. Compras anticipadas con al menos 7 días de antelación."></textarea>
+                                    </div>
+                                    <div class="form-check mt-3">
+                                        <input type="checkbox" name="acumulable" value="1" id="editar_chkAcumulable" class="form-check-input">
+                                        <label class="form-check-label small" for="editar_chkAcumulable">
+                                            <i class="bi bi-layers"></i> Acumular con otras promociones (vuelo/ruta/aerolínea)
+                                        </label>
+                                        <div class="form-text text-muted small">
+                                            Si está activado, esta promo se suma a otras vigentes. Si no, tiene prioridad y bloquea las demás.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer border-0">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary btn-sm">Guardar Cambios</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-        </div>
-    </div>
-
-    <!-- Modal Crear Promoción -->
-    <div class="modal fade" id="modalCrearPromocion" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <form action="<?= url('src/routes/promociones.php?accion=crear') ?>" method="POST" novalidate id="formCrearPromocion">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
-                    <div class="modal-header border-0">
-                        <h5 class="modal-title fw-bold">Crear Nueva Promoción</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                    </div>
-                    <div class="modal-body d-flex flex-column gap-3">
-                        <!-- Selector de alcance -->
-                        <div class="p-3 rounded-3" style="background:#f8f9fa;">
-                            <label class="form-label fw-semibold mb-2 d-block" style="font-size:0.9rem;">Alcance de la promoción *</label>
-                            <div class="d-flex flex-column flex-md-row gap-2" id="alcanceOptions">
-                                <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option active" data-alcance="aerolinea">
-                                    <input type="radio" name="alcance" value="aerolinea" checked class="d-none">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <i class="bi bi-building fs-4"></i>
-                                        <div>
-                                            <div class="fw-semibold alcance-title">Aerolínea completa</div>
-                                            <div class="alcance-subtitle small">Aplica a todos los vuelos de tu aerolínea</div>
-                                        </div>
-                                    </div>
-                                </label>
-                                <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option" data-alcance="ruta">
-                                    <input type="radio" name="alcance" value="ruta" class="d-none">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <i class="bi bi-geo-alt fs-4"></i>
-                                        <div>
-                                            <div class="fw-semibold alcance-title">Ruta específica</div>
-                                            <div class="alcance-subtitle small">Origen → Destino (todos los vuelos de esa ruta)</div>
-                                        </div>
-                                    </div>
-                                </label>
-                                <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option" data-alcance="vuelo">
-                                    <input type="radio" name="alcance" value="vuelo" class="d-none">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <i class="bi bi-airplane fs-4"></i>
-                                        <div>
-                                            <div class="fw-semibold alcance-title">Vuelo individual</div>
-                                            <div class="alcance-subtitle small">Un solo vuelo específico</div>
-                                        </div>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Campos según alcance: AEROLÍNEA (default) -->
-                        <div id="alcance-aerolinea" class="alcance-panel">
-                            <div class="text-muted small text-center py-2">
-                                La promoción se aplicará a <strong>todos los vuelos</strong> de tu aerolínea durante el período seleccionado.
-                            </div>
-                        </div>
-
-                        <!-- Campos según alcance: RUTA -->
-                        <div id="alcance-ruta" class="alcance-panel d-none">
-                            <div class="row g-2">
-                                <div class="col-6">
-                                    <label class="form-label fw-semibold" style="font-size:0.9rem;">Origen *</label>
-                                    <select name="codigoOrigen" id="codigoOrigen" class="form-control" required disabled>
-                                        <option value="">Seleccioná origen</option>
-                                        <?php foreach ($origenesCEO as $o): ?>
-                                            <option value="<?= htmlspecialchars($o['codigoOrigen']) ?>">
-                                                <?= htmlspecialchars($o['origenVuelo']) ?> (<?= htmlspecialchars($o['codigoOrigen']) ?>)
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                    <div class="invalid-feedback"></div>
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label fw-semibold" style="font-size:0.9rem;">Destino *</label>
-                                    <select name="codigoDestino" id="codigoDestino" class="form-control" required disabled>
-                                        <option value="">Primero elegí un origen</option>
-                                    </select>
-                                    <div class="invalid-feedback"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Campos según alcance: VUELO -->
-                        <div id="alcance-vuelo" class="alcance-panel d-none">
-                            <div>
-                                <label class="form-label fw-semibold" style="font-size:0.9rem;">Vuelo *</label>
-                                <select name="idVuelo" id="idVuelo" class="form-control" required disabled>
-                                    <option value="">Seleccioná un vuelo</option>
-                                    <?php foreach ($vuelosCEO as $v): ?>
-                                        <option value="<?= (int)$v['idVuelo'] ?>" data-fecha-salida="<?= date('Y-m-d', strtotime($v['fechaHoraSalidaVuelo'])) ?>">
-                                            #<?= (int)$v['idVuelo'] ?> · <?= htmlspecialchars($v['origenVuelo']) ?> → <?= htmlspecialchars($v['destinoVuelo']) ?>
-                                            · <?= date('d/m/Y H:i', strtotime($v['fechaHoraSalidaVuelo'])) ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                                <div class="invalid-feedback"></div>
-                            </div>
-                        </div>
-
-                        <!-- Campos comunes -->
-                        <div>
-                            <label class="form-label fw-semibold" style="font-size:0.9rem;">Nombre de la promoción *</label>
-                            <input type="text" name="nombre" class="form-control" placeholder="Ej. Verano Sin Límites" maxlength="150" required>
-                            <div class="invalid-feedback"></div>
-                        </div>
-                        <div>
-                            <label class="form-label fw-semibold" style="font-size:0.9rem;">Descuento (%) *</label>
-                            <input type="number" step="0.01" min="1" max="100" name="descuentoPorcentaje" class="form-control" placeholder="Ej. 20" required>
-                            <div class="invalid-feedback"></div>
-                        </div>
-                        <div class="row g-2">
-                            <div class="col-6">
-                                <label class="form-label fw-semibold" style="font-size:0.9rem;">Fecha Inicio *</label>
-                                <input type="date" name="fechaInicio" id="fechaInicio" class="form-control" required min="<?= date('Y-m-d') ?>">
-                                <div class="invalid-feedback"></div>
-                            </div>
-                            <div class="col-6">
-                                <label class="form-label fw-semibold" style="font-size:0.9rem;">Fecha Fin *</label>
-                                <input type="date" name="fechaFin" id="fechaFin" class="form-control" required min="<?= date('Y-m-d') ?>">
-                                <div class="invalid-feedback"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="form-label fw-semibold" style="font-size:0.9rem;">Descripción / Alcance</label>
-                            <textarea name="descripcion" class="form-control" rows="2" placeholder="Ej. Válido para todos los destinos nacionales."></textarea>
-                        </div>
-                        <div>
-                            <label class="form-label fw-semibold" style="font-size:0.9rem;">Condiciones</label>
-                            <textarea name="condiciones" class="form-control" rows="2" placeholder="Ej. Compras anticipadas con al menos 7 días de antelación."></textarea>
-                        </div>
-                        <div class="form-check mt-3">
-                            <input type="checkbox" name="acumulable" value="1" id="chkAcumulable" class="form-check-input">
-                            <label class="form-check-label small" for="chkAcumulable">
-                                <i class="bi bi-layers"></i> Acumular con otras promociones (vuelo/ruta/aerolínea)
-                            </label>
-                            <div class="form-text text-muted small">
-                                Si está activado, esta promo se suma a otras vigentes. Si no, tiene prioridad y bloquea las demás.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer border-0">
-                        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary btn-sm">Enviar a Aprobación</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-    <!-- Modal Editar Promoción -->
-    <div class="modal fade" id="modalEditarPromocion" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <form action="<?= url('src/routes/promociones.php?accion=editar') ?>" method="POST" novalidate id="formEditarPromocion">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
-                    <input type="hidden" name="id" id="editar_id">
-                    <div class="modal-header border-0">
-                        <h5 class="modal-title fw-bold">Editar Promoción</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                    </div>
-                    <div class="modal-body d-flex flex-column gap-3">
-                        <!-- Selector de alcance -->
-                        <div class="p-3 rounded-3" style="background:#f8f9fa;">
-                            <label class="form-label fw-semibold mb-2 d-block" style="font-size:0.9rem;">Alcance de la promoción *</label>
-                            <div class="d-flex flex-column flex-md-row gap-2" id="alcanceOptionsEditar">
-                                <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option" data-alcance="aerolinea">
-                                    <input type="radio" name="alcance" value="aerolinea" class="d-none">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <i class="bi bi-building fs-4"></i>
-                                        <div>
-                                            <div class="fw-semibold alcance-title">Aerolínea completa</div>
-                                            <div class="alcance-subtitle small">Aplica a todos los vuelos de tu aerolínea</div>
-                                        </div>
-                                    </div>
-                                </label>
-                                <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option" data-alcance="ruta">
-                                    <input type="radio" name="alcance" value="ruta" class="d-none">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <i class="bi bi-geo-alt fs-4"></i>
-                                        <div>
-                                            <div class="fw-semibold alcance-title">Ruta específica</div>
-                                            <div class="alcance-subtitle small">Origen → Destino (todos los vuelos de esa ruta)</div>
-                                        </div>
-                                    </div>
-                                </label>
-                                <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option" data-alcance="vuelo">
-                                    <input type="radio" name="alcance" value="vuelo" class="d-none">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <i class="bi bi-airplane fs-4"></i>
-                                        <div>
-                                            <div class="fw-semibold alcance-title">Vuelo individual</div>
-                                            <div class="alcance-subtitle small">Un solo vuelo específico</div>
-                                        </div>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Campos según alcance: AEROLÍNEA (default) -->
-                        <div id="alcance-aerolinea-editar" class="alcance-panel">
-                            <div class="text-muted small text-center py-2">
-                                La promoción se aplicará a <strong>todos los vuelos</strong> de tu aerolínea durante el período seleccionado.
-                            </div>
-                        </div>
-
-                        <!-- Campos según alcance: RUTA -->
-                        <div id="alcance-ruta-editar" class="alcance-panel d-none">
-                            <div class="row g-2">
-                                <div class="col-6">
-                                    <label class="form-label fw-semibold" style="font-size:0.9rem;">Origen *</label>
-                                    <select name="codigoOrigen" id="codigoOrigenEditar" class="form-control" required disabled>
-                                        <option value="">Seleccioná origen</option>
-                                        <?php foreach ($origenesCEO as $o): ?>
-                                            <option value="<?= htmlspecialchars($o['codigoOrigen']) ?>">
-                                                <?= htmlspecialchars($o['origenVuelo']) ?> (<?= htmlspecialchars($o['codigoOrigen']) ?>)
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                    <div class="invalid-feedback"></div>
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label fw-semibold" style="font-size:0.9rem;">Destino *</label>
-                                    <select name="codigoDestino" id="codigoDestinoEditar" class="form-control" required disabled>
-                                        <option value="">Primero elegí un origen</option>
-                                    </select>
-                                    <div class="invalid-feedback"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Campos según alcance: VUELO -->
-                        <div id="alcance-vuelo-editar" class="alcance-panel d-none">
-                            <div>
-                                <label class="form-label fw-semibold" style="font-size:0.9rem;">Vuelo *</label>
-                                <select name="idVuelo" id="idVueloEditar" class="form-control" required disabled>
-                                    <option value="">Seleccioná un vuelo</option>
-                                    <?php foreach ($vuelosCEO as $v): ?>
-                                        <option value="<?= (int)$v['idVuelo'] ?>" data-fecha-salida="<?= date('Y-m-d', strtotime($v['fechaHoraSalidaVuelo'])) ?>">
-                                            #<?= (int)$v['idVuelo'] ?> · <?= htmlspecialchars($v['origenVuelo']) ?> → <?= htmlspecialchars($v['destinoVuelo']) ?>
-                                            · <?= date('d/m/Y H:i', strtotime($v['fechaHoraSalidaVuelo'])) ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                                <div class="invalid-feedback"></div>
-                            </div>
-                        </div>
-
-                        <!-- Campos comunes -->
-                        <div>
-                            <label class="form-label fw-semibold" style="font-size:0.9rem;">Nombre de la promoción *</label>
-                            <input type="text" name="nombre" id="editar_nombre" class="form-control" placeholder="Ej. Verano Sin Límites" maxlength="150" required>
-                            <div class="invalid-feedback"></div>
-                        </div>
-                        <div>
-                            <label class="form-label fw-semibold" style="font-size:0.9rem;">Descuento (%) *</label>
-                            <input type="number" step="0.01" min="1" max="100" name="descuentoPorcentaje" id="editar_descuentoPorcentaje" class="form-control" placeholder="Ej. 20" required>
-                            <div class="invalid-feedback"></div>
-                        </div>
-                        <div class="row g-2">
-                            <div class="col-6">
-                                <label class="form-label fw-semibold" style="font-size:0.9rem;">Fecha Inicio *</label>
-                                <input type="date" name="fechaInicio" id="editar_fechaInicio" class="form-control" required min="<?= date('Y-m-d') ?>">
-                                <div class="invalid-feedback"></div>
-                            </div>
-                            <div class="col-6">
-                                <label class="form-label fw-semibold" style="font-size:0.9rem;">Fecha Fin *</label>
-                                <input type="date" name="fechaFin" id="editar_fechaFin" class="form-control" required min="<?= date('Y-m-d') ?>">
-                                <div class="invalid-feedback"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="form-label fw-semibold" style="font-size:0.9rem;">Descripción / Alcance</label>
-                            <textarea name="descripcion" id="editar_descripcion" class="form-control" rows="2" placeholder="Ej. Válido para todos los destinos nacionales."></textarea>
-                        </div>
-                        <div>
-                            <label class="form-label fw-semibold" style="font-size:0.9rem;">Condiciones</label>
-                            <textarea name="condiciones" id="editar_condiciones" class="form-control" rows="2" placeholder="Ej. Compras anticipadas con al menos 7 días de antelación."></textarea>
-                        </div>
-                        <div class="form-check mt-3">
-                            <input type="checkbox" name="acumulable" value="1" id="editar_chkAcumulable" class="form-check-input">
-                            <label class="form-check-label small" for="editar_chkAcumulable">
-                                <i class="bi bi-layers"></i> Acumular con otras promociones (vuelo/ruta/aerolínea)
-                            </label>
-                            <div class="form-text text-muted small">
-                                Si está activado, esta promo se suma a otras vigentes. Si no, tiene prioridad y bloquea las demás.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer border-0">
-                        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary btn-sm">Guardar Cambios</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-</div>
 
         </main>
     </div>
@@ -1449,3 +1447,5 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 </body>
 </html>
+
+<?php require_once './src/views/layouts/footer.php'; ?>

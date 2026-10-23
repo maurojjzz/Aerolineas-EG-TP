@@ -76,7 +76,7 @@ function badgeEstadoCEO(string $estado): string {
 <div>
     <nav class="breadcrumbCont" aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=inicio') ?>">Inicio</a></li>
+            <!-- <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=inicio') ?>">Inicio</a></li> -->
             <li class="breadcrumb-item active" aria-current="page">CEOs</li>
         </ol>
     </nav>

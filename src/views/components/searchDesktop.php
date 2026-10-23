@@ -33,7 +33,7 @@
         </div>
 
         <!-- RADIOS IDA / IDA Y VUELTA -->
-        <div class="d-flex align-items-center gap-4 px-4 pt-3">
+        <div id="contenedorRadiosViaje" class="d-flex align-items-center gap-4 px-4 pt-3">
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="tipo_viaje_desktop" id="desktopSoloIda" value="solo_ida" checked>
                 <label class="form-check-label fw-semibold" for="desktopSoloIda" style="font-size:0.9rem;">Solo ida</label>
@@ -117,3 +117,8 @@
         </form>
     </div>
 </div>
+<script>
+    const URL_NOVEDADES_JSON = "<?= url('src/routes/novedades-json.php') ?>";
+    const URL_CLIENTE_NOVEDADES = "<?= url('index.php?pagina=cliente-novedades') ?>";
+    const URL_CLIENTE_NOVEDAD_DETALLE = "<?= url('index.php?pagina=cliente-novedad-detalle&id=') ?>";
+</script>

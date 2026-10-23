@@ -266,3 +266,24 @@ ul .nav-item .nav-link:hover {
         transform: rotate(360deg);
     }
 }
+
+#dropdownNotificaciones {
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Efecto al hacer hover (pasar el mouse por encima) */
+#dropdownNotificaciones:hover {
+    transform: scale(1.08);
+}
+
+/* Efecto al hacer click (agrandarse un poquito más) */
+#dropdownNotificaciones:active,
+#dropdownNotificaciones.show {
+    transform: scale(1.15);
+    background-color: #e9ecef !important; /* Un gris suavecito de fondo opcional */
+    border: none !important;
+    box-shadow: none !important;
+}

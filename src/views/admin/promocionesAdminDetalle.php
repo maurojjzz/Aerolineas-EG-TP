@@ -35,7 +35,7 @@ function badgeEstadoPromoDetalle(string $estado): string {
 <div>
     <nav class="breadcrumbCont" aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=inicio') ?>">Inicio</a></li>
+            <!-- <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=inicio') ?>">Inicio</a></li> -->
             <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=promociones&seccion=listado') ?>">Promociones</a></li>
             <li class="breadcrumb-item active" aria-current="page">Detalle: <?= htmlspecialchars($promo['codigo'] ?? '') ?></li>
         </ol>
@@ -43,9 +43,6 @@ function badgeEstadoPromoDetalle(string $estado): string {
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="m-0 fs-2 fw-bold">Detalle de la Promoción</h2>
-        <a href="<?= url('index.php?pagina=promociones&seccion=listado') ?>" class="btn btn-outline-secondary btn-sm">
-            ← Volver al listado
-        </a>
     </div>
 
     <div class="row g-4">
