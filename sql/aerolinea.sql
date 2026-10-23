@@ -107,8 +107,8 @@ CREATE TABLE `promocion` (
   `estado` enum('Pendiente','Aprobada','Denegada') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'Pendiente',
   `condiciones` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci,
   `acumulable` tinyint(1) NOT NULL DEFAULT '0',
-  `notificacion_vista` TINYINT(1) DEFAULT 0,
   `fechaCreacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `notificacion_vista` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`idPromocion`),
   UNIQUE KEY `codigo_UNIQUE` (`codigo`),
   KEY `fk_promocion_aerolinea_idx` (`idAerolinea`),
@@ -118,7 +118,7 @@ CREATE TABLE `promocion` (
   CONSTRAINT `fk_promocion_aerolinea` FOREIGN KEY (`idAerolinea`) REFERENCES `aerolinea` (`idAerolinea`) ON DELETE CASCADE,
   CONSTRAINT `fk_promocion_usuario` FOREIGN KEY (`idUsuarioCreador`) REFERENCES `usuario` (`idUsuario`) ON DELETE CASCADE,
   CONSTRAINT `fk_promocion_vuelo` FOREIGN KEY (`idVuelo`) REFERENCES `vuelo` (`idVuelo`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -127,7 +127,7 @@ CREATE TABLE `promocion` (
 
 LOCK TABLES `promocion` WRITE;
 /*!40000 ALTER TABLE `promocion` DISABLE KEYS */;
-INSERT INTO `promocion` VALUES (9,'PROM-E3E5',4,16,2,NULL,NULL,'prueba','fdfdfgd',20.00,'2026-10-22','2026-10-30','Aprobada','dfgf',0,'2026-10-22 00:14:48');
+INSERT INTO `promocion` VALUES (9,'PROM-E3E5',4,16,2,NULL,NULL,'prueba','fdfdfgd',20.00,'2026-10-22','2026-10-30','Aprobada','dfgf',0,'2026-10-22 00:14:48',0),(10,'PROM-182B',4,16,15,NULL,NULL,'hfdfg','hfgh',56.00,'2026-10-30','2026-10-31','Denegada','fgh',1,'2026-10-23 18:03:06',1);
 /*!40000 ALTER TABLE `promocion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -190,8 +190,8 @@ CREATE TABLE `usuario` (
   `fecha_hora_autorizacion` datetime DEFAULT NULL,
   `tokenVerificacion` varchar(64) COLLATE utf8mb4_unicode_520_ci DEFAULT NULL,
   `idAerolinea` int DEFAULT NULL,
-  `notificacion_vista` TINYINT(1) DEFAULT 0,
   `fechaCreacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `notificacion_vista` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`idUsuario`),
   UNIQUE KEY `uk_documento` (`tipoDocumento`,`nroDocumento`),
   UNIQUE KEY `email_UNIQUE` (`email`),
@@ -208,7 +208,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (1,'Mauro','Jimenez','DNI','42130241','$2y$10$qmETw0daBiM3.GnGjuSpeOE4zEE7XeksSZaFb2nNr3/pUtEycNj7q','maurojim123@gmail.com','3413417150','1999-10-15','cliente',0,0,NULL,'a41dedcba7dba463c1a06b7a9c5d011b39ca21eeefec927f1e2fe2674917b332',NULL,'2026-09-26 12:59:31'),(6,'Kim','Petras','pasaporte','PP45332424','$2y$10$LzAeQEUY3y2FqtOG8OVMh.7MURZQGXeog9VwLZ2Lwp4olP4odSaSW','dtla@detour.com','2339233923','1992-08-08','ceo',0,0,'2026-10-20 21:11:40','814c2080baeec29302f0d42466789ad4ea8890f0e6f0e4062ecce266b6914e73',2,'2026-09-26 12:59:31'),(7,'Ejemplo','Jimenez','DNI','42130243','$2y$10$T6yOga/HlWghlG13qocc7eG15tyiPWWP/uJXOkaaXJHH5HGw0EuRG','ejejej@jojojo.com','2331233923','2008-09-09','ceo',0,0,'1970-01-01 00:00:00','7c03dedfbcc64f2a7f0625264b229946271343c8752274d3628041c194a254ad',7,'2026-09-26 12:59:31'),(9,'Borrar','Proximamente','DNI','41776781','$2y$10$syq8os0psjpK89z9HOp5w.wWtcvr.p0Bm9bZnhJ2JDOaNEp5K/Qya','borrar@ceo.com','332332334','2008-09-02','ceo',0,0,'2026-09-26 12:59:31','5f33f0d7fc8564e483004ff35e75014016be585811527d44fd38e45983058d8d',6,'2026-09-26 12:59:31'),(13,'Tessa','Testing','DNI','83743554','$2y$10$fazr.0l/Qe8RDDy/i4uIjOC9qVVc7XkNaRfZqT9oSkuWXc3udd.Bq','nosoy@real.com','43223233','1996-01-01','cliente',0,0,NULL,'c281c35e3b8269d3b4a4b900177fca2d88c4b7c92f440f15827f6bb6e5bd924d',NULL,'2026-09-26 12:59:31'),(14,'admin','admin','DNI','99399939','$2y$10$dcW1FaEM96dcw8xzl1Awp.HTsrM8PJI3l7ZDw6DAscpKX0xDQXb/e','admin@admin.admin','54332212','2008-09-02','admin',1,1,NULL,'6dd6a9e9b6026fabb6e2e7ac195b6f045cbc330f7c05548b8859ce48d64d7df2',6,'2026-09-26 12:59:31'),(15,'Damian','Perez','DNI','42312984','$2y$10$Tk4rDydj/F0qg5W9O9M7yOJUlFBQvuZWIS2TC1gpdiHffABDp.7yK','test@test.test','3413332211','1998-08-08','cliente',1,1,NULL,'017cce6bbd094ff7117fea76a4be0c8e0ec8f52b21b6cb1d992cf653dff51016',NULL,'2026-09-26 12:59:31'),(16,'CEO','CEO','DNI','1111222','$2y$10$AaKH0zImRtULoT9LnXjrqe5ilHNGdxemnojq/a46F..nM3UMRaAGe','ceo@ceo.ceo','22211222','2008-07-07','ceo',1,1,'2026-09-26 12:59:31','73d7a954d84e3fb3c3bb12b280dbbc11ccb9617f2df023d3de1dfe200093b410',4,'2026-10-02 17:14:35'),(17,'Moto','Rola','DNI','6767676','$2y$10$decOEDGxV/fsYGx7cAs3G.oaixxBNMtlHqFNFlaulXmZudiLUH8/G','sticclefalbre@gmail.com','67676776','1967-06-07','cliente',1,1,NULL,NULL,NULL,'2026-10-05 19:22:29'),(18,'Juan','Perez','DNI','54323456','$2y$10$nG25fKsga96KfvhWhyf2F.Jy32w5u8gv7T/buqktq/l/9pIYhcEMO','maurocrunchy1@gmail.com','344312223','2008-10-01','admin',1,1,NULL,NULL,NULL,'2026-10-05 19:34:09'),(19,'Carlos','Yztorya','DNI','76998488','$2y$10$WlBZaqtVMSvn3EFO73aJS.C5sTgLulnQv0/3nsT3ejC9CWSsqJDCG','salesrepjjzz+carlos@gmail.com','53234321','1989-07-21','ceo',1,1,'2026-10-21 16:55:41',NULL,1,'2026-10-21 16:53:07');
+INSERT INTO `usuario` VALUES (1,'Mauro','Jimenez','DNI','42130241','$2y$10$qmETw0daBiM3.GnGjuSpeOE4zEE7XeksSZaFb2nNr3/pUtEycNj7q','maurojim123@gmail.com','3413417150','1999-10-15','cliente',0,0,NULL,'a41dedcba7dba463c1a06b7a9c5d011b39ca21eeefec927f1e2fe2674917b332',NULL,'2026-09-26 12:59:31',0),(13,'Tessa','Testing','DNI','83743554','$2y$10$fazr.0l/Qe8RDDy/i4uIjOC9qVVc7XkNaRfZqT9oSkuWXc3udd.Bq','nosoy@real.com','43223233','1996-01-01','cliente',0,0,NULL,'c281c35e3b8269d3b4a4b900177fca2d88c4b7c92f440f15827f6bb6e5bd924d',NULL,'2026-09-26 12:59:31',0),(14,'admin','admin','DNI','99399939','$2y$10$dcW1FaEM96dcw8xzl1Awp.HTsrM8PJI3l7ZDw6DAscpKX0xDQXb/e','admin@admin.admin','54332212','2008-09-02','admin',1,1,NULL,'6dd6a9e9b6026fabb6e2e7ac195b6f045cbc330f7c05548b8859ce48d64d7df2',6,'2026-09-26 12:59:31',0),(15,'Damian','Perez','DNI','42312984','$2y$10$Tk4rDydj/F0qg5W9O9M7yOJUlFBQvuZWIS2TC1gpdiHffABDp.7yK','test@test.test','3413332211','1998-08-08','cliente',1,1,NULL,'017cce6bbd094ff7117fea76a4be0c8e0ec8f52b21b6cb1d992cf653dff51016',NULL,'2026-09-26 12:59:31',0),(16,'CEO','CEO','DNI','1111222','$2y$10$AaKH0zImRtULoT9LnXjrqe5ilHNGdxemnojq/a46F..nM3UMRaAGe','ceo@ceo.ceo','22211222','2008-07-07','ceo',1,1,'2026-09-26 12:59:31','73d7a954d84e3fb3c3bb12b280dbbc11ccb9617f2df023d3de1dfe200093b410',4,'2026-10-02 17:14:35',0),(17,'Moto','Rola','DNI','6767676','$2y$10$decOEDGxV/fsYGx7cAs3G.oaixxBNMtlHqFNFlaulXmZudiLUH8/G','sticclefalbre@gmail.com','67676776','1967-06-07','cliente',1,1,NULL,NULL,NULL,'2026-10-05 19:22:29',0),(18,'Juan','Perez','DNI','54323456','$2y$10$nG25fKsga96KfvhWhyf2F.Jy32w5u8gv7T/buqktq/l/9pIYhcEMO','maurocrunchy1@gmail.com','344312223','2008-10-01','admin',1,1,NULL,NULL,NULL,'2026-10-05 19:34:09',0),(19,'Carlos','Yztorya','DNI','76998488','$2y$10$WlBZaqtVMSvn3EFO73aJS.C5sTgLulnQv0/3nsT3ejC9CWSsqJDCG','salesrepjjzz+carlos@gmail.com','53234321','1989-07-21','ceo',1,1,'2026-10-21 16:55:41','',1,'2026-10-21 16:53:07',0);
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -257,4 +257,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-10-22  0:17:28
+-- Dump completed on 2026-10-23 18:07:09
