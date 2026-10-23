@@ -121,4 +121,6 @@
     const URL_NOVEDADES_JSON = "<?= url('src/routes/novedades-json.php') ?>";
     const URL_CLIENTE_NOVEDADES = "<?= url('index.php?pagina=cliente-novedades') ?>";
     const URL_CLIENTE_NOVEDAD_DETALLE = "<?= url('index.php?pagina=cliente-novedad-detalle&id=') ?>";
+    const URL_PROMOCIONES_JSON = "<?= url('src/routes/promociones-json.php') ?>";
+    const URL_CLIENTE_PROMOCIONES = "<?= url('index.php?pagina=cliente-novedades&tab=promociones') ?>";
 </script>

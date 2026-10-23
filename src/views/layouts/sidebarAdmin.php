@@ -11,12 +11,12 @@ $navLinks = [];
 
 if ($rol === 'admin') {
     $navLinks = [
-        [
-            'label'  => 'Inicio',
-            'href'   => 'index.php?pagina=inicio',
-            'icon'   => 'casa.png',
-            'activo' => $pagina === 'inicio',
-        ],
+        // [
+        //     'label'  => 'Inicio',
+        //     'href'   => 'index.php?pagina=inicio',
+        //     'icon'   => 'casa.png',
+        //     'activo' => $pagina === 'inicio',
+        // ],
         [
             'label'  => 'Aerolíneas',
             'href'   => 'index.php?pagina=aerolinea&seccion=listado',

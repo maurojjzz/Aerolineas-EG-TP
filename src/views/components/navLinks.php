@@ -21,11 +21,15 @@ $urlLogout   = url('src/routes/usuarios.php?accion=logout');
 
 $urlInicio = match (true) {
     $isLoggedIn && $rol === 'cliente' => url('index.php?pagina=cliente'),
-    $isLoggedIn && $esStaff           => $urlPanel,
+    // $isLoggedIn && $esStaff           => $urlPanel,
     default                           => url('index.php?pagina=inicio'),
 };
 
+$urlNovedades = url('index.php?pagina=cliente-novedades&tab=novedades');
+$urlPromociones = url('index.php?pagina=cliente-novedades&tab=promociones');
+
 $paginaActual = $_GET['pagina'] ?? 'inicio';
+$tabActual = $_GET['tab'] ?? 'novedades';
 
 $rolLabel = match ($rol) {
     'admin' => 'Administrador',
@@ -45,7 +49,9 @@ if (!$isLoggedIn) {
 } elseif ($rol === 'cliente') {
     $navLinks = [
         ['label' => 'Inicio', 'href' => $urlInicio, 'active' => in_array($paginaActual, ['cliente', 'inicio'], true)],
-        ['label' => 'Mis reservas', 'href' => url('index.php?pagina=mis-reservas'), 'active' => $paginaActual === 'mis-reservas'],
+        ['label' => 'Vuelos', 'href' => url('index.php?pagina=buscar-vuelos'), 'active' => $paginaActual === 'buscar-vuelos'],
+        ['label' => 'Promociones', 'href' => $urlPromociones, 'active' => $paginaActual === 'cliente-novedades' && $tabActual === 'promociones'],
+        // ['label' => 'Mis reservas', 'href' => url('index.php?pagina=mis-reservas'), 'active' => $paginaActual === 'mis-reservas'],
         ['label' => 'Historial de compras', 'href' => url('index.php?pagina=historial-compras'), 'active' => $paginaActual === 'historial-compras'],
         ['label' => 'Perfil', 'href' => $urlPerfil, 'active' => $paginaActual === 'perfil'],
         ['label' => 'Ayuda', 'href' => url('index.php?pagina=ayuda'), 'active' => $paginaActual === 'ayuda'],

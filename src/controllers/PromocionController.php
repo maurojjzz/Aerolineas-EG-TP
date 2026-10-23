@@ -635,4 +635,49 @@ class PromocionController {
         mysqli_stmt_close($stmt);
         return $fila ?: null;
     }
+
+    // ── Obtener las últimas promociones habilitadas (Aprobadas y vigentes) ──
+    public function obtenerUltimasPublicadas(int $limite = 3): array {
+        $stmt = mysqli_prepare($this->conexion,
+            "SELECT p.*, a.nombreAerolinea, a.codigoIATA
+             FROM promocion p
+             JOIN aerolinea a ON p.idAerolinea = a.idAerolinea
+             WHERE p.estado = 'Aprobada'
+               AND p.fechaInicio <= CURDATE()
+               AND p.fechaFin >= CURDATE()
+             ORDER BY p.fechaCreacion DESC
+             LIMIT ?");
+        
+        mysqli_stmt_bind_param($stmt, 'i', $limite);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        
+        $filas = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $filas[] = $row;
+        }
+        
+        mysqli_stmt_close($stmt);
+        return $filas;
+    }
+
+    // ── Listar TODAS las promociones habilitadas (Aprobadas y vigentes) ──
+    public function listarTodasPublicadas(): array {
+        $result = mysqli_query($this->conexion,
+            "SELECT p.*, a.nombreAerolinea, a.codigoIATA
+             FROM promocion p
+             JOIN aerolinea a ON p.idAerolinea = a.idAerolinea
+             WHERE p.estado = 'Aprobada'
+               AND p.fechaInicio <= CURDATE()
+               AND p.fechaFin >= CURDATE()
+             ORDER BY p.fechaCreacion DESC");
+             
+        if (!$result) return [];
+        
+        $filas = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $filas[] = $row;
+        }
+        return $filas;
+    }
 }
