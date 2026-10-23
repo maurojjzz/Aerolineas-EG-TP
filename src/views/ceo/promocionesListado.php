@@ -10,6 +10,10 @@ requireRol('ceo');
 $ctrl = new PromocionController($link);
 $promocionesTodas = $ctrl->listarPorCEO();
 
+// Datos para el modal de creación
+$vuelosCEO    = $ctrl->obtenerVuelosCEO();
+$origenesCEO  = $ctrl->obtenerOrigenesCEO();
+
 // ---------- KPIs ----------
 $total      = count($promocionesTodas);
 $pendientes = count(array_filter($promocionesTodas, fn($p) => $p['estado'] === 'Pendiente'));
@@ -46,6 +50,42 @@ function badgeEstadoPromo(string $estado): string {
         default    => 'text-bg-warning',
     };
 }
+
+// Helper para mostrar el alcance de una promo en la tabla
+function textoAlcancePromo(array $p): string {
+    if (!empty($p['idVuelo'])) {
+        $origen = $p['codigoOrigen'] ?? '—';
+        $destino = $p['codigoDestino'] ?? '—';
+        return "Vuelo #{$p['idVuelo']} ($origen → $destino)";
+    }
+    if (!empty($p['codigoOrigen']) && !empty($p['codigoDestino'])) {
+        return "Ruta {$p['codigoOrigen']} → {$p['codigoDestino']}";
+    }
+    return 'Aerolínea completa';
+}
+
+// Helper para badge de estado de vigencia (recibe array promo completo)
+function badgeVigenciaPromo(array $p): string {
+    // Si está denegada, mostrar denegada
+    if ($p['estado'] === 'Denegada') {
+        return '<span class="badge text-bg-danger">Denegada</span>';
+    }
+    // Si está pendiente, mostrar pendiente
+    if ($p['estado'] === 'Pendiente') {
+        return '<span class="badge text-bg-warning">Pendiente</span>';
+    }
+    // Solo para Aprobada: calcular por fechas
+    $hoy = new DateTime();
+    $fin = new DateTime($p['fechaFin']);
+    if ($fin < $hoy) {
+        return '<span class="badge text-bg-danger">Vencida</span>';
+    }
+    $diff = $hoy->diff($fin)->days;
+    if ($diff <= 7) {
+        return '<span class="badge text-bg-warning">Quedan ' . $diff . ' d&iacute;a' . ($diff === 1 ? '' : 's') . '</span>';
+    }
+    return '<span class="badge text-bg-success">Vigente</span>';
+}
 ?>
 
 <!DOCTYPE html>
@@ -75,6 +115,56 @@ function badgeEstadoPromo(string $estado): string {
             background-color: #0d6efd; color: #fff; font-weight: 600;
         }
         .tablaContenedor .pagination .page-item.disabled .page-link { opacity: .6; }
+
+        /* Selector de alcance - sombreado sutil en activo */
+        .alcance-option.active {
+            background-color: rgba(13, 110, 253, 0.08) !important;
+            border-color: #0d6efd !important;
+        }
+        .alcance-option.active .alcance-title {
+            color: #0d6efd !important;
+            font-weight: 600;
+        }
+        .alcance-option.active .alcance-subtitle {
+            color: #495057 !important; /* gris oscuro legible */
+        }
+        .alcance-option.active i {
+            color: #0d6efd !important;
+        }
+        /* En estado normal (no activo) */
+        .alcance-option:not(.active) .alcance-title {
+            color: #0d6efd;
+        }
+        .alcance-option:not(.active) .alcance-subtitle {
+            color: #6c757d;
+        }
+        .alcance-option:not(.active) i {
+            color: #0d6efd;
+        }
+        /* Hover sutil */
+        .alcance-option:hover:not(.active) {
+            background-color: rgba(13, 110, 253, 0.04);
+        }
+
+        /* Selects no cortados - texto completo visible */
+        .alcance-panel select.form-control,
+        #filtroEstadoPromo {
+            min-width: 280px;
+            white-space: nowrap;
+        }
+
+        /* Buscador más ancho */
+        #buscadorPromocion {
+            flex: 1;
+            min-width: 280px;
+            max-width: 100%;
+        }
+
+        /* Botón crear más chico */
+        .btn-crear-promocion {
+            min-width: 120px;
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
@@ -168,17 +258,31 @@ function badgeEstadoPromo(string $estado): string {
             <div class="table-responsive bg-white shadow rounded-3 pt-3 tablaContenedor">
                 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center px-2 mb-3 gap-3 gap-sm-0">
                     <h3 class="m-0 p-0 fs-4 fw-bold">Listado de Promociones</h3>
-                    <div class="d-flex flex-column flex-sm-row gap-3 align-items-center">
-                        <input
-                            type="text"
-                            id="buscadorPromocion"
-                            class="form-control ctm-inp"
-                            placeholder="Buscar en la tabla..."
-                            autocomplete="off"
-                            style="max-width: 240px;"
-                        >
-                        <button type="button" class="btn btn-primary text-nowrap w-100" data-bs-toggle="modal" data-bs-target="#modalCrearPromocion">
-                            + Crear Promoción
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 flex-wrap">
+                        <div class="d-flex flex-column flex-sm-row gap-2 align-items-center flex-grow-1">
+                            <select
+                                id="filtroEstadoPromo"
+                                class="form-select form-select-sm"
+                                style="min-width: 220px;"
+                            >
+                                <option value="pendientes_aprobadas_vigentes" selected>Pendientes y Aprobadas vigentes</option>
+                                <option value="todas">Todas</option>
+                                <option value="canceladas">Canceladas (Denegadas)</option>
+                                <option value="en_vigencia">En vigencia (Aprobadas vigentes)</option>
+                                <option value="vencidas">Ya vencidas</option>
+                                <option value="denegadas">Denegadas</option>
+                            </select>
+                            <input
+                                type="text"
+                                id="buscadorPromocion"
+                                class="form-control ctm-inp"
+                                placeholder="Buscar código, nombre, alcance..."
+                                autocomplete="off"
+                                style="flex: 1; min-width: 280px; max-width: 100%;"
+                            >
+                        </div>
+                        <button type="button" class="btn btn-primary text-nowrap btn-crear-promocion" data-bs-toggle="modal" data-bs-target="#modalCrearPromocion">
+                            + Crear
                         </button>
                     </div>
                 </div>
@@ -189,7 +293,9 @@ function badgeEstadoPromo(string $estado): string {
                             <th scope="col" class="text-center fw-bold">CODIGO</th>
                             <th scope="col" class="fw-bold">NOMBRE</th>
                             <th scope="col" class="fw-bold text-center">DESCUENTO</th>
+                            <th scope="col" class="fw-bold d-none d-md-table-cell">ALCANCE</th>
                             <th scope="col" class="fw-bold d-none d-md-table-cell">VIGENCIA</th>
+                            <th scope="col" class="fw-bold d-none d-md-table-cell">ESTADO VIGENCIA</th>
                             <th scope="col" class="fw-bold d-none d-sm-table-cell">ESTADO</th>
                             <th scope="col" class="text-center fw-bold">ACCIONES</th>
                         </tr>
@@ -197,7 +303,7 @@ function badgeEstadoPromo(string $estado): string {
                     <tbody id="promocionTableBody">
                         <?php if (empty($promociones)): ?>
                             <tr>
-                                <td colspan="6" class="text-center py-4 text-muted">
+                                <td colspan="8" class="text-center py-4 text-muted">
                                     No tenés promociones registradas todavía.
                                 </td>
                             </tr>
@@ -206,8 +312,13 @@ function badgeEstadoPromo(string $estado): string {
                                 $idPromo = $p['idPromocion'] ?? $p['codigo'];
                                 $inicio  = date('d/m/Y', strtotime($p['fechaInicio']));
                                 $fin     = date('d/m/Y', strtotime($p['fechaFin']));
+                                $alcanceTexto = textoAlcancePromo($p);
                         ?>
-                        <tr class="fila-tabla" data-id="<?= htmlspecialchars((string)$idPromo) ?>" style="cursor:pointer;">
+                        <tr class="fila-tabla" 
+                            data-id="<?= htmlspecialchars((string)$idPromo) ?>" 
+                            data-estado="<?= htmlspecialchars($p['estado']) ?>"
+                            data-vigencia="<?= htmlspecialchars($p['estado'] === 'Denegada' ? 'denegada' : ($p['estado'] === 'Pendiente' ? 'pendiente' : (new DateTime($p['fechaFin']) < new DateTime() ? 'vencida' : ((new DateTime())->diff(new DateTime($p['fechaFin']))->days <= 7 ? 'proxima' : 'vigente')))) ?>"
+                            style="cursor:pointer;">
                             <td>
                                 <div class="d-flex align-items-center justify-content-center gap-2">
                                     <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center" style="width:30px; height:30px; flex-shrink:0;">
@@ -218,12 +329,17 @@ function badgeEstadoPromo(string $estado): string {
                             </td>
                             <td><?= htmlspecialchars($p['nombre']) ?></td>
                             <td class="text-center fw-bold text-success"><?= (float)$p['descuentoPorcentaje'] ?>%</td>
+                            <td class="d-none d-md-table-cell text-muted" style="font-size:0.8rem;"><?= htmlspecialchars($alcanceTexto) ?></td>
                             <td class="d-none d-md-table-cell text-muted" style="font-size:0.85rem;"><?= $inicio ?> - <?= $fin ?></td>
+                            <td class="d-none d-md-table-cell">
+                                <?= badgeVigenciaPromo($p) ?>
+                            </td>
                             <td class="d-none d-sm-table-cell">
                                 <span class="badge <?= badgeEstadoPromo($p['estado']) ?>"><?= htmlspecialchars($p['estado']) ?></span>
                             </td>
                             <td>
-                                <div class="d-flex justify-content-evenly w-100">
+                                <div class="d-flex justify-content-evenly w-100 gap-2">
+                                    <!-- Ver detalle (siempre) -->
                                     <a
                                         href="<?= url('index.php?pagina=ceo&seccion=promocion-detalle&id=' . urlencode((string)$idPromo)) ?>"
                                         class="p-0 bg-transparent border-0 btn-ver-promo"
@@ -238,12 +354,76 @@ function badgeEstadoPromo(string $estado): string {
                                             alt="icono ver promoción"
                                         >
                                     </a>
+
+                                    <?php if ($p['estado'] === 'Pendiente'): ?>
+                                        <!-- Editar -->
+                                        <button type="button"
+                                                class="p-0 bg-transparent border-0 btn-editar-promo"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modalEditarPromocion"
+                                                data-id="<?= htmlspecialchars((string)$idPromo) ?>"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="top"
+                                                data-bs-title="Editar"
+                                                data-bs-trigger="hover"
+                                        >
+                                            <img
+                                                src="<?= url('public/img/icons/lapiz-editar.png') ?>"
+                                                class="img-fluid btn-tabla"
+                                                alt="icono editar promoción"
+                                            >
+                                        </button>
+
+                                        <!-- Eliminar -->
+                                        <form method="POST"
+                                              action="<?= url('src/routes/promociones.php?accion=eliminar') ?>"
+                                              onsubmit="return confirm('¿Seguro que querés eliminar esta promoción pendiente?');"
+                                              class="d-inline">
+                                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
+                                            <input type="hidden" name="id" value="<?= htmlspecialchars((string)$idPromo) ?>">
+                                            <button type="submit"
+                                                    class="p-0 bg-transparent border-0 btn-eliminar-promo"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="top"
+                                                    data-bs-title="Eliminar"
+                                                    data-bs-trigger="hover"
+                                            >
+                                                <img
+                                                    src="<?= url('public/img/icons/trash.png') ?>"
+                                                    class="img-fluid btn-tabla"
+                                                    alt="icono eliminar promoción"
+                                                >
+                                            </button>
+                                        </form>
+                                    <?php elseif ($p['estado'] === 'Denegada'): ?>
+                                        <!-- Eliminar para denegadas -->
+                                        <form method="POST"
+                                              action="<?= url('src/routes/promociones.php?accion=eliminar') ?>"
+                                              onsubmit="return confirm('¿Seguro que querés eliminar esta promoción denegada?');"
+                                              class="d-inline">
+                                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
+                                            <input type="hidden" name="id" value="<?= htmlspecialchars((string)$idPromo) ?>">
+                                            <button type="submit"
+                                                    class="p-0 bg-transparent border-0 btn-eliminar-promo"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="top"
+                                                    data-bs-title="Eliminar"
+                                                    data-bs-trigger="hover"
+                                            >
+                                                <img
+                                                    src="<?= url('public/img/icons/trash.png') ?>"
+                                                    class="img-fluid btn-tabla"
+                                                    alt="icono eliminar promoción"
+                                                >
+                                            </button>
+                                        </form>
+                                    <?php endif; ?>
                                 </div>
                             </td>
                         </tr>
 
                         <tr class="fila-detalle d-none" id="detalle-<?= htmlspecialchars((string)$idPromo) ?>">
-                            <td colspan="6" class="p-0">
+                            <td colspan="7" class="p-0">
                                 <div class="detalle-aerolinea px-4 py-3">
                                     <div class="row g-3 align-items-start">
 
@@ -378,15 +558,102 @@ function badgeEstadoPromo(string $estado): string {
 
     <!-- Modal Crear Promoción -->
     <div class="modal fade" id="modalCrearPromocion" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
-                <form action="<?= url('src/routes/promociones.php?accion=crear') ?>" method="POST" novalidate>
+                <form action="<?= url('src/routes/promociones.php?accion=crear') ?>" method="POST" novalidate id="formCrearPromocion">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
                     <div class="modal-header border-0">
                         <h5 class="modal-title fw-bold">Crear Nueva Promoción</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                     </div>
                     <div class="modal-body d-flex flex-column gap-3">
+                        <!-- Selector de alcance -->
+                        <div class="p-3 rounded-3" style="background:#f8f9fa;">
+                            <label class="form-label fw-semibold mb-2 d-block" style="font-size:0.9rem;">Alcance de la promoción *</label>
+                            <div class="d-flex flex-column flex-md-row gap-2" id="alcanceOptions">
+                                <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option active" data-alcance="aerolinea">
+                                    <input type="radio" name="alcance" value="aerolinea" checked class="d-none">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-building fs-4"></i>
+                                        <div>
+                                            <div class="fw-semibold alcance-title">Aerolínea completa</div>
+                                            <div class="alcance-subtitle small">Aplica a todos los vuelos de tu aerolínea</div>
+                                        </div>
+                                    </div>
+                                </label>
+                                <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option" data-alcance="ruta">
+                                    <input type="radio" name="alcance" value="ruta" class="d-none">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-geo-alt fs-4"></i>
+                                        <div>
+                                            <div class="fw-semibold alcance-title">Ruta específica</div>
+                                            <div class="alcance-subtitle small">Origen → Destino (todos los vuelos de esa ruta)</div>
+                                        </div>
+                                    </div>
+                                </label>
+                                <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option" data-alcance="vuelo">
+                                    <input type="radio" name="alcance" value="vuelo" class="d-none">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-airplane fs-4"></i>
+                                        <div>
+                                            <div class="fw-semibold alcance-title">Vuelo individual</div>
+                                            <div class="alcance-subtitle small">Un solo vuelo específico</div>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Campos según alcance: AEROLÍNEA (default) -->
+                        <div id="alcance-aerolinea" class="alcance-panel">
+                            <div class="text-muted small text-center py-2">
+                                La promoción se aplicará a <strong>todos los vuelos</strong> de tu aerolínea durante el período seleccionado.
+                            </div>
+                        </div>
+
+                        <!-- Campos según alcance: RUTA -->
+                        <div id="alcance-ruta" class="alcance-panel d-none">
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <label class="form-label fw-semibold" style="font-size:0.9rem;">Origen *</label>
+                                    <select name="codigoOrigen" id="codigoOrigen" class="form-control" required disabled>
+                                        <option value="">Seleccioná origen</option>
+                                        <?php foreach ($origenesCEO as $o): ?>
+                                            <option value="<?= htmlspecialchars($o['codigoOrigen']) ?>">
+                                                <?= htmlspecialchars($o['origenVuelo']) ?> (<?= htmlspecialchars($o['codigoOrigen']) ?>)
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label fw-semibold" style="font-size:0.9rem;">Destino *</label>
+                                    <select name="codigoDestino" id="codigoDestino" class="form-control" required disabled>
+                                        <option value="">Primero elegí un origen</option>
+                                    </select>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Campos según alcance: VUELO -->
+                        <div id="alcance-vuelo" class="alcance-panel d-none">
+                            <div>
+                                <label class="form-label fw-semibold" style="font-size:0.9rem;">Vuelo *</label>
+                                <select name="idVuelo" id="idVuelo" class="form-control" required disabled>
+                                    <option value="">Seleccioná un vuelo</option>
+                                    <?php foreach ($vuelosCEO as $v): ?>
+                                        <option value="<?= (int)$v['idVuelo'] ?>" data-fecha-salida="<?= date('Y-m-d', strtotime($v['fechaHoraSalidaVuelo'])) ?>">
+                                            #<?= (int)$v['idVuelo'] ?> · <?= htmlspecialchars($v['origenVuelo']) ?> → <?= htmlspecialchars($v['destinoVuelo']) ?>
+                                            · <?= date('d/m/Y H:i', strtotime($v['fechaHoraSalidaVuelo'])) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+
+                        <!-- Campos comunes -->
                         <div>
                             <label class="form-label fw-semibold" style="font-size:0.9rem;">Nombre de la promoción *</label>
                             <input type="text" name="nombre" class="form-control" placeholder="Ej. Verano Sin Límites" maxlength="150" required>
@@ -400,12 +667,12 @@ function badgeEstadoPromo(string $estado): string {
                         <div class="row g-2">
                             <div class="col-6">
                                 <label class="form-label fw-semibold" style="font-size:0.9rem;">Fecha Inicio *</label>
-                                <input type="date" name="fechaInicio" class="form-control" required>
+                                <input type="date" name="fechaInicio" id="fechaInicio" class="form-control" required min="<?= date('Y-m-d') ?>">
                                 <div class="invalid-feedback"></div>
                             </div>
                             <div class="col-6">
                                 <label class="form-label fw-semibold" style="font-size:0.9rem;">Fecha Fin *</label>
-                                <input type="date" name="fechaFin" class="form-control" required>
+                                <input type="date" name="fechaFin" id="fechaFin" class="form-control" required min="<?= date('Y-m-d') ?>">
                                 <div class="invalid-feedback"></div>
                             </div>
                         </div>
@@ -417,10 +684,169 @@ function badgeEstadoPromo(string $estado): string {
                             <label class="form-label fw-semibold" style="font-size:0.9rem;">Condiciones</label>
                             <textarea name="condiciones" class="form-control" rows="2" placeholder="Ej. Compras anticipadas con al menos 7 días de antelación."></textarea>
                         </div>
+                        <div class="form-check mt-3">
+                            <input type="checkbox" name="acumulable" value="1" id="chkAcumulable" class="form-check-input">
+                            <label class="form-check-label small" for="chkAcumulable">
+                                <i class="bi bi-layers"></i> Acumular con otras promociones (vuelo/ruta/aerolínea)
+                            </label>
+                            <div class="form-text text-muted small">
+                                Si está activado, esta promo se suma a otras vigentes. Si no, tiene prioridad y bloquea las demás.
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer border-0">
                         <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-primary btn-sm">Enviar a Aprobación</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+    <!-- Modal Editar Promoción -->
+    <div class="modal fade" id="modalEditarPromocion" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <form action="<?= url('src/routes/promociones.php?accion=editar') ?>" method="POST" novalidate id="formEditarPromocion">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
+                    <input type="hidden" name="id" id="editar_id">
+                    <div class="modal-header border-0">
+                        <h5 class="modal-title fw-bold">Editar Promoción</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body d-flex flex-column gap-3">
+                        <!-- Selector de alcance -->
+                        <div class="p-3 rounded-3" style="background:#f8f9fa;">
+                            <label class="form-label fw-semibold mb-2 d-block" style="font-size:0.9rem;">Alcance de la promoción *</label>
+                            <div class="d-flex flex-column flex-md-row gap-2" id="alcanceOptionsEditar">
+                                <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option" data-alcance="aerolinea">
+                                    <input type="radio" name="alcance" value="aerolinea" class="d-none">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-building fs-4"></i>
+                                        <div>
+                                            <div class="fw-semibold alcance-title">Aerolínea completa</div>
+                                            <div class="alcance-subtitle small">Aplica a todos los vuelos de tu aerolínea</div>
+                                        </div>
+                                    </div>
+                                </label>
+                                <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option" data-alcance="ruta">
+                                    <input type="radio" name="alcance" value="ruta" class="d-none">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-geo-alt fs-4"></i>
+                                        <div>
+                                            <div class="fw-semibold alcance-title">Ruta específica</div>
+                                            <div class="alcance-subtitle small">Origen → Destino (todos los vuelos de esa ruta)</div>
+                                        </div>
+                                    </div>
+                                </label>
+                                <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option" data-alcance="vuelo">
+                                    <input type="radio" name="alcance" value="vuelo" class="d-none">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-airplane fs-4"></i>
+                                        <div>
+                                            <div class="fw-semibold alcance-title">Vuelo individual</div>
+                                            <div class="alcance-subtitle small">Un solo vuelo específico</div>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Campos según alcance: AEROLÍNEA (default) -->
+                        <div id="alcance-aerolinea-editar" class="alcance-panel">
+                            <div class="text-muted small text-center py-2">
+                                La promoción se aplicará a <strong>todos los vuelos</strong> de tu aerolínea durante el período seleccionado.
+                            </div>
+                        </div>
+
+                        <!-- Campos según alcance: RUTA -->
+                        <div id="alcance-ruta-editar" class="alcance-panel d-none">
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <label class="form-label fw-semibold" style="font-size:0.9rem;">Origen *</label>
+                                    <select name="codigoOrigen" id="codigoOrigenEditar" class="form-control" required disabled>
+                                        <option value="">Seleccioná origen</option>
+                                        <?php foreach ($origenesCEO as $o): ?>
+                                            <option value="<?= htmlspecialchars($o['codigoOrigen']) ?>">
+                                                <?= htmlspecialchars($o['origenVuelo']) ?> (<?= htmlspecialchars($o['codigoOrigen']) ?>)
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label fw-semibold" style="font-size:0.9rem;">Destino *</label>
+                                    <select name="codigoDestino" id="codigoDestinoEditar" class="form-control" required disabled>
+                                        <option value="">Primero elegí un origen</option>
+                                    </select>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Campos según alcance: VUELO -->
+                        <div id="alcance-vuelo-editar" class="alcance-panel d-none">
+                            <div>
+                                <label class="form-label fw-semibold" style="font-size:0.9rem;">Vuelo *</label>
+                                <select name="idVuelo" id="idVueloEditar" class="form-control" required disabled>
+                                    <option value="">Seleccioná un vuelo</option>
+                                    <?php foreach ($vuelosCEO as $v): ?>
+                                        <option value="<?= (int)$v['idVuelo'] ?>" data-fecha-salida="<?= date('Y-m-d', strtotime($v['fechaHoraSalidaVuelo'])) ?>">
+                                            #<?= (int)$v['idVuelo'] ?> · <?= htmlspecialchars($v['origenVuelo']) ?> → <?= htmlspecialchars($v['destinoVuelo']) ?>
+                                            · <?= date('d/m/Y H:i', strtotime($v['fechaHoraSalidaVuelo'])) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+
+                        <!-- Campos comunes -->
+                        <div>
+                            <label class="form-label fw-semibold" style="font-size:0.9rem;">Nombre de la promoción *</label>
+                            <input type="text" name="nombre" id="editar_nombre" class="form-control" placeholder="Ej. Verano Sin Límites" maxlength="150" required>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div>
+                            <label class="form-label fw-semibold" style="font-size:0.9rem;">Descuento (%) *</label>
+                            <input type="number" step="0.01" min="1" max="100" name="descuentoPorcentaje" id="editar_descuentoPorcentaje" class="form-control" placeholder="Ej. 20" required>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <label class="form-label fw-semibold" style="font-size:0.9rem;">Fecha Inicio *</label>
+                                <input type="date" name="fechaInicio" id="editar_fechaInicio" class="form-control" required min="<?= date('Y-m-d') ?>">
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label fw-semibold" style="font-size:0.9rem;">Fecha Fin *</label>
+                                <input type="date" name="fechaFin" id="editar_fechaFin" class="form-control" required min="<?= date('Y-m-d') ?>">
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="form-label fw-semibold" style="font-size:0.9rem;">Descripción / Alcance</label>
+                            <textarea name="descripcion" id="editar_descripcion" class="form-control" rows="2" placeholder="Ej. Válido para todos los destinos nacionales."></textarea>
+                        </div>
+                        <div>
+                            <label class="form-label fw-semibold" style="font-size:0.9rem;">Condiciones</label>
+                            <textarea name="condiciones" id="editar_condiciones" class="form-control" rows="2" placeholder="Ej. Compras anticipadas con al menos 7 días de antelación."></textarea>
+                        </div>
+                        <div class="form-check mt-3">
+                            <input type="checkbox" name="acumulable" value="1" id="editar_chkAcumulable" class="form-check-input">
+                            <label class="form-check-label small" for="editar_chkAcumulable">
+                                <i class="bi bi-layers"></i> Acumular con otras promociones (vuelo/ruta/aerolínea)
+                            </label>
+                            <div class="form-text text-muted small">
+                                Si está activado, esta promo se suma a otras vigentes. Si no, tiene prioridad y bloquea las demás.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Guardar Cambios</button>
                     </div>
                 </form>
             </div>
@@ -497,12 +923,72 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (inpInicio.value && inpFin.value < inpInicio.value)
                     return "La fecha de fin no puede ser anterior a la fecha de inicio.";
                 return "";
+            },
+            codigoOrigen() {
+                const sel = formCrear.elements["codigoOrigen"];
+                if (sel && !sel.disabled && !sel.value) return "Seleccioná el origen.";
+                return "";
+            },
+            codigoDestino() {
+                const sel = formCrear.elements["codigoDestino"];
+                if (sel && !sel.disabled && !sel.value) return "Seleccioná el destino.";
+                return "";
+            },
+            idVuelo() {
+                const sel = formCrear.elements["idVuelo"];
+                if (sel && !sel.disabled && !sel.value) return "Seleccioná un vuelo.";
+                return "";
             }
         };
 
+        // Elementos de alcance
+        const alcanceRadios = formCrear.querySelectorAll('input[name="alcance"]');
+        const alcancePanels = {
+            aerolinea: document.getElementById('alcance-aerolinea'),
+            ruta:      document.getElementById('alcance-ruta'),
+            vuelo:     document.getElementById('alcance-vuelo'),
+        };
+        const alcanceSelects = {
+            ruta:  [formCrear.elements["codigoOrigen"], formCrear.elements["codigoDestino"]],
+            vuelo: [formCrear.elements["idVuelo"]],
+        };
+        const alcanceOptionLabels = document.querySelectorAll('.alcance-option');
+
+        function activarAlcance(alcance) {
+            // Actualizar radio buttons
+            alcanceRadios.forEach(r => r.checked = r.value === alcance);
+            // Actualizar estilos de botones: solo clase .active para sombreado sutil
+            alcanceOptionLabels.forEach(l => {
+                l.classList.toggle('active', l.dataset.alcance === alcance);
+                // Todos quedan como outline-secondary; el activo usa .active para sombreado
+                l.classList.remove('btn-outline-primary');
+                l.classList.add('btn-outline-secondary');
+            });
+            // Mostrar/ocultar paneles
+            Object.keys(alcancePanels).forEach(k => {
+                alcancePanels[k].classList.toggle('d-none', k !== alcance);
+            });
+            // Habilitar/deshabilitar selects según alcance
+            Object.keys(alcanceSelects).forEach(k => {
+                alcanceSelects[k].forEach(sel => {
+                    if (sel) {
+                        sel.disabled = (k !== alcance);
+                        sel.required = (k === alcance);
+                    }
+                });
+            });
+        }
+
+        // Click en botones de alcance
+        alcanceOptionLabels.forEach(label => {
+            label.addEventListener('click', function() {
+                activarAlcance(this.dataset.alcance);
+            });
+        });
+
         function validarCampo(input) {
-            const msg = validadores[input.name]();
-            const fb  = input.parentElement.querySelector(".invalid-feedback");
+            const msg = validadores[input.name] ? validadores[input.name]() : "";
+            const fb  = input.parentElement?.querySelector(".invalid-feedback");
             input.classList.toggle("is-invalid", msg !== "");
             if (fb) fb.textContent = msg;
             return msg === "";
@@ -519,19 +1005,149 @@ document.addEventListener("DOMContentLoaded", function () {
             inpInicio.max = inpFin.value || "";
         }
 
+        // === Lógica dinámica según alcance ===
+        const inpFechaInicio = document.getElementById('fechaInicio');
+        const inpFechaFin    = document.getElementById('fechaFin');
+        const selVuelo       = document.getElementById('idVuelo');
+        const selOrigen      = document.getElementById('codigoOrigen');
+        const selDestino     = document.getElementById('codigoDestino');
+        const todayISO       = new Date().toISOString().split('T')[0];
+
+        // Al cambiar alcance, resetear fechas y selects dependientes
+        const originalActivarAlcance = activarAlcance;
+        activarAlcance = function(alcance) {
+            originalActivarAlcance(alcance);
+            
+            // Resetear max de fechas
+            inpFechaFin.max = '';
+            inpFechaInicio.max = '';
+            
+            // Resetear select destino si cambiamos de ruta
+            if (alcance !== 'ruta' && selDestino) {
+                selDestino.innerHTML = '<option value="">Primero elegí un origen</option>';
+                selDestino.disabled = true;
+            }
+            
+            // Si cambiamos a vuelo: limpiar origen/destino ocultos para que no se envíen
+            if (alcance === 'vuelo') {
+                if (selOrigen) selOrigen.value = '';
+                if (selDestino) selDestino.value = '';
+            }
+            
+            // Si cambiamos a vuelo, escuchar cambios en el select de vuelo
+            if (alcance === 'vuelo' && selVuelo) {
+                // Remover listener anterior si existe
+                selVuelo.removeEventListener('change', onVueloChange);
+                selVuelo.addEventListener('change', onVueloChange);
+            }
+            
+            // Si cambiamos a ruta, escuchar cambios en el select de origen
+            if (alcance === 'ruta' && selOrigen) {
+                selOrigen.removeEventListener('change', onOrigenChange);
+                selOrigen.addEventListener('change', onOrigenChange);
+            }
+        };
+
+        // Cuando se selecciona un vuelo: limitar fechaFin y fechaInicio al día del vuelo
+        function onVueloChange() {
+            const opt = selVuelo.options[selVuelo.selectedIndex];
+            const fechaVuelo = opt?.dataset?.fechaSalida; // YYYY-MM-DD
+            
+            if (fechaVuelo) {
+                // La promo puede empezar como máximo el día del vuelo
+                inpFechaInicio.max = fechaVuelo;
+                // La promo puede terminar como máximo el día del vuelo
+                inpFechaFin.max = fechaVuelo;
+                
+                // Si la fecha actual ya supera el max, limpiarla
+                if (inpFechaInicio.value && inpFechaInicio.value > fechaVuelo) {
+                    inpFechaInicio.value = '';
+                }
+                if (inpFechaFin.value && inpFechaFin.value > fechaVuelo) {
+                    inpFechaFin.value = '';
+                }
+                
+                // Asegurar que fechaFin.min sea al menos fechaInicio
+                inpFechaFin.min = inpFechaInicio.value || todayISO;
+            } else {
+                inpFechaInicio.max = '';
+                inpFechaFin.max = '';
+                inpFechaFin.min = inpFechaInicio.value || todayISO;
+            }
+        }
+
+        // Cuando se selecciona un origen: cargar destinos via AJAX
+        function onOrigenChange() {
+            const origen = selOrigen.value;
+            
+            // Resetear destino
+            selDestino.innerHTML = '<option value="">Cargando destinos...</option>';
+            selDestino.disabled = true;
+            
+            if (!origen) {
+                selDestino.innerHTML = '<option value="">Primero elegí un origen</option>';
+                return;
+            }
+            
+            // Fetch a endpoint
+            fetch(`src/routes/promociones.php?accion=destinos-por-origen&origen=${encodeURIComponent(origen)}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.length === 0) {
+                        selDestino.innerHTML = '<option value="">No hay destinos para este origen</option>';
+                        selDestino.disabled = true;
+                        return;
+                    }
+                    let html = '<option value="">Seleccioná destino</option>';
+                    data.forEach(d => {
+                        html += `<option value="${d.codigoDestino}">${d.destinoVuelo} (${d.codigoDestino})</option>`;
+                    });
+                    selDestino.innerHTML = html;
+                    selDestino.disabled = false;
+                })
+                .catch(() => {
+                    selDestino.innerHTML = '<option value="">Error al cargar destinos</option>';
+                    selDestino.disabled = true;
+                });
+        }
+
         // Se valida apenas se escribe o se elige un valor
-        campos.forEach(function (c) {
+        const camposBase = [inpNombre, inpDesc, inpInicio, inpFin];
+        camposBase.forEach(function (c) {
             c.addEventListener("input", alCambiar);
             c.addEventListener("change", alCambiar);
+        });
+
+        // También validar selects de alcance cuando cambian
+        ['codigoOrigen', 'codigoDestino', 'idVuelo'].forEach(name => {
+            const el = formCrear.elements[name];
+            if (el) {
+                el.addEventListener('change', function() {
+                    tocados.add(this.name);
+                    validarCampo(this);
+                });
+            }
         });
 
         // Al enviar se validan todos los campos y se bloquea si hay errores
         formCrear.addEventListener("submit", function (e) {
             let primero = null;
-            campos.forEach(function (c) {
+            // Validar campos base
+            camposBase.forEach(function (c) {
                 tocados.add(c.name);
                 if (!validarCampo(c) && !primero) primero = c;
             });
+            // Validar campos de alcance activo
+            const alcanceActivo = formCrear.querySelector('input[name="alcance"]:checked')?.value || 'aerolinea';
+            if (alcanceActivo === 'ruta') {
+                ['codigoOrigen', 'codigoDestino'].forEach(name => {
+                    const el = formCrear.elements[name];
+                    if (el) { tocados.add(name); if (!validarCampo(el) && !primero) primero = el; }
+                });
+            } else if (alcanceActivo === 'vuelo') {
+                const el = formCrear.elements['idVuelo'];
+                if (el) { tocados.add('idVuelo'); if (!validarCampo(el) && !primero) primero = el; }
+            }
             if (primero) {
                 e.preventDefault();
                 primero.focus();
@@ -542,30 +1158,292 @@ document.addEventListener("DOMContentLoaded", function () {
         modalCrear.addEventListener("hidden.bs.modal", function () {
             formCrear.reset();
             tocados.clear();
-            campos.forEach(function (c) {
+            // Resetear alcance a aerolinea
+            activarAlcance('aerolinea');
+            camposBase.forEach(function (c) {
                 c.classList.remove("is-invalid");
-                const fb = c.parentElement.querySelector(".invalid-feedback");
+                const fb = c.parentElement?.querySelector(".invalid-feedback");
                 if (fb) fb.textContent = "";
+            });
+            ['codigoOrigen', 'codigoDestino', 'idVuelo'].forEach(name => {
+                const el = formCrear.elements[name];
+                if (el) {
+                    el.classList.remove("is-invalid");
+                    const fb = el.parentElement?.querySelector(".invalid-feedback");
+                    if (fb) fb.textContent = "";
+                }
             });
             inpFin.min = "";
             inpInicio.max = "";
         });
     }
 
-    // Buscador en tiempo real
-    const inputBuscador = document.getElementById("buscadorPromocion");
-    if (inputBuscador) {
-        inputBuscador.addEventListener("keyup", function () {
-            const filtro = this.value.toLowerCase();
-            tbody.querySelectorAll("tr.fila-tabla").forEach(function (fila) {
-                const coincide = fila.textContent.toLowerCase().includes(filtro);
-                fila.style.display = coincide ? "" : "none";
-                if (!coincide) {
-                    const detalle = document.getElementById("detalle-" + fila.dataset.id);
-                    if (detalle) detalle.classList.add("d-none");
-                }
+    // ===== MODAL EDITAR PROMOCIÓN =====
+    const modalEditar = document.getElementById('modalEditarPromocion');
+    if (modalEditar) {
+        const formEditar = modalEditar.querySelector('form');
+        
+        // Elementos del formulario editar
+        const editarElements = {
+            id: document.getElementById('editar_id'),
+            nombre: document.getElementById('editar_nombre'),
+            descuentoPorcentaje: document.getElementById('editar_descuentoPorcentaje'),
+            fechaInicio: document.getElementById('editar_fechaInicio'),
+            fechaFin: document.getElementById('editar_fechaFin'),
+            descripcion: document.getElementById('editar_descripcion'),
+            condiciones: document.getElementById('editar_condiciones'),
+            acumulable: document.getElementById('editar_chkAcumulable'),
+            codigoOrigen: document.getElementById('codigoOrigenEditar'),
+            codigoDestino: document.getElementById('codigoDestinoEditar'),
+            idVuelo: document.getElementById('idVueloEditar'),
+        };
+
+        // Elementos de alcance para editar
+        const alcanceRadiosEditar = formEditar.querySelectorAll('input[name="alcance"]');
+        const alcancePanelsEditar = {
+            aerolinea: document.getElementById('alcance-aerolinea-editar'),
+            ruta:      document.getElementById('alcance-ruta-editar'),
+            vuelo:     document.getElementById('alcance-vuelo-editar'),
+        };
+        const alcanceSelectsEditar = {
+            ruta:  [editarElements.codigoOrigen, editarElements.codigoDestino],
+            vuelo: [editarElements.idVuelo],
+        };
+        const alcanceOptionLabelsEditar = modalEditar.querySelectorAll('.alcance-option');
+
+        function activarAlcanceEditar(alcance) {
+            alcanceRadiosEditar.forEach(r => r.checked = r.value === alcance);
+            alcanceOptionLabelsEditar.forEach(l => {
+                l.classList.toggle('active', l.dataset.alcance === alcance);
+                l.classList.remove('btn-outline-primary');
+                l.classList.add('btn-outline-secondary');
+            });
+            Object.keys(alcancePanelsEditar).forEach(k => {
+                alcancePanelsEditar[k].classList.toggle('d-none', k !== alcance);
+            });
+            Object.keys(alcanceSelectsEditar).forEach(k => {
+                alcanceSelectsEditar[k].forEach(sel => {
+                    if (sel) {
+                        sel.disabled = (k !== alcance);
+                        sel.required = (k === alcance);
+                    }
+                });
+            });
+        }
+
+        alcanceOptionLabelsEditar.forEach(label => {
+            label.addEventListener('click', function() {
+                activarAlcanceEditar(this.dataset.alcance);
             });
         });
+
+        // Lógica dinámica para editar (similar a crear)
+        const editarFechaInicio = editarElements.fechaInicio;
+        const editarFechaFin    = editarElements.fechaFin;
+        const editarSelVuelo    = editarElements.idVuelo;
+        const editarSelOrigen   = editarElements.codigoOrigen;
+        const editarSelDestino  = editarElements.codigoDestino;
+
+        const originalActivarAlcanceEditar = activarAlcanceEditar;
+        activarAlcanceEditar = function(alcance) {
+            originalActivarAlcanceEditar(alcance);
+            editarFechaFin.max = '';
+            editarFechaInicio.max = '';
+            if (alcance !== 'ruta' && editarSelDestino) {
+                editarSelDestino.innerHTML = '<option value="">Primero elegí un origen</option>';
+                editarSelDestino.disabled = true;
+            }
+            if (alcance === 'vuelo') {
+                if (editarSelOrigen) editarSelOrigen.value = '';
+                if (editarSelDestino) editarSelDestino.value = '';
+            }
+            if (alcance === 'vuelo' && editarSelVuelo) {
+                editarSelVuelo.removeEventListener('change', onEditarVueloChange);
+                editarSelVuelo.addEventListener('change', onEditarVueloChange);
+            }
+            if (alcance === 'ruta' && editarSelOrigen) {
+                editarSelOrigen.removeEventListener('change', onEditarOrigenChange);
+                editarSelOrigen.addEventListener('change', onEditarOrigenChange);
+            }
+        };
+
+        function onEditarVueloChange() {
+            const opt = editarSelVuelo.options[editarSelVuelo.selectedIndex];
+            const fechaVuelo = opt?.dataset?.fechaSalida;
+            if (fechaVuelo) {
+                editarFechaInicio.max = fechaVuelo;
+                editarFechaFin.max = fechaVuelo;
+                if (editarFechaInicio.value && editarFechaInicio.value > fechaVuelo) editarFechaInicio.value = '';
+                if (editarFechaFin.value && editarFechaFin.value > fechaVuelo) editarFechaFin.value = '';
+                editarFechaFin.min = editarFechaInicio.value || todayISO;
+            } else {
+                editarFechaInicio.max = '';
+                editarFechaFin.max = '';
+                editarFechaFin.min = editarFechaInicio.value || todayISO;
+            }
+        }
+
+        function onEditarOrigenChange() {
+            const origen = editarSelOrigen.value;
+            editarSelDestino.innerHTML = '<option value="">Cargando destinos...</option>';
+            editarSelDestino.disabled = true;
+            if (!origen) {
+                editarSelDestino.innerHTML = '<option value="">Primero elegí un origen</option>';
+                return;
+            }
+            fetch(`src/routes/promociones.php?accion=destinos-por-origen&origen=${encodeURIComponent(origen)}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.length === 0) {
+                        editarSelDestino.innerHTML = '<option value="">No hay destinos para este origen</option>';
+                        editarSelDestino.disabled = true;
+                        return;
+                    }
+                    let html = '<option value="">Seleccioná destino</option>';
+                    data.forEach(d => {
+                        html += `<option value="${d.codigoDestino}">${d.destinoVuelo} (${d.codigoDestino})</option>`;
+                    });
+                    editarSelDestino.innerHTML = html;
+                    editarSelDestino.disabled = false;
+                })
+                .catch(() => {
+                    editarSelDestino.innerHTML = '<option value="">Error al cargar destinos</option>';
+                    editarSelDestino.disabled = true;
+                });
+        }
+
+        // Cargar datos al abrir modal editar
+        document.querySelectorAll('.btn-editar-promo').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = this.dataset.id;
+                // Fetch promo data
+                fetch(`src/routes/promociones.php?accion=obtener&id=${encodeURIComponent(id)}`)
+                    .then(r => r.json())
+                    .then(promo => {
+                        if (!promo || !promo.idPromocion) return;
+                        
+                        // Llenar formulario
+                        editarElements.id.value = promo.idPromocion;
+                        editarElements.nombre.value = promo.nombre || '';
+                        editarElements.descuentoPorcentaje.value = promo.descuentoPorcentaje || '';
+                        editarElements.fechaInicio.value = promo.fechaInicio || '';
+                        editarElements.fechaFin.value = promo.fechaFin || '';
+                        editarElements.descripcion.value = promo.descripcion || '';
+                        editarElements.condiciones.value = promo.condiciones || '';
+                        editarElements.acumulable.checked = promo.acumulable == 1;
+                        
+                        // Alcance
+                        let alcance = 'aerolinea';
+                        if (promo.idVuelo) alcance = 'vuelo';
+                        else if (promo.codigoOrigen && promo.codigoDestino) alcance = 'ruta';
+                        
+                        activarAlcanceEditar(alcance);
+                        
+                        // Llenar selects según alcance
+                        if (alcance === 'vuelo' && promo.idVuelo) {
+                            editarSelVuelo.value = promo.idVuelo;
+                            // Disparar change para setear max fechas
+                            editarSelVuelo.dispatchEvent(new Event('change'));
+                        } else if (alcance === 'ruta') {
+                            editarSelOrigen.value = promo.codigoOrigen || '';
+                            // Cargar destinos y luego seleccionar
+                            fetch(`src/routes/promociones.php?accion=destinos-por-origen&origen=${encodeURIComponent(promo.codigoOrigen)}`)
+                                .then(r => r.json())
+                                .then(data => {
+                                    let html = '<option value="">Seleccioná destino</option>';
+                                    data.forEach(d => {
+                                        html += `<option value="${d.codigoDestino}">${d.destinoVuelo} (${d.codigoDestino})</option>`;
+                                    });
+                                    editarSelDestino.innerHTML = html;
+                                    editarSelDestino.disabled = false;
+                                    editarSelDestino.value = promo.codigoDestino || '';
+                                });
+                        }
+                    });
+            });
+        });
+
+        // Reset al cerrar modal editar
+        modalEditar.addEventListener('hidden.bs.modal', function() {
+            formEditar.reset();
+            activarAlcanceEditar('aerolinea');
+            // Limpiar validaciones
+            Object.values(editarElements).forEach(el => {
+                if (el && el.classList) {
+                    el.classList.remove('is-invalid');
+                    const fb = el.parentElement?.querySelector('.invalid-feedback');
+                    if (fb) fb.textContent = '';
+                }
+            });
+            editarFechaFin.min = '';
+            editarFechaInicio.max = '';
+            editarFechaFin.max = '';
+        });
+    }
+
+    // Buscador en tiempo real + Filtro por estado
+    const inputBuscador = document.getElementById("buscadorPromocion");
+    const selectFiltro = document.getElementById("filtroEstadoPromo");
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+
+    function aplicarFiltros() {
+        const filtroTexto = inputBuscador ? inputBuscador.value.toLowerCase() : '';
+        const filtroEstado = selectFiltro ? selectFiltro.value : 'pendientes_aprobadas_vigentes';
+
+        tbody.querySelectorAll("tr.fila-tabla").forEach(function (fila) {
+            const texto = fila.textContent.toLowerCase();
+            const coincideTexto = !filtroTexto || texto.includes(filtroTexto);
+
+            // Usar data-attributes para filtrado confiable
+            const estado = fila.dataset.estado || '';
+            const vigencia = fila.dataset.vigencia || '';
+
+            let coincideEstado = true;
+            switch (filtroEstado) {
+                case 'pendientes_aprobadas_vigentes':
+                    // Pendientes siempre + Aprobadas que no estén vencidas
+                    if (estado === 'Pendiente') {
+                        coincideEstado = true;
+                    } else if (estado === 'Aprobada' && vigencia !== 'vencida') {
+                        coincideEstado = true;
+                    } else {
+                        coincideEstado = false;
+                    }
+                    break;
+                case 'todas':
+                    coincideEstado = true;
+                    break;
+                case 'canceladas':
+                    coincideEstado = estado === 'Denegada';
+                    break;
+                case 'en_vigencia':
+                    coincideEstado = estado === 'Aprobada' && vigencia !== 'vencida';
+                    break;
+                case 'vencidas':
+                    coincideEstado = vigencia === 'vencida';
+                    break;
+                case 'denegadas':
+                    coincideEstado = estado === 'Denegada';
+                    break;
+                default:
+                    coincideEstado = true;
+            }
+
+            const coincide = coincideTexto && coincideEstado;
+            fila.style.display = coincide ? "" : "none";
+            if (!coincide) {
+                const detalle = document.getElementById("detalle-" + fila.dataset.id);
+                if (detalle) detalle.classList.add("d-none");
+            }
+        });
+    }
+
+    if (inputBuscador) {
+        inputBuscador.addEventListener("keyup", aplicarFiltros);
+    }
+    if (selectFiltro) {
+        selectFiltro.addEventListener("change", aplicarFiltros);
     }
 });
 </script>
