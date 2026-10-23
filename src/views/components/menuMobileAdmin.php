@@ -82,7 +82,7 @@
                 </a>
             </li>
 
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a
                     class="nav-link rounded-3"
                     href="<?= url('index.php?pagina=reportes') ?>"
@@ -100,7 +100,7 @@
                     <img src="<?= url('public/img/icons/configuracionSidebar.png') ?>" class="iconos-sidebar" alt="">
                     <span>Configuraciones</span>
                 </a>
-            </li>
+            </li> -->
 
         </ul>
     </div>

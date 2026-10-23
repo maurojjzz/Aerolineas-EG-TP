@@ -58,9 +58,6 @@ $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
                     <div>
                         <h2 class="fw-bold m-0 text-dark">Mi Perfil</h2>
                     </div>
-                    <a href="<?= $urlVolver ?>" class="btn btn-light btn-sm d-flex align-items-center gap-1 shadow-sm">
-                        <i class="bi bi-arrow-left"></i> Volver
-                    </a>
                 </div>
                 
                 <!-- Formulario principal con novalidate -->
@@ -73,23 +70,23 @@ $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
 
                         <!-- Fila 1: Nombre y Apellido -->
                         <div class="row">
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-6">
                                 <label class="form-label fw-semibold" for="nombre" style="font-size:0.9rem;">Nombre *</label>
                                 <input type="text" name="nombre" id="nombre" class="form-control" required minlength="2" maxlength="50"
                                        value="<?= htmlspecialchars($perfil['nombre'] ?? '') ?>">
-                                <div class="invalid-feedback text-danger small mt-1" id="error-nombre"></div>
+                                <div class="invalid-feedback text-danger small" id="error-nombre"></div>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-6">
                                 <label class="form-label fw-semibold" for="apellido" style="font-size:0.9rem;">Apellido *</label>
                                 <input type="text" name="apellido" id="apellido" class="form-control" required minlength="2" maxlength="50"
                                        value="<?= htmlspecialchars($perfil['apellido'] ?? '') ?>">
-                                <div class="invalid-feedback text-danger small mt-1" id="error-apellido"></div>
+                                <div class="invalid-feedback text-danger small" id="error-apellido"></div>
                             </div>
                         </div>
 
                         <!-- Fila 2: Documento -->
                         <div class="row">
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-6">
                                 <label class="form-label fw-semibold" for="tipoDocumento" style="font-size:0.9rem;">Tipo de Documento *</label>
                                 <select name="tipoDocumento" id="tipoDocumento" class="form-select" required>
                                     <?php foreach ($tiposDoc as $td): ?>
@@ -99,7 +96,7 @@ $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
                                     <?php endforeach; ?>
                                 </select>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-6">
                                 <label class="form-label fw-semibold" for="nroDocumento" style="font-size:0.9rem;">Número de Documento *</label>
                                 <input 
                                     type="text" 
@@ -112,29 +109,29 @@ $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
                                     maxlength="15"
                                     value="<?= htmlspecialchars($perfil['nroDocumento'] ) ?>"
                                 >
-                                <div class="invalid-feedback text-danger small mt-1" id="error-nroDocumento"></div>
+                                <div class="invalid-feedback text-danger small" id="error-nroDocumento"></div>
                             </div>
                         </div>
 
                         <!-- Fila 3: Email y Teléfono -->
                         <div class="row">
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-6">
                                 <label class="form-label fw-semibold" for="email" style="font-size:0.9rem;">Correo Electrónico *</label>
                                 <input type="email" name="email" id="email" class="form-control" required
                                        value="<?= htmlspecialchars($perfil['email'] ?? '') ?>">
-                                <div class="invalid-feedback text-danger small mt-1" id="error-email"></div>
+                                <div class="invalid-feedback text-danger small" id="error-email"></div>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-6">
                                 <label class="form-label fw-semibold" for="telefono" style="font-size:0.9rem;">Teléfono de Contacto</label>
                                 <input type="text" name="telefono" id="telefono" class="form-control" placeholder="Ej. +54 341 1234567"
                                        value="<?= htmlspecialchars($perfil['telefono'] ?? '') ?>">
-                                <div class="invalid-feedback text-danger small mt-1" id="error-telefono"></div>
+                                <div class="invalid-feedback text-danger small" id="error-telefono"></div>
                             </div>
                         </div>
 
                         <!-- Información contextual según rol -->
                         <?php if ($rolPerfil === 'ceo' && !empty($perfil['nombreAerolinea'])): ?>
-                            <div class="mb-3">
+                            <div>
                                 <label class="form-label fw-semibold text-muted" style="font-size:0.9rem;">Aerolínea a Cargo</label>
                                 <input type="text" class="form-control bg-light" readonly 
                                        value="<?= htmlspecialchars($perfil['nombreAerolinea'] ?? '') ?>">
@@ -142,11 +139,11 @@ $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
                         <?php endif; ?>
 
                         <!-- Fila de Cambio de Contraseña (Opcional) -->
-                        <hr class="my-4">
-                        <h5 class="fw-bold fs-6 text-primary mb-3">Cambiar Contraseña (Opcional)</h5>
+                        <hr >
+                        <h5 class="fw-bold fs-6 text-primary">Cambiar Contraseña (Opcional)</h5>
                         
                         <div class="row">
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-6">
                                 <label class="form-label fw-semibold" for="passwordActual" style="font-size:0.9rem;">Contraseña Actual</label>
                                 <div class="input-group">
                                     <input type="password" name="passwordActual" id="passwordActual" class="form-control" placeholder="••••••••">
@@ -154,12 +151,12 @@ $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
                                         <i class="bi bi-eye"></i>
                                     </button>
                                 </div>
-                                <div class="invalid-feedback text-danger small mt-1 d-block" id="error-passwordActual" style="min-height: 20px;"></div>
+                                <div class="invalid-feedback text-danger small d-block" id="error-passwordActual" style="min-height: 20px;"></div>
                             </div>
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-6">
                                 <label class="form-label fw-semibold" for="passwordNueva" style="font-size:0.9rem;">Nueva Contraseña</label>
                                 <div class="input-group">
                                     <input type="password" name="passwordNueva" id="passwordNueva" class="form-control" placeholder="••••••••" minlength="8">
@@ -167,9 +164,9 @@ $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
                                         <i class="bi bi-eye"></i>
                                     </button>
                                 </div>
-                                <div class="invalid-feedback text-danger small mt-1 d-block" id="error-passwordNueva" style="min-height: 20px;"></div>
+                                <div class="invalid-feedback text-danger small d-block" id="error-passwordNueva" style="min-height: 20px;"></div>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-6">
                                 <label class="form-label fw-semibold" for="passwordConfirmar" style="font-size:0.9rem;">Confirmar Nueva Contraseña</label>
                                 <div class="input-group">
                                     <input type="password" name="passwordConfirmar" id="passwordConfirmar" class="form-control" placeholder="••••••••" minlength="8">
@@ -177,12 +174,12 @@ $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
                                         <i class="bi bi-eye"></i>
                                     </button>
                                 </div>
-                                <div class="invalid-feedback text-danger small mt-1 d-block" id="error-passwordConfirmar" style="min-height: 20px;"></div>
+                                <div class="invalid-feedback text-danger small d-block" id="error-passwordConfirmar" style="min-height: 20px;"></div>
                             </div>
                         </div>
 
                         <!-- Acciones -->
-                        <div class="d-flex justify-content-end gap-2 mt-3">
+                        <div class="d-flex justify-content-end gap-2">
                             <a href="<?= $urlVolver ?>" class="btn btn-outline-danger">Cancelar</a>
                             <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                         </div>

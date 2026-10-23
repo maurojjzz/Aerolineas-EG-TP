@@ -75,18 +75,18 @@ switch ($pagina) {
         break;
 
     case 'cliente-novedades':
-        if (!isset($_SESSION['usuario']) || (!in_array($_SESSION['usuario']['rol'], ['cliente', 'ceo']))) {
-            header('Location: ' . url('index.php?pagina=login'));
-            exit;
-        }
+        // if (!isset($_SESSION['usuario']) || (!in_array($_SESSION['usuario']['rol'], ['cliente', 'ceo']))) {
+        //     header('Location: ' . url('index.php?pagina=login'));
+        //     exit;
+        // }
         require __DIR__ . '/src/views/cliente/novedadListado.php';
         break;
 
     case 'cliente-novedad-detalle':
-        if (!isset($_SESSION['usuario']) || (!in_array($_SESSION['usuario']['rol'], ['cliente', 'ceo']))) {
-            header('Location: ' . url('index.php?pagina=login'));
-            exit;
-        }
+        // if (!isset($_SESSION['usuario']) || (!in_array($_SESSION['usuario']['rol'], ['cliente', 'ceo']))) {
+        //     header('Location: ' . url('index.php?pagina=login'));
+        //     exit;
+        // }
         require __DIR__ . '/src/views/cliente/novedadDetalle.php';
         break;
 

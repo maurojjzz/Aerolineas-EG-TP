@@ -29,7 +29,20 @@ require_once __DIR__ . '/../components/navLinks.php';
             </ul>
         </div>
 
-        <div class="col-auto d-flex justify-content-center align-items-center">
+        <div class="col-auto d-flex justify-content-center align-items-center gap-2">
+
+            <!-- CAMPANITA DE NOTIFICACIONES (SOLO PARA ADMIN) -->
+            <?php if ($isLoggedIn && isset($rol) && $rol === 'admin'): ?>
+                <div class="dropdown">
+                    <a href="#" class="btn btn-custom border-0 position-relative rounded-circle p-2 d-flex align-items-center justify-content-center text-decoration-none" id="dropdownNotificaciones" data-bs-toggle="dropdown" aria-expanded="false" style="width: 40px; height: 40px; margin-right: 10px;">
+                        <i class="bi bi-bell fs-5 "></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2" style="width: 320px; max-height: 400px; overflow-y: auto;" aria-labelledby="dropdownNotificaciones">
+                        <li><div class="dropdown-header fw-bold text-dark border-bottom pb-2 px-2">Notificaciones y Pendientes</div></li>
+                        <li><span class="dropdown-item-text text-center text-muted py-3 small">Cargando...</span></li>
+                    </ul>
+                </div>
+            <?php endif; ?>
 
             <?php if ($isLoggedIn): ?>
                 <!-- ESTADO LOGUEADO -->
@@ -69,3 +82,11 @@ require_once __DIR__ . '/../components/navLinks.php';
         </div>
     </div>
 </header>
+
+<script>
+    const URL_NOTIFICACIONES = "<?= url('src/routes/notificaciones.php') ?>";
+    const URL_MARCAR_NOTIFICACION = "<?= url('src/routes/marcar-notificacion.php') ?>";
+    const URL_LISTADO_CEOS = "<?= url('index.php?pagina=ceos&seccion=listado') ?>";
+    const URL_LISTADO_PROMOCIONES = "<?= url('index.php?pagina=promociones&seccion=listado') ?>";
+</script>
+<script src="<?= url('../../../public/js/admin/notificaciones.js') ?>"></script>

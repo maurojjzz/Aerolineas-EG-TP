@@ -74,7 +74,7 @@ $avisoEstado = match ($estado) {
 <div>
     <nav class="breadcrumbCont" aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=ceo') ?>">Inicio</a></li>
+            <!-- <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=ceo') ?>">Inicio</a></li> -->
             <li class="breadcrumb-item"><a href="<?= $volver ?>">Promociones</a></li>
             <li class="breadcrumb-item active" aria-current="page">Promoción: <?= htmlspecialchars($promo['codigo'] ?? 'Detalle') ?></li>
         </ol>

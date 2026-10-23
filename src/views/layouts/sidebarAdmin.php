@@ -48,18 +48,18 @@ if ($rol === 'admin') {
             'icon'   => 'ceo.png',
             'activo' => $pagina === 'ceos',
         ],
-        [
-            'label'  => 'Reportes',
-            'href'   => '#',
-            'icon'   => 'reporteSidebar.png',
-            'activo' => $pagina === 'reportes',
-        ],
-        [
-            'label'  => 'Configuración',
-            'href'   => '#',
-            'icon'   => 'configuracionSidebar.png',
-            'activo' => $pagina === 'configuracion',
-        ],
+        // [
+        //     'label'  => 'Reportes',
+        //     'href'   => '#',
+        //     'icon'   => 'reporteSidebar.png',
+        //     'activo' => $pagina === 'reportes',
+        // ],
+        // [
+        //     'label'  => 'Configuración',
+        //     'href'   => '#',
+        //     'icon'   => 'configuracionSidebar.png',
+        //     'activo' => $pagina === 'configuracion',
+        // ],
     ];
 }
 
@@ -89,18 +89,18 @@ if ($rol === 'ceo') {
             'icon'   => 'novedadesSidebar.png',
             'activo' => $pagina === 'novedades',
         ],
-        [
-            'label'  => 'Reportes',
-            'href'   => '#',
-            'icon'   => 'reporteSidebar.png',
-            'activo' => $pagina === 'reportes',
-        ],
-        [
-            'label'  => 'Configuración',
-            'href'   => '#',
-            'icon'   => 'configuracionSidebar.png',
-            'activo' => $pagina === 'configuracion',
-        ],
+        // [
+        //     'label'  => 'Reportes',
+        //     'href'   => '#',
+        //     'icon'   => 'reporteSidebar.png',
+        //     'activo' => $pagina === 'reportes',
+        // ],
+        // [
+        //     'label'  => 'Configuración',
+        //     'href'   => '#',
+        //     'icon'   => 'configuracionSidebar.png',
+        //     'activo' => $pagina === 'configuracion',
+        // ],
     ];
 }
 ?>

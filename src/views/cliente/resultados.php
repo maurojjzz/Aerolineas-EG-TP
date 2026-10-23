@@ -243,7 +243,7 @@ $textoVacio = !$esIdaVuelta
                         <?php elseif ($esIdaVuelta && $paso === 'vuelta'): ?>
                             <a href="<?= $urlPasoIda ?>" class="btn btn-primary mt-2">Volver a los vuelos de ida</a>
                         <?php else: ?>
-                            <a href="<?= url('index.php?pagina=inicio') ?>" class="btn btn-primary mt-2">Volver al inicio</a>
+                            <a href="<?= url('index.php?pagina=cliente') ?>" class="btn btn-primary mt-2">Volver al inicio</a>
                         <?php endif; ?>
                     </div>
                 <?php else: ?>

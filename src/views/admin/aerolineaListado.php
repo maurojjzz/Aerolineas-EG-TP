@@ -64,9 +64,9 @@ if ($diff > 0) {
 <div>
     <nav class="breadcrumbCont" aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">Inicio</a></li>
-            <li class="breadcrumb-item"><a href="#">Aerolínea</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Listado de Aerolíneas</li>
+            <!-- <li class="breadcrumb-item"><a href="#">Inicio</a></li> -->
+            <!-- <li class="breadcrumb-item"><a href="#">Aerolínea</a></li> -->
+            <li class="breadcrumb-item active" aria-current="page">Aerolíneas</li>
         </ol>
     </nav>
 

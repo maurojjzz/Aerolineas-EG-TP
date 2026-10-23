@@ -36,7 +36,7 @@ $stats =$ctrl->obtenerEstadisticas();
 <div>
     <nav class="breadcrumbCont" aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">Inicio</a></li>
+            <!-- <li class="breadcrumb-item"><a href="#">Inicio</a></li> -->
             <li class="breadcrumb-item active" aria-current="page">Novedades</li>
         </ol>
     </nav>

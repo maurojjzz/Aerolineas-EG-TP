@@ -62,9 +62,14 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                     <?php require __DIR__ . '/../layouts/headerAdmin.php'; ?>
                 </header>
 
-                <main class="container-fluid d-flex flex-column gap-3 p-2 admin-content ">
+                <main class="container-fluid d-flex flex-column gap-3 p-3 admin-content">
                     <?php require __DIR__ . '/../components/alertToast.php';  ?>
-                    <div class="d-flex flex-column gap-2">
+                    <nav class="breadcrumbCont" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item active" aria-current="page">Vuelos</li>
+                        </ol>
+                    </nav>
+                    <div class="contForm col-12 d-flex flex-column p-2 admin-content h-100">
                         <h2 class="m-0 p-0 fs-2 fw-bold">Gestión de Vuelos</h2>
                         <p class="m-0 p-0 mb-2 subt">Administrá los vuelos de tu aerolínea.</p>
                         <div class="d-flex flex-column gap-2">
@@ -404,3 +409,4 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
         </script>
     </body>
 </html>
+<?php require_once './src/views/layouts/footer.php'; ?>

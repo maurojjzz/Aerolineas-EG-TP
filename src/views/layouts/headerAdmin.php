@@ -1,10 +1,20 @@
 <?php
 
 require_once __DIR__ . '/../../config/auth.php';
+require_once __DIR__ . '/../../config/conexion.php';
 
 $rol = rolActual();
-
 $usuario = usuarioActual();
+
+require_once __DIR__ . '/../../controllers/UsuarioController.php';
+if (isset($link) && $link instanceof mysqli) {
+    $notifCtrl = new UsuarioController($link);
+    $notificaciones = $notifCtrl->obtenerNotificacionesPendientes();
+    $totalNotif = $notificaciones['total'] ?? 0;
+} else {
+    $notificaciones = ['ceos' => [], 'promociones' => [], 'total' => 0];
+    $totalNotif = 0;
+}
 
 ?>
 <div class="container-header d-flex align-items-center bg-light row border-bottom border-2 w-100 m-0 p-0 g-0">
@@ -35,15 +45,80 @@ $usuario = usuarioActual();
     </h5>
 
     <div class="col ctm-user-info d-flex justify-content-end align-items-center gap-2 pe-4 position-relative">
+        <!-- Dropdown de Notificaciones / Campana -->
+        <?php if (isset($rol) && $rol === 'admin' && $rol !== 'ceo'): ?>
+        <div class="dropdown me-3 d-none d-sm-block">
+                <button class="btn btn-bell position-relative p-0 m-0 bg-transparent border-0 d-flex align-items-center justify-content-center" 
+                        type="button" 
+                        id="dropdownNotificaciones" 
+                        data-bs-toggle="dropdown" 
+                        aria-expanded="false"
+                        style="width: 40px; height: 40px;">
+                    <img src="<?= url('public/img/icons/bell.png') ?>" alt="icono campana notificacion" class="bell-noti opacity-75" style="width: 22px; height: 22px;"> 
+                    <?php if ($totalNotif > 0): ?>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem;">
+                            <?= $totalNotif ?>
+                            <span class="visually-hidden">mensajes no leídos</span>
+                        </span>
+                    <?php endif; ?>
+                </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 p-2" aria-labelledby="dropdownNotificaciones" style="width: 320px; max-height: 400px; overflow-y: auto;">
+                <li>
+                    <div class="dropdown-header fw-bold text-dark border-bottom pb-2 px-2">
+                        Notificaciones y Pendientes
+                    </div>
+                </li>
 
-        <button type="button" class="btn btn-bell position-relative p-0 m-0 me-4 d-none d-sm-block">
-            <img src="<?= url('public/img/icons/bell.png') ?>" alt="icono campana notificacion" class="bell-noti opacity-75"> 
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
-                1
-                <span class="visually-hidden">unread messages</span>
-            </span>
-        </button>
+                <?php if ($totalNotif === 0): ?>
+                    <li><span class="dropdown-item-text text-center text-muted py-3 small">No hay notificaciones pendientes.</span></li>
+                <?php else: ?>
 
+                    <!-- Listado de CEOs Pendientes -->
+                    <?php foreach ($notificaciones['ceos'] as $ceo): ?>
+                        <li>
+                            <a  class="dropdown-item rounded-2 py-2 border-bottom text-wrap d-flex flex-column gap-1" 
+                                href="<?= url('index.php?pagina=ceos&seccion=listado') ?>"
+                                data-tipo="ceo" 
+                                data-id="<?= $ceo['id'] ?>"
+                            >
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="badge text-bg-warning text-dark" style="font-size: 0.7rem;">Nuevo CEO</span>
+                                    <small class="text-muted" style="font-size: 0.75rem;"><?= date('d/m/Y', strtotime($ceo['fechaCreacion'])) ?></small>
+                                </div>
+                                <span class="fw-semibold text-dark" style="font-size: 0.85rem;">
+                                    <?= htmlspecialchars($ceo['nombre'] . ' ' . $ceo['apellido']) ?>
+                                </span>
+                                <span class="text-muted text-truncate" style="font-size: 0.75rem;">Requiere habilitación en el sistema.</span>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+
+                    <!-- Listado de Promociones Pendientes -->
+                    <?php foreach ($notificaciones['promociones'] as $promo): ?>
+                        <li>
+                            <a  class="dropdown-item rounded-2 py-2 border-bottom text-wrap d-flex flex-column gap-1" 
+                                href="<?= url('index.php?pagina=promociones&seccion=listado') ?>"
+                                data-tipo="promocion" 
+                                data-id="<?= $promo['id'] ?>"
+                            >
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="badge text-bg-info text-white" style="font-size: 0.7rem;">Promoción</span>
+                                    <span class="text-success fw-bold" style="font-size: 0.75rem;"><?= htmlspecialchars($promo['codigo']) ?></span>
+                                </div>
+                                <span class="fw-semibold text-dark" style="font-size: 0.85rem;">
+                                    <?= htmlspecialchars($promo['nombre']) ?>
+                                </span>
+                                <span class="text-muted text-truncate" style="font-size: 0.75rem;">Aerolínea: <?= htmlspecialchars($promo['nombreAerolinea']) ?></span>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+
+                <?php endif; ?>
+            </ul>
+        </div>
+
+            <?php endif; ?>
+        <!-- Dropdown de Usuario -->
         <div class="dropdown">
             <button class="btn p-0 border-0 bg-transparent d-flex align-items-center gap-2"
                     type="button"
@@ -101,5 +176,12 @@ $usuario = usuarioActual();
 
     </div>
 
-
 </div>
+
+<script>
+    const URL_NOTIFICACIONES = "<?= url('src/routes/notificaciones.php') ?>";
+    const URL_MARCAR_NOTIFICACION = "<?= url('src/routes/marcar-notificacion.php') ?>";
+    const URL_LISTADO_CEOS = "<?= url('index.php?pagina=ceos&seccion=listado') ?>";
+    const URL_LISTADO_PROMOCIONES = "<?= url('index.php?pagina=promociones&seccion=listado') ?>";
+</script>
+<script src="<?= url('../../../public/js/admin/notificaciones.js') ?>"></script>
