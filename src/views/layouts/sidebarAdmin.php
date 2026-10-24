@@ -34,7 +34,7 @@ if ($rol === 'admin') {
             'label'  => 'Usuarios',
             'href'   => 'index.php?pagina=usuarios&seccion=listado',
             'icon'   => 'usuario.png',
-            'activo' => $pagina === 'usuarios',
+            'activo' => in_array($pagina, ['usuario', 'usuarios'], true),
         ],
         [
             'label'  => 'Aprobar CEOs',
@@ -92,19 +92,19 @@ if ($rol === 'ceo') {
     </div>
 
     <ul class="nav navbar-custom d-flex flex-column align-items-center w-100 gap-3 rounded-2 py-3 px-3">
-        <?php foreach ($navLinks as $link): ?>
+        <?php foreach ($navLinks as $navLink): ?>
         <li class="nav-item">
-            <a class="nav-link rounded-3 <?= $link['activo'] ? 'active' : '' ?>"
-                href="<?= url($link['href']) ?>"
+            <a class="nav-link rounded-3 <?= $navLink['activo'] ? 'active' : '' ?>"
+                href="<?= url($navLink['href']) ?>"
                 data-bs-toggle="tooltip"
                 data-bs-placement="top"
-                data-bs-title="<?= htmlspecialchars($link['label']) ?>"
+                data-bs-title="<?= htmlspecialchars($navLink['label']) ?>"
                 data-bs-trigger="hover"
             >
-                <img src="<?= url('public/img/icons/' . $link['icon']) ?>"
-                    alt="<?= htmlspecialchars($link['label']) ?>"
+                <img src="<?= url('public/img/icons/' . $navLink['icon']) ?>"
+                    alt="<?= htmlspecialchars($navLink['label']) ?>"
                     class="iconos-sidebar">
-                <span><?= htmlspecialchars($link['label']) ?></span>
+                <span><?= htmlspecialchars($navLink['label']) ?></span>
             </a>
         </li>
         <?php endforeach; ?>

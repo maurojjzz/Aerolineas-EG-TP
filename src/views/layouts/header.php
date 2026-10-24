@@ -17,12 +17,12 @@ require_once __DIR__ . '/../components/navLinks.php';
 
         <div class="col d-none d-lg-flex align-items-center justify-content-center">
             <ul class="nav navbar-custom d-flex overflow-hidden rounded-2">
-                <?php foreach ($navLinks as $link): ?>
-                    <li class="nav-item <?= $link['active'] ? 'active' : '' ?>">
-                        <a href="<?= htmlspecialchars($link['href']) ?>"
+                <?php foreach ($navLinks as $navLink): ?>
+                    <li class="nav-item <?= $navLink['active'] ? 'active' : '' ?>">
+                        <a href="<?= htmlspecialchars($navLink['href']) ?>"
                            class="nav-link"
-                           <?= $link['active'] ? 'aria-current="page"' : '' ?>>
-                            <?= htmlspecialchars($link['label']) ?>
+                           <?= $navLink['active'] ? 'aria-current="page"' : '' ?>>
+                            <?= htmlspecialchars($navLink['label']) ?>
                         </a>
                     </li>
                 <?php endforeach; ?>

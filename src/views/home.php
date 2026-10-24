@@ -13,6 +13,8 @@
         <link rel="stylesheet" href="<?= url('public/css/components/menuMobile.css') ?>">
         <link rel="stylesheet" href="<?= url('public/css/components/searchMobile.css') ?>">
         <link rel="stylesheet" href="<?= url('public/css/components/searchDesktop.css') ?>">
+        <link rel="stylesheet" href="<?= url('public/css/components/homeTabsCards.css') ?>">
+        <link rel="stylesheet" href="<?= url('public/css/components/homeDestacados.css') ?>">
         <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
 
     </head>
@@ -44,12 +46,16 @@
             <?php require './src/views/components/searchDesktop.php' ?>
         </section>
 
+        <!-- Promociones destacadas + Últimas novedades + beneficios -->
+        <?php require './src/views/components/homeDestacados.php' ?>
+
         <?php require_once './src/views/layouts/footer.php'; ?>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
         <script src="<?= url('public/js/aeropuertos.js') ?>"></script>
         <script src="<?= url('public/js/searchMobile.js') ?>"></script>
         <script src="<?= url('public/js/searchDesktop.js') ?>"></script>
+        <script src="<?= url('public/js/homeDestacados.js') ?>"></script>
 
     </body>
 

@@ -1,24 +1,43 @@
 // Carga los aeropuertos desde el endpoint (una sola vez)
 Aeropuertos.cargar();
 
-const options = document.querySelectorAll(".option-line-item");
-const box2 = document.getElementById("box2");
+const options         = document.querySelectorAll(".option-line-item");
+const formMobile      = document.getElementById("formMobile");
+const panelTabsMobile = document.getElementById("mobilePanelTabs");
 
 // Lógica de los Tabs (Mobile)
-if (options.length > 0 && box2) {
-    const copiaVuelosMob = box2.cloneNode(true);
+if (options.length > 0 && formMobile) {
+    const mostrarPanel = (nombre) => {
+        if (!panelTabsMobile) return;
+        panelTabsMobile.querySelectorAll("[data-home-tab]").forEach((panel) => {
+            panel.classList.toggle("d-none", panel.dataset.homeTab !== nombre);
+        });
+    };
+
     options.forEach((option) => {
         option.addEventListener("click", () => {
             options.forEach((item) => item.classList.remove("active"));
             option.classList.add("active");
 
             const selected = option.dataset.option;
-            if (selected === "vuelos") box2.innerHTML = copiaVuelosMob.innerHTML;
-            if (selected === "promociones") box2.textContent = "Seleccionaste Promociones";
-            if (selected === "novedades") box2.textContent = "Seleccionaste Novedades";
+
+            // Ocultamos/mostramos paneles en lugar de reemplazar el HTML,
+            // para no perder los listeners del formulario.
+            if (selected === "vuelos") {
+                formMobile.classList.remove("d-none");
+                if (panelTabsMobile) panelTabsMobile.classList.add("d-none");
+                return;
+            }
+
+            formMobile.classList.add("d-none");
+            if (panelTabsMobile) {
+                panelTabsMobile.classList.remove("d-none");
+                mostrarPanel(selected);
+            }
         });
     });
 }
+
 
 // Autocompletado Origen / Destino
 const input        = document.getElementById("from");

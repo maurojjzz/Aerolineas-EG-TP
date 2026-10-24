@@ -4,7 +4,7 @@ date_default_timezone_set('America/Argentina/Buenos_Aires');
 require_once __DIR__ . '/../../config/conexion.php';
 require_once __DIR__ . '/../../controllers/AerolineaController.php';
 require_once __DIR__ . '/../../config/auth.php';
-// Quitamos el require de PromocionController porque ya no listamos promos acá directo
+require_once __DIR__ . '/../components/aerolineaResumenHelpers.php';
 
 // El CEO tiene su aerolínea en la sesión
 $idAerolinea = aerolineaCEO();
@@ -20,10 +20,39 @@ if (!$aero) {
     redirect('index.php?pagina=login');
 }
 
-$tabActiva = $_GET['tab'] ?? 'resumen';
-$flechaImg   = 'flecha-up.png';
-$flechaTexto = '+2 vs mes anterior';
-$flechaColor = 'text-success';
+// ── Datos reales del resumen ──────────────────────────────────────────────
+$metricas            = $ctrl->obtenerMetricasDetalle($idAerolinea);
+$resumen             = $ctrl->obtenerResumenAerolinea($idAerolinea);
+$vuelosMasVendidos   = $ctrl->obtenerVuelosMasVendidos($idAerolinea, 5);
+$promocionesVigentes = $ctrl->obtenerPromocionesVigentes($idAerolinea, 3);
+$tramosMasRecaudados = $ctrl->obtenerTramosMasRecaudados($idAerolinea, 5);
+
+$cards = [
+    [
+        'titulo'    => 'Vuelos totales',
+        'valor'     => adminAeroNumero($resumen['vuelos']['total']),
+        'icono'     => 'avion.png',
+        'tendencia' => adminAeroTendencia($resumen['vuelos']['actual'], $resumen['vuelos']['anterior']),
+    ],
+    [
+        'titulo'    => 'Promociones activas',
+        'valor'     => adminAeroNumero($resumen['promociones']['total']),
+        'icono'     => 'etiqueta.png',
+        'tendencia' => adminAeroTendencia($resumen['promociones']['actual'], $resumen['promociones']['anterior']),
+    ],
+    [
+        'titulo'    => 'Pasajeros transportados',
+        'valor'     => adminAeroNumero($resumen['pasajeros']['total']),
+        'icono'     => 'ceo.png',
+        'tendencia' => adminAeroTendencia($resumen['pasajeros']['actual'], $resumen['pasajeros']['anterior']),
+    ],
+    [
+        'titulo'    => 'Ventas totales',
+        'valor'     => adminAeroMoneda($resumen['ventas']['total']),
+        'icono'     => 'ceo.png',
+        'tendencia' => adminAeroTendencia($resumen['ventas']['actual'], $resumen['ventas']['anterior'], true),
+    ],
+];
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -37,7 +66,6 @@ $flechaColor = 'text-success';
     <link rel="stylesheet" href="<?= url('public/css/layout/headerAdmin.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/components/tablaLista.css') ?>?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
-    
 </head>
 <body>
 
@@ -133,191 +161,171 @@ $flechaColor = 'text-success';
                             <p class="d-flex flex-row align-items-center justify-content-between fw-semibold m-0 mb-2"
                                style="font-size:0.95rem;">
                                 Vuelos activos
-                                <span class="badge p-1 px-2 text-dark fw-normal">25</span>
+                                <span class="badge p-1 px-2 text-dark fw-normal">
+                                    <?= adminAeroNumero($metricas['vuelosActivos']) ?>
+                                </span>
                             </p>
                             <p class="d-flex flex-row align-items-center justify-content-between fw-semibold m-0 mb-2"
                                style="font-size:0.95rem;">
                                 Promociones vigentes
-                                <span class="badge p-1 px-2 text-dark fw-normal">5</span>
+                                <span class="badge p-1 px-2 text-dark fw-normal">
+                                    <?= adminAeroNumero($metricas['promocionesVigentes']) ?>
+                                </span>
                             </p>
                         </div>
                     </div>
 
                 </div>
 
-                <!-- Tabs -->
-                <div class="bg-white shadow rounded-3">
+                <!-- Resumen -->
+                <div class="bg-white shadow rounded-3 p-4">
 
-                    <!-- <ul class="nav nav-tabs px-3 d-flex align-items-center justify-content-center justify-content-md-start"
-                        id="detalleTab">
-                        <li class="nav-item">
-                            <button class="nav-link <?= $tabActiva === 'resumen' ? 'active' : '' ?>"
-                                    data-bs-toggle="tab" data-bs-target="#tab-resumen">Resumen</button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="nav-link <?= $tabActiva === 'vuelos' ? 'active' : '' ?>"
-                                    data-bs-toggle="tab" data-bs-target="#tab-vuelos">Vuelos</button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="nav-link <?= $tabActiva === 'promociones' ? 'active' : '' ?>"
-                                    data-bs-toggle="tab" data-bs-target="#tab-promociones">Promociones</button>
-                        </li>
-                    </ul> -->
-
-                    <div class="tab-content p-4">
-
-                        <!-- Tab Resumen -->
-                        <div class="tab-pane fade <?= $tabActiva === 'resumen' ? 'show active' : '' ?>" id="tab-resumen">
-
-                            <div class="d-flex flex-column flex-md-row justify-content-md-between row p-0 m-0 gap-3 gap-md-0 mb-3">
-                                <?php
-                                $cards = [
-                                    ['icon' => 'avion.png',    'label' => 'Vuelos totales',         'valor' => '25',         'extra' => $flechaTexto],
-                                    ['icon' => 'etiqueta.png', 'label' => 'Promociones activas',     'valor' => '3',          'extra' => $flechaTexto],
-                                    ['icon' => 'ceo.png',      'label' => 'Total Pasajeros', 'valor' => '58.420',     'extra' => $flechaTexto],
-                                    ['icon' => 'ceo.png',      'label' => 'Ventas totales',          'valor' => '$2.840.500', 'extra' => '+18% vs mes anterior'],
-                                ];
-                                foreach ($cards as $c): ?>
-                                <div class="col-md-3">
-                                    <div class="bg-white shadow rounded-3 py-2 px-4 overflow-hidden">
-                                        <div class="d-flex flex-row align-items-center justify-content-start gap-3">
-                                            <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
-                                                style="width:55px;height:55px;background-color:#E3F0FE;">
-                                                <img src="<?= url('public/img/icons/placeholdersCards/' . $c['icon']) ?>"
-                                                    class="img-fluid" style="width:32px;height:32px;object-fit:contain;" alt="">
-                                            </div>
-                                            <div class="d-flex flex-column justify-content-center p-0 m-0">
-                                                <p class="fw-semibold m-0 p-0 text-muted" style="font-size:14px;"><?= $c['label'] ?></p>
-                                                <p class="fs-3 fw-bold text-dark m-0 p-0"><?= $c['valor'] ?></p>
-                                            </div>
+                    <div class="d-flex flex-column flex-md-row justify-content-md-between row p-0 m-0 gap-3 gap-md-0 mb-3">
+                        <?php foreach ($cards as $card): ?>
+                            <div class="col-md-3">
+                                <div class="bg-white shadow rounded-3 py-2 px-4 overflow-hidden h-100">
+                                    <div class="d-flex flex-row align-items-center justify-content-start gap-3">
+                                        <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
+                                            style="width:55px;height:55px;background-color:#E3F0FE;">
+                                            <img src="<?= url('public/img/icons/placeholdersCards/' . $card['icono']) ?>"
+                                                class="img-fluid" style="width:32px;height:32px;object-fit:contain;" alt="">
                                         </div>
-                                        <div class="d-flex flex-row justify-content-start p-0 m-0 gap-2 mt-1">
-                                            <img src="<?= url('public/img/icons/placeholdersCards/' . $flechaImg) ?>"
-                                                class="img-fluid" style="width:20px;height:20px;object-fit:contain;" alt="">
-                                            <p class="fw-normal m-0 p-0 <?= $flechaColor ?>" style="font-size:14px;"><?= $c['extra'] ?></p>
+                                        <div class="d-flex flex-column justify-content-center p-0 m-0">
+                                            <p class="fw-semibold m-0 p-0 text-muted" style="font-size:14px;"><?= htmlspecialchars($card['titulo']) ?></p>
+                                            <p class="fs-3 fw-bold text-dark m-0 p-0"><?= $card['valor'] ?></p>
                                         </div>
                                     </div>
+                                    <div class="d-flex flex-row justify-content-start p-0 m-0 gap-2 mt-1">
+                                        <img src="<?= url('public/img/icons/placeholdersCards/' . $card['tendencia'][0]) ?>"
+                                            class="img-fluid" style="width:20px;height:20px;object-fit:contain;" alt="tendencia">
+                                        <p class="fw-normal m-0 p-0 <?= $card['tendencia'][2] ?>" style="font-size:14px;"><?= htmlspecialchars($card['tendencia'][1]) ?></p>
+                                    </div>
                                 </div>
-                                <?php endforeach; ?>
                             </div>
+                        <?php endforeach; ?>
+                    </div>
 
-                            <div class="row g-3">
-                                <!-- Vuelos más vendidos -->
-                                <div class="col-12 col-lg-4">
-                                    <div class="bg-white border rounded-3 h-100">
-                                        <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
-                                            <span class="fw-semibold" style="font-size:0.9rem;">Vuelos más vendidos</span>
-                                            <!-- <button class="btn btn-outline-secondary btn-sm" style="font-size:0.75rem;">Ver todos</button> -->
-                                        </div>
-                                        <div class="px-3 py-2">
-                                            <table class="table table-sm table-hover align-middle mb-0" style="font-size:0.82rem;">
-                                                <thead>
-                                                    <tr class="text-muted">
-                                                        <th class="fw-medium border-0 ps-0">RUTA</th>
-                                                        <th class="fw-medium border-0 text-end">VUELOS</th>
-                                                        <th class="fw-medium border-0 text-end">PASAJEROS</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?php foreach ([
-                                                        ['ruta' => 'Buenos Aires → Madrid',   'vuelos' => 8, 'pasajeros' => '1.240'],
-                                                        ['ruta' => 'Buenos Aires → Santiago', 'vuelos' => 6, 'pasajeros' => '980'],
-                                                        ['ruta' => 'Córdoba → Lima',          'vuelos' => 5, 'pasajeros' => '760'],
-                                                        ['ruta' => 'Rosario → México DF',     'vuelos' => 4, 'pasajeros' => '620'],
-                                                        ['ruta' => 'Buenos Aires → Bogotá',   'vuelos' => 4, 'pasajeros' => '580'],
-                                                    ] as $v): ?>
-                                                    <tr>
-                                                        <td class="ps-0 border-0"><?= $v['ruta'] ?></td>
-                                                        <td class="text-end border-0"><?= $v['vuelos'] ?></td>
-                                                        <td class="text-end border-0"><?= $v['pasajeros'] ?></td>
-                                                    </tr>
-                                                    <?php endforeach; ?>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                    <div class="row g-3">
+                        <!-- Vuelos más vendidos -->
+                        <div class="col-12 col-lg-4">
+                            <div class="bg-white border rounded-3 h-100">
+                                <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>" style="width:18px;height:18px;object-fit:contain;" alt="">
+                                        <span class="fw-semibold" style="font-size:0.9rem;">Vuelos más vendidos</span>
                                     </div>
                                 </div>
+                                <div class="px-3 py-2">
+                                    <table class="table table-sm table-hover align-middle mb-0" style="font-size:0.82rem;">
+                                        <thead>
+                                            <tr class="text-muted">
+                                                <th class="fw-medium border-0 ps-0">RUTA</th>
+                                                <th class="fw-medium border-0 text-end">VUELOS</th>
+                                                <th class="fw-medium border-0 text-end">PASAJEROS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php if (empty($vuelosMasVendidos)): ?>
+                                                <tr>
+                                                    <td colspan="3" class="text-center text-muted py-4 border-0">
+                                                        Todavía no hay ventas registradas para esta aerolínea.
+                                                    </td>
+                                                </tr>
+                                            <?php else: ?>
+                                                <?php foreach ($vuelosMasVendidos as $v): ?>
+                                                    <tr>
+                                                        <td class="ps-0 border-0">
+                                                            <div class="d-flex align-items-center gap-2">
+                                                                <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>" style="width:14px;height:14px;object-fit:contain;opacity:0.4;" alt="">
+                                                                <?= htmlspecialchars($v['ruta']) ?>
+                                                            </div>
+                                                        </td>
+                                                        <td class="text-end border-0"><?= adminAeroNumero($v['vuelos']) ?></td>
+                                                        <td class="text-end border-0"><?= adminAeroNumero($v['pasajeros']) ?></td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
 
-                                <!-- Promociones activas -->
-                                <div class="col-12 col-lg-4">
-                                    <div class="bg-white border rounded-3 h-100">
-                                        <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
-                                            <span class="fw-semibold" style="font-size:0.9rem;">Promociones activas</span>
-                                            <!-- <button class="btn btn-outline-secondary btn-sm" style="font-size:0.75rem;">Ver todas</button> -->
-                                        </div>
-                                        <div class="px-3 py-2 d-flex flex-column gap-2">
-                                            <?php foreach ([
-                                                ['nombre' => '30% de descuento en vuelos internacionales', 'fechas' => '01/11/2024 - 30/11/2024', 'estado' => 'Aprobada',  'color' => 'success'],
-                                                ['nombre' => '15% de descuento en primera compra',         'fechas' => '01/10/2024 - 31/12/2024', 'estado' => 'Aprobada',  'color' => 'success'],
-                                                ['nombre' => 'Ofertas especiales a México',                'fechas' => '15/11/2024 - 30/11/2024', 'estado' => 'Pendiente', 'color' => 'warning'],
-                                            ] as $p): ?>
+                        <!-- Promociones activas -->
+                        <div class="col-12 col-lg-4">
+                            <div class="bg-white border rounded-3 h-100">
+                                <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <img src="<?= url('public/img/icons/placeholdersCards/etiqueta.png') ?>" style="width:18px;height:18px;object-fit:contain;" alt="">
+                                        <span class="fw-semibold" style="font-size:0.9rem;">Promociones activas</span>
+                                    </div>
+                                </div>
+                                <div class="px-3 py-2 d-flex flex-column gap-2">
+                                    <?php if (empty($promocionesVigentes)): ?>
+                                        <p class="text-muted text-center py-4 m-0">
+                                            No hay promociones activas en este momento.
+                                        </p>
+                                    <?php else: ?>
+                                        <?php foreach ($promocionesVigentes as $p): ?>
                                             <div class="d-flex justify-content-between align-items-start gap-2 border-bottom pb-2">
                                                 <div>
-                                                    <p class="fw-semibold m-0" style="font-size:0.82rem;"><?= $p['nombre'] ?></p>
-                                                    <p class="text-muted m-0" style="font-size:0.75rem;"><?= $p['fechas'] ?></p>
+                                                    <p class="fw-semibold m-0" style="font-size:0.82rem;"><?= htmlspecialchars($p['nombre']) ?></p>
+                                                    <p class="text-muted m-0" style="font-size:0.75rem;">
+                                                        <?= date('d/m/Y', strtotime($p['fechaInicio'])) ?> - <?= date('d/m/Y', strtotime($p['fechaFin'])) ?>
+                                                    </p>
                                                 </div>
-                                                <span class="badge text-bg-<?= $p['color'] ?> flex-shrink-0" style="font-size:0.7rem;">
-                                                    <?= $p['estado'] ?>
-                                                </span>
+                                                <?= adminAeroBadgeVigenciaPromo($p) ?>
                                             </div>
-                                            <?php endforeach; ?>
-                                        </div>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tramos más recaudados -->
+                        <div class="col-12 col-lg-4">
+                            <div class="bg-white border rounded-3 h-100">
+                                <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <img src="<?= url('public/img/icons/placeholdersCards/ceo.png') ?>" style="width:18px;height:18px;object-fit:contain;" alt="">
+                                        <span class="fw-semibold" style="font-size:0.9rem;">Tramos más recaudados</span>
                                     </div>
                                 </div>
-
-                                <!-- Tramos más recaudados -->
-                                <div class="col-12 col-lg-4">
-                                    <div class="bg-white border rounded-3 h-100">
-                                        <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
-                                            <span class="fw-semibold" style="font-size:0.9rem;">Tramos más recaudados</span>
-                                            <!-- <button class="btn btn-outline-secondary btn-sm" style="font-size:0.75rem;">Ver todos</button> -->
-                                        </div>
-                                        <div class="px-3 py-2">
-                                            <table class="table table-sm table-hover align-middle mb-0" style="font-size:0.82rem;">
-                                                <thead>
-                                                    <tr class="text-muted">
-                                                        <th class="fw-medium border-0 ps-0">RUTA</th>
-                                                        <th class="fw-medium border-0 text-end">RECAUDADO</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?php foreach ([
-                                                        ['ruta' => 'Buenos Aires → Madrid',   'monto' => '$ 2.400.000'],
-                                                        ['ruta' => 'Buenos Aires → Santiago', 'monto' => '$ 1.800.000'],
-                                                        ['ruta' => 'Córdoba → Lima',          'monto' => '$ 980.000'],
-                                                        ['ruta' => 'Rosario → México DF',     'monto' => '$ 750.000'],
-                                                        ['ruta' => 'Buenos Aires → Bogotá',   'monto' => '$ 620.000'],
-                                                    ] as $t): ?>
+                                <div class="px-3 py-2">
+                                    <table class="table table-sm table-hover align-middle mb-0" style="font-size:0.82rem;">
+                                        <thead>
+                                            <tr class="text-muted">
+                                                <th class="fw-medium border-0 ps-0">RUTA</th>
+                                                <th class="fw-medium border-0 text-end">RECAUDADO</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php if (empty($tramosMasRecaudados)): ?>
+                                                <tr>
+                                                    <td colspan="2" class="text-center text-muted py-4 border-0">
+                                                        Todavía no hay recaudación registrada para esta aerolínea.
+                                                    </td>
+                                                </tr>
+                                            <?php else: ?>
+                                                <?php foreach ($tramosMasRecaudados as $t): ?>
                                                     <tr>
-                                                        <td class="ps-0 border-0"><?= $t['ruta'] ?></td>
-                                                        <td class="text-end border-0 fw-semibold text-primary"><?= $t['monto'] ?></td>
+                                                        <td class="ps-0 border-0">
+                                                            <div class="d-flex align-items-center gap-2">
+                                                                <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>" style="width:14px;height:14px;object-fit:contain;opacity:0.4;" alt="">
+                                                                <?= htmlspecialchars($t['ruta']) ?>
+                                                            </div>
+                                                        </td>
+                                                        <td class="text-end border-0 fw-semibold text-primary"><?= adminAeroMoneda($t['recaudado']) ?></td>
                                                     </tr>
-                                                    <?php endforeach; ?>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-
                         </div>
-
-                        <!-- Tab Vuelos -->
-                        <div class="tab-pane fade <?= $tabActiva === 'vuelos' ? 'show active' : '' ?>" id="tab-vuelos">
-                            <p class="text-muted text-center py-4">Tabla de vuelos — próximamente</p>
-                        </div>
-
-                        <!-- Tab Promociones (AHORA SIN EL REQUIRE QUE ROMPIA TODO) -->
-                        <div class="tab-pane fade <?= $tabActiva === 'promociones' ? 'show active' : '' ?>" id="tab-promociones">
-                            <div class="text-center py-5">
-                                <p class="text-muted mb-3">La gestión completa de promociones está en tu menú lateral.</p>
-                                <a href="<?= url('index.php?pagina=ceo&seccion=promociones') ?>" class="btn btn-primary">
-                                    Ir a Gestión de Promociones
-                                </a>
-                            </div>
-                        </div>
-
                     </div>
+
                 </div>
 
             </div>

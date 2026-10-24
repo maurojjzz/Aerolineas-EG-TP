@@ -36,12 +36,12 @@ require_once __DIR__ . '/navLinks.php';
             <?php endif; ?>
 
             <ul class="navbar-nav pe-1">
-                <?php foreach ($navLinks as $link): ?>
+                <?php foreach ($navLinks as $navLink): ?>
                     <li class="nav-item">
-                        <a class="nav-link text-white <?= $link['active'] ? 'active fw-bold' : '' ?>"
-                           href="<?= htmlspecialchars($link['href']) ?>"
-                           <?= $link['active'] ? 'aria-current="page"' : '' ?>>
-                            <?= htmlspecialchars($link['label']) ?>
+                        <a class="nav-link text-white <?= $navLink['active'] ? 'active fw-bold' : '' ?>"
+                           href="<?= htmlspecialchars($navLink['href']) ?>"
+                           <?= $navLink['active'] ? 'aria-current="page"' : '' ?>>
+                            <?= htmlspecialchars($navLink['label']) ?>
                         </a>
                     </li>
                 <?php endforeach; ?>

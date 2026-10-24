@@ -35,6 +35,12 @@ body {
         max-width 0.3s ease;
 }
 
+/* Se usa al aplicar el estado inicial del sidebar para que no se vea la animación */
+.admin-sidebar.sin-transicion,
+.admin-main.sin-transicion {
+    transition: none !important;
+}
+
 .logo-sidebar {
     transition:
         width 0.3s ease,

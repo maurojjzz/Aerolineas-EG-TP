@@ -639,7 +639,7 @@ class PromocionController {
     // ── Obtener las últimas promociones habilitadas (Aprobadas y vigentes) ──
     public function obtenerUltimasPublicadas(int $limite = 3): array {
         $stmt = mysqli_prepare($this->conexion,
-            "SELECT p.*, a.nombreAerolinea, a.codigoIATA
+            "SELECT p.*, a.nombreAerolinea, a.codigoIATA, a.logoUrl
              FROM promocion p
              JOIN aerolinea a ON p.idAerolinea = a.idAerolinea
              WHERE p.estado = 'Aprobada'
