@@ -33,6 +33,7 @@ if (isset($link) && $link instanceof mysqli) {
         data-bs-toggle="offcanvas"
         data-bs-target="#offcanvasAdmin"
         aria-controls="offcanvasAdmin"
+        aria-expanded="false"
         aria-label="Abrir menú de navegación"
     >
             <img src="<?= url('public/img/icons/menu-hamburguesa.png') ?>" alt="" class="logo-header-admin opacity-75">
