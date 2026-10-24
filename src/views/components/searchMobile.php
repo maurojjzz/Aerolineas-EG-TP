@@ -1,39 +1,45 @@
-<?php $paginaActual = $_GET['pagina'] ?? 'inicio';?>
+<?php
+$paginaActual = $_GET['pagina'] ?? 'inicio';
+$esCliente    = $paginaActual === 'cliente' && rolActual() === 'cliente';
+$mostrarTabs  = $paginaActual === 'inicio' || $esCliente;
+?>
 
 <div class="container d-flex flex-column gap-3 p-0">
 
-    <div class="options-line container-fluid d-flex align-items-center bg-light rounded-4 shadow">
-        
-        <?php if ($paginaActual === 'inicio'): ?>
+    <div class="options-line-card container-fluid bg-light rounded-4 shadow">
 
-            <div class="active col option-line-item d-flex flex-column align-items-center pt-3" data-option="vuelos">
-                <img src="<?= url('public/img/icons/avion.png') ?>" alt="icono avion" class="iconos-search">
-                <p>Vuelos</p>
-            </div>
-
-            <div class="col option-line-item d-flex flex-column align-items-center pt-3" data-option="promociones">
-                <img src="<?= url('public/img/icons/promocion.png') ?>" alt="icono promocion" class="iconos-search">
-                <p>Promociones</p>
-            </div>
-
-            <div class="col option-line-item d-flex flex-column align-items-center pt-3" data-option="novedades">
-                <img src="<?= url('public/img/icons/novedades.png') ?>" alt="icono megafono aludiendo a novedades" class="iconos-search">
-                <p>Novedades</p>
-            </div>
-
-        <?php elseif (rolActual() === 'cliente' && $paginaActual === 'cliente'): ?>
-
-            <div class="d-flex w-100 flex-row justify-content-start align-items-center gap-3 py-2">
-                <img class="img-fluid ms-3 d-none d-sm-block"
-                    src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>"
-                    alt="Icono avion titulo"
-                    style="width: 42px; height: 42px;">
-                <div class="d-flex flex-column justify-content-center align-items-start ms-2">
-                    <span class="fw-semibold fs-5 p-0 m-0" style="color:#137AFF;">Buscar vuelos</span>
-                    <span class="text-muted" style="font-size: 14px;">Encuentra las mejores opciones para tu próximo viaje</span>
+        <?php if ($esCliente): ?>
+            <div class="options-line-header">
+                <div class="d-flex w-100 flex-row justify-content-start align-items-center gap-3 py-2 px-2">
+                    <img class="img-fluid d-none d-sm-block"
+                        src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>"
+                        alt="Icono avion titulo"
+                        style="width: 42px; height: 42px;">
+                    <div class="d-flex flex-column justify-content-center align-items-start ms-2">
+                        <span class="fw-semibold fs-5 p-0 m-0" style="color:#137AFF;">Buscar vuelos</span>
+                        <span class="text-muted" style="font-size: 14px;">Encuentra las mejores opciones para tu próximo viaje</span>
+                    </div>
                 </div>
             </div>
+        <?php endif; ?>
 
+        <?php if ($mostrarTabs): ?>
+            <div class="options-line d-flex align-items-center">
+                <div class="active col option-line-item d-flex flex-column align-items-center pt-3" data-option="vuelos">
+                    <img src="<?= url('public/img/icons/avion.png') ?>" alt="icono avion" class="iconos-search">
+                    <p>Vuelos</p>
+                </div>
+
+                <div class="col option-line-item d-flex flex-column align-items-center pt-3" data-option="promociones">
+                    <img src="<?= url('public/img/icons/promocion.png') ?>" alt="icono promocion" class="iconos-search">
+                    <p>Promociones</p>
+                </div>
+
+                <div class="col option-line-item d-flex flex-column align-items-center pt-3" data-option="novedades">
+                    <img src="<?= url('public/img/icons/novedades.png') ?>" alt="icono megafono aludiendo a novedades" class="iconos-search">
+                    <p>Novedades</p>
+                </div>
+            </div>
         <?php endif; ?>
     </div>
 
@@ -91,4 +97,10 @@
 
         </div>
     </form>
+
+    <?php if ($mostrarTabs): ?>
+        <div id="mobilePanelTabs" class="home-tabs-panels d-none">
+            <?php require __DIR__ . '/homeTabsCards.php'; ?>
+        </div>
+    <?php endif; ?>
 </div>

@@ -43,8 +43,15 @@ document.addEventListener("DOMContentLoaded", function () {
     // Leer el estado. Si no hay nada guardado (null), que arranque ABIERTO.
     const guardado = localStorage.getItem("sidebar_abierto");
     const abiertoPorDefecto = guardado === null ? true : guardado === "true";
-    
+
+    // Aplicamos el estado inicial sin animar para evitar el "salto" de layout
+    // (el sidebar y el contenido se achicaban/agrandaban al cargar la página).
+    sidebar.classList.add("sin-transicion");
+    main.classList.add("sin-transicion");
     aplicarEstado(abiertoPorDefecto);
+    void sidebar.offsetWidth;
+    sidebar.classList.remove("sin-transicion");
+    main.classList.remove("sin-transicion");
 
     // Al hacer clic, cambiar y guardar
     btn.addEventListener("click", function () {

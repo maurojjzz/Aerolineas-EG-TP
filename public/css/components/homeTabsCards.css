@@ -1,0 +1,233 @@
+/* ============================================================
+   Cards de Promociones y Novedades del home
+   Se usan dentro de las tabs de searchMobile / searchDesktop.
+   ============================================================ */
+
+.home-tabs-panels {
+    width: 100%;
+}
+
+/* En mobile el panel ocupa el lugar del formulario, con una caja clara */
+@media (max-width: 991.98px) {
+    .home-tabs-panels {
+        background-color: #fafcfe;
+        border: 1px solid #e6eaef;
+        border-radius: 16px;
+        padding: 14px;
+        box-shadow: 0 10px 24px rgba(16, 42, 82, 0.10);
+    }
+}
+
+/* En desktop va adentro de la caja del buscador */
+@media (min-width: 992px) {
+    .home-tabs-panels {
+        padding: 20px 35px 28px;
+    }
+}
+
+/* ── Encabezado del panel ─────────────────────────────────── */
+.home-tabs-panel-head {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.home-tabs-link {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #0d6efd;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.home-tabs-link:hover {
+    color: #0a58ca;
+    text-decoration: underline;
+}
+
+/* ── Card base ────────────────────────────────────────────── */
+.home-card {
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    border: 1px solid #e6eaef;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(16, 42, 82, 0.05);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.home-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(16, 42, 82, 0.14);
+}
+
+.home-card-body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px 16px 16px;
+}
+
+.home-card-code {
+    align-self: flex-start;
+    padding: 2px 10px;
+    border: 1px solid #e6eaef;
+    border-radius: 999px;
+    background-color: #f8f9fa;
+    color: #495057;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.home-card-title {
+    margin: 0;
+    color: #16213a;
+    font-size: 0.98rem;
+    font-weight: 700;
+    line-height: 1.25;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.home-card-meta {
+    margin: 0;
+    color: #6c757d;
+    font-size: 0.78rem;
+}
+
+.home-card-meta strong {
+    color: #16213a;
+}
+
+.home-card-desc {
+    margin: 0;
+    color: #6c757d;
+    font-size: 0.78rem;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.home-card-date {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: auto 0 0;
+    padding-top: 4px;
+    color: #6c757d;
+    font-size: 0.74rem;
+}
+
+.home-card-date i {
+    color: #198754;
+}
+
+/* ── Card de promoción ────────────────────────────────────── */
+.home-card-promo-head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 92px;
+    padding: 12px;
+    color: #ffffff;
+    text-align: center;
+}
+
+.home-card-promo--a .home-card-promo-head {
+    background: linear-gradient(135deg, #116b45, #2f9e5b);
+}
+
+.home-card-promo--b .home-card-promo-head {
+    background: linear-gradient(135deg, #0f5f66, #2a9d8f);
+}
+
+.home-card-promo--c .home-card-promo-head {
+    background: linear-gradient(135deg, #6b7a12, #8fae1f);
+}
+
+.home-card-promo-pct {
+    font-size: 2.1rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.home-card-promo-off {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    opacity: 0.9;
+}
+
+/* ── Card de novedad ──────────────────────────────────────── */
+.home-card-novedad,
+.home-card-novedad:hover {
+    color: inherit;
+}
+
+.home-card-img {
+    display: block;
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+}
+
+.home-card-img--placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #e3f0fe, #cfe3fb);
+    color: #0d6efd;
+    font-size: 2rem;
+}
+
+.home-card-topline {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.home-card-topline .badge {
+    font-size: 0.68rem;
+    font-weight: 600;
+}
+
+.home-card-fecha {
+    color: #6c757d;
+    font-size: 0.72rem;
+}
+
+.home-card-novedad:hover .home-card-title {
+    color: #0d6efd;
+}
+
+/* ── Estado vacío ─────────────────────────────────────────── */
+.home-tabs-empty {
+    padding: 32px 16px;
+    color: #6c757d;
+    text-align: center;
+}
+
+.home-tabs-empty i {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 2rem;
+    opacity: 0.6;
+}
+
+.home-tabs-empty p {
+    margin: 0;
+    font-size: 0.9rem;
+}

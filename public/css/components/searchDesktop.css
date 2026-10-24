@@ -1,3 +1,8 @@
+.desktop-search-header {
+    padding: 12px 12px 12px 0;
+    border-bottom: 1px solid #eef1f4;
+}
+
 .desktop-search-tabs {
     min-height: 75px;
     border-bottom: 1px solid #eef1f4;

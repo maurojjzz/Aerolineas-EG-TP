@@ -1,3 +1,11 @@
+.options-line-card {
+    overflow: hidden;
+}
+
+.options-line-header {
+    border-bottom: 1px solid #e5e7eb;
+}
+
 .options-line {
     height: 70px;
 }
@@ -230,7 +238,17 @@
     height: 20px;
 }
 
-@media screen and (min-width: 465px) {
+/* Entre 465px y 526px los campos ocupan todo el ancho disponible,
+   igual que el selector de pasajeros. */
+@media screen and (min-width: 465px) and (max-width: 526.98px) {
+    .autocomplete,
+    .inputCalendar {
+        max-width: 100%;
+        width: 100%;
+    }
+}
+
+@media screen and (min-width: 527px) {
     .inputCalendar,
     .autocomplete {
         max-width: 220px;
