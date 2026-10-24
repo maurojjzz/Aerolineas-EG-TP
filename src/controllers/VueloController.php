@@ -275,16 +275,11 @@ class VueloController {
         ];
     }
 
-    public function buscarVuelos(string $origen, string $destino, string $fecha,int $pasajeros, int $pagina = 1, int $porPagina = 10, string $orden = 'salida'
+    public function buscarVuelos(string $origen, string $destino, string $fecha,int $pasajeros, int $pagina = 1, int $porPagina = 10, string $orden = 'salida', array $filtros = []
     ): array {
         $offset = ($pagina - 1) * $porPagina;
-        $condiciones = ["v.asientosDisponibles >= ?", "v.fechaHoraSalidaVuelo >= NOW()"];
-        $params = [$pasajeros];
-        $tipos  = 'i';
 
-        if ($origen  !== '') { $condiciones[] = "v.origenVuelo LIKE ?";  $params[] = "%$origen%";  $tipos .= 's'; }
-        if ($destino !== '') { $condiciones[] = "v.destinoVuelo LIKE ?"; $params[] = "%$destino%"; $tipos .= 's'; }
-        if ($fecha   !== '') { $condiciones[] = "DATE(v.fechaHoraSalidaVuelo) = ?"; $params[] = $fecha; $tipos .= 's'; }
+        [$condiciones, $params, $tipos] = $this->condicionesBusqueda($origen, $destino, $fecha, $pasajeros, $filtros);
 
         $where = 'WHERE ' . implode(' AND ', $condiciones);
 
@@ -349,5 +344,116 @@ class VueloController {
             'totalPaginas' => (int) ceil($total / $porPagina),
             'orden'        => $orden,
         ];
+    }
+
+    // ── Facetas para los filtros de la vista de resultados ────────────────────
+    // Devuelve las aerolíneas disponibles en la búsqueda base y el rango de
+    // precios, para no ofrecer filtros que no devuelvan resultados.
+    public function obtenerFacetasVuelos(string $origen, string $destino, string $fecha, int $pasajeros): array {
+        [$condiciones, $params, $tipos] = $this->condicionesBusqueda($origen, $destino, $fecha, $pasajeros);
+
+        $where = 'WHERE ' . implode(' AND ', $condiciones);
+
+        $stmt = mysqli_prepare($this->conexion,
+            "SELECT a.idAerolinea, a.nombreAerolinea, a.codigoIATA,
+                    COUNT(*) AS total,
+                    MIN(v.precioVuelo) AS precioMin,
+                    MAX(v.precioVuelo) AS precioMax
+            FROM vuelo v
+            JOIN aerolinea a ON v.idAerolinea = a.idAerolinea
+            $where
+            GROUP BY a.idAerolinea, a.nombreAerolinea, a.codigoIATA
+            ORDER BY a.nombreAerolinea ASC");
+
+        mysqli_stmt_bind_param($stmt, $tipos, ...$params);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        $aerolineas = [];
+        $precioMin  = null;
+        $precioMax  = null;
+        $total      = 0;
+
+        while ($fila = mysqli_fetch_assoc($result)) {
+            $minFila = (float)$fila['precioMin'];
+            $maxFila = (float)$fila['precioMax'];
+
+            $precioMin = $precioMin === null ? $minFila : min($precioMin, $minFila);
+            $precioMax = $precioMax === null ? $maxFila : max($precioMax, $maxFila);
+            $total    += (int)$fila['total'];
+
+            $aerolineas[] = [
+                'idAerolinea'     => (int)$fila['idAerolinea'],
+                'nombreAerolinea' => $fila['nombreAerolinea'],
+                'codigoIATA'      => $fila['codigoIATA'],
+                'total'           => (int)$fila['total'],
+            ];
+        }
+
+        mysqli_stmt_close($stmt);
+
+        return [
+            'aerolineas' => $aerolineas,
+            'precioMin'  => $precioMin ?? 0.0,
+            'precioMax'  => $precioMax ?? 0.0,
+            'total'      => $total,
+        ];
+    }
+
+    // ── Condiciones SQL compartidas por la búsqueda y las facetas ────────────
+    private function condicionesBusqueda(string $origen, string $destino, string $fecha, int $pasajeros, array $filtros = []): array {
+        $condiciones = ["v.asientosDisponibles >= ?", "v.fechaHoraSalidaVuelo >= NOW()"];
+        $params = [$pasajeros];
+        $tipos  = 'i';
+
+        if ($origen  !== '') { $condiciones[] = "v.origenVuelo LIKE ?";  $params[] = "%$origen%";  $tipos .= 's'; }
+        if ($destino !== '') { $condiciones[] = "v.destinoVuelo LIKE ?"; $params[] = "%$destino%"; $tipos .= 's'; }
+        if ($fecha   !== '') { $condiciones[] = "DATE(v.fechaHoraSalidaVuelo) = ?"; $params[] = $fecha; $tipos .= 's'; }
+
+        // Aerolíneas elegidas en los filtros.
+        $aerolineas = $filtros['aerolineas'] ?? [];
+        if (!empty($aerolineas)) {
+            $marcadores = implode(',', array_fill(0, count($aerolineas), '?'));
+            $condiciones[] = "v.idAerolinea IN ($marcadores)";
+
+            foreach ($aerolineas as $idAerolinea) {
+                $params[] = (int)$idAerolinea;
+                $tipos   .= 'i';
+            }
+        }
+
+        // Rango de precio de lista (las promos se siguen mostrando aparte).
+        if (($filtros['precioMin'] ?? null) !== null) {
+            $condiciones[] = "v.precioVuelo >= ?";
+            $params[]      = (float)$filtros['precioMin'];
+            $tipos        .= 'd';
+        }
+
+        if (($filtros['precioMax'] ?? null) !== null) {
+            $condiciones[] = "v.precioVuelo <= ?";
+            $params[]      = (float)$filtros['precioMax'];
+            $tipos        .= 'd';
+        }
+
+        // Franjas horarias de salida.
+        $rangos = [
+            'madrugada' => [0, 5],
+            'manana'    => [6, 11],
+            'tarde'     => [12, 17],
+            'noche'     => [18, 23],
+        ];
+
+        $franjas = [];
+        foreach (($filtros['horarios'] ?? []) as $clave) {
+            if (isset($rangos[$clave])) {
+                $franjas[] = 'HOUR(v.fechaHoraSalidaVuelo) BETWEEN ' . $rangos[$clave][0] . ' AND ' . $rangos[$clave][1];
+            }
+        }
+
+        if (!empty($franjas)) {
+            $condiciones[] = '(' . implode(' OR ', $franjas) . ')';
+        }
+
+        return [$condiciones, $params, $tipos];
     }
 }

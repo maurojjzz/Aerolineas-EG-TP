@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/navLinks.php';
 ?>
-<nav class="navbar">
+<nav class="navbar" aria-label="Menú de navegación móvil">
     <button class="navbar-toggler custom-toggler"
             type="button"
             data-bs-toggle="offcanvas"
@@ -17,13 +17,13 @@ require_once __DIR__ . '/navLinks.php';
          aria-labelledby="offcanvasNavbarLabel">
         <div class="offcanvas-header">
             <a class="navbar-brand logoLink m-0" href="<?= htmlspecialchars($urlInicio) ?>">
-                <img class="logo" src="<?= url('public/img/aerologo.webp') ?>" alt="Logo de Volaré">
+                <img class="logo" src="<?= url('public/img/aerologo.webp') ?>" alt="Volaré">
             </a>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Cerrar menú"></button>
         </div>
 
         <div class="offcanvas-body d-flex flex-column">
-            <h5 class="visually-hidden" id="offcanvasNavbarLabel">Menú de navegación</h5>
+            <h2 class="visually-hidden h5" id="offcanvasNavbarLabel">Menú de navegación</h2>
 
             <?php if ($isLoggedIn): ?>
                 <div class="mobile-user-box mb-3">
@@ -48,7 +48,7 @@ require_once __DIR__ . '/navLinks.php';
             </ul>
 
             <div class="mt-auto pt-4">
-                <hr class="border-light opacity-25">
+                <div class="border-top border-light opacity-25 my-3" role="presentation"></div>
                 <?php if ($isLoggedIn): ?>
                     <a class="nav-link mobile-logout fw-semibold px-2" href="<?= htmlspecialchars($urlLogout) ?>">Cerrar Sesión</a>
                 <?php else: ?>

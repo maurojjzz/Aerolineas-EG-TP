@@ -10,7 +10,7 @@
         <?php if ($esCliente): ?>
             <div class="desktop-search-header">
                 <div class="d-flex w-100 flex-row justify-content-start align-items-center gap-3">
-                    <img class="img-fluid ms-3" src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>" alt="Icono avion titulo" style="width: 42px; height: 42px;">
+                    <img class="img-fluid ms-3" src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>" alt="" style="width: 42px; height: 42px;">
                     <div class="d-flex flex-column justify-content-center align-items-start ms-2">
                         <span class="fw-semibold fs-5 p-0 m-0" style="color:#137AFF;">Buscar vuelos</span>
                         <span class="text-muted fs-6">Encuentra las mejores opciones para tu próximo viaje</span>
@@ -22,17 +22,17 @@
         <?php if ($mostrarTabs): ?>
             <div class="desktop-search-tabs d-flex align-items-center">
                 <button type="button" class="desktop-tab active d-flex align-items-center gap-2" data-tab="vuelos">
-                    <img src="<?= url('public/img/icons/avion.png') ?>" alt="Icono avión">
+                    <img src="<?= url('public/img/icons/avion.png') ?>" alt="">
                     <span>Vuelos</span>
                 </button>
 
                 <button type="button" class="desktop-tab" data-tab="promociones">
-                    <img src="<?= url('public/img/icons/promocion.png') ?>" alt="Icono promoción">
+                    <img src="<?= url('public/img/icons/promocion.png') ?>" alt="">
                     <span>Promociones</span>
                 </button>
 
                 <button type="button" class="desktop-tab" data-tab="novedades">
-                    <img src="<?= url('public/img/icons/novedades.png') ?>" alt="Icono novedades">
+                    <img src="<?= url('public/img/icons/novedades.png') ?>" alt="">
                     <span>Novedades</span>
                 </button>
             </div>
@@ -40,7 +40,9 @@
 
         <div id="desktopPanelVuelos">
             <!-- RADIOS IDA / IDA Y VUELTA -->
-            <div id="contenedorRadiosViaje" class="d-flex align-items-center gap-4 px-4 pt-3">
+            <fieldset id="contenedorRadiosViaje" class="border-0 m-0 d-flex align-items-center gap-4 px-4 pt-3">
+                <legend class="visually-hidden">Tipo de viaje</legend>
+
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="tipo_viaje_desktop" id="desktopSoloIda" value="solo_ida" checked>
                     <label class="form-check-label fw-semibold" for="desktopSoloIda" style="font-size:0.9rem;">Solo ida</label>
@@ -49,7 +51,7 @@
                     <input class="form-check-input" type="radio" name="tipo_viaje_desktop" id="desktopIdaVuelta" value="ida_vuelta">
                     <label class="form-check-label fw-semibold" for="desktopIdaVuelta" style="font-size:0.9rem;">Ida y vuelta</label>
                 </div>
-            </div>
+            </fieldset>
 
             <form
                 class="desktop-search-form d-flex align-items-center"
@@ -118,7 +120,7 @@
                 </div>
 
                 <button type="submit" class="btn desktop-search-btn ms-auto gap-2">
-                    <img src="<?= url('public/img/icons/lupa.png') ?>" alt="icono pasajero" class="autocomplete-icon">
+                    <img src="<?= url('public/img/icons/lupa.png') ?>" alt="" class="autocomplete-icon">
                     Buscar Vuelos
                 </button>
             </form>

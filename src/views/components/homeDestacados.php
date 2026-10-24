@@ -58,12 +58,13 @@ $homeDestVariantes = ['a', 'b', 'c'];
                                 }
                             ?>
                                 <a href="<?= url('index.php?pagina=cliente-novedades&tab=promociones') ?>"
-                                   class="home-promo-card home-promo-card--<?= $homeDestVariante ?>">
+                                   class="home-promo-card home-promo-card--<?= $homeDestVariante ?>"
+                                   aria-label="Ver la promoción <?= htmlspecialchars($homeDestPromo['nombre'] ?? 'Promoción') ?> de <?= htmlspecialchars($homeDestPromo['nombreAerolinea'] ?? 'la aerolínea') ?>">
                                     <span class="home-promo-top">
                                         <span class="home-promo-airline">
                                             <?php if ($homeDestLogo !== ''): ?>
                                                 <img src="<?= htmlspecialchars($homeDestLogo) ?>"
-                                                     alt="<?= htmlspecialchars($homeDestPromo['nombreAerolinea'] ?? 'Aerolínea') ?>"
+                                                     alt=""
                                                      class="home-promo-logo" loading="lazy">
                                             <?php else: ?>
                                                 <span class="home-promo-iata"><?= htmlspecialchars($homeDestIata !== '' ? $homeDestIata : 'VOL') ?></span>
@@ -147,7 +148,8 @@ $homeDestVariantes = ['a', 'b', 'c'];
                     ?>
                         <li>
                             <a href="<?= url('index.php?pagina=cliente-novedad-detalle&id=' . (int)($homeDestNovedad['idNovedad'] ?? 0)) ?>"
-                               class="home-novedad-item">
+                               class="home-novedad-item"
+                               aria-label="Leer la novedad: <?= htmlspecialchars($homeDestNovedad['titulo'] ?? 'Novedad') ?>">
                                 <span class="home-novedad-thumb">
                                     <?php if ($homeDestImagen !== ''): ?>
                                         <img src="<?= htmlspecialchars($homeDestImagen) ?>"
