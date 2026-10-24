@@ -12,8 +12,12 @@
                 type="text"
                 id="from"
                 name="origen"
-                placeholder="Pais o Ciudad"
+                placeholder="País o ciudad"
                 autocomplete="off"
+                role="combobox"
+                aria-autocomplete="list"
+                aria-expanded="false"
+                aria-controls="from-results"
                 required
             >
 
@@ -25,7 +29,7 @@
         </div>
                 
 
-        <div id="from-results" class="autocomplete-results"></div>
+        <div id="from-results" class="autocomplete-results" role="listbox"></div>
     </div>
 
     <div class="autocomplete d-flex flex-row align-items-center px-2 gap-2 mt-3 p-2 rounded-3 shadow-sm">
@@ -41,8 +45,12 @@
                 type="text"
                 id="to"
                 name="destino"
-                placeholder="Pais o Ciudad"
+                placeholder="País o ciudad"
                 autocomplete="off"
+                role="combobox"
+                aria-autocomplete="list"
+                aria-expanded="false"
+                aria-controls="to-results"
                 required
             >
 
@@ -54,6 +62,6 @@
         </div>
                 
 
-        <div id="to-results" class="autocomplete-results"></div>
+        <div id="to-results" class="autocomplete-results" role="listbox"></div>
     </div>
 </div>

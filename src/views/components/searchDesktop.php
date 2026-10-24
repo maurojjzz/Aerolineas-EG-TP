@@ -41,7 +41,8 @@
             </div>
         <?php endif; ?>
 
-        <div id="desktopPanelVuelos" role="tabpanel" aria-labelledby="desktopTabVuelos" tabindex="0">
+        <div id="desktopPanelVuelos" role="tabpanel" tabindex="0"
+             <?= $mostrarTabs ? 'aria-labelledby="desktopTabVuelos"' : '' ?>>
             <!-- RADIOS IDA / IDA Y VUELTA -->
             <fieldset id="contenedorRadiosViaje" class="border-0 m-0 d-flex align-items-center gap-4 px-4 pt-3">
                 <legend class="visually-hidden">Tipo de viaje</legend>
@@ -66,10 +67,13 @@
 
                 <div class="desktop-field desktop-airport position-relative">
                     <label for="from-desktop">Salida</label>
-                    <input type="text" id="from-desktop" name="origen" class="desktop-main-input" placeholder="Ciudad" autocomplete="off" required>
+                    <input type="text" id="from-desktop" name="origen" class="desktop-main-input"
+                           placeholder="Ciudad" autocomplete="off" role="combobox"
+                           aria-autocomplete="list" aria-expanded="false"
+                           aria-controls="from-results-desktop" required>
                     <p id="from-location-desktop">Ingrese salida</p>
                     <span class="desktop-arrow">⌄</span>
-                    <div id="from-results-desktop" class="autocomplete-results"></div>
+                    <div id="from-results-desktop" class="autocomplete-results" role="listbox"></div>
                 </div>
 
                 <button type="button" class="swap-btn d-flex align-items-center justify-content-center" id="swap-desktop" aria-label="intercambiar origen y destino">
@@ -86,10 +90,14 @@
                         autocomplete="off"
                         name="destino"
                         required
+                        role="combobox"
+                        aria-autocomplete="list"
+                        aria-expanded="false"
+                        aria-controls="to-results-desktop"
                     >
                     <p id="to-location-desktop">Ingrese destino</p>
                     <span class="desktop-arrow">⌄</span>
-                    <div id="to-results-desktop" class="autocomplete-results"></div>
+                    <div id="to-results-desktop" class="autocomplete-results" role="listbox"></div>
                 </div>
 
                 <div class="desktop-divider"></div>
