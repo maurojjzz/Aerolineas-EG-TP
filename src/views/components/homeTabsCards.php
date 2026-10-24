@@ -8,6 +8,7 @@
 
 require_once __DIR__ . '/homeCardsData.php';
 
+$homeTabsPrefijo    = $homeTabsPrefijo ?? 'home';
 $homeTabsData       = homeTabsCardsData(6);
 $homeTabsPromos     = $homeTabsData['promociones'];
 $homeTabsNovedades  = $homeTabsData['novedades'];
@@ -15,7 +16,9 @@ $homeTabsVariantes  = ['a', 'b', 'c'];
 ?>
 
 <!-- PANEL PROMOCIONES -->
-<div class="home-tabs-panel d-none" data-home-tab="promociones">
+<div class="home-tabs-panel d-none" data-home-tab="promociones"
+     id="<?= $homeTabsPrefijo ?>PanelPromociones"
+     role="tabpanel" aria-labelledby="<?= $homeTabsPrefijo ?>TabPromociones">
     <div class="home-tabs-panel-head">
         <a href="<?= url('index.php?pagina=cliente-novedades&tab=promociones') ?>" class="home-tabs-link">
             Ver todas las promociones <span aria-hidden="true">→</span>
@@ -73,7 +76,9 @@ $homeTabsVariantes  = ['a', 'b', 'c'];
 </div>
 
 <!-- PANEL NOVEDADES -->
-<div class="home-tabs-panel d-none" data-home-tab="novedades">
+<div class="home-tabs-panel d-none" data-home-tab="novedades"
+     id="<?= $homeTabsPrefijo ?>PanelNovedades"
+     role="tabpanel" aria-labelledby="<?= $homeTabsPrefijo ?>TabNovedades">
     <div class="home-tabs-panel-head">
         <a href="<?= url('index.php?pagina=cliente-novedades') ?>" class="home-tabs-link">
             Ver todas las novedades <span aria-hidden="true">→</span>

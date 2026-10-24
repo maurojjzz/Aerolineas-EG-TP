@@ -42,7 +42,7 @@ $stats =$ctrl->obtenerEstadisticas();
     </nav>
 
     <div class="contForm col-12 d-flex flex-column p-2 admin-content h-100">
-        <h2 class="m-0 p-0 fs-2 fw-bold">Gestión de Novedades</h2>
+        <h1 class="m-0 p-0 fs-2 fw-bold">Gestión de Novedades</h1>
         <p class="m-0 p-0 mb-1 subt">Publicá y administrá avisos, promociones o novedades de vuelos para los pasajeros.</p>
 
         <!-- Tarjetas de métricas -->
@@ -94,13 +94,13 @@ $stats =$ctrl->obtenerEstadisticas();
         <div class="d-flex flex-column gap-2">
             <div class="table-responsive bg-white shadow rounded-3 pt-3 tablaContenedor">
                 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center px-2 mb-3 gap-3 gap-sm-0">
-                    <h3 class="m-0 p-0 fs-4 fw-bold">Listado de Novedades</h3>
+                    <h2 class="m-0 p-0 fs-4 fw-bold">Listado de Novedades</h2>
                     <div class="d-flex flex-column flex-sm-row gap-2 align-items-center">
                         <form method="GET" action="index.php" class="d-flex flex-wrap gap-2 align-items-center">
                             <input type="hidden" name="pagina" value="novedades">
                             <input type="hidden" name="seccion" value="listado">
                             
-                            <select name="categoria" class="form-select form-select-sm ctm-inp" style="width:auto;">
+                            <select name="categoria" class="form-select form-select-sm ctm-inp" aria-label="Filtrar por categoría" style="width:auto;">
                                 <option value="">Todas las categorías</option>
                                 <option value="general" <?= $categoria === 'general' ? 'selected' : '' ?>>General</option>
                                 <option value="promocion" <?= $categoria === 'promocion' ? 'selected' : '' ?>>Promoción</option>
@@ -108,14 +108,14 @@ $stats =$ctrl->obtenerEstadisticas();
                                 <option value="importante" <?= $categoria === 'importante' ? 'selected' : '' ?>>Importante</option>
                             </select>
 
-                            <select name="estado" class="form-select form-select-sm ctm-inp" style="width:auto;">
+                            <select name="estado" class="form-select form-select-sm ctm-inp" aria-label="Filtrar por estado" style="width:auto;">
                                 <option value="">Todos los estados</option>
                                 <option value="publicada" <?= $estado === 'publicada' ? 'selected' : '' ?>>Publicadas</option>
                                 <option value="borrador" <?= $estado === 'borrador' ? 'selected' : '' ?>>Borradores</option>
                                 <option value="archivada" <?= $estado === 'archivada' ? 'selected' : '' ?>>Archivadas</option>
                             </select>
 
-                            <input type="text" name="busqueda" class="form-control form-control-sm ctm-inp" placeholder="Buscar..." value="<?= htmlspecialchars($busqueda) ?>" style="max-width: 160px;">
+                            <input type="text" name="busqueda" class="form-control form-control-sm ctm-inp" placeholder="Buscar..." aria-label="Buscar novedad por título" value="<?= htmlspecialchars($busqueda) ?>" style="max-width: 160px;">
                             <button type="submit" class="btn btn-sm btn-outline-primary">Filtrar</button>
                         </form>
 
@@ -126,6 +126,7 @@ $stats =$ctrl->obtenerEstadisticas();
                 </div>
 
                 <table class="table table-hover align-middle border-top mt-2">
+                    <caption class="visually-hidden">Listado de novedades</caption>
                     <thead>
                         <tr>
                             <th scope="col" class="fw-bold">TÍTULO</th>
@@ -194,7 +195,7 @@ $stats =$ctrl->obtenerEstadisticas();
                             <tr class="fila-detalle d-none" id="detalle-<?= $n['idNovedad'] ?>">
                                 <td colspan="6" class="p-3 bg-light">
                                     <div class="px-3 py-2 bg-white rounded border">
-                                        <h4 class="h6 fw-bold mb-1">Contenido completo:</h4>
+                                        <h3 class="h6 fw-bold mb-1">Contenido completo:</h3>
                                         <p class="m-0 text-secondary" style="font-size: 0.9rem; white-space: pre-line;"><?= nl2br(htmlspecialchars($n['contenido'])) ?></p>
                                     </div>
                                 </td>
@@ -251,7 +252,7 @@ $stats =$ctrl->obtenerEstadisticas();
 
                         <div class="d-flex align-items-center gap-2">
                             <span class="text-muted" style="font-size:0.8rem;">Por página:</span>
-                            <select class="form-select form-select-sm border-0 bg-light rounded-2" style="width:auto; font-size:0.8rem; cursor:pointer;" onchange="window.location.href=this.value">
+                            <select class="form-select form-select-sm border-0 bg-light rounded-2" style="width:auto; font-size:0.8rem; cursor:pointer;" onchange="window.location.href=this.value" aria-label="Resultados por página">
                                 <?php foreach ([5, 10, 25, 50] as $op): ?>
                                     <option value="<?= urlPagina(1, $op) ?>" <?= $op ===$porPagina ? 'selected' : '' ?>>
                                         <?= $op ?> por página
@@ -266,12 +267,12 @@ $stats =$ctrl->obtenerEstadisticas();
     </div>
 
     <!-- Modal para eliminar novedad -->
-    <div class="modal fade" id="modalEliminarNovedad" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="modalEliminarNovedad" tabindex="-1" role="dialog" aria-labelledby="modalEliminarNovedadLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header border-0">
-                    <h2 class="modal-title fw-bold h5">Eliminar Novedad</h2>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h2 class="modal-title fw-bold h5" id="modalEliminarNovedadLabel">Eliminar Novedad</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
                     <p id="modalEliminarTexto" class="text-muted m-0"></p>

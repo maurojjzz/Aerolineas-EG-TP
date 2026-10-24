@@ -125,23 +125,24 @@ foreach ($tramos as $tramo) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reservar vuelo</title>
+    <title>Reservar vuelo — Volaré</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="<?= url('public/css/layout/header.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/components/menuMobile.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/reservas.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/reservarVuelo.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
 </head>
 <body class="container-fluid overflow-x-hidden p-0 m-0">
 
 <?php require './src/views/layouts/header.php'; ?>
 
 <div style="min-height:100vh;">
-<div class="container-xxl py-4 px-3 px-lg-5">
+<main id="contenido" tabindex="-1" class="container-xxl py-4 px-3 px-lg-5">
 
     <div class="titulo-cuadro text-center mb-4">
-        <p class="h5 fw-bold">Vuela sin limites</p>
-        <h2 >DONDE CADA <span>VIAJE</span> COMIENZA</h2>
+        <p class="h5 fw-bold mb-1">Paso 2 de 3</p>
+        <h1 class="fs-2 fw-bold">Confirmá tu reserva</h1>
         <p>Revisá tus datos y confirmá la reserva en pocos pasos.</p>
     </div>
 
@@ -177,7 +178,7 @@ foreach ($tramos as $tramo) {
 
                 <div class="d-flex align-items-center gap-2 mb-3">
                     <span style="font-size:1.3rem;">👤</span>
-                    <h3 class="h4 fw-bold m-0 fs-5">Datos del pasajero</h3>
+                    <h2 class="h4 fw-bold m-0 fs-5">Datos del pasajero</h2>
                 </div>
 
                 <p class="text-muted mb-3" style="font-size:0.85rem;">
@@ -237,7 +238,7 @@ foreach ($tramos as $tramo) {
 
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div class="d-flex align-items-center gap-2">
-                        <h3 class="h4 fw-bold m-0 fs-5">Resumen de la reserva</h3>
+                        <h2 class="h4 fw-bold m-0 fs-5">Resumen de la reserva</h2>
                     </div>
                     <span class="badge-estado-pend">Pendiente de pago</span>
                 </div>
@@ -388,7 +389,7 @@ foreach ($tramos as $tramo) {
         </div>
 
     </div>
-</div>
+</main>
 </div>
 
 <?php require_once './src/views/layouts/footer.php'; ?>

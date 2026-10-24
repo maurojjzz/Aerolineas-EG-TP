@@ -6,6 +6,7 @@
     role="dialog"
 >
     <div class="offcanvas-header">
+        <span class="visually-hidden" id="offcanvasAdminLabel">Menú de administración</span>
         <div class="d-flex align-items-center justify-content-center w-100">
             <img
                 src="<?= url('public/img/aerologo.webp') ?>"
@@ -16,11 +17,13 @@
         <button
             type="button"
             class="btn-close btn-close-white"
-            aria-label="Cerrar"
+            data-bs-dismiss="offcanvas"
+            aria-label="Cerrar menú"
         ></button>
     </div>
 
     <div class="offcanvas-body">
+        <nav aria-label="Menú de administración">
         <ul class="nav navbar-custom d-flex flex-column align-items-center w-100 gap-1">
 
             <li class="nav-item">
@@ -84,5 +87,6 @@
             </li>
 
         </ul>
+        </nav>
     </div>
 </div>

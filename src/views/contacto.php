@@ -71,19 +71,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="<?= url('public/css/components/searchDesktop.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/reservas.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
 </head>
 <body>
 
     <!-- Header unificado -->
     <?php require __DIR__ . '/layouts/header.php'; ?>
 
-    <div class="container pb-5">
+    <main id="contenido" tabindex="-1" class="container pb-5">
         <div class="row justify-content-center">
             <div class="col-12 col-lg-8">
                 
                 <!-- Cabecera de la sección -->
                 <div class="titulo-cuadro-resul text-center mt-0 mb-5 user-select-none">
-                    <h2 class="fw-bold text-dark display-6">FORMULARIO DE <span>CONTACTO</span></h2>
+                    <h1 class="fw-bold text-dark display-6">FORMULARIO DE <span>CONTACTO</span></h1>
                     <p class=" m-0 fs-5" style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">¿Tenés alguna consulta o sugerencia? Escribinos y te responderemos a la brevedad.</p>
                 </div>
 
@@ -102,32 +103,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <form action="<?= url('index.php?pagina=contacto') ?>" method="POST" novalidate>
                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
 
+                        <p class="small text-secondary mb-3">
+                            Los campos con <span class="text-danger" aria-hidden="true">*</span>
+                            <span class="visually-hidden">asterisco</span> son obligatorios.
+                        </p>
+
+                        <div id="resumenErroresContacto" class="alert alert-danger d-none" role="alert" tabindex="-1"></div>
+
                         <div class="row">
                             <!-- Nombre y Apellido -->
                             <div class="col-md-6 mb-3">
-                                <label for="nombre" class="form-label fw-semibold text-dark">Nombre y Apellido</label>
+                                <label for="nombre" class="form-label fw-semibold text-dark">
+                                    Nombre y Apellido <span class="text-danger" aria-hidden="true">*</span>
+                                </label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-light text-secondary"><i class="bi bi-person"></i></span>
-                                    <input type="text" class="form-control shadow-none" id="nombre" name="nombre" placeholder="Tu nombre" required>
+                                    <span class="input-group-text bg-light text-secondary" aria-hidden="true"><i class="bi bi-person"></i></span>
+                                    <input type="text" class="form-control shadow-none" id="nombre" name="nombre"
+                                           placeholder="Tu nombre" autocomplete="name" required
+                                           aria-describedby="nombre-feedback">
                                 </div>
-                                <div class="invalid-feedback text-danger small mt-1" style="display: none;">Por favor, ingresa tu nombre y apellido.</div>
+                                <div class="invalid-feedback text-danger small mt-1" id="nombre-feedback" role="alert"></div>
                             </div>
 
                             <!-- Correo Electrónico -->
                             <div class="col-md-6 mb-3">
-                                <label for="email" class="form-label fw-semibold text-dark">Correo Electrónico</label>
+                                <label for="email" class="form-label fw-semibold text-dark">
+                                    Correo Electrónico <span class="text-danger" aria-hidden="true">*</span>
+                                </label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-light text-secondary"><i class="bi bi-envelope"></i></span>
-                                    <input type="email" class="form-control shadow-none" id="email" name="email" placeholder="correo@ejemplo.com" required>
+                                    <span class="input-group-text bg-light text-secondary" aria-hidden="true"><i class="bi bi-envelope"></i></span>
+                                    <input type="email" class="form-control shadow-none" id="email" name="email"
+                                           placeholder="correo@ejemplo.com" autocomplete="email" required
+                                           aria-describedby="email-feedback">
                                 </div>
-                                <div class="invalid-feedback text-danger small mt-1" style="display: none;" id="email-feedback">Por favor, ingresa un correo electrónico válido.</div>
+                                <div class="invalid-feedback text-danger small mt-1" id="email-feedback" role="alert"></div>
                             </div>
                         </div>
 
                         <!-- Asunto -->
                         <div class="mb-3">
-                            <label for="asunto" class="form-label fw-semibold text-dark">Asunto</label>
-                            <select class="form-select shadow-none" id="asunto" name="asunto" required>
+                            <label for="asunto" class="form-label fw-semibold text-dark">
+                                Asunto <span class="text-danger" aria-hidden="true">*</span>
+                            </label>
+                            <select class="form-select shadow-none" id="asunto" name="asunto" required
+                                    aria-describedby="asunto-feedback">
                                 <option value="" selected disabled>Seleccioná el motivo de tu consulta</option>
                                 <option value="reservas">Consultas sobre Vuelos y Reservas</option>
                                 <option value="equipaje">Equipaje y Requisitos de Viaje</option>
@@ -135,20 +154,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <option value="reclamos">Reclamos o Sugerencias</option>
                                 <option value="otro">Otro motivo</option>
                             </select>
-                            <div class="invalid-feedback text-danger small mt-1" style="display: none;">Por favor, seleccioná un motivo de consulta.</div>
+                            <div class="invalid-feedback text-danger small mt-1" id="asunto-feedback" role="alert"></div>
                         </div>
 
                         <!-- Mensaje -->
                         <div class="mb-4">
-                            <label for="mensaje" class="form-label fw-semibold text-dark">Mensaje</label>
-                            <textarea class="form-control shadow-none" id="mensaje" name="mensaje" rows="5" placeholder="Escribí los detalles de tu consulta aquí..." required></textarea>
-                            <div class="invalid-feedback text-danger small mt-1" style="display: none;">Por favor, escribí los detalles de tu mensaje.</div>
+                            <label for="mensaje" class="form-label fw-semibold text-dark">
+                                Mensaje <span class="text-danger" aria-hidden="true">*</span>
+                            </label>
+                            <textarea class="form-control shadow-none" id="mensaje" name="mensaje" rows="5"
+                                      placeholder="Escribí los detalles de tu consulta aquí..." required
+                                      aria-describedby="mensaje-feedback"></textarea>
+                            <div class="invalid-feedback text-danger small mt-1" id="mensaje-feedback" role="alert"></div>
                         </div>
 
                         <!-- Botón de Envío -->
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary py-3 fw-semibold">
-                                <i class="bi bi-send me-2"></i>Enviar Mensaje
+                                <i class="bi bi-send me-2" aria-hidden="true"></i>Enviar Mensaje
                             </button>
                         </div>
 
@@ -163,7 +186,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             </div>
         </div>
-    </div>
+    </main>
 
     <!-- Footer unificado -->
     <?php require __DIR__ . '/layouts/footer.php'; ?>
@@ -174,6 +197,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.querySelector('form');
         const inputs = form.querySelectorAll('input, select, textarea');
+        const resumen = document.getElementById('resumenErroresContacto');
+
+        const feedbackDe = (field) => document.getElementById(field.id + '-feedback');
+
+        const limpiarError = (field) => {
+            field.classList.remove('is-invalid');
+            field.removeAttribute('aria-invalid');
+            const feedback = feedbackDe(field);
+            if (feedback) feedback.textContent = '';
+        };
 
         inputs.forEach(input => {
             // Validar al salir del campo (onblur)
@@ -181,39 +214,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 validateField(this);
             });
 
-            // Ocultar error y limpiar borde apenas el usuario escribe o selecciona
+            // Limpiar el error apenas el usuario escribe o selecciona
             input.addEventListener('input', function () {
-                this.classList.remove('is-invalid');
-                const parentContainer = this.closest('.input-group') ? this.closest('.col-md-6, .mb-3, .mb-4') : this.parentElement;
-                const feedbackElement = parentContainer.querySelector('.invalid-feedback');
-                if (feedbackElement) feedbackElement.style.display = 'none';
+                limpiarError(this);
             });
 
             input.addEventListener('change', function () {
-                this.classList.remove('is-invalid');
-                const parentContainer = this.closest('.input-group') ? this.closest('.col-md-6, .mb-3, .mb-4') : this.parentElement;
-                const feedbackElement = parentContainer.querySelector('.invalid-feedback');
-                if (feedbackElement) feedbackElement.style.display = 'none';
+                limpiarError(this);
             });
         });
 
         form.addEventListener('submit', function (event) {
             let isValid = true;
+            const invalidos = [];
+
             inputs.forEach(input => {
                 if (!validateField(input)) {
                     isValid = false;
+                    invalidos.push(input);
                 }
             });
 
             if (!isValid) {
                 event.preventDefault(); // Detiene el envío si hay errores
+
+                if (resumen) {
+                    const cantidad = invalidos.length;
+                    resumen.textContent = cantidad === 1
+                        ? 'Revisá el campo marcado: falta completarlo o su formato no es válido.'
+                        : `Revisá los ${cantidad} campos marcados: faltan completarlos o su formato no es válido.`;
+                    resumen.classList.remove('d-none');
+                    resumen.focus();
+                }
+
+                if (invalidos.length) {
+                    invalidos[0].focus();
+                }
+            } else if (resumen) {
+                resumen.classList.add('d-none');
+                resumen.textContent = '';
             }
         });
 
         function validateField(field) {
             let valid = true;
-            const parentContainer = field.closest('.input-group') ? field.closest('.col-md-6, .mb-3, .mb-4') : field.parentElement;
-            const feedbackElement = parentContainer.querySelector('.invalid-feedback');
+            const feedbackElement = feedbackDe(field);
 
             // Validación de campo vacío (requerido)
             if (field.hasAttribute('required') && !field.value.trim()) {
@@ -222,9 +267,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if (field.tagName === 'SELECT') {
                         feedbackElement.textContent = 'Por favor, seleccioná un motivo de consulta.';
                     } else if (field.type === 'email') {
-                        feedbackElement.textContent = 'Por favor, ingresa tu correo electrónico.';
+                        feedbackElement.textContent = 'Por favor, ingresá tu correo electrónico.';
                     } else {
-                        feedbackElement.textContent = 'Por favor, completa este campo.';
+                        feedbackElement.textContent = 'Por favor, completá este campo.';
                     }
                 }
             } 
@@ -241,11 +286,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if (!valid) {
                 field.classList.add('is-invalid');
-                if (feedbackElement) feedbackElement.style.display = 'block';
+                field.setAttribute('aria-invalid', 'true');
                 return false;
             } else {
                 field.classList.remove('is-invalid');
-                if (feedbackElement) feedbackElement.style.display = 'none';
+                field.removeAttribute('aria-invalid');
+                if (feedbackElement) feedbackElement.textContent = '';
                 return true;
             }
         }

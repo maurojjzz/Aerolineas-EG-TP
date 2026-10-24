@@ -14,6 +14,7 @@
     carousels.forEach((carousel) => {
         const track = carousel.querySelector('[data-carousel-track]');
         const dots  = carousel.querySelector('[data-carousel-dots]');
+        const status = carousel.querySelector('[data-carousel-status]');
         const prev  = carousel.querySelector('[data-carousel-prev]');
         const next  = carousel.querySelector('[data-carousel-next]');
 
@@ -65,6 +66,10 @@
         const goTo = (index) => {
             const target = Math.max(0, Math.min(index, pages - 1));
             track.scrollTo({ left: pageTarget(target), behavior: 'smooth' });
+
+            if (status) {
+                status.textContent = `Página ${target + 1} de ${pages} de promociones destacadas`;
+            }
 
             // Refresca los puntos aunque el navegador no emita el scroll
             // (por ejemplo, si el movimiento ya estaba en el destino).
@@ -118,6 +123,23 @@
         if (next) {
             next.addEventListener('click', () => goTo(currentPage() + 1));
         }
+
+        // Navegación por teclado dentro de la región del carrusel
+        track.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowRight') {
+                event.preventDefault();
+                goTo(currentPage() + 1);
+            } else if (event.key === 'ArrowLeft') {
+                event.preventDefault();
+                goTo(currentPage() - 1);
+            } else if (event.key === 'Home') {
+                event.preventDefault();
+                goTo(0);
+            } else if (event.key === 'End') {
+                event.preventDefault();
+                goTo(pages - 1);
+            }
+        });
 
         let scrollTimer = null;
         track.addEventListener('scroll', () => {

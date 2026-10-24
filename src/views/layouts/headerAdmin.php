@@ -17,24 +17,28 @@ if (isset($link) && $link instanceof mysqli) {
 }
 
 ?>
+<a class="skip-link" href="#contenido">Saltar al contenido</a>
+<div id="anuncioGlobal" class="visually-hidden" role="status" aria-live="polite"></div>
+
 <div class="container-header d-flex align-items-center bg-light row border-bottom border-2 w-100 m-0 p-0 g-0">
-    <button type="button" class=" col-1 btn ctm-btn-header d-none d-md-block" id="sidebarToggleHamburguesa">
-        <img src="<?= url('public/img/icons/menu-hamburguesa.png') ?>" alt="icono menu hamburguesa" class="logo-header-admin opacity-75"> 
+    <button type="button" class=" col-1 btn ctm-btn-header d-none d-md-block" id="sidebarToggleHamburguesa" aria-label="Mostrar u ocultar el menú lateral" aria-controls="sidebarAdmin" aria-expanded="true">
+        <img src="<?= url('public/img/icons/menu-hamburguesa.png') ?>" alt="" class="logo-header-admin opacity-75">
     </button>
 
     <!-- menu hamburguesa para mobile -->
-    <button 
-        type="button" 
-        class=" col-1 btn ctm-btn-header d-md-none" 
+    <button
+        type="button"
+        class=" col-1 btn ctm-btn-header d-md-none"
         id="sidebarToggleHamburguesaMobile"
         data-bs-toggle="offcanvas"
         data-bs-target="#offcanvasAdmin"
-        aria-controls="offcanvasAdmin"   
+        aria-controls="offcanvasAdmin"
+        aria-label="Abrir menú de navegación"
     >
-            <img src="<?= url('public/img/icons/menu-hamburguesa.png') ?>" alt="icono menu hamburguesa" class="logo-header-admin opacity-75"> 
+            <img src="<?= url('public/img/icons/menu-hamburguesa.png') ?>" alt="" class="logo-header-admin opacity-75">
     </button>
 
-    <h5 class="col-6 col-sm m-0 p-0 ">
+    <p class="col-6 col-sm m-0 p-0 h5">
         <span class="d-none d-sm-block">
             <?php if ($rol === 'ceo') { echo 'Panel de CEO'; } else { echo 'Panel de Administración'; } ?>
         </span>
@@ -42,7 +46,7 @@ if (isset($link) && $link instanceof mysqli) {
             <?php if ($rol === 'ceo') { echo 'CEO'; } else { echo 'Admin'; } ?>
         </span>
 
-    </h5>
+    </p>
 
     <div class="col ctm-user-info d-flex justify-content-end align-items-center gap-2 pe-4 position-relative">
         <!-- Dropdown de Notificaciones / Campana -->
@@ -53,8 +57,10 @@ if (isset($link) && $link instanceof mysqli) {
                         id="dropdownNotificaciones" 
                         data-bs-toggle="dropdown" 
                         aria-expanded="false"
+                        aria-haspopup="true"
+                        aria-label="Notificaciones y pendientes<?= $totalNotif > 0 ? ': ' . $totalNotif . ' sin leer' : '' ?>"
                         style="width: 40px; height: 40px;">
-                    <img src="<?= url('public/img/icons/bell.png') ?>" alt="icono campana notificacion" class="bell-noti opacity-75" style="width: 22px; height: 22px;"> 
+                    <img src="<?= url('public/img/icons/bell.png') ?>" alt="" class="bell-noti opacity-75" style="width: 22px; height: 22px;">
                     <?php if ($totalNotif > 0): ?>
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem;">
                             <?= $totalNotif ?>
@@ -62,6 +68,7 @@ if (isset($link) && $link instanceof mysqli) {
                         </span>
                     <?php endif; ?>
                 </button>
+            <span id="notificacionesEstado" class="visually-hidden" role="status" aria-live="polite"></span>
             <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 p-2" aria-labelledby="dropdownNotificaciones" style="width: 320px; max-height: 400px; overflow-y: auto;">
                 <li>
                     <div class="dropdown-header fw-bold text-dark border-bottom pb-2 px-2">
@@ -122,10 +129,13 @@ if (isset($link) && $link instanceof mysqli) {
         <div class="dropdown">
             <button class="btn p-0 border-0 bg-transparent d-flex align-items-center gap-2"
                     type="button"
+                    id="dropdownUsuarioAdmin"
                     data-bs-toggle="dropdown"
-                    aria-expanded="false">
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                    aria-label="Abrir menú de usuario">
 
-                <span class="pfp-icon d-flex align-items-center justify-content-center rounded-circle">
+                <span class="pfp-icon d-flex align-items-center justify-content-center rounded-circle" aria-hidden="true">
                     <?= strtoupper(substr($usuario['nombre'] ?? 'A', 0, 1) . substr($usuario['apellido'] ?? 'J', 0, 1)) ?>
                 </span>
 
@@ -136,10 +146,10 @@ if (isset($link) && $link instanceof mysqli) {
                     </span>
                 </span>
 
-                <span class="down-arrow" style="font-size:1.5rem;font-weight:500;">⌄</span>
+                <span class="down-arrow" aria-hidden="true" style="font-size:1.5rem;font-weight:500;">⌄</span>
             </button>
 
-            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="dropdownUsuarioAdmin">
                 <li>
                     <div class="px-3 py-2 border-bottom">
                         <p class="m-0 fw-semibold" style="font-size:0.9rem;">
@@ -185,3 +195,4 @@ if (isset($link) && $link instanceof mysqli) {
     const URL_LISTADO_PROMOCIONES = "<?= url('index.php?pagina=promociones&seccion=listado') ?>";
 </script>
 <script src="<?= url('public/js/admin/notificaciones.js') ?>"></script>
+<script src="<?= url('public/js/accesibilidad.js') ?>" defer></script>

@@ -1,0 +1,129 @@
+/* ============================================================
+   Accesibilidad global — Volaré
+   Se carga en todas las páginas del sitio (públicas y de gestión).
+   ============================================================ */
+
+/* Enlace para saltar al contenido principal */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 3000;
+    padding: 10px 16px;
+    background: #0d3262;
+    color: #ffffff;
+    font-weight: 700;
+    text-decoration: none;
+    border-radius: 0 0 8px 0;
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+    left: 0;
+    top: 0;
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+/* El destino del salto no necesita contorno cuando recibe foco por código */
+#contenido:focus {
+    outline: none;
+}
+
+/* Indicador de foco visible y de alto contraste para teclado */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible,
+.btn:focus-visible,
+.nav-link:focus-visible,
+.dropdown-item:focus-visible,
+.page-link:focus-visible,
+.accordion-button:focus-visible,
+.form-control:focus-visible,
+.form-select:focus-visible {
+    outline: 3px solid #0b5ed7 !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 6px #ffffff !important;
+}
+
+/* Sobre fondos oscuros el anillo blanco mantiene el contraste */
+.bg-dark a:focus-visible,
+.admin-sidebar a:focus-visible,
+.navbar-custom a:focus-visible,
+.offcanvas a:focus-visible,
+.ctm-btn-header:focus-visible {
+    outline-color: #ffd43b !important;
+    box-shadow: 0 0 0 6px #0d3262 !important;
+}
+
+/* Enlaces visitados: se distinguen de los no visitados por color
+   (los navegadores sólo permiten cambiar color en :visited). */
+main a:visited:not(.btn):not(.nav-link):not(.dropdown-item):not(.page-link):not(.badge):not(.skip-link),
+.container a:visited:not(.btn):not(.nav-link):not(.dropdown-item):not(.page-link):not(.badge) {
+    color: #6f2da8;
+}
+
+footer a:visited,
+.bg-dark a:visited {
+    color: #d7c4ff !important;
+}
+
+.navbar-custom .nav-link:visited {
+    color: #e2d4ff;
+}
+
+/* Contraste mínimo del texto secundario sobre fondos claros */
+.text-muted {
+    color: #5c636a !important;
+}
+
+/* Tablas con desplazamiento accesible por teclado */
+.table-responsive:focus-visible,
+.tabla-scroll:focus-visible {
+    outline: 3px solid #0b5ed7 !important;
+    outline-offset: 2px;
+}
+
+/* Espacio para que los títulos no queden tapados por headers fijos */
+[id] {
+    scroll-margin-top: 90px;
+}
+
+/* El eslogan decorativo del hero conserva su tamaño al dejar de ser encabezado */
+.hero-content .hero-slogan {
+    font-size: 3.86rem;
+    font-weight: 700;
+    min-width: 300px;
+    color: #082149;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+}
+
+.hero-content .hero-slogan span {
+    color: transparent;
+    -webkit-text-stroke: 2.5px #082149;
+    font-weight: 800;
+}
+
+/* Opciones tipo tarjeta: el foco del control oculto se refleja en la tarjeta */
+.alcance-option:focus-within {
+    outline: 3px solid #0b5ed7;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 6px #ffffff;
+}
+
+/* Respeta la preferencia de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

@@ -82,12 +82,12 @@ if ($rol === 'ceo') {
 }
 ?>
 
-<div class="d-flex flex-column align-items-center m-0 ctm-sidebar">
+<nav class="d-flex flex-column align-items-center m-0 ctm-sidebar" id="sidebarAdmin" aria-label="Menú lateral de administración">
 
     <div class="d-flex flex-column align-items-center justify-content-center gap-2 py-3 px-3 custom-logo">
         <a class="navbar-brand logoLink d-flex flex-column align-items-center text-center" href="<?= url('index.php?pagina=inicio') ?>">
             <img src="<?= url('public/img/aerologo.webp') ?>" alt="Logo de Volaré" class="logo-sidebar">
-            <h6 class="mb-0 mt-2">Volaré</h6>
+            <span class="h6 d-block mb-0 mt-2 text-white">Volaré</span>
         </a>
     </div>
 
@@ -100,9 +100,10 @@ if ($rol === 'ceo') {
                 data-bs-placement="top"
                 data-bs-title="<?= htmlspecialchars($navLink['label']) ?>"
                 data-bs-trigger="hover"
+                <?= $navLink['activo'] ? 'aria-current="page"' : '' ?>
             >
                 <img src="<?= url('public/img/icons/' . $navLink['icon']) ?>"
-                    alt="<?= htmlspecialchars($navLink['label']) ?>"
+                    alt=""
                     class="iconos-sidebar">
                 <span><?= htmlspecialchars($navLink['label']) ?></span>
             </a>
@@ -113,13 +114,13 @@ if ($rol === 'ceo') {
                 href="<?= url('src/routes/usuarios.php?accion=logout') ?>"
                 data-bs-toggle="tooltip"
                 data-bs-placement="top"
-                data-bs-title="Cerrar Sesion"
+                data-bs-title="Cerrar Sesión"
                 data-bs-trigger="hover"
             >
-                <img src="<?= url('public/img/icons/cerrar-sesion.png') ?>" alt="icono reportes seccion admin" class="iconos-sidebar">
-                <span>Cerrar Sesion</span>
+                <img src="<?= url('public/img/icons/cerrar-sesion.png') ?>" alt="" class="iconos-sidebar">
+                <span>Cerrar Sesión</span>
             </a>
         </li>
     </ul>
 
-</div>
+</nav>

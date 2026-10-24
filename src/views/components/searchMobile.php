@@ -24,26 +24,30 @@ $mostrarTabs  = $paginaActual === 'inicio' || $esCliente;
         <?php endif; ?>
 
         <?php if ($mostrarTabs): ?>
-            <div class="options-line d-flex align-items-center">
-                <div class="active col option-line-item d-flex flex-column align-items-center pt-3" data-option="vuelos">
+            <div class="options-line d-flex align-items-center" role="tablist" aria-label="Qué querés buscar">
+                <button type="button" role="tab" aria-selected="true" aria-controls="mobilePanelVuelos"
+                        id="mobileTabVuelos" class="active col option-line-item d-flex flex-column align-items-center pt-3 border-0 bg-transparent" data-option="vuelos">
                     <img src="<?= url('public/img/icons/avion.png') ?>" alt="" class="iconos-search">
-                    <p>Vuelos</p>
-                </div>
+                    <span>Vuelos</span>
+                </button>
 
-                <div class="col option-line-item d-flex flex-column align-items-center pt-3" data-option="promociones">
+                <button type="button" role="tab" aria-selected="false" aria-controls="mobilePanelPromociones"
+                        id="mobileTabPromociones" class="col option-line-item d-flex flex-column align-items-center pt-3 border-0 bg-transparent" data-option="promociones">
                     <img src="<?= url('public/img/icons/promocion.png') ?>" alt="" class="iconos-search">
-                    <p>Promociones</p>
-                </div>
+                    <span>Promociones</span>
+                </button>
 
-                <div class="col option-line-item d-flex flex-column align-items-center pt-3" data-option="novedades">
+                <button type="button" role="tab" aria-selected="false" aria-controls="mobilePanelNovedades"
+                        id="mobileTabNovedades" class="col option-line-item d-flex flex-column align-items-center pt-3 border-0 bg-transparent" data-option="novedades">
                     <img src="<?= url('public/img/icons/novedades.png') ?>" alt="" class="iconos-search">
-                    <p>Novedades</p>
-                </div>
+                    <span>Novedades</span>
+                </button>
             </div>
         <?php endif; ?>
     </div>
 
     <!-- FORMULARIO MOBILE -->
+    <div id="mobilePanelVuelos" role="tabpanel" aria-labelledby="mobileTabVuelos" class="w-100">
     <form action="<?= url('index.php?pagina=buscar-vuelos') ?>" method="GET" id="formMobile" class="w-100">
         <input type="hidden" name="pagina" value="buscar-vuelos">
         <input type="hidden" name="tipo_viaje" id="mobileTipoViajeHidden" value="solo_ida">
@@ -101,10 +105,11 @@ $mostrarTabs  = $paginaActual === 'inicio' || $esCliente;
 
         </div>
     </form>
+    </div>
 
     <?php if ($mostrarTabs): ?>
         <div id="mobilePanelTabs" class="home-tabs-panels d-none">
-            <?php require __DIR__ . '/homeTabsCards.php'; ?>
+            <?php $homeTabsPrefijo = 'mobile'; require __DIR__ . '/homeTabsCards.php'; ?>
         </div>
     <?php endif; ?>
 </div>

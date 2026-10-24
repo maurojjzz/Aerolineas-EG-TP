@@ -2,6 +2,9 @@
 require_once __DIR__ . '/../components/navLinks.php';
 ?>
 
+<a class="skip-link" href="#contenido">Saltar al contenido</a>
+<div id="anuncioGlobal" class="visually-hidden" role="status" aria-live="polite"></div>
+
 <header class="container-xxl">
     <div class="fila_head row mt-3 d-flex align-items-center justify-content-between g-0">
 
@@ -21,7 +24,7 @@ require_once __DIR__ . '/../components/navLinks.php';
                     <?php foreach ($navLinks as $navLink): ?>
                         <li class="nav-item <?= $navLink['active'] ? 'active' : '' ?>">
                             <a href="<?= htmlspecialchars($navLink['href']) ?>"
-                               class="nav-link"
+                               class="nav-link text-white"
                                <?= $navLink['active'] ? 'aria-current="page"' : '' ?>>
                                 <?= htmlspecialchars($navLink['label']) ?>
                             </a>
@@ -36,9 +39,10 @@ require_once __DIR__ . '/../components/navLinks.php';
             <!-- CAMPANITA DE NOTIFICACIONES (SOLO PARA ADMIN) -->
             <?php if ($isLoggedIn && isset($rol) && $rol === 'admin'): ?>
                 <div class="dropdown">
-                    <a href="#" class="btn btn-custom border-0 position-relative rounded-circle p-2 d-flex align-items-center justify-content-center text-decoration-none" id="dropdownNotificaciones" data-bs-toggle="dropdown" aria-expanded="false" style="width: 40px; height: 40px; margin-right: 10px;">
-                        <i class="bi bi-bell fs-5 "></i>
-                    </a>
+                    <button type="button" class="btn btn-custom border-0 position-relative rounded-circle p-2 d-flex align-items-center justify-content-center text-decoration-none" id="dropdownNotificaciones" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Notificaciones y pendientes" style="width: 40px; height: 40px; margin-right: 10px;">
+                        <i class="bi bi-bell fs-5" aria-hidden="true"></i>
+                    </button>
+                    <span id="notificacionesEstado" class="visually-hidden" role="status" aria-live="polite"></span>
                     <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2" style="width: 320px; max-height: 400px; overflow-y: auto;" aria-labelledby="dropdownNotificaciones">
                         <li><div class="dropdown-header fw-bold text-dark border-bottom pb-2 px-2">Notificaciones y Pendientes</div></li>
                         <li><span class="dropdown-item-text text-center text-muted py-3 small">Cargando...</span></li>
@@ -51,13 +55,15 @@ require_once __DIR__ . '/../components/navLinks.php';
                 <div class="dropdown">
                     <button class="btn btn-custom dropdown-toggle d-flex align-items-center gap-2"
                             type="button"
+                            id="dropdownUsuario"
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
+                            aria-haspopup="true"
                             aria-label="Abrir menú de usuario">
                         <img src="<?= url('public/img/icons/usuario.png') ?>" alt="" class="icono_perfil">
                         <span class="d-none d-md-inline"><?= htmlspecialchars($usuario['nombre'] ?? 'Mi Cuenta') ?></span>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end shadow">
+                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="dropdownUsuario">
                         <?php if ($esStaff): ?>
                             <li><a class="dropdown-item" href="<?= htmlspecialchars($urlPanel) ?>">Mi Panel (<?= strtoupper($rol) ?>)</a></li>
                             <li><hr class="dropdown-divider"></li>
@@ -76,7 +82,7 @@ require_once __DIR__ . '/../components/navLinks.php';
                 </div>
             <?php else: ?>
                 <!-- ESTADO NO LOGUEADO -->
-                <a href="<?= htmlspecialchars($urlLogin) ?>" class="btn btn-custom align-items-center gap-2">
+                <a href="<?= htmlspecialchars($urlLogin) ?>" class="btn btn-custom align-items-center gap-2" aria-label="Ingresar a mi cuenta">
                     <img src="<?= url('public/img/icons/usuario.png') ?>" alt="" class="icono_perfil">
                     <span class="d-none d-md-inline">Ingresar</span>
                 </a>
@@ -92,3 +98,4 @@ require_once __DIR__ . '/../components/navLinks.php';
     const URL_LISTADO_PROMOCIONES = "<?= url('index.php?pagina=promociones&seccion=listado') ?>";
 </script>
 <script src="<?= url('public/js/admin/notificaciones.js') ?>"></script>
+<script src="<?= url('public/js/accesibilidad.js') ?>" defer></script>

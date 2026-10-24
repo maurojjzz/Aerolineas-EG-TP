@@ -38,7 +38,8 @@ Volaré es una aplicación server-side renderizada: cada página se genera en PH
 - Registro de clientes y solicitud de registro de CEOs.
 - Verificación de cuenta y recuperación de contraseña por correo.
 - Listado público de novedades y promociones, con detalle de cada una.
-- Páginas de ayuda, contacto, términos y privacidad.
+- Páginas de ayuda, contacto, términos, privacidad, "Sobre Volaré" y mapa del sitio.
+- Página de error 404 propia cuando se pide una sección inexistente.
 
 ### Cliente
 - Búsqueda de vuelos por origen, destino, fecha y cantidad de pasajeros, con filtros.
@@ -59,6 +60,23 @@ Volaré es una aplicación server-side renderizada: cada página se genera en PH
 - Gestión de novedades (borrador, publicada, archivada).
 - Reportes generales del sistema.
 - Notificaciones internas.
+
+## Accesibilidad
+
+El sitio apunta a WCAG 2.1 nivel AA. Las correcciones se apoyan en dos archivos globales que se cargan desde `src/views/layouts/header.php` y `src/views/layouts/headerAdmin.php`, por lo que aplican a todas las páginas públicas y de gestión:
+
+- `public/css/accesibilidad.css`: enlace "Saltar al contenido", foco visible de alto contraste, enlaces visitados distinguibles por color, texto secundario con contraste suficiente, `scroll-margin` para anclas y respeto por `prefers-reduced-motion`.
+- `public/js/accesibilidad.js`: refleja la clase `.is-invalid` de Bootstrap en `aria-invalid` y lleva el foco al primer campo con error al enviar un formulario.
+
+Puntos cubiertos:
+
+- **Estructura:** un solo `h1` por página, jerarquía de encabezados sin saltos, regiones `header`, `nav`, `main` y `footer`, y `aria-current` en la navegación.
+- **Teclado:** todos los controles son nativos o tienen rol y manejo de teclado; autocompletado de aeropuertos tipo combobox (flechas, Enter, Escape), pestañas del buscador con `role="tab"`, modales con foco gestionado por Bootstrap, carrusel con flechas y botones, y barra lateral con `aria-expanded`.
+- **Lectores de pantalla:** etiquetas asociadas a todos los campos, obligatorios marcados con asterisco y texto alternativo, mensajes de error con `role="alert"`, región `aria-live` global para anuncios, tablas con `<caption>` y `scope="col"`, e imágenes decorativas con `alt=""`.
+- **Formularios:** validación accesible con `aria-invalid`, `aria-describedby` y resumen de errores; se reemplazaron los `alert()` por mensajes en pantalla.
+- **Zoom y contraste:** verificado a 200 % sin desborde horizontal en las páginas principales; los pares de color usados superan 4.5:1 (el texto secundario quedó en `#5c636a`).
+
+> Los datos institucionales del pie de página y de `sobre.php` (dirección, teléfono, correo de soporte y horarios) son provisorios y están señalados en el código para reemplazar por los reales.
 
 ## Estructura del proyecto
 
@@ -202,6 +220,30 @@ Los usuarios nuevos se crean con `emailVerificado=0` y `activo=0`. Los clientes 
 
 ## Validación realizada
 
-- HTML5 de las páginas renderizadas con el validador Nu (vnu.jar): sin errores en los estados relevados.
-- CSS de `public/css` con W3C CSS Validator (Jigsaw): sin errores, salvo `pointer-events` y prefijos de proveedor, que el validador no reconoce y se mantienen a propósito.
-- Regresión funcional manual: login de los tres roles, navegación por paneles, búsqueda, reserva, pago simulado y validación del formulario de contacto (sin envíos reales de correo).
+No hay suite de tests automatizados ni CI. La verificación se hizo sobre la aplicación corriendo en Docker:
+
+- **HTML:** 48 estados renderizados (público, cliente, CEO y administrador) validados con Nu HTML Checker (`vnu.jar`): 0 errores.
+- **Accesibilidad:** auditoría propia sobre esos 48 estados (un solo `h1`, jerarquía de encabezados, etiquetas de formulario, `alt`, nombres accesibles, `tabindex` no positivos, referencias `aria-*`, `skip-link`, `main` y regiones en vivo): 0 hallazgos.
+- **CSS:** los 19 archivos de `public/css` validados con W3C CSS Validator: 0 errores y 0 avisos.
+- **Enlaces internos:** 207 URLs relevadas desde las páginas renderizadas; sin enlaces rotos.
+- **Regresión funcional:** login de los tres roles, acceso a cada panel, reserva de un vuelo y pago simulado (con el SMTP apuntado a un host inalcanzable para no enviar correos reales y restaurado después), formulario de contacto con validación y CSRF, y rechazo de POST sin token. Las pruebas que escriben en la base se limpiaron al terminar.
+- **Zoom y contraste:** capturas con Chromium headless a 200 % en inicio, panel de cliente, pago, listado de administración y panel de CEO, sin desborde horizontal; contraste calculado de los pares de color principales ≥ 4.5:1.
+
+## Publicación en InfinityFree
+
+El sitio de producción usa el hosting gratuito de InfinityFree. Para actualizarlo:
+
+1. Copiar `.env.prod` como `.env` en el servidor (o cargar las mismas variables en el panel) y completar las credenciales reales. El archivo `.env` no se versiona.
+2. Subir por FTP/SFTP a la carpeta `htdocs/`:
+
+```text
+index.php
+src/          (config, controllers, data, lib, models, routes, services, views)
+public/       (css, js, img)
+```
+
+3. Importar `sql/aerolinea.sql` desde phpMyAdmin en la base asignada por el hosting. En InfinityFree el nombre de la base lleva prefijo (por ejemplo `if0_00000000_volare`): quitar las líneas `CREATE DATABASE` y `USE` del dump e importar dentro de esa base, y usar ese nombre completo en `DB_NAME`.
+4. Verificar que la versión de PHP del hosting sea 8.2 o superior y que las extensiones `mysqli` y `mbstring` estén activas (lo están por defecto).
+5. No subir `.env.example`, `.env.prod`, `Dockerfile`, `docker-compose.yml`, `sql/` ni `AGENTS.md`; no son necesarios en producción.
+
+El enrutamiento se resuelve con `index.php?pagina=...`, así que no hace falta configurar reglas de reescritura.

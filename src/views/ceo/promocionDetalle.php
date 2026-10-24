@@ -47,12 +47,13 @@ $avisoEstado = match ($estado) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CEO - Detalle de Promoción</title>
+    <title>Detalle de Promoción — Panel de CEO — Volaré</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="<?= url('public/css/admin.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/headerAdmin.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/components/tablaLista.css') ?>?v=<?= time() ?>">
+    <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
 </head>
 <body>
 
@@ -68,7 +69,7 @@ $avisoEstado = match ($estado) {
             <?php require __DIR__ . '/../layouts/headerAdmin.php'; ?>
         </header>
 
-        <main class="container-fluid d-flex flex-column gap-3 p-3 admin-content">
+        <main id="contenido" tabindex="-1" class="container-fluid d-flex flex-column gap-3 p-3 admin-content">
 
 <?php require __DIR__ . '/../components/alertToast.php'; ?>
 <div>
@@ -97,7 +98,7 @@ $avisoEstado = match ($estado) {
 
                     <div class="d-flex flex-column flex-grow-1 justify-content-between" style="min-height:120px;">
                         <div class="d-flex align-items-center gap-3 flex-wrap">
-                            <h2 class="fw-bold m-0 text-uppercase"><?= htmlspecialchars($promo['codigo'] ?? '') ?></h2>
+                            <h1 class="fw-bold m-0 text-uppercase"><?= htmlspecialchars($promo['codigo'] ?? '') ?></h1>
                             <span class="badge <?= badgeEstadoPromoCeoDetalle($estado) ?> fs-6"><?= htmlspecialchars($estado) ?></span>
                         </div>
 
@@ -160,6 +161,9 @@ $avisoEstado = match ($estado) {
         </main>
     </div>
 </div>
+
+<?php require __DIR__ . '/../layouts/footer.php'; ?>
+<?php require __DIR__ . '/../components/menuMobileAdmin.php'; ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="<?= url('public/js/admin/sidebar.js') ?>"></script>

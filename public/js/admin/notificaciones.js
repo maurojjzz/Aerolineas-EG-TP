@@ -4,6 +4,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (!btnCampana || !menuDropdown) return;
 
+    const estadoAnuncio = document.getElementById("notificacionesEstado");
+    let ultimoTotal = null;
+
     const actualizarNotificaciones = async () => {
         try {
             const response = await fetch(URL_NOTIFICACIONES);
@@ -14,6 +17,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const total = data.total;
             let badgeCampana = btnCampana.querySelector(".badge");
+
+            btnCampana.setAttribute(
+                "aria-label",
+                total > 0 ? `Notificaciones y pendientes: ${total} sin leer` : "Notificaciones y pendientes"
+            );
+
+            if (ultimoTotal !== null && total !== ultimoTotal && estadoAnuncio) {
+                estadoAnuncio.textContent = total > 0
+                    ? `Tenés ${total} notificaciones pendientes.`
+                    : "No tenés notificaciones pendientes.";
+            }
+            ultimoTotal = total;
 
             if (total > 0) {
                 if (badgeCampana) {
@@ -83,8 +98,18 @@ document.addEventListener("DOMContentLoaded", function () {
     // 🚀 1. LLAMADA INMEDIATA: Se ejecuta ni bien carga la página sin esperar 10 segundos
     actualizarNotificaciones();
 
-    // ⏱️ 2. BUCLE: Se vuelve a ejecutar cada 10 segundos de manera automática
-    setInterval(actualizarNotificaciones, 10000);
+    // ⏱️ 2. BUCLE: Se vuelve a ejecutar cada 10 segundos, sólo con la pestaña visible
+    setInterval(() => {
+        if (!document.hidden) {
+            actualizarNotificaciones();
+        }
+    }, 10000);
+
+    document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) {
+            actualizarNotificaciones();
+        }
+    });
 
     menuDropdown.addEventListener("click", async function (e) {
         const linkItem = e.target.closest(".dropdown-item");

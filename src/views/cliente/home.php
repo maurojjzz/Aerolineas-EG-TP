@@ -66,7 +66,7 @@ $badgeReserva = static function (string $estado): array {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Cliente Home</title>
+        <title>Mi Panel — Volaré</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 
         <link rel="stylesheet" href="<?= url('public/css/layout/homeCliente.css') ?>">
@@ -77,14 +77,16 @@ $badgeReserva = static function (string $estado): array {
         <link rel="stylesheet" href="<?= url('public/css/components/homeTabsCards.css') ?>">
         <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
 
+            <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
     </head>
 
     <body class="container-fluid overflow-x-hidden p-0 m-0">
         <?php require './src/views/layouts/header.php' ?>
 
-        <div class="hero-content text-center mt-4 user-select-none">
-            <h2 class="text-uppercase fs-5" >Volaré</h2>
-            <h2 >DONDE CADA <span>VIAJE</span> COMIENZA</h2>                
+        <main id="contenido" tabindex="-1">
+        <p class="text-center text-uppercase fs-5 mt-4 mb-1 user-select-none">Volaré</p>
+        <div class="hero-content text-center mt-1 user-select-none">
+            <h1>DONDE CADA <span>VIAJE</span> COMIENZA</h1>
             <p>Busca vuelos, gestiona tus reservas y descubre destinos increibles.</p>
         </div>
         <!-- Mobile -->
@@ -106,7 +108,7 @@ $badgeReserva = static function (string $estado): array {
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div class="d-flex align-items-center gap-2">
                             <img src="<?= url('public/img/icons/reserva.png') ?>" style="width:30px;height:30px;object-fit:contain;" alt="">
-                            <h3 class="fw-bold m-0 fs-5">Mis próximas reservas</h3>
+                            <h2 class="fw-bold m-0 fs-5">Mis próximas reservas</h2>
                         </div>
                         <a href="<?= url('index.php?pagina=mis-reservas') ?>" class="badge bg-primary bg-opacity-10 text-primary fw-semibold text-decoration-none px-3 py-2 rounded-pill shadow-sm" style="font-size: 0.875rem; transition: all 0.2s;" onmouseover="this.className='badge bg-primary text-white fw-semibold text-decoration-none px-3 py-2 rounded-pill shadow-sm'" onmouseout="this.className='badge bg-primary bg-opacity-10 text-primary fw-semibold text-decoration-none px-3 py-2 rounded-pill shadow-sm'">
                             Ver todas mis reservas <span style="font-size: 1.1rem; vertical-align: middle;">→</span>
@@ -173,7 +175,7 @@ $badgeReserva = static function (string $estado): array {
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div class="d-flex align-items-center gap-2">
                             <span class="text-primary fs-5">📢</span>
-                            <h4 class="fw-bold m-0 fs-5">Novedades</h4>
+                            <h2 class="fw-bold m-0 fs-5">Novedades</h2>
                         </div>
                         <a href="<?= url('index.php?pagina=cliente-novedades') ?>" class="badge bg-primary bg-opacity-10 text-primary fw-semibold text-decoration-none px-3 py-2 rounded-pill shadow-sm" style="font-size: 0.875rem; transition: all 0.2s;" onmouseover="this.className='badge bg-primary text-white fw-semibold text-decoration-none px-3 py-2 rounded-pill shadow-sm'" onmouseout="this.className='badge bg-primary bg-opacity-10 text-primary fw-semibold text-decoration-none px-3 py-2 rounded-pill shadow-sm'">
                             Ver todas las novedades <span style="font-size: 1.1rem; vertical-align: middle;">→</span>
@@ -185,9 +187,11 @@ $badgeReserva = static function (string $estado): array {
                             <p class="text-muted small">No hay novedades registradas.</p>
                         <?php else: ?>
                             <?php foreach ($novedades as $nov): ?>
-                            <div class="bg-white rounded-3 border p-3 d-flex gap-3 align-items-start" style="cursor:pointer;" onclick="window.location.href='<?= url('index.php?pagina=cliente-novedad-detalle&id=' . $nov['idNovedad']) ?>'">
+                            <a href="<?= url('index.php?pagina=cliente-novedad-detalle&id=' . $nov['idNovedad']) ?>"
+                               class="bg-white rounded-3 border p-3 d-flex gap-3 align-items-start text-decoration-none text-reset">
+                                <span class="visually-hidden">Ver novedad:</span>
                                 <?php if (!empty($nov['imagen'])): ?>
-                                    <img src="<?= htmlspecialchars($nov['imagen']) ?>" alt="novedad" class="rounded-2 flex-shrink-0" style="width:70px;height:70px;object-fit:cover;">
+                                    <img src="<?= htmlspecialchars($nov['imagen']) ?>" alt="" class="rounded-2 flex-shrink-0" style="width:70px;height:70px;object-fit:cover;">
                                 <?php else: ?>
                                     <div class="rounded-2 bg-light d-flex align-items-center justify-content-center text-primary flex-shrink-0" style="width:70px;height:70px;">
                                         <i class="bi bi-megaphone fs-4"></i>
@@ -198,8 +202,8 @@ $badgeReserva = static function (string $estado): array {
                                     <p class="text-muted m-0 mt-1 text-truncate" style="font-size:0.8rem;line-height:1.3;"><?= htmlspecialchars($nov['subtitulo'] ?? $nov['contenido']) ?></p>
                                     <p class="text-muted m-0 mt-1" style="font-size:0.75rem;"><?= date('d/m/Y', strtotime($nov['fechaPublicacion'])) ?></p>
                                 </div>
-                                <span class="text-muted flex-shrink-0">›</span>
-                            </div>
+                                <span class="text-muted flex-shrink-0" aria-hidden="true">›</span>
+                            </a>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </div>
@@ -207,6 +211,7 @@ $badgeReserva = static function (string $estado): array {
 
             </div>
         </section>
+        </main>
 
         <?php require_once './src/views/layouts/footer.php'; ?>
 

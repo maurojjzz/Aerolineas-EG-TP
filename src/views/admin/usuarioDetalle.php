@@ -144,7 +144,7 @@ $urlReservas = static function (int $pagina) use ($id): string {
 
                         <div class="d-flex flex-column flex-grow-1 justify-content-between">
                             <div class="d-flex align-items-center gap-3 flex-wrap">
-                                <h2 class="fw-bold m-0"><?= htmlspecialchars($u['nombre'] . ' ' . $u['apellido']) ?></h2>
+                                <h1 class="fw-bold m-0"><?= htmlspecialchars($u['nombre'] . ' ' . $u['apellido']) ?></h1>
                                 <span class="badge text-bg-info text-capitalize fs-6"><?= htmlspecialchars($u['rol']) ?></span>
                             </div>
 
@@ -288,7 +288,7 @@ $urlReservas = static function (int $pagina) use ($id): string {
                 <div class="tab-pane fade <?= $tabActiva === 'reservas' ? 'show active' : '' ?>" id="tab-reservas">
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-3">
                         <div>
-                            <h3 class="m-0 fs-5 fw-bold">Historial de reservas</h3>
+                            <h2 class="m-0 fs-5 fw-bold">Historial de reservas</h2>
                             <p class="text-muted m-0" style="font-size:0.82rem;">
                                 Todas las reservas asociadas a <?= htmlspecialchars($u['nombre'] . ' ' . $u['apellido']) ?>.
                             </p>
@@ -307,6 +307,7 @@ $urlReservas = static function (int $pagina) use ($id): string {
                     <?php else: ?>
                         <div class="table-responsive tablaContenedor">
                             <table class="table table-hover align-middle border-top mt-2">
+                                <caption class="visually-hidden">Historial de reservas</caption>
                                 <thead>
                                     <tr>
                                         <th scope="col" class="fw-bold">RESERVA</th>

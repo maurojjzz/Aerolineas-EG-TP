@@ -183,7 +183,7 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
 
                         <div class="d-flex flex-column flex-grow-1 justify-content-between" style="min-height:152px;">
                             <div class="d-flex align-items-center gap-4 flex-wrap">
-                                <h2 class="fw-bold m-0"><?= htmlspecialchars($aero['nombreAerolinea']) ?></h2>
+                                <h1 class="fw-bold m-0"><?= htmlspecialchars($aero['nombreAerolinea']) ?></h1>
                                 <span class="badge text-primary border fs-6 text-uppercase" style="background-color: #E3F1FE;"><?= htmlspecialchars($aero['codigoIATA']) ?></span>
                             </div>
 
@@ -316,11 +316,12 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
                                 </div>
                                 <div class="px-3 py-2">
                                     <table class="table table-sm table-hover align-middle mb-0" style="font-size:0.82rem;">
+                                        <caption class="visually-hidden">Vuelos más vendidos</caption>
                                         <thead>
                                             <tr class="text-muted">
-                                                <th class="fw-medium border-0 ps-0">RUTA</th>
-                                                <th class="fw-medium border-0 text-end">VUELOS</th>
-                                                <th class="fw-medium border-0 text-end">PASAJEROS</th>
+                                                <th scope="col" class="fw-medium border-0 ps-0">RUTA</th>
+                                                <th scope="col" class="fw-medium border-0 text-end">VUELOS</th>
+                                                <th scope="col" class="fw-medium border-0 text-end">PASAJEROS</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -396,10 +397,11 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
                                 </div>
                                 <div class="px-3 py-2">
                                     <table class="table table-sm table-hover align-middle mb-0" style="font-size:0.82rem;">
+                                        <caption class="visually-hidden">Tramos más recaudados</caption>
                                         <thead>
                                             <tr class="text-muted">
-                                                <th class="fw-medium border-0 ps-0">RUTA</th>
-                                                <th class="fw-medium border-0 text-end">RECAUDADO</th>
+                                                <th scope="col" class="fw-medium border-0 ps-0">RUTA</th>
+                                                <th scope="col" class="fw-medium border-0 text-end">RECAUDADO</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -436,7 +438,7 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
                 <div class="tab-pane fade <?= $tabActiva === 'vuelos' ? 'show active' : '' ?>" id="tab-vuelos">
 
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3 mb-3">
-                        <h3 class="m-0 fs-5 fw-bold">Vuelos de la aerolínea</h3>
+                        <h2 class="m-0 fs-5 fw-bold">Vuelos de la aerolínea</h2>
 
                         <form method="GET" action="index.php" class="d-flex flex-column flex-sm-row gap-2 align-items-stretch">
                             <input type="hidden" name="pagina" value="aerolinea">
@@ -449,11 +451,12 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
                                    name="busquedaVuelos"
                                    class="form-control form-control-sm"
                                    placeholder="Buscar origen, destino o código..."
+                                   aria-label="Buscar vuelo por origen, destino o código"
                                    autocomplete="off"
                                    value="<?= htmlspecialchars($busquedaVuelos) ?>"
                                    style="min-width: 220px;">
 
-                            <select name="estadoVuelos" class="form-select form-select-sm" style="min-width: 140px;">
+                            <select name="estadoVuelos" class="form-select form-select-sm" aria-label="Filtrar vuelos por estado" style="min-width: 140px;">
                                 <option value="" <?= $estadoVuelos === '' ? 'selected' : '' ?>>Todos</option>
                                 <option value="proximos" <?= $estadoVuelos === 'proximos' ? 'selected' : '' ?>>Próximos</option>
                                 <option value="pasados" <?= $estadoVuelos === 'pasados' ? 'selected' : '' ?>>Pasados</option>
@@ -466,6 +469,7 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
 
                     <div class="table-responsive tablaContenedor">
                         <table class="table table-hover align-middle border-top mt-2">
+                            <caption class="visually-hidden">Vuelos de la aerolínea</caption>
                             <thead>
                                 <tr>
                                     <th scope="col" class="fw-bold">ORIGEN</th>
@@ -587,7 +591,7 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
                                     class="form-select form-select-sm border-0 bg-light rounded-2"
                                     style="width:auto; font-size:0.8rem; cursor:pointer;"
                                     onchange="window.location.href=this.value"
-                                >
+                                 aria-label="Resultados por página">
                                     <?php foreach ($porPaginaPermitidos as $op): ?>
                                         <option value="<?= adminAeroUrlPagVuelos($id, 1, $op) ?>" <?= $op === $porPaginaVuelos ? 'selected' : '' ?>>
                                             <?= $op ?> por página
@@ -605,7 +609,7 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
                 <div class="tab-pane fade <?= $tabActiva === 'promociones' ? 'show active' : '' ?>" id="tab-promociones">
 
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3 mb-3">
-                        <h4 class="m-0 fs-5 fw-bold">Promociones de la aerolínea</h4>
+                        <h3 class="m-0 fs-5 fw-bold">Promociones de la aerolínea</h3>
 
                         <form method="GET" action="index.php" class="d-flex flex-column flex-sm-row gap-2 align-items-stretch">
                             <input type="hidden" name="pagina" value="aerolinea">
@@ -618,11 +622,12 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
                                    name="busquedaPromos"
                                    class="form-control form-control-sm"
                                    placeholder="Buscar código o nombre..."
+                                   aria-label="Buscar promoción por código o nombre"
                                    autocomplete="off"
                                    value="<?= htmlspecialchars($busquedaPromos) ?>"
                                    style="min-width: 220px;">
 
-                            <select name="estadoPromos" class="form-select form-select-sm" style="min-width: 140px;">
+                            <select name="estadoPromos" class="form-select form-select-sm" aria-label="Filtrar promociones por estado" style="min-width: 140px;">
                                 <option value="" <?= $estadoPromos === '' ? 'selected' : '' ?>>Todos los estados</option>
                                 <option value="Pendiente" <?= $estadoPromos === 'Pendiente' ? 'selected' : '' ?>>Pendiente</option>
                                 <option value="Aprobada" <?= $estadoPromos === 'Aprobada' ? 'selected' : '' ?>>Aprobada</option>
@@ -636,6 +641,7 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
 
                     <div class="table-responsive tablaContenedor">
                         <table class="table table-hover align-middle border-top mt-2">
+                            <caption class="visually-hidden">Promociones de la aerolínea</caption>
                             <thead>
                                 <tr>
                                     <th scope="col" class="text-center fw-bold">CODIGO</th>
@@ -748,7 +754,7 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
                                     class="form-select form-select-sm border-0 bg-light rounded-2"
                                     style="width:auto; font-size:0.8rem; cursor:pointer;"
                                     onchange="window.location.href=this.value"
-                                >
+                                 aria-label="Resultados por página">
                                     <?php foreach ($porPaginaPermitidos as $op): ?>
                                         <option value="<?= adminAeroUrlPagPromos($id, 1, $op) ?>" <?= $op === $porPaginaPromos ? 'selected' : '' ?>>
                                             <?= $op ?> por página

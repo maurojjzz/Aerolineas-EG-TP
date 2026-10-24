@@ -93,7 +93,7 @@ function badgeVigenciaPromo(array $p): string {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CEO - Gestión de Promociones</title>
+    <title>Gestión de Promociones — Panel de CEO — Volaré</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -166,6 +166,7 @@ function badgeVigenciaPromo(array $p): string {
             white-space: nowrap;
         }
     </style>
+    <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
 </head>
 <body>
 
@@ -181,7 +182,7 @@ function badgeVigenciaPromo(array $p): string {
             <?php require __DIR__ . '/../layouts/headerAdmin.php'; ?>
         </header>
 
-        <main class="container-fluid d-flex flex-column gap-3 p-3 admin-content">
+        <main id="contenido" tabindex="-1" class="container-fluid d-flex flex-column gap-3 p-3 admin-content">
             <?php require __DIR__ . '/../components/alertToast.php'; ?>
           
                 <nav class="breadcrumbCont" aria-label="breadcrumb">
@@ -192,7 +193,7 @@ function badgeVigenciaPromo(array $p): string {
                 </nav>
 
                 <div class="contForm col-12 d-flex flex-column p-2 admin-content h-100">
-                    <h2 class="m-0 p-0 fs-2 fw-bold">Gestión de Promociones</h2>
+                    <h1 class="m-0 p-0 fs-2 fw-bold">Gestión de Promociones</h1>
                     <p class="m-0 p-0 mb-1 subt">Administra y crea las promociones de tu aerolínea.</p>
 
                     <!-- KPIs -->
@@ -256,12 +257,13 @@ function badgeVigenciaPromo(array $p): string {
                     <div class="d-flex flex-column gap-2">
                         <div class="table-responsive bg-white shadow rounded-3 pt-3 tablaContenedor">
                             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center px-2 mb-3 gap-3 gap-sm-0">
-                                <h3 class="m-0 p-0 fs-4 fw-bold">Listado de Promociones</h3>
+                                <h2 class="m-0 p-0 fs-4 fw-bold">Listado de Promociones</h2>
                                 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 flex-wrap">
                                     <div class="d-flex flex-column flex-sm-row gap-2 align-items-center flex-grow-1">
                                         <select
                                             id="filtroEstadoPromo"
                                             class="form-select form-select-sm"
+                                            aria-label="Filtrar promociones por estado"
                                             style="min-width: 220px;"
                                         >
                                             <option value="pendientes_aprobadas_vigentes" selected>Pendientes y Aprobadas vigentes</option>
@@ -276,6 +278,7 @@ function badgeVigenciaPromo(array $p): string {
                                             id="buscadorPromocion"
                                             class="form-control ctm-inp"
                                             placeholder="Buscar código, nombre, alcance..."
+                                            aria-label="Buscar promoción por código, nombre o alcance"
                                             autocomplete="off"
                                             style="flex: 1; min-width: 280px; max-width: 100%;"
                                         >
@@ -287,6 +290,7 @@ function badgeVigenciaPromo(array $p): string {
                             </div>
 
                             <table class="table table-hover align-middle border-top mt-2 tabla-aerolineas">
+                                <caption class="visually-hidden">Listado de promociones</caption>
                                 <thead>
                                     <tr>
                                         <th scope="col" class="text-center fw-bold">CODIGO</th>
@@ -540,7 +544,7 @@ function badgeVigenciaPromo(array $p): string {
                                             class="form-select form-select-sm border-0 bg-light rounded-2"
                                             style="width:auto; font-size:0.8rem; cursor:pointer;"
                                             onchange="window.location.href=this.value"
-                                        >
+                                         aria-label="Resultados por página">
                                             <?php foreach ($porPaginaPermitidos as $op): ?>
                                                 <option value="<?= urlPaginaPromos(1, $op) ?>" <?= $op === $porPagina ? 'selected' : '' ?>>
                                                     <?= $op ?> por página
@@ -556,22 +560,23 @@ function badgeVigenciaPromo(array $p): string {
                 </div>
 
                 <!-- Modal Crear Promoción -->
-                <div class="modal fade" id="modalCrearPromocion" tabindex="-1" aria-hidden="true">
+                <div class="modal fade" id="modalCrearPromocion" tabindex="-1" role="dialog" aria-labelledby="modalCrearPromocionLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-lg">
                         <div class="modal-content">
                             <form action="<?= url('src/routes/promociones.php?accion=crear') ?>" method="POST" novalidate id="formCrearPromocion">
                                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
                                 <div class="modal-header border-0">
-                                    <h2 class="modal-title fw-bold h5">Crear Nueva Promoción</h2>
+                                    <h2 class="modal-title fw-bold h5" id="modalCrearPromocionLabel">Crear Nueva Promoción</h2>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                                 </div>
+                                <p class="small text-secondary mb-2">Los campos con <span class="text-danger" aria-hidden="true">*</span><span class="visually-hidden">asterisco</span> son obligatorios.</p>
                                 <div class="modal-body d-flex flex-column gap-3">
                                     <!-- Selector de alcance -->
                                     <div class="p-3 rounded-3" style="background:#f8f9fa;">
                                         <label class="form-label fw-semibold mb-2 d-block" style="font-size:0.9rem;">Alcance de la promoción *</label>
                                         <div class="d-flex flex-column flex-md-row gap-2" id="alcanceOptions">
                                             <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option active" data-alcance="aerolinea">
-                                                <input type="radio" name="alcance" value="aerolinea" checked class="d-none">
+                                                <input type="radio" name="alcance" value="aerolinea" checked class="visually-hidden">
                                                 <span class="d-flex align-items-center gap-2">
                                                     <i class="bi bi-building fs-4"></i>
                                                     <span class="d-block">
@@ -581,7 +586,7 @@ function badgeVigenciaPromo(array $p): string {
                                                 </span>
                                             </label>
                                             <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option" data-alcance="ruta">
-                                                <input type="radio" name="alcance" value="ruta" class="d-none">
+                                                <input type="radio" name="alcance" value="ruta" class="visually-hidden">
                                                 <span class="d-flex align-items-center gap-2">
                                                     <i class="bi bi-geo-alt fs-4"></i>
                                                     <span class="d-block">
@@ -591,7 +596,7 @@ function badgeVigenciaPromo(array $p): string {
                                                 </span>
                                             </label>
                                             <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option" data-alcance="vuelo">
-                                                <input type="radio" name="alcance" value="vuelo" class="d-none">
+                                                <input type="radio" name="alcance" value="vuelo" class="visually-hidden">
                                                 <span class="d-flex align-items-center gap-2">
                                                     <i class="bi bi-airplane fs-4"></i>
                                                     <span class="d-block">
@@ -614,7 +619,7 @@ function badgeVigenciaPromo(array $p): string {
                                     <div id="alcance-ruta" class="alcance-panel d-none">
                                         <div class="row g-2">
                                             <div class="col-6">
-                                                <label class="form-label fw-semibold" style="font-size:0.9rem;">Origen *</label>
+                                                <label class="form-label fw-semibold" style="font-size:0.9rem;" for="codigoOrigen">Origen *</label>
                                                 <select name="codigoOrigen" id="codigoOrigen" class="form-control" required disabled>
                                                     <option value="">Seleccioná origen</option>
                                                     <?php foreach ($origenesCEO as $o): ?>
@@ -623,14 +628,14 @@ function badgeVigenciaPromo(array $p): string {
                                                         </option>
                                                     <?php endforeach; ?>
                                                 </select>
-                                                <div class="invalid-feedback"></div>
+                                                <div class="invalid-feedback" role="alert"></div>
                                             </div>
                                             <div class="col-6">
-                                                <label class="form-label fw-semibold" style="font-size:0.9rem;">Destino *</label>
+                                                <label class="form-label fw-semibold" style="font-size:0.9rem;" for="codigoDestino">Destino *</label>
                                                 <select name="codigoDestino" id="codigoDestino" class="form-control" required disabled>
                                                     <option value="">Primero elegí un origen</option>
                                                 </select>
-                                                <div class="invalid-feedback"></div>
+                                                <div class="invalid-feedback" role="alert"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -638,7 +643,7 @@ function badgeVigenciaPromo(array $p): string {
                                     <!-- Campos según alcance: VUELO -->
                                     <div id="alcance-vuelo" class="alcance-panel d-none">
                                         <div>
-                                            <label class="form-label fw-semibold" style="font-size:0.9rem;">Vuelo *</label>
+                                            <label class="form-label fw-semibold" style="font-size:0.9rem;" for="idVuelo">Vuelo *</label>
                                             <select name="idVuelo" id="idVuelo" class="form-control" required disabled>
                                                 <option value="">Seleccioná un vuelo</option>
                                                 <?php foreach ($vuelosCEO as $v): ?>
@@ -648,40 +653,40 @@ function badgeVigenciaPromo(array $p): string {
                                                     </option>
                                                 <?php endforeach; ?>
                                             </select>
-                                            <div class="invalid-feedback"></div>
+                                            <div class="invalid-feedback" role="alert"></div>
                                         </div>
                                     </div>
 
                                     <!-- Campos comunes -->
                                     <div>
-                                        <label class="form-label fw-semibold" style="font-size:0.9rem;">Nombre de la promoción *</label>
-                                        <input type="text" name="nombre" class="form-control" placeholder="Ej. Verano Sin Límites" maxlength="150" required>
-                                        <div class="invalid-feedback"></div>
+                                        <label class="form-label fw-semibold" style="font-size:0.9rem;" for="nombrePromocion">Nombre de la promoción *</label>
+                                        <input type="text" name="nombre" id="nombrePromocion" class="form-control" placeholder="Ej. Verano Sin Límites" maxlength="150" required>
+                                        <div class="invalid-feedback" role="alert"></div>
                                     </div>
                                     <div>
-                                        <label class="form-label fw-semibold" style="font-size:0.9rem;">Descuento (%) *</label>
-                                        <input type="number" step="0.01" min="1" max="100" name="descuentoPorcentaje" class="form-control" placeholder="Ej. 20" required>
-                                        <div class="invalid-feedback"></div>
+                                        <label class="form-label fw-semibold" style="font-size:0.9rem;" for="descuentoPromocion">Descuento (%) *</label>
+                                        <input type="number" step="0.01" min="1" max="100" name="descuentoPorcentaje" id="descuentoPromocion" class="form-control" placeholder="Ej. 20" required>
+                                        <div class="invalid-feedback" role="alert"></div>
                                     </div>
                                     <div class="row g-2">
                                         <div class="col-6">
-                                            <label class="form-label fw-semibold" style="font-size:0.9rem;">Fecha Inicio *</label>
+                                            <label class="form-label fw-semibold" style="font-size:0.9rem;" for="fechaInicio">Fecha Inicio *</label>
                                             <input type="date" name="fechaInicio" id="fechaInicio" class="form-control" required min="<?= date('Y-m-d') ?>">
-                                            <div class="invalid-feedback"></div>
+                                            <div class="invalid-feedback" role="alert"></div>
                                         </div>
                                         <div class="col-6">
-                                            <label class="form-label fw-semibold" style="font-size:0.9rem;">Fecha Fin *</label>
+                                            <label class="form-label fw-semibold" style="font-size:0.9rem;" for="fechaFin">Fecha Fin *</label>
                                             <input type="date" name="fechaFin" id="fechaFin" class="form-control" required min="<?= date('Y-m-d') ?>">
-                                            <div class="invalid-feedback"></div>
+                                            <div class="invalid-feedback" role="alert"></div>
                                         </div>
                                     </div>
                                     <div>
-                                        <label class="form-label fw-semibold" style="font-size:0.9rem;">Descripción / Alcance</label>
-                                        <textarea name="descripcion" class="form-control" rows="2" placeholder="Ej. Válido para todos los destinos nacionales."></textarea>
+                                        <label class="form-label fw-semibold" style="font-size:0.9rem;" for="descripcionPromocion">Descripción / Alcance</label>
+                                        <textarea name="descripcion" id="descripcionPromocion" class="form-control" rows="2" placeholder="Ej. Válido para todos los destinos nacionales."></textarea>
                                     </div>
                                     <div>
-                                        <label class="form-label fw-semibold" style="font-size:0.9rem;">Condiciones</label>
-                                        <textarea name="condiciones" class="form-control" rows="2" placeholder="Ej. Compras anticipadas con al menos 7 días de antelación."></textarea>
+                                        <label class="form-label fw-semibold" style="font-size:0.9rem;" for="condicionesPromocion">Condiciones</label>
+                                        <textarea name="condiciones" id="condicionesPromocion" class="form-control" rows="2" placeholder="Ej. Compras anticipadas con al menos 7 días de antelación."></textarea>
                                     </div>
                                     <div class="form-check mt-3">
                                         <input type="checkbox" name="acumulable" value="1" id="chkAcumulable" class="form-check-input">
@@ -704,23 +709,24 @@ function badgeVigenciaPromo(array $p): string {
 
 
                 <!-- Modal Editar Promoción -->
-                <div class="modal fade" id="modalEditarPromocion" tabindex="-1" aria-hidden="true">
+                <div class="modal fade" id="modalEditarPromocion" tabindex="-1" role="dialog" aria-labelledby="modalEditarPromocionLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-lg">
                         <div class="modal-content">
                             <form action="<?= url('src/routes/promociones.php?accion=editar') ?>" method="POST" novalidate id="formEditarPromocion">
                                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
                                 <input type="hidden" name="id" id="editar_id">
                                 <div class="modal-header border-0">
-                                    <h2 class="modal-title fw-bold h5">Editar Promoción</h2>
+                                    <h2 class="modal-title fw-bold h5" id="modalEditarPromocionLabel">Editar Promoción</h2>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                                 </div>
+                                <p class="small text-secondary mb-2">Los campos con <span class="text-danger" aria-hidden="true">*</span><span class="visually-hidden">asterisco</span> son obligatorios.</p>
                                 <div class="modal-body d-flex flex-column gap-3">
                                     <!-- Selector de alcance -->
                                     <div class="p-3 rounded-3" style="background:#f8f9fa;">
                                         <label class="form-label fw-semibold mb-2 d-block" style="font-size:0.9rem;">Alcance de la promoción *</label>
                                         <div class="d-flex flex-column flex-md-row gap-2" id="alcanceOptionsEditar">
                                             <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option" data-alcance="aerolinea">
-                                                <input type="radio" name="alcance" value="aerolinea" class="d-none">
+                                                <input type="radio" name="alcance" value="aerolinea" checked class="visually-hidden">
                                                 <span class="d-flex align-items-center gap-2">
                                                     <i class="bi bi-building fs-4"></i>
                                                     <span class="d-block">
@@ -730,7 +736,7 @@ function badgeVigenciaPromo(array $p): string {
                                                 </span>
                                             </label>
                                             <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option" data-alcance="ruta">
-                                                <input type="radio" name="alcance" value="ruta" class="d-none">
+                                                <input type="radio" name="alcance" value="ruta" class="visually-hidden">
                                                 <span class="d-flex align-items-center gap-2">
                                                     <i class="bi bi-geo-alt fs-4"></i>
                                                     <span class="d-block">
@@ -740,7 +746,7 @@ function badgeVigenciaPromo(array $p): string {
                                                 </span>
                                             </label>
                                             <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option" data-alcance="vuelo">
-                                                <input type="radio" name="alcance" value="vuelo" class="d-none">
+                                                <input type="radio" name="alcance" value="vuelo" class="visually-hidden">
                                                 <span class="d-flex align-items-center gap-2">
                                                     <i class="bi bi-airplane fs-4"></i>
                                                     <span class="d-block">
@@ -763,7 +769,7 @@ function badgeVigenciaPromo(array $p): string {
                                     <div id="alcance-ruta-editar" class="alcance-panel d-none">
                                         <div class="row g-2">
                                             <div class="col-6">
-                                                <label class="form-label fw-semibold" style="font-size:0.9rem;">Origen *</label>
+                                                <label class="form-label fw-semibold" style="font-size:0.9rem;" for="codigoOrigenEditar">Origen *</label>
                                                 <select name="codigoOrigen" id="codigoOrigenEditar" class="form-control" required disabled>
                                                     <option value="">Seleccioná origen</option>
                                                     <?php foreach ($origenesCEO as $o): ?>
@@ -772,14 +778,14 @@ function badgeVigenciaPromo(array $p): string {
                                                         </option>
                                                     <?php endforeach; ?>
                                                 </select>
-                                                <div class="invalid-feedback"></div>
+                                                <div class="invalid-feedback" role="alert"></div>
                                             </div>
                                             <div class="col-6">
-                                                <label class="form-label fw-semibold" style="font-size:0.9rem;">Destino *</label>
+                                                <label class="form-label fw-semibold" style="font-size:0.9rem;" for="codigoDestinoEditar">Destino *</label>
                                                 <select name="codigoDestino" id="codigoDestinoEditar" class="form-control" required disabled>
                                                     <option value="">Primero elegí un origen</option>
                                                 </select>
-                                                <div class="invalid-feedback"></div>
+                                                <div class="invalid-feedback" role="alert"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -787,7 +793,7 @@ function badgeVigenciaPromo(array $p): string {
                                     <!-- Campos según alcance: VUELO -->
                                     <div id="alcance-vuelo-editar" class="alcance-panel d-none">
                                         <div>
-                                            <label class="form-label fw-semibold" style="font-size:0.9rem;">Vuelo *</label>
+                                            <label class="form-label fw-semibold" style="font-size:0.9rem;" for="idVueloEditar">Vuelo *</label>
                                             <select name="idVuelo" id="idVueloEditar" class="form-control" required disabled>
                                                 <option value="">Seleccioná un vuelo</option>
                                                 <?php foreach ($vuelosCEO as $v): ?>
@@ -797,39 +803,39 @@ function badgeVigenciaPromo(array $p): string {
                                                     </option>
                                                 <?php endforeach; ?>
                                             </select>
-                                            <div class="invalid-feedback"></div>
+                                            <div class="invalid-feedback" role="alert"></div>
                                         </div>
                                     </div>
 
                                     <!-- Campos comunes -->
                                     <div>
-                                        <label class="form-label fw-semibold" style="font-size:0.9rem;">Nombre de la promoción *</label>
+                                        <label class="form-label fw-semibold" style="font-size:0.9rem;" for="editar_nombre">Nombre de la promoción *</label>
                                         <input type="text" name="nombre" id="editar_nombre" class="form-control" placeholder="Ej. Verano Sin Límites" maxlength="150" required>
-                                        <div class="invalid-feedback"></div>
+                                        <div class="invalid-feedback" role="alert"></div>
                                     </div>
                                     <div>
-                                        <label class="form-label fw-semibold" style="font-size:0.9rem;">Descuento (%) *</label>
+                                        <label class="form-label fw-semibold" style="font-size:0.9rem;" for="editar_descuentoPorcentaje">Descuento (%) *</label>
                                         <input type="number" step="0.01" min="1" max="100" name="descuentoPorcentaje" id="editar_descuentoPorcentaje" class="form-control" placeholder="Ej. 20" required>
-                                        <div class="invalid-feedback"></div>
+                                        <div class="invalid-feedback" role="alert"></div>
                                     </div>
                                     <div class="row g-2">
                                         <div class="col-6">
-                                            <label class="form-label fw-semibold" style="font-size:0.9rem;">Fecha Inicio *</label>
+                                            <label class="form-label fw-semibold" style="font-size:0.9rem;" for="editar_fechaInicio">Fecha Inicio *</label>
                                             <input type="date" name="fechaInicio" id="editar_fechaInicio" class="form-control" required min="<?= date('Y-m-d') ?>">
-                                            <div class="invalid-feedback"></div>
+                                            <div class="invalid-feedback" role="alert"></div>
                                         </div>
                                         <div class="col-6">
-                                            <label class="form-label fw-semibold" style="font-size:0.9rem;">Fecha Fin *</label>
+                                            <label class="form-label fw-semibold" style="font-size:0.9rem;" for="editar_fechaFin">Fecha Fin *</label>
                                             <input type="date" name="fechaFin" id="editar_fechaFin" class="form-control" required min="<?= date('Y-m-d') ?>">
-                                            <div class="invalid-feedback"></div>
+                                            <div class="invalid-feedback" role="alert"></div>
                                         </div>
                                     </div>
                                     <div>
-                                        <label class="form-label fw-semibold" style="font-size:0.9rem;">Descripción / Alcance</label>
+                                        <label class="form-label fw-semibold" style="font-size:0.9rem;" for="editar_descripcion">Descripción / Alcance</label>
                                         <textarea name="descripcion" id="editar_descripcion" class="form-control" rows="2" placeholder="Ej. Válido para todos los destinos nacionales."></textarea>
                                     </div>
                                     <div>
-                                        <label class="form-label fw-semibold" style="font-size:0.9rem;">Condiciones</label>
+                                        <label class="form-label fw-semibold" style="font-size:0.9rem;" for="editar_condiciones">Condiciones</label>
                                         <textarea name="condiciones" id="editar_condiciones" class="form-control" rows="2" placeholder="Ej. Compras anticipadas con al menos 7 días de antelación."></textarea>
                                     </div>
                                     <div class="form-check mt-3">
@@ -1445,5 +1451,6 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
+<?php require __DIR__ . '/../components/menuMobileAdmin.php'; ?>
 </body>
 </html>

@@ -26,9 +26,17 @@
         lastActionTrigger.dataset.loading = "1";
         lastActionTrigger.classList.add("is-loading");
         lastActionTrigger.setAttribute("aria-busy", "true");
+        anuncialo("Procesando la acción, esperá un momento.");
 
         if (lastActionTrigger.tagName === "BUTTON") {
             lastActionTrigger.disabled = true;
+        }
+    }
+
+    function anuncialo(mensaje) {
+        var region = document.getElementById("anuncioGlobal");
+        if (region) {
+            region.textContent = mensaje;
         }
     }
 
@@ -44,8 +52,9 @@
         button.disabled = true;
         button.setAttribute("aria-busy", "true");
         button.innerHTML =
-            '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>' +
+            '<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>' +
             '<span>' + label + "</span>";
+        anuncialo(label);
     }
 
     function restoreLoadingState() {

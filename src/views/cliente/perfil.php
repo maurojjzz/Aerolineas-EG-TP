@@ -27,10 +27,11 @@ $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Perfil — Vuela sin límites</title>
+    <title>Mi Perfil — Volaré</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="<?= url('public/css/admin.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
 </head>
 <body class="bg-light">
 

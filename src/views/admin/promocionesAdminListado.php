@@ -66,7 +66,7 @@ function badgeEstadoPromoAdmin(string $estado): string {
     </nav>
 
     <div class="contForm col-12 d-flex flex-column p-2 admin-content h-100">
-        <h2 class="m-0 p-0 fs-2 fw-bold">Gestión de Promociones</h2>
+        <h1 class="m-0 p-0 fs-2 fw-bold">Gestión de Promociones</h1>
         <p class="m-0 p-0 mb-1 subt">Revisa, aprueba o deniega las promociones cargadas por los CEOs.</p>
 
         <!-- KPIs -->
@@ -130,7 +130,7 @@ function badgeEstadoPromoAdmin(string $estado): string {
         <div class="d-flex flex-column gap-2">
             <div class="table-responsive bg-white shadow rounded-3 pt-3 tablaContenedor">
                 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center px-2 mb-3 gap-3 gap-sm-0">
-                    <h3 class="m-0 p-0 fs-4 fw-bold">Listado de Promociones</h3>
+                    <h2 class="m-0 p-0 fs-4 fw-bold">Listado de Promociones</h2>
                     <div class="d-flex flex-column flex-sm-row gap-3 align-items-center">
                         <select
                             class="form-select ctm-inp"
@@ -150,6 +150,7 @@ function badgeEstadoPromoAdmin(string $estado): string {
                             id="buscadorPromocion"
                             class="form-control ctm-inp"
                             placeholder="Buscar en la tabla..."
+                            aria-label="Buscar promoción en la tabla"
                             autocomplete="off"
                             style="max-width: 240px;"
                         >
@@ -157,6 +158,7 @@ function badgeEstadoPromoAdmin(string $estado): string {
                 </div>
 
                 <table class="table table-hover align-middle border-top mt-2 tabla-aerolineas">
+                    <caption class="visually-hidden">Listado de promociones</caption>
                     <thead>
                         <tr>
                             <th scope="col" class="text-center fw-bold">CODIGO</th>
@@ -388,7 +390,7 @@ function badgeEstadoPromoAdmin(string $estado): string {
                                 class="form-select form-select-sm border-0 bg-light rounded-2"
                                 style="width:auto; font-size:0.8rem; cursor:pointer;"
                                 onchange="window.location.href=this.value"
-                            >
+                             aria-label="Resultados por página">
                                 <?php foreach ($porPaginaPermitidos as$op): ?>
                                     <option value="<?= urlPaginaAdminPromos(1, $op) ?>" <?= $op ===$porPagina ? 'selected' : '' ?>>
                                         <?= $op ?> por página
@@ -403,7 +405,7 @@ function badgeEstadoPromoAdmin(string $estado): string {
     </div>
 
     <!-- Modal confirmar aprobar / denegar -->
-    <div class="modal fade" id="modalResolverPromo" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="modalResolverPromo" tabindex="-1" role="dialog" aria-labelledby="modalResolverTitulo" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header border-0">

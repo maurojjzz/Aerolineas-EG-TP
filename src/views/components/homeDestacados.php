@@ -37,6 +37,7 @@ $homeDestVariantes = ['a', 'b', 'c'];
                 <div class="home-promos-carousel<?= count($homeDestPromos) <= 1 ? ' is-static' : '' ?>" data-carousel>
                     <div class="home-promos-viewport">
                         <div class="home-promos-track"
+                             id="promosDestacadasTrack"
                              data-carousel-track
                              role="region"
                              aria-label="Promociones destacadas"
@@ -102,11 +103,13 @@ $homeDestVariantes = ['a', 'b', 'c'];
 
                     <div class="home-carousel-nav">
                         <div class="home-carousel-dots" data-carousel-dots></div>
+                        <p class="visually-hidden" data-carousel-status aria-live="polite"></p>
 
                         <div class="home-carousel-arrows">
                             <button type="button"
                                     class="home-carousel-arrow home-carousel-arrow--prev"
                                     data-carousel-prev
+                                    aria-controls="promosDestacadasTrack"
                                     aria-label="Promociones anteriores">
                                 <i class="bi bi-chevron-left" aria-hidden="true"></i>
                             </button>
@@ -114,6 +117,7 @@ $homeDestVariantes = ['a', 'b', 'c'];
                             <button type="button"
                                     class="home-carousel-arrow home-carousel-arrow--next"
                                     data-carousel-next
+                                    aria-controls="promosDestacadasTrack"
                                     aria-label="Promociones siguientes">
                                 <i class="bi bi-chevron-right" aria-hidden="true"></i>
                             </button>

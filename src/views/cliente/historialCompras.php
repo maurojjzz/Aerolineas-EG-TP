@@ -175,7 +175,7 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Historial de compras</title>
+    <title>Historial de compras — Volaré</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="<?= url('public/css/layout/header.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/components/menuMobile.css') ?>">
@@ -183,18 +183,19 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
     <link rel="stylesheet" href="<?= url('public/css/layout/misReservas.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/historialCompras.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
 </head>
 <body class="container-fluid overflow-x-hidden p-0 m-0">
 
 <?php require __DIR__ . '/../layouts/header.php'; ?>
 
 <div style="min-height:100vh;">
-    <div class="container-xxl pb-4 px-3 px-lg-5">
+    <main id="contenido" tabindex="-1" class="container-xxl pb-4 px-3 px-lg-5">
 
         <?php require __DIR__ . '/../components/alertToast.php'; ?>
 
         <div class="titulo-cuadro text-center mb-4">
-            <h2>HISTORIAL DE <span>COMPRAS</span></h2>
+            <h1>HISTORIAL DE <span>COMPRAS</span></h1>
             <p>Revisá tus compras confirmadas y el detalle de cada viaje.</p>
         </div>
 
@@ -313,7 +314,7 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
         <div class="bg-white rounded-4 shadow p-3 p-lg-4">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
                 <div>
-                    <h3 class="h4 fw-bold m-0 fs-5">Compras confirmadas</h3>
+                    <h2 class="h4 fw-bold m-0 fs-5">Compras confirmadas</h2>
                     <p class="text-muted m-0 historial-resultado">
                         <?= $totalFiltrado ?> compra<?= $totalFiltrado !== 1 ? 's' : '' ?> encontrada<?= $totalFiltrado !== 1 ? 's' : '' ?>
                         <?= $totalFiltrado !== $totalCompras ? 'de ' . $totalCompras . ' en total' : '' ?>
@@ -341,18 +342,19 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
             <?php else: ?>
                 <div class="table-responsive">
                     <table class="tabla-reservas tabla-compras">
+                        <caption class="visually-hidden">Compras confirmadas</caption>
                         <thead>
                             <tr>
-                                <th>Compra</th>
-                                <th>Ruta</th>
-                                <th>Aerolínea</th>
-                                <th>Vuelo</th>
-                                <th>Pasajeros</th>
-                                <th>Precio unitario</th>
-                                <th>Promoción</th>
-                                <th>Total</th>
-                                <th>Estado</th>
-                                <th>Acción</th>
+                                <th scope="col">Compra</th>
+                                <th scope="col">Ruta</th>
+                                <th scope="col">Aerolínea</th>
+                                <th scope="col">Vuelo</th>
+                                <th scope="col">Pasajeros</th>
+                                <th scope="col">Precio unitario</th>
+                                <th scope="col">Promoción</th>
+                                <th scope="col">Total</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col">Acción</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -484,7 +486,7 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
                 <?php endif; ?>
             <?php endif; ?>
         </div>
-    </div>
+    </main>
 </div>
 
 <div class="modal fade" id="modalDetalleCompra" tabindex="-1" role="dialog" aria-labelledby="modalDetalleCompraLabel" aria-hidden="true">

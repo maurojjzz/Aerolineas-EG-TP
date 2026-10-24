@@ -42,7 +42,7 @@ function badgeEstadoPromoDetalle(string $estado): string {
     </nav>
 
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="m-0 fs-2 fw-bold">Detalle de la Promoción</h2>
+        <h1 class="m-0 fs-2 fw-bold">Detalle de la Promoción</h1>
     </div>
 
     <div class="row g-4">
@@ -57,7 +57,7 @@ function badgeEstadoPromoDetalle(string $estado): string {
                     </div>
                     <div>
                         <div class="d-flex align-items-center gap-2 mb-1">
-                            <h3 class="fw-bold m-0 text-uppercase"><?= htmlspecialchars($promo['codigo'] ?? '') ?></h3>
+                            <h2 class="fw-bold m-0 text-uppercase"><?= htmlspecialchars($promo['codigo'] ?? '') ?></h2>
                             <span class="badge <?= badgeEstadoPromoDetalle($estado) ?> fs-6">
                                 <?= htmlspecialchars($estado) ?>
                             </span>
@@ -91,7 +91,7 @@ function badgeEstadoPromoDetalle(string $estado): string {
             <!-- Tarjeta de Descuento -->
             <div class="bg-white shadow rounded-3 p-4 mb-4 text-center">
                 <p class="text-muted fw-semibold m-0 mb-2">Descuento Aplicado</p>
-                <h1 class="display-4 fw-bold text-success m-0"><?= (float)($promo['descuentoPorcentaje'] ?? 0) ?>%</h1>
+                <p class="display-4 fw-bold text-success m-0"><?= (float)($promo['descuentoPorcentaje'] ?? 0) ?>%</p>
             </div>
 
             <!-- Tarjeta de Fechas -->

@@ -42,10 +42,11 @@ if ($modoEditar) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $modoEditar ? 'Editar Vuelo' : 'Crear Vuelo' ?></title>
+    <title><?= $modoEditar ? 'Editar Vuelo' : 'Crear Vuelo' ?> — Panel de CEO — Volaré</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="<?= url('public/css/admin.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/headerAdmin.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
 </head>
 <body>
 <div class="d-flex min-vh-100 row g-0 m-0 p-2 pe-2">
@@ -59,7 +60,7 @@ if ($modoEditar) {
             <?php require __DIR__ . '/../layouts/headerAdmin.php'; ?>
         </header>
 
-        <main class="container-fluid d-flex flex-column gap-3 p-2 admin-content">
+        <main id="contenido" tabindex="-1" class="container-fluid d-flex flex-column gap-3 p-2 admin-content">
             <?php require __DIR__ . '/../components/alertToast.php'; ?>
 
             <nav aria-label="breadcrumb">
@@ -71,7 +72,7 @@ if ($modoEditar) {
             </nav>
 
             <div class="contForm col-12 d-flex flex-column p-2">
-                <h2 class="fw-bold"><?= $modoEditar ? 'Editar Vuelo' : 'Crear Vuelo' ?></h2>
+                <h1 class="fw-bold"><?= $modoEditar ? 'Editar Vuelo' : 'Crear Vuelo' ?></h1>
                 <p class="text-muted"><?= $modoEditar ? 'Modificá los datos del vuelo.' : 'Registrá un nuevo vuelo para tu aerolínea.' ?></p>
 
                 <form id="formVuelo"
@@ -81,10 +82,11 @@ if ($modoEditar) {
                     method="POST"
                     class="row mt-2 m-0 g-0 p-0 gap-2"
                 >
+<p class="small text-secondary mb-2">Los campos con <span class="text-danger" aria-hidden="true">*</span><span class="visually-hidden">asterisco</span> son obligatorios.</p>
                     <div class="col-12 col-lg-9 border shadow rounded-2 py-4">
                         <div class="row d-flex justify-content-evenly m-0 g-0 p-0">
                             <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11">
-                                <label class="form-label-t" for="origen">Origen:</label>
+                                <label class="form-label-t" for="origen">Origen: <span class="text-danger" aria-hidden="true">*</span></label>
                                 <input type="text" name="origen" id="origen"
                                     class="form-control ctm-inp"
                                     list="lista-aeropuertos"
@@ -99,7 +101,7 @@ if ($modoEditar) {
                             </div>
 
                             <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11">
-                                <label class="form-label-t" for="destino">Destino:</label>
+                                <label class="form-label-t" for="destino">Destino: <span class="text-danger" aria-hidden="true">*</span></label>
                                 <input type="text" name="destino" id="destino"
                                     class="form-control ctm-inp"
                                     list="lista-aeropuertos"
@@ -124,7 +126,7 @@ if ($modoEditar) {
 
                         <div class="row d-flex justify-content-evenly m-0 g-0 p-0">
                             <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11">
-                                <label class="form-label-t" for="fecha">Fecha de salida:</label>
+                                <label class="form-label-t" for="fecha">Fecha de salida: <span class="text-danger" aria-hidden="true">*</span></label>
                                 <input type="date" name="fecha" id="fecha"
                                     class="form-control ctm-inp" required
                                     min="<?= date('Y-m-d') ?>"
@@ -132,7 +134,7 @@ if ($modoEditar) {
                                 <p id="infoFecha" class="form-text-info"></p>
                             </div>
                             <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11">
-                                <label class="form-label-t" for="hora">Hora de salida:</label>
+                                <label class="form-label-t" for="hora">Hora de salida: <span class="text-danger" aria-hidden="true">*</span></label>
                                 <input type="time" name="hora" id="hora"
                                     class="form-control ctm-inp" required
                                     value="<?= $horaVal ?>">
@@ -160,7 +162,7 @@ if ($modoEditar) {
 
                         <div class="row d-flex justify-content-evenly m-0 g-0 p-0">
                             <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11">
-                                <label class="form-label-t" for="asientos_totales">Asientos totales:</label>
+                                <label class="form-label-t" for="asientos_totales">Asientos totales: <span class="text-danger" aria-hidden="true">*</span></label>
                                 <input type="number" name="asientos_totales" id="asientos_totales"
                                     class="form-control ctm-inp" required min="1"
                                     placeholder="150"
@@ -173,7 +175,7 @@ if ($modoEditar) {
                                 </p>
                             </div>
                             <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11">
-                                <label class="form-label-t" for="precio">Precio (ARS):</label>
+                                <label class="form-label-t" for="precio">Precio (ARS): <span class="text-danger" aria-hidden="true">*</span></label>
                                 <input type="number" name="precio" id="precio"
                                     class="form-control ctm-inp" required min="0.01" step="0.01"
                                     placeholder="85000"
@@ -198,10 +200,10 @@ if ($modoEditar) {
                     <!-- Sección de validaciones -->
                     <div class="d-none d-lg-flex col-lg flex-column align-items-center gap-4">
 
-                        <div class="d-flex flex-column border border-2 border-danger-subtle w-100 rounded-3 shadow d-none" id="erroresBox">
+                        <div class="d-flex flex-column border border-2 border-danger-subtle w-100 rounded-3 shadow d-none" id="erroresBox" role="alert" aria-live="assertive">
                             <div class="tituloBoxErrores bg-danger-subtle border-bottom d-flex flex-column align-items-center justify-content-center">
-                                <img src="<?= url('public/img/icons/alerta.png') ?>" alt="icono alerta validaciones formulario" class="img-fluid my-2" style="width:28px;height:28px;">
-                                <h3 class="h5 text-danger">Validación del Formulario</h3>
+                                <img src="<?= url('public/img/icons/alerta.png') ?>" alt="" class="img-fluid my-2" style="width:28px;height:28px;">
+                                <h2 class="h5 text-danger">Validación del Formulario</h2>
                                 <p id="cantidadErrores">Errores pendientes: 0</p>
                             </div>
                             <div class="errorBoxContent py-3 pe-3">
@@ -211,8 +213,8 @@ if ($modoEditar) {
 
                         <div class="d-flex flex-column border border-2 border-primary-subtle w-100 rounded-3 shadow" id="recomendacionesBox">
                             <div class="tituloBoxErrores bg-primary-subtle border-bottom d-flex flex-column align-items-center justify-content-center">
-                                <img src="<?= url('public/img/icons/luz.png') ?>" alt="icono alerta validaciones formulario" class="img-fluid my-2" style="width:28px;height:28px;">
-                                <h3 class="h5 text-primary">Recomendaciones</h3>
+                                <img src="<?= url('public/img/icons/luz.png') ?>" alt="" class="img-fluid my-2" style="width:28px;height:28px;">
+                                <h2 class="h5 text-primary">Recomendaciones</h2>
                                 <p class="text-break text-center px-2">Tené en cuenta estos puntos antes de crear el vuelo</p>
                             </div>
 
@@ -246,6 +248,7 @@ if ($modoEditar) {
     </div>
 </div>
 
+<?php require __DIR__ . '/../layouts/footer.php'; ?>
 <?php require __DIR__ . '/../components/menuMobileAdmin.php'; ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>

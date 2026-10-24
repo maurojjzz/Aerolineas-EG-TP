@@ -63,7 +63,7 @@ if ($diff > 0) {
     </nav>
 
     <div class="contForm col-12 d-flex flex-column p-2 admin-content h-100">
-        <h2 class="m-0 p-0 fs-2 fw-bold">Gestión de Usuarios</h2>
+        <h1 class="m-0 p-0 fs-2 fw-bold">Gestión de Usuarios</h1>
         <p class="m-0 p-0 mb-1 subt">Administrá los usuarios registrados en el sistema.</p>
 
         <!-- Tarjetas de métricas -->
@@ -127,7 +127,7 @@ if ($diff > 0) {
         <div class="d-flex flex-column gap-2">
             <div class="table-responsive bg-white shadow rounded-3 pt-3 tablaContenedor">
                 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center px-2 mb-3 gap-3 gap-sm-0">
-                    <h3 class="m-0 p-0 fs-4 fw-bold">Listado de Usuarios</h3>
+                    <h2 class="m-0 p-0 fs-4 fw-bold">Listado de Usuarios</h2>
                     <div class="d-flex flex-column flex-sm-row gap-3 align-items-center">
                         <form method="GET" action="index.php" class="d-flex flex-column flex-sm-row gap-2 align-items-stretch align-items-sm-center">
                             <input type="hidden" name="pagina" value="usuarios">
@@ -165,6 +165,7 @@ if ($diff > 0) {
                                 id="buscadorUsuario" 
                                 class="form-control ctm-inp" 
                                 placeholder="Buscar..." 
+                                aria-label="Buscar usuario por nombre o email"
                                 value="<?= htmlspecialchars($busqueda) ?>"
                                 style="max-width: 240px;"
                             >
@@ -174,6 +175,7 @@ if ($diff > 0) {
                 </div>
 
                 <table class="table table-hover align-middle border-top mt-2 tabla-usuarios">
+                    <caption class="visually-hidden">Listado de usuarios</caption>
                     <thead>
                         <tr>
                             <th scope="col" class="fw-bold">USUARIO</th>
@@ -373,7 +375,7 @@ if ($diff > 0) {
 
                         <div class="d-flex align-items-center gap-2">
                             <span class="text-muted" style="font-size:0.8rem;">Por página:</span>
-                            <select class="form-select form-select-sm border-0 bg-light rounded-2" style="width:auto; font-size:0.8rem; cursor:pointer;" onchange="window.location.href=this.value">
+                            <select class="form-select form-select-sm border-0 bg-light rounded-2" style="width:auto; font-size:0.8rem; cursor:pointer;" onchange="window.location.href=this.value" aria-label="Resultados por página">
                                 <?php foreach ([5, 10, 25, 50] as $op): ?>
                                     <option value="<?= urlPagina(1, $op) ?>" <?= $op === $porPagina ? 'selected' : '' ?>>
                                         <?= $op ?> por página
@@ -388,12 +390,12 @@ if ($diff > 0) {
     </div>
 
     <!-- Modal Toggle Estado -->
-    <div class="modal fade" id="modalToggleEstadoUsuario" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="modalToggleEstadoUsuario" tabindex="-1" role="dialog" aria-labelledby="modalToggleTituloUsuario" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header border-0">
                     <h2 class="modal-title fw-bold h5" id="modalToggleTituloUsuario"></h2>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
                     <p id="modalToggleTextoUsuario" class="text-muted m-0"></p>

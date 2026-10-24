@@ -218,10 +218,9 @@ $textoVacio = !$esIdaVuelta
     <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/reservas.css') ?>">
     
+    <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
 </head>
 <body class="container-fluid overflow-x-hidden p-0 m-0">
-
-<a class="skip-link" href="#contenido">Saltar al contenido</a>
 
 <?php require './src/views/layouts/header.php'; ?>
 <?php require './src/views/components/alertToast.php'; ?>
@@ -231,7 +230,7 @@ $textoVacio = !$esIdaVuelta
     <div class="container-xxl py-4 px-3 px-lg-5">
 
         <div class="titulo-cuadro-resul text-center ">
-            <h2 class="fw-bold text-dark display-6">RESULTADO DE <span>VUELOS</span> </h2>
+            <h1 class="fw-bold text-dark display-6">RESULTADO DE <span>VUELOS</span></h1>
         </div>
 
         <?php if ($esIdaVuelta): ?>

@@ -20,25 +20,28 @@
         <?php endif; ?>
 
         <?php if ($mostrarTabs): ?>
-            <div class="desktop-search-tabs d-flex align-items-center">
-                <button type="button" class="desktop-tab active d-flex align-items-center gap-2" data-tab="vuelos">
+            <div class="desktop-search-tabs d-flex align-items-center" role="tablist" aria-label="Qué querés buscar">
+                <button type="button" role="tab" aria-selected="true" aria-controls="desktopPanelVuelos"
+                        id="desktopTabVuelos" class="desktop-tab active d-flex align-items-center gap-2" data-tab="vuelos">
                     <img src="<?= url('public/img/icons/avion.png') ?>" alt="">
                     <span>Vuelos</span>
                 </button>
 
-                <button type="button" class="desktop-tab" data-tab="promociones">
+                <button type="button" role="tab" aria-selected="false" aria-controls="desktopPanelPromociones"
+                        id="desktopTabPromociones" class="desktop-tab" data-tab="promociones">
                     <img src="<?= url('public/img/icons/promocion.png') ?>" alt="">
                     <span>Promociones</span>
                 </button>
 
-                <button type="button" class="desktop-tab" data-tab="novedades">
+                <button type="button" role="tab" aria-selected="false" aria-controls="desktopPanelNovedades"
+                        id="desktopTabNovedades" class="desktop-tab" data-tab="novedades">
                     <img src="<?= url('public/img/icons/novedades.png') ?>" alt="">
                     <span>Novedades</span>
                 </button>
             </div>
         <?php endif; ?>
 
-        <div id="desktopPanelVuelos">
+        <div id="desktopPanelVuelos" role="tabpanel" aria-labelledby="desktopTabVuelos" tabindex="0">
             <!-- RADIOS IDA / IDA Y VUELTA -->
             <fieldset id="contenedorRadiosViaje" class="border-0 m-0 d-flex align-items-center gap-4 px-4 pt-3">
                 <legend class="visually-hidden">Tipo de viaje</legend>
@@ -128,7 +131,7 @@
 
         <?php if ($mostrarTabs): ?>
             <div id="desktopPanelTabs" class="home-tabs-panels d-none">
-                <?php require __DIR__ . '/homeTabsCards.php'; ?>
+                <?php $homeTabsPrefijo = 'desktop'; require __DIR__ . '/homeTabsCards.php'; ?>
             </div>
         <?php endif; ?>
     </div>
