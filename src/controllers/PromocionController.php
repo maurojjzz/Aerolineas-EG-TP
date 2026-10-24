@@ -498,6 +498,41 @@ class PromocionController {
         redirect('index.php?pagina=promociones');
     }
 
+    // ── CEO: cancelar promo propia aprobada ────────────────────────────────
+    public function cancelarPromocion(): void {
+        $id          = (int)($_POST['id'] ?? 0);
+        $idAerolinea = (int)($_SESSION['usuario']['idAerolinea'] ?? 0);
+
+        if (!$id || !$idAerolinea) {
+            flash_set('error', 'Datos inválidos.');
+            redirect('index.php?pagina=promociones');
+        }
+
+        $stmt = mysqli_prepare($this->conexion,
+            "UPDATE promocion
+             SET estado = 'Cancelada'
+             WHERE idPromocion = ? AND idAerolinea = ? AND estado = 'Aprobada'");
+        mysqli_stmt_bind_param($stmt, 'ii', $id, $idAerolinea);
+
+        try {
+            mysqli_stmt_execute($stmt);
+            $afectadas = mysqli_stmt_affected_rows($stmt);
+            mysqli_stmt_close($stmt);
+
+            flash_set(
+                $afectadas > 0 ? 'success' : 'error',
+                $afectadas > 0
+                    ? 'Promoción cancelada correctamente.'
+                    : 'No se puede cancelar: la promoción no existe, no te pertenece o ya no está aprobada.'
+            );
+        } catch (mysqli_sql_exception $e) {
+            mysqli_stmt_close($stmt);
+            flash_set('error', 'Error al cancelar la promoción.');
+        }
+
+        redirect('index.php?pagina=promociones');
+    }
+
     // ── CEO: editar promo propia (solo si está Pendiente) ────────────────────────
     public function editarPromocion(): void {
         $id          = (int)($_POST['id']          ?? 0);

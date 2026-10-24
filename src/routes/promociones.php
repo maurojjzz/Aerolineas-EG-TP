@@ -53,6 +53,11 @@ switch ($accion) {
         $ctrl->eliminarPromocion();
         break;
 
+    case 'cancelar':
+        requireRol('ceo');
+        $ctrl->cancelarPromocion();
+        break;
+
     case 'aprobar':
         requireRol('admin');
         $ctrl->resolverEstado('Aprobada');

@@ -183,7 +183,8 @@ foreach ($filas as $fila) {
 }
 arsort($graficoReporte);
 $graficoReporte = array_slice($graficoReporte, 0, 5, true);
-$maxGrafico = max(1, ...array_values($graficoReporte));
+$valoresGrafico = array_values($graficoReporte);
+$maxGrafico = $valoresGrafico ? max(1, ...$valoresGrafico) : 1;
 
 $tabs = [
     'ventas'    => 'Ventas',

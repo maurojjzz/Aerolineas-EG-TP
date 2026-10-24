@@ -104,7 +104,7 @@ CREATE TABLE `promocion` (
   `descuentoPorcentaje` decimal(5,2) NOT NULL,
   `fechaInicio` date NOT NULL,
   `fechaFin` date NOT NULL,
-  `estado` enum('Pendiente','Aprobada','Denegada') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'Pendiente',
+  `estado` enum('Pendiente','Aprobada','Denegada','Cancelada') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'Pendiente',
   `condiciones` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci,
   `acumulable` tinyint(1) NOT NULL DEFAULT '0',
   `fechaCreacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,

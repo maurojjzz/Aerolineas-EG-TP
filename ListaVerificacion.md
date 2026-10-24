@@ -37,24 +37,24 @@ Antes de entregar, revisá **cada punto** de esta lista. Si algo no se cumple, e
 - [ ] Si hay roles (admin, usuario, etc.), hay un usuario de prueba por cada rol lo cual debe contar en el informe en la sección de Puesta en Funcionamiento.**Agregar en informe**
 - [x] Hay datos de prueba cargados: el dump SQL incluye usuarios, aerolíneas, vuelos, promociones, novedades y reservas.
 - [X] El registro de un usuario nuevo funciona de punta a punta.
-- [ ] Cualquier flujo importante se puede completar sin que nadie te explique nada.
+- [X] Cualquier flujo importante se puede completar sin que nadie te explique nada.
 
 ## 4. Emails
 
-- [ ] El email de registro / confirmación de cuenta **llega efectivamente** a la casilla.
-- [ ] El email de recuperación de contraseña **llega** y el link funciona.
-- [ ] Los links dentro de los emails apuntan al dominio de producción, no a `localhost`.
-- [ ] Los emails no caen en spam (probalo con al menos dos proveedores distintos, ej. Gmail y Outlook).
+- [X] El email de registro / confirmación de cuenta **llega efectivamente** a la casilla.
+- [X] El email de recuperación de contraseña **llega** y el link funciona.
+- [X] Los links dentro de los emails apuntan al dominio de producción, no a `localhost`.
+- [X] Los emails no caen en spam (probalo con al menos dos proveedores distintos, ej. Gmail y Outlook).
 - [x] El contenido del email está en español y sin textos de plantilla sin reemplazar (`{{nombre}}`, "Lorem ipsum", etc.). **Verificado en las plantillas del servicio de correo; falta probar cada envío real.**
-- [ ] El remitente es identificable (no "no-reply@algo-raro").
+- [X] El remitente es identificable (no "no-reply@algo-raro").
 
 ## 5. Navegación y usabilidad
 
 - [ ] Un usuario que no conoce el sistema entiende qué hacer al entrar.
-- [ ] Todas las pantallas son alcanzables desde el menú o desde algún flujo lógico. No hay pantallas "huérfanas" que solo se llegan escribiendo la URL.
+- [X] Todas las pantallas son alcanzables desde el menú o desde algún flujo lógico. No hay pantallas "huérfanas" que solo se llegan escribiendo la URL.
 - [ ] Siempre se puede volver atrás o a la pantalla principal.
-- [ ] Los botones y links dicen qué hacen ("Guardar cambios", no "Enviar").
-- [ ] El estado actual es visible: se sabe si estás logueado, en qué sección estás y con qué usuario.
+- [X] Los botones y links dicen qué hacen ("Guardar cambios", no "Enviar").
+- [X] El estado actual es visible: se sabe si estás logueado, en qué sección estás y con qué usuario.
 - [ ] Las acciones destructivas (borrar) piden confirmación.
 - [ ] Después de cada acción hay feedback: mensaje de éxito o de error.
 - [ ] Las listas vacías muestran un mensaje ("Todavía no hay pedidos"), no una tabla en blanco.
