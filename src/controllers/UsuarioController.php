@@ -74,7 +74,10 @@ class UsuarioController {
         $token = bin2hex(random_bytes(32));
 
         $activo = 0;
-        $emailVerificado = 0;
+        // Los CEOs se habilitan mediante la aprobación administrativa; no
+        // necesitan validar el correo electrónico para iniciar sesión.
+        $emailVerificado = $rol === 'ceo' ? 1 : 0;
+        $tokenVerificacion = $rol === 'ceo' ? null : $token;
 
         $query = "INSERT INTO usuario(nombre, apellido, tipoDocumento, nroDocumento, contrasena, email, telefono, fechaNacimiento, rol, activo, emailVerificado, tokenVerificacion, idAerolinea) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -98,7 +101,7 @@ class UsuarioController {
             $rol,
             $activo,
             $emailVerificado,
-            $token,
+            $tokenVerificacion,
             $idAerolinea
         );
 
@@ -125,9 +128,8 @@ class UsuarioController {
         mysqli_stmt_close($stmt);
 
         if ($rol === 'ceo') {
-            EmailService::enviarVerificacion($email, $nombre, $token);
             EmailService::enviarNotificacionCEOPendiente($email, $nombre);
-            flash_set('success', '¡Cuenta creada! Revisá tu correo para verificarla. Luego un administrador la revisará.');
+            flash_set('success', '¡Cuenta creada! Un administrador debe aprobar tu solicitud antes de que puedas iniciar sesión.');
         } else {
             EmailService::enviarVerificacion($email, $nombre, $token);
             flash_set('success', '¡Cuenta creada! Revisá tu correo para verificarla.');
@@ -178,7 +180,7 @@ class UsuarioController {
             redirect('index.php?pagina=login');
         }
 
-        if (!$usuario['emailVerificado']) {
+        if (!$esCEO && !$usuario['emailVerificado']) {
             flash_set('error', 'Debe verificar su correo electrónico antes de iniciar sesión.');
             redirect("index.php?pagina=login");
         }
@@ -1012,4 +1014,3 @@ class UsuarioController {
         ];
     }
 }
-
