@@ -13,7 +13,7 @@ $mostrarTabs  = $paginaActual === 'inicio' || $esCliente;
                 <div class="d-flex w-100 flex-row justify-content-start align-items-center gap-3 py-2 px-2">
                     <img class="img-fluid d-none d-sm-block"
                         src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>"
-                        alt="Icono avion titulo"
+                        alt=""
                         style="width: 42px; height: 42px;">
                     <div class="d-flex flex-column justify-content-center align-items-start ms-2">
                         <span class="fw-semibold fs-5 p-0 m-0" style="color:#137AFF;">Buscar vuelos</span>
@@ -26,17 +26,17 @@ $mostrarTabs  = $paginaActual === 'inicio' || $esCliente;
         <?php if ($mostrarTabs): ?>
             <div class="options-line d-flex align-items-center">
                 <div class="active col option-line-item d-flex flex-column align-items-center pt-3" data-option="vuelos">
-                    <img src="<?= url('public/img/icons/avion.png') ?>" alt="icono avion" class="iconos-search">
+                    <img src="<?= url('public/img/icons/avion.png') ?>" alt="" class="iconos-search">
                     <p>Vuelos</p>
                 </div>
 
                 <div class="col option-line-item d-flex flex-column align-items-center pt-3" data-option="promociones">
-                    <img src="<?= url('public/img/icons/promocion.png') ?>" alt="icono promocion" class="iconos-search">
+                    <img src="<?= url('public/img/icons/promocion.png') ?>" alt="" class="iconos-search">
                     <p>Promociones</p>
                 </div>
 
                 <div class="col option-line-item d-flex flex-column align-items-center pt-3" data-option="novedades">
-                    <img src="<?= url('public/img/icons/novedades.png') ?>" alt="icono megafono aludiendo a novedades" class="iconos-search">
+                    <img src="<?= url('public/img/icons/novedades.png') ?>" alt="" class="iconos-search">
                     <p>Novedades</p>
                 </div>
             </div>
@@ -51,16 +51,20 @@ $mostrarTabs  = $paginaActual === 'inicio' || $esCliente;
         <div id="box2" class="container-fluid d-flex flex-column flex-lg-row justify-content-lg-center rounded-3 pt-2 gap-lg-3 shadow pb-3">
 
             <!-- RADIOS IDA / IDA Y VUELTA -->
-            <div class="d-flex align-items-center gap-4 px-3 pb-2 col-12">
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="tipo_viaje_radio" id="mobileSoloIda" value="solo_ida" checked>
-                    <label class="form-check-label fw-semibold" for="mobileSoloIda" style="font-size:0.9rem;">Solo ida</label>
+            <fieldset class="border-0 p-0 m-0 px-3 pb-2 col-12">
+                <legend class="visually-hidden">Tipo de viaje</legend>
+
+                <div class="d-flex align-items-center gap-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="tipo_viaje_radio" id="mobileSoloIda" value="solo_ida" checked>
+                        <label class="form-check-label fw-semibold" for="mobileSoloIda" style="font-size:0.9rem;">Solo ida</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="tipo_viaje_radio" id="mobileIdaVuelta" value="ida_vuelta">
+                        <label class="form-check-label fw-semibold" for="mobileIdaVuelta" style="font-size:0.9rem;">Ida y vuelta</label>
+                    </div>
                 </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="tipo_viaje_radio" id="mobileIdaVuelta" value="ida_vuelta">
-                    <label class="form-check-label fw-semibold" for="mobileIdaVuelta" style="font-size:0.9rem;">Ida y vuelta</label>
-                </div>
-            </div>
+            </fieldset>
 
             <?php require './src/views/components/search/inputSearch.php' ?>
 
@@ -70,9 +74,9 @@ $mostrarTabs  = $paginaActual === 'inicio' || $esCliente;
                 <div class="inputPasajeros d-flex align-items-center  w-100 mt-3 p-2 rounded-3 shadow-sm position-relative" >
 
                     <label for="passengers" class="cal-label-pas position-absolute">Pasajeros</label>
-                    <img src="<?= url('public/img/icons/pasajeroicon.png') ?>" alt="icono pasajero" class="btn-icon-vuelos">
+                    <img src="<?= url('public/img/icons/pasajeroicon.png') ?>" alt="" class="btn-icon-vuelos">
 
-                    <select name="pasajeros" class="form-select selectPasenger" aria-label="select pasajeros" id="passengers">
+                    <select name="pasajeros" class="form-select selectPasenger" id="passengers">
                         <option selected value="1">1 Pasajero</option>
                         <option value="2">2 Pasajeros</option>
                         <option value="3">3 Pasajeros</option>
@@ -89,7 +93,7 @@ $mostrarTabs  = $paginaActual === 'inicio' || $esCliente;
                         id="search-button"
                         aria-label="Buscar vuelos"
                     >
-                        <img src="<?= url('public/img/icons/lupa.png') ?>" alt="icono pasajero" class="autocomplete-icon">
+                        <img src="<?= url('public/img/icons/lupa.png') ?>" alt="" class="autocomplete-icon">
                         <span class="d-lg-none d-xl-block">Buscar Vuelos</span>
                     </button>   
                 </div>

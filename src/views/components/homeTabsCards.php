@@ -93,10 +93,11 @@ $homeTabsVariantes  = ['a', 'b', 'c'];
             ?>
                 <div class="col-12 col-sm-6 col-lg-4">
                     <a href="<?= url('index.php?pagina=cliente-novedad-detalle&id=' . (int)($homeTabsNovedad['idNovedad'] ?? 0)) ?>"
-                       class="home-card home-card-novedad h-100 text-decoration-none">
+                       class="home-card home-card-novedad h-100 text-decoration-none"
+                       aria-label="Leer la novedad: <?= htmlspecialchars($homeTabsNovedad['titulo'] ?? 'Novedad') ?>">
                         <?php if ($homeTabsImagen !== ''): ?>
                             <img src="<?= htmlspecialchars($homeTabsImagen) ?>"
-                                 alt="<?= htmlspecialchars($homeTabsNovedad['titulo'] ?? 'Novedad') ?>"
+                                 alt=""
                                  class="home-card-img" loading="lazy">
                         <?php else: ?>
                             <div class="home-card-img home-card-img--placeholder">

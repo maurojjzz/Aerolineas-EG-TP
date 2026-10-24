@@ -11,22 +11,24 @@ require_once __DIR__ . '/../components/navLinks.php';
             </div>
 
             <a class="navbar-brand logoLink m-0" href="<?= htmlspecialchars($urlInicio) ?>">
-                <img class="logo" src="<?= url('public/img/aerologo.webp') ?>" alt="Logo de Volaré">
+                <img class="logo" src="<?= url('public/img/aerologo.webp') ?>" alt="Volaré">
             </a>
         </div>
 
         <div class="col d-none d-lg-flex align-items-center justify-content-center">
-            <ul class="nav navbar-custom d-flex overflow-hidden rounded-2">
-                <?php foreach ($navLinks as $navLink): ?>
-                    <li class="nav-item <?= $navLink['active'] ? 'active' : '' ?>">
-                        <a href="<?= htmlspecialchars($navLink['href']) ?>"
-                           class="nav-link"
-                           <?= $navLink['active'] ? 'aria-current="page"' : '' ?>>
-                            <?= htmlspecialchars($navLink['label']) ?>
-                        </a>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
+            <nav aria-label="Navegación principal">
+                <ul class="nav navbar-custom d-flex overflow-hidden rounded-2">
+                    <?php foreach ($navLinks as $navLink): ?>
+                        <li class="nav-item <?= $navLink['active'] ? 'active' : '' ?>">
+                            <a href="<?= htmlspecialchars($navLink['href']) ?>"
+                               class="nav-link"
+                               <?= $navLink['active'] ? 'aria-current="page"' : '' ?>>
+                                <?= htmlspecialchars($navLink['label']) ?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </nav>
         </div>
 
         <div class="col-auto d-flex justify-content-center align-items-center gap-2">

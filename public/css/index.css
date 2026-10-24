@@ -18,21 +18,22 @@ body {
     z-index: 2;
 }
 
-.hero-content h5 {
+.hero-content .hero-etiqueta {
     text-transform: uppercase;
     font-size: 1rem;
     letter-spacing: 5px;
     color: #082149;
 }
 
-.hero-content h2 {
+.hero-content .hero-titulo {
     font-size: 2.4rem;
     font-weight: 700;
     min-width: 300px;
+    margin-bottom: .5rem;
     color: #082149;
 }
 
-.hero-content p {
+.hero-content .hero-bajada {
     font-size: 0.9rem;
     font-weight: 500;
     letter-spacing: 0.7px;
@@ -90,22 +91,22 @@ body {
         padding-bottom: 290px;
     }
 
-    .hero-content h2 {
+    .hero-content .hero-titulo {
         font-size: 4rem;
     }
 
-    .hero-content h2 span {
+    .hero-content .hero-titulo span {
         color: transparent;
         -webkit-text-stroke: 3px #082149;
         font-weight: 800;
     }
 
-    .hero-content h5 {
+    .hero-content .hero-etiqueta {
         font-size: 1.7rem;
         letter-spacing: 10px;
     }
 
-    .hero-content p {
+    .hero-content .hero-bajada {
         font-size: 1.2rem;
     }
 }
@@ -121,7 +122,7 @@ body {
         width: 100%;
     }
 
-    .hero-content h2 {
+    .hero-content .hero-titulo {
         font-size: 4.7rem;
     }
 }
@@ -130,4 +131,28 @@ body {
     .custom-main {
         padding-bottom: 350px;
     }
+}
+
+/* Link para saltar al contenido (accesibilidad) */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 2000;
+    padding: 10px 16px;
+    background: #0d3262;
+    color: #ffffff;
+    font-weight: 600;
+    border-radius: 0 0 8px 0;
+}
+
+.skip-link:focus {
+    left: 0;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+/* El destino del enlace de salto no necesita contorno */
+#contenido:focus {
+    outline: none;
 }
