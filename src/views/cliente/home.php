@@ -53,8 +53,8 @@ $novedades = $novedadCtrl->obtenerUltimasPublicadas(3); // Obtiene las últimas 
                             <img src="<?= url('public/img/icons/reserva.png') ?>" style="width:30px;height:30px;object-fit:contain;" alt="">
                             <h5 class="fw-bold m-0">Mis próximas reservas</h5>
                         </div>
-                        <a href="<?= url('index.php?pagina=mis-reservas') ?>" class="text-primary text-decoration-none" style="font-size:0.875rem;">
-                            Ver todas mis reservas →
+                        <a href="<?= url('index.php?pagina=mis-reservas') ?>" class="badge bg-primary bg-opacity-10 text-primary fw-semibold text-decoration-none px-3 py-2 rounded-pill shadow-sm" style="font-size: 0.875rem; transition: all 0.2s;" onmouseover="this.className='badge bg-primary text-white fw-semibold text-decoration-none px-3 py-2 rounded-pill shadow-sm'" onmouseout="this.className='badge bg-primary bg-opacity-10 text-primary fw-semibold text-decoration-none px-3 py-2 rounded-pill shadow-sm'">
+                            Ver todas mis reservas <span style="font-size: 1.1rem; vertical-align: middle;">→</span>
                         </a>
                     </div>
 
@@ -134,8 +134,8 @@ $novedades = $novedadCtrl->obtenerUltimasPublicadas(3); // Obtiene las últimas 
                             <span class="text-primary fs-5">📢</span>
                             <h5 class="fw-bold m-0">Novedades</h5>
                         </div>
-                        <a href="<?= url('index.php?pagina=cliente-novedades') ?>" class="text-primary text-decoration-none" style="font-size:0.875rem;">
-                            Ver todas las novedades →
+                        <a href="<?= url('index.php?pagina=cliente-novedades') ?>" class="badge bg-primary bg-opacity-10 text-primary fw-semibold text-decoration-none px-3 py-2 rounded-pill shadow-sm" style="font-size: 0.875rem; transition: all 0.2s;" onmouseover="this.className='badge bg-primary text-white fw-semibold text-decoration-none px-3 py-2 rounded-pill shadow-sm'" onmouseout="this.className='badge bg-primary bg-opacity-10 text-primary fw-semibold text-decoration-none px-3 py-2 rounded-pill shadow-sm'">
+                            Ver todas las novedades <span style="font-size: 1.1rem; vertical-align: middle;">→</span>
                         </a>
                     </div>
 

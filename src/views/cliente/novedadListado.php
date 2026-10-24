@@ -2,21 +2,33 @@
 date_default_timezone_set('America/Argentina/Buenos_Aires');
 require_once __DIR__ . '/../../config/conexion.php';
 require_once __DIR__ . '/../../controllers/NovedadController.php';
+require_once __DIR__ . '/../../controllers/PromocionController.php';
 
-$ctrl = new NovedadController($link);
-$novedades = $ctrl->listarTodasPublicadas();
+$novedadCtrl = new NovedadController($link);
+$novedades = $novedadCtrl->listarTodasPublicadas();
+
+$promocionCtrl = new PromocionController($link);
+$promociones = $promocionCtrl->listarTodasPublicadas();
+
+// Determinar la pestaña activa ('novedades' o 'promociones')
+$tabActual = $_GET['tab'] ?? 'novedades';
+if (!in_array($tabActual, ['novedades', 'promociones'], true)) {
+    $tabActual = 'novedades';
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Novedades y Promociones - Vuela sin límites</title>
+    <title>Novedades y Promociones - Volaré</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="<?= url('public/css/layout/homeCliente.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/header.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/components/menuMobile.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/layout/reservas.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/layout/misReservas.css') ?>">
 </head>
 <body class="container-fluid overflow-x-hidden p-0 m-0 bg-light">
     
@@ -24,38 +36,113 @@ $novedades = $ctrl->listarTodasPublicadas();
     <?php require __DIR__ . '/../layouts/header.php'; ?>
 
     <div class="container py-5">
-        <h2 class="fw-bold mb-4">Novedades y Promociones</h2>
         
-        <div class="row g-4">
-            <?php if (empty($novedades)): ?>
-                <div class="col-12">
-                    <div class="alert alert-info">No hay novedades disponibles en este momento.</div>
-                </div>
-            <?php else: ?>
-                <?php foreach ($novedades as $n): ?>
-                    <div class="col-md-4">
-                        <div class="card border-0 shadow-sm h-100 rounded-3">
-                            <?php if (!empty($n['imagen'])): ?>
-                                <img src="<?= htmlspecialchars($n['imagen']) ?>" class="card-img-top rounded-top-3" alt="imagen" style="height: 180px; object-fit: cover;">
-                            <?php else: ?>
-                                <div class="card-img-top rounded-top-3 bg-light d-flex align-items-center justify-content-center text-primary" style="height: 180px;">
-                                    <i class="bi bi-megaphone fs-1"></i>
+        <div class="titulo-cuadro text-center mb-4">
+            <h2 >Novedades<span> y Promociones</span> </h2>
+        </div>
+
+        <!-- Pestañas para alternar entre Novedades y Promociones -->
+        <ul class="nav nav-pills justify-content-center mb-4 gap-2">
+            <li class="nav-item">
+                <a class="nav-link <?= $tabActual === 'novedades' ? 'active fw-bold' : 'bg-white text-dark border' ?>" 
+                   href="<?= url('index.php?pagina=cliente-novedades&tab=novedades') ?>">
+                   📢 Novedades
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <?= $tabActual === 'promociones' ? 'active fw-bold' : 'bg-white text-dark border' ?>" 
+                   href="<?= url('index.php?pagina=cliente-novedades&tab=promociones') ?>">
+                   🏷️ Promociones
+                </a>
+            </li>
+        </ul>
+
+        <!-- CONTENIDO: NOVEDADES -->
+        <?php if ($tabActual === 'novedades'): ?>
+            <div class="row g-4">
+                <?php if (empty($novedades)): ?>
+                    <div class="col-12 text-center">
+                        <div class="alert alert-info d-inline-block px-4">No hay novedades disponibles en este momento.</div>
+                    </div>
+                <?php else: ?>
+                    <?php foreach ($novedades as $n): ?>
+                        <div class="col-md-4">
+                            <div class="card border-0 shadow-sm h-100 rounded-3">
+                                <?php if (!empty($n['imagen'])): ?>
+                                    <img src="<?= htmlspecialchars($n['imagen']) ?>" class="card-img-top rounded-top-3" alt="imagen" style="height: 180px; object-fit: cover;">
+                                <?php else: ?>
+                                    <div class="card-img-top rounded-top-3 bg-primary text-white d-flex align-items-center justify-content-center" style="height: 180px;">
+                                        <i class="bi bi-megaphone fs-1"></i>
+                                    </div>
+                                <?php endif; ?>
+                                <div class="card-body d-flex flex-column">
+                                    <div class="mb-2">
+                                        <span class="badge text-bg-primary text-capitalize"><?= htmlspecialchars($n['categoria']) ?></span>
+                                        <small class="text-muted ms-2"><?= date('d/m/Y', strtotime($n['fechaPublicacion'])) ?></small>
+                                    </div>
+                                    <h5 class="card-title fw-bold"><?= htmlspecialchars($n['titulo']) ?></h5>
+                                    <p class="card-text text-muted small flex-grow-1"><?= htmlspecialchars($n['subtitulo'] ?? '') ?></p>
+                                    <a href="<?= url('index.php?pagina=cliente-novedad-detalle&id=' . $n['idNovedad']) ?>" class="btn btn-outline-primary btn-sm mt-3 align-self-start">Leer más</a>
                                 </div>
-                            <?php endif; ?>
-                            <div class="card-body d-flex flex-column">
-                                <div class="mb-2">
-                                    <span class="badge text-bg-primary text-capitalize"><?= htmlspecialchars($n['categoria']) ?></span>
-                                    <small class="text-muted ms-2"><?= date('d/m/Y', strtotime($n['fechaPublicacion'])) ?></small>
-                                </div>
-                                <h5 class="card-title fw-bold"><?= htmlspecialchars($n['titulo']) ?></h5>
-                                <p class="card-text text-muted small flex-grow-1"><?= htmlspecialchars($n['subtitulo'] ?? '') ?></p>
-                                <a href="<?= url('index.php?pagina=cliente-novedad-detalle&id=' . $n['idNovedad']) ?>" class="btn btn-outline-primary btn-sm mt-3 align-self-start">Leer más</a>
                             </div>
                         </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+
+        <!-- CONTENIDO: PROMOCIONES -->
+        <?php else: ?>
+            <div class="row g-4">
+                <?php if (empty($promociones)): ?>
+                    <div class="col-12 text-center">
+                        <div class="alert alert-info d-inline-block px-4">No hay promociones activas en este momento.</div>
                     </div>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </div>
+                <?php else: ?>
+                    <?php foreach ($promociones as $p): 
+                        $porcentaje = $p['descuentoPorcentaje'] ? round($p['descuentoPorcentaje']) : 0;
+                        $fInicio = !empty($p['fechaInicio']) ? date('d/m/Y', strtotime($p['fechaInicio'])) : '';
+                        $fFin = !empty($p['fechaFin']) ? date('d/m/Y', strtotime($p['fechaFin'])) : '';
+                    ?>
+                        <div class="col-12">
+                            <div class="bg-white rounded-3 border p-2 d-flex align-items-center justify-content-between gap-4 shadow-sm" style="border-left: 5px solid #048d42 !important;">
+                                
+                                <!-- 1. Descuento en grande -->
+                                <div class="rounded-3 text-white d-flex flex-column align-items-center justify-content-center text-center p-2 flex-shrink-0" style="min-width: 90px; min-height: 75px; background-color: #048d42;">
+                                    <span class="fw-bold" style="font-size: 1.7rem; line-height: 1.1;"><?= $porcentaje > 0 ? $porcentaje . '%' : 'PROMO' ?></span>
+                                    <span class="text-uppercase fw-semibold" style="font-size: 0.65rem; letter-spacing: 1px; opacity: 0.9;">OFF</span>
+                                </div>
+
+                                <!-- 2. Título y Código -->
+                                <div class="flex-grow-1" style="min-width: 0;">
+                                    <h5 class="fw-bold text-dark m-0 text-truncate" style="font-size: 1.4rem;"><?= htmlspecialchars($p['nombre']) ?></h5>
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <span class="badge bg-light text-secondary border fw-semibold" style="font-size: 0.7rem; letter-spacing: 0.5px;"><?= htmlspecialchars($p['codigo']) ?></span>
+                                    </div>
+                                    <?php if (!empty($p['descripcion'])): ?>
+                                        <p class="text-muted small m-0 text-truncate"><?= htmlspecialchars($p['descripcion']) ?></p>
+                                    <?php endif; ?>
+                                </div>
+
+                                <!-- 3. Aerolínea -->
+                                <div class="flex-grow-1 d-none d-md-block" style="min-width: 0; font-size: 1.2rem;">
+                                    <div class="d-flex align-items-center gap-1 mb-1">
+                                        <span class="small text-muted">Aerolínea: <strong class="text-dark"><?= htmlspecialchars($p['nombreAerolinea'] ?? 'Aerolínea') ?></strong></span>
+                                    </div>
+                                </div>
+
+                                <!-- 4. Fechas de vigencia -->
+                                <div class="d-flex flex-column text-start px-3 border-start border-end text-nowrap" style="min-width: 200px;">
+                                    <div class="d-flex align-items-center gap-1 text-muted" style="font-size: 1rem;">
+                                        <i class="bi bi-calendar-check text-success"></i>
+                                        <span>Del <strong><?= $fInicio ?></strong> al <strong><?= $fFin ?></strong></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
     </div>
 
     <?php require_once __DIR__ . '/../layouts/footer.php'; ?>

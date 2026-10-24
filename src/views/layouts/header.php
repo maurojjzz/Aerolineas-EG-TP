@@ -5,7 +5,7 @@ require_once __DIR__ . '/../components/navLinks.php';
 <header class="container-xxl">
     <div class="fila_head row mt-3 d-flex align-items-center justify-content-between g-0">
 
-        <div class="col-auto d-flex align-items-center gap-2">
+        <div class="col-2 d-flex align-items-center gap-2">
             <div class="d-flex d-lg-none justify-content-center align-items-center">
                 <?php require __DIR__ . '/../components/menuMobile.php'; ?>
             </div>
