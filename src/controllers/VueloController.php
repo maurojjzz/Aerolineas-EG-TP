@@ -229,7 +229,11 @@ class VueloController {
         int $idAerolinea,
         int $pagina,
         int $porPagina,
-        string $busqueda = ''
+        string $busqueda = '',
+        string $desde = '',
+        string $hasta = '',
+        string $estado = '',
+        string $orden = 'salida'
     ): array {
         $offset = ($pagina - 1) * $porPagina;
         $where  = "WHERE idAerolinea = ?";
@@ -237,11 +241,32 @@ class VueloController {
         $tipos  = 'i';
 
         if ($busqueda !== '') {
-            $where   .= " AND (origenVuelo LIKE ? OR destinoVuelo LIKE ?)";
+            $where   .= " AND (CAST(idVuelo AS CHAR) LIKE ? OR origenVuelo LIKE ? OR codigoOrigen LIKE ? OR destinoVuelo LIKE ? OR codigoDestino LIKE ?)";
             $like     = "%$busqueda%";
-            $params[] = $like;
-            $params[] = $like;
-            $tipos   .= 'ss';
+            array_push($params, $like, $like, $like, $like, $like);
+            $tipos   .= 'sssss';
+        }
+
+        if ($desde !== '') {
+            $where .= " AND DATE(fechaHoraSalidaVuelo) >= ?";
+            $params[] = $desde;
+            $tipos .= 's';
+        }
+
+        if ($hasta !== '') {
+            $where .= " AND DATE(fechaHoraSalidaVuelo) <= ?";
+            $params[] = $hasta;
+            $tipos .= 's';
+        }
+
+        if ($estado === 'disponibles') {
+            $where .= " AND asientosDisponibles > 0";
+        } elseif ($estado === 'agotados') {
+            $where .= " AND asientosDisponibles = 0";
+        } elseif ($estado === 'proximos') {
+            $where .= " AND fechaHoraSalidaVuelo >= NOW()";
+        } elseif ($estado === 'finalizados') {
+            $where .= " AND fechaHoraSalidaVuelo < NOW()";
         }
 
         // Total
@@ -257,7 +282,12 @@ class VueloController {
         $tipos   .= 'ii';
 
         $stmt = mysqli_prepare($this->conexion,
-            "SELECT * FROM vuelo $where ORDER BY fechaHoraSalidaVuelo ASC LIMIT ? OFFSET ?");
+            "SELECT * FROM vuelo $where ORDER BY " .
+            ($orden === 'precio_asc' ? 'precioVuelo ASC, fechaHoraSalidaVuelo ASC' :
+                ($orden === 'precio_desc' ? 'precioVuelo DESC, fechaHoraSalidaVuelo ASC' :
+                    ($orden === 'disponibles' ? 'asientosDisponibles DESC, fechaHoraSalidaVuelo ASC' :
+                        'fechaHoraSalidaVuelo ASC'))) .
+            " LIMIT ? OFFSET ?");
         mysqli_stmt_bind_param($stmt, $tipos, ...$params);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
