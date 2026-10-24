@@ -310,6 +310,7 @@ if (iAerolinea) {
 
     const formRegistroCEO = document.getElementById("formRegistroCEO");
 
+    formRegistroCEO.setAttribute("novalidate", "");
     formRegistroCEO.addEventListener("submit", (e) => {
         const nombreValido = validarNombre();
         const apellidoValido = validarApellido();
@@ -340,6 +341,7 @@ if (iAerolinea) {
 const formRegistro = document.getElementById("formRegistro");
 
 if (formRegistro) {
+    formRegistro.setAttribute("novalidate", "");
     formRegistro.addEventListener("submit", (e) => {
         const nombreValido = validarNombre();
         const apellidoValido = validarApellido();
