@@ -522,7 +522,7 @@ $tabs = [
                         </thead>
                         <tbody>
                             <?php if (empty($filas)): ?>
-                                <tr><td colspan="8" class="text-center py-4 text-muted">No hay ventas confirmadas para los filtros seleccionados.</td></tr>
+                                <tr><td colspan="8" class="text-center py-4 text-muted">Todavía no hay ventas confirmadas que coincidan con los filtros seleccionados.</td></tr>
                             <?php else: foreach ($filas as $f): ?>
                                 <tr>
                                     <td class="text-center fw-medium"><?= (int)$f['idReserva'] ?></td>
@@ -565,7 +565,7 @@ $tabs = [
                         </thead>
                         <tbody>
                             <?php if (empty($filas)): ?>
-                                <tr><td colspan="10" class="text-center py-4 text-muted">No hay vuelos para los filtros seleccionados.</td></tr>
+                                <tr><td colspan="10" class="text-center py-4 text-muted">Todavía no hay vuelos que coincidan con los filtros seleccionados.</td></tr>
                             <?php else: foreach ($filas as $f):
                                 $totales = (int)$f['asientosTotales'];
                                 $vendidos = (int)$f['vendidos'];
@@ -620,7 +620,7 @@ $tabs = [
                         </thead>
                         <tbody>
                             <?php if (empty($filas)): ?>
-                                <tr><td colspan="10" class="text-center py-4 text-muted">No hay usuarios para los filtros seleccionados.</td></tr>
+                                <tr><td colspan="10" class="text-center py-4 text-muted">Todavía no hay usuarios que coincidan con los filtros seleccionados.</td></tr>
                             <?php else: foreach ($filas as $f): ?>
                                 <tr>
                                     <td class="text-center fw-medium"><?= (int)$f['idUsuario'] ?></td>

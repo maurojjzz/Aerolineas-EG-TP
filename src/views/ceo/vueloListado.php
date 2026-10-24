@@ -171,7 +171,7 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                                         <?php if (empty($vuelos)): ?>
                                             <tr>
                                                 <td colspan="8" class="text-center py-4 text-muted">
-                                                    No hay vuelos registrados todavía.
+                                                    Todavía no hay vuelos cargados para tu aerolínea.
                                                 </td>
                                             </tr>
                                         <?php else: foreach ($vuelos as$v): ?>

@@ -52,12 +52,12 @@ Antes de entregar, revisá **cada punto** de esta lista. Si algo no se cumple, e
 
 - [ ] Un usuario que no conoce el sistema entiende qué hacer al entrar.
 - [X] Todas las pantallas son alcanzables desde el menú o desde algún flujo lógico. No hay pantallas "huérfanas" que solo se llegan escribiendo la URL.
-- [ ] Siempre se puede volver atrás o a la pantalla principal.
+- [X] Siempre se puede volver atrás o a la pantalla principal.
 - [X] Los botones y links dicen qué hacen ("Guardar cambios", no "Enviar").
 - [X] El estado actual es visible: se sabe si estás logueado, en qué sección estás y con qué usuario.
-- [ ] Las acciones destructivas (borrar) piden confirmación.
-- [ ] Después de cada acción hay feedback: mensaje de éxito o de error.
-- [ ] Las listas vacías muestran un mensaje ("Todavía no hay pedidos"), no una tabla en blanco.
+- [X] Las acciones destructivas (borrar) piden confirmación.
+- [X] Después de cada acción hay feedback: mensaje de éxito o de error.
+- [X] Las listas vacías muestran un mensaje ("Todavía no hay pedidos"), no una tabla en blanco.
 
 ## 6. Idioma y textos
 

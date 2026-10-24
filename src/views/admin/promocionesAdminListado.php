@@ -174,7 +174,7 @@ function badgeEstadoPromoAdmin(string $estado): string {
                         <?php if (empty($promociones)): ?>
                             <tr>
                                 <td colspan="7" class="text-center py-4 text-muted">
-                                    No hay promociones<?= $estadoFiltro !== '' ? ' con estado "' . htmlspecialchars($estadoFiltro) . '"' : ' cargadas todavía' ?>.
+                                    <?= $estadoFiltro !== '' ? 'No hay promociones con estado "' . htmlspecialchars($estadoFiltro) . '".' : 'Todavía no hay promociones cargadas.' ?>
                                 </td>
                             </tr>
                         <?php else:

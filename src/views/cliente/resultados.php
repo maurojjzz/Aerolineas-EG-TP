@@ -202,8 +202,8 @@ $urlPasoIda = urlBusqueda(['paso' => 'ida', 'pag' => 1]);
 $urlPasoVuelta = urlBusqueda(['paso' => 'vuelta', 'pag' => 1]);
 
 $textoVacio = !$esIdaVuelta
-    ? 'No encontramos vuelos disponibles'
-    : ($paso === 'vuelta' ? 'No encontramos vuelos de vuelta' : 'No encontramos vuelos de ida');
+    ? 'Todavía no hay vuelos disponibles para esta búsqueda'
+    : ($paso === 'vuelta' ? 'Todavía no hay vuelos de vuelta para esta búsqueda' : 'Todavía no hay vuelos de ida para esta búsqueda');
 ?>
 <!DOCTYPE html>
 <html lang="es">

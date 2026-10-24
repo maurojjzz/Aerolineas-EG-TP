@@ -203,7 +203,7 @@ if ($diff > 0) {
                         <?php if (empty($aerolineas)): ?>
                             <tr>
                                 <td colspan="6" class="text-center py-4 text-muted">
-                                    No hay aerolíneas registradas todavía.
+                                    Todavía no hay aerolíneas cargadas.
                                 </td>
                             </tr>
                         <?php else: 

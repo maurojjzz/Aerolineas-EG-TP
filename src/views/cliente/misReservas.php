@@ -94,7 +94,7 @@ $conteos = [
                         'pendientes'  => 'No tenés reservas pendientes de pago.',
                         'confirmadas' => 'No tenés reservas confirmadas.',
                         'canceladas'  => 'No tenés reservas canceladas.',
-                        default       => 'No tenés reservas todavía.',
+                        default       => 'Todavía no tenés reservas cargadas.',
                     } ?>
                 </p>
                 <a href="<?= url('index.php?pagina=buscar-vuelos') ?>" class="btn btn-primary">

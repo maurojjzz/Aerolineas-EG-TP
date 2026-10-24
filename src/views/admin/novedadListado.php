@@ -140,7 +140,7 @@ $stats =$ctrl->obtenerEstadisticas();
                     <tbody>
                         <?php if (empty($novedades)): ?>
                             <tr>
-                                <td colspan="6" class="text-center py-4 text-muted">No hay novedades registradas todavía.</td>
+                                <td colspan="6" class="text-center py-4 text-muted">Todavía no hay novedades cargadas.</td>
                             </tr>
                         <?php else: 
                             foreach ($novedades as $n): ?>

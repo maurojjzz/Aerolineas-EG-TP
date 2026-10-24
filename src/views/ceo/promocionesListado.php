@@ -310,7 +310,7 @@ function badgeVigenciaPromo(array $p): string {
                                     <?php if (empty($promociones)): ?>
                                         <tr>
                                             <td colspan="8" class="text-center py-4 text-muted">
-                                                No tenés promociones registradas todavía.
+                                                Todavía no hay promociones cargadas para tu aerolínea.
                                             </td>
                                         </tr>
                                     <?php else:
@@ -1486,8 +1486,10 @@ document.addEventListener("DOMContentLoaded", function () {
     function aplicarFiltros() {
         const filtroTexto = inputBuscador ? inputBuscador.value.toLowerCase() : '';
         const filtroEstado = selectFiltro ? selectFiltro.value : 'pendientes_aprobadas_vigentes';
+        const filas = tbody.querySelectorAll("tr.fila-tabla");
+        let filasVisibles = 0;
 
-        tbody.querySelectorAll("tr.fila-tabla").forEach(function (fila) {
+        filas.forEach(function (fila) {
             const texto = fila.textContent.toLowerCase();
             const coincideTexto = !filtroTexto || texto.includes(filtroTexto);
 
@@ -1531,11 +1533,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const coincide = coincideTexto && coincideEstado;
             fila.style.display = coincide ? "" : "none";
+            if (coincide) filasVisibles++;
             if (!coincide) {
                 const detalle = document.getElementById("detalle-" + fila.dataset.id);
                 if (detalle) detalle.classList.add("d-none");
             }
         });
+
+        const mensajeSinResultados = document.getElementById("mensajeSinResultadosPromos");
+        if (filas.length > 0 && filasVisibles === 0) {
+            if (!mensajeSinResultados) {
+                const filaVacia = document.createElement("tr");
+                filaVacia.id = "mensajeSinResultadosPromos";
+                filaVacia.innerHTML = '<td colspan="8" class="text-center py-4 text-muted">No hay promociones que coincidan con la búsqueda o los filtros seleccionados.</td>';
+                tbody.appendChild(filaVacia);
+            }
+        } else if (mensajeSinResultados) {
+            mensajeSinResultados.remove();
+        }
     }
 
     if (inputBuscador) {
