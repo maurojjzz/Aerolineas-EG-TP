@@ -1,3 +1,7 @@
+document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((elemento) => {
+    new bootstrap.Tooltip(elemento);
+});
+
 const iNombre = document.getElementById("nombre");
 const infoNombre = document.getElementById("infoNombre");
 

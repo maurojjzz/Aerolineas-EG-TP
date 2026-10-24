@@ -98,7 +98,10 @@
                         <div class="form-group d-flex flex-column p-0 w-100">
                             <label class="form-label-t" id="labContrasena" for="contrasena">Contraseña: <span class="text-danger" aria-hidden="true">*</span></label>
 
-                            <input type="password" name="contrasena" id="contrasena" class="form-control ctm-inp" required placeholder="Ingrese su contraseña">
+                            <input type="password" name="contrasena" id="contrasena" class="form-control ctm-inp" required minlength="8" autocomplete="new-password" placeholder="Ingrese su contraseña"
+                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                title="La contraseña debe tener al menos 8 caracteres."
+                                aria-describedby="infoContrasena">
 
                             <p id="infoContrasena" class="text-break text-center form-text-info text-danger fs-6"></p>
                         </div>
