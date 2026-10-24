@@ -28,6 +28,7 @@ $vistas = [
             <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
     </head>
     <body>
+        <?php require __DIR__ . '/../layouts/skipLink.php'; ?>
         
         <div class="d-flex min-vh-100 row g-0 m-0 p-2 pe-2">
 
