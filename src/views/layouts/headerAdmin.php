@@ -17,7 +17,6 @@ if (isset($link) && $link instanceof mysqli) {
 }
 
 ?>
-<a class="skip-link" href="#contenido">Saltar al contenido</a>
 <div id="anuncioGlobal" class="visually-hidden" role="status" aria-live="polite"></div>
 
 <div class="container-header d-flex align-items-center bg-light row border-bottom border-2 w-100 m-0 p-0 g-0">

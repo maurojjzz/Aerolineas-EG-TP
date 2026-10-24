@@ -184,6 +184,7 @@ $tabs = [
     <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
 </head>
 <body>
+<?php require __DIR__ . '/../layouts/skipLink.php'; ?>
 
 <div class="d-flex min-vh-100 row g-0 m-0 p-2 pe-2">
 
@@ -217,6 +218,7 @@ $tabs = [
                     <?php foreach ($tabs as $clave => $label): ?>
                         <li class="nav-item">
                             <a class="nav-link <?= $tab === $clave ? 'active' : '' ?>"
+                               <?= $tab === $clave ? 'aria-current="page"' : '' ?>
                                style="
                                    color: <?= $tab === $clave ? '#fff' : '#212529' ?>;
                                    background-color: <?= $tab === $clave ? '#0d6efd' : 'transparent' ?>;
