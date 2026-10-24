@@ -1,6 +1,11 @@
 (function () {
     "use strict";
 
+    if (window.__actionLoadingInitialized) {
+        return;
+    }
+    window.__actionLoadingInitialized = true;
+
     var lastActionTrigger = null;
     var originalContent = new WeakMap();
 
@@ -84,7 +89,8 @@
     document.addEventListener("submit", function (event) {
         var form = event.target;
 
-        if (!(form instanceof HTMLFormElement) || !form.hasAttribute("data-loading-form")) {
+        if (!(form instanceof HTMLFormElement) || form.method.toUpperCase() !== "POST" ||
+            event.defaultPrevented || form.hasAttribute("data-no-loading")) {
             return;
         }
 
@@ -95,7 +101,7 @@
 
         form.dataset.submitting = "1";
 
-        var submitButton =
+        var submitButton = event.submitter ||
             form.querySelector("[data-loading-button]") ||
             form.querySelector('button[type="submit"]') ||
             form.querySelector("button");
