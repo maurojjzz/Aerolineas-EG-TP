@@ -21,7 +21,7 @@ if (!in_array($tabActual, ['novedades', 'promociones'], true)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Novedades y Promociones - Volaré</title>
+    <title>Novedades y Promociones — Volaré</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="<?= url('public/css/layout/homeCliente.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/header.css') ?>">
@@ -29,16 +29,23 @@ if (!in_array($tabActual, ['novedades', 'promociones'], true)) {
     <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/reservas.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/misReservas.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
 </head>
 <body class="container-fluid overflow-x-hidden p-0 m-0 bg-light">
     
     <!-- Header principal compartido del cliente -->
     <?php require __DIR__ . '/../layouts/header.php'; ?>
 
-    <div class="container py-5">
-        
+    <main id="contenido" tabindex="-1" class="container pb-5">
+
+        <div class="d-flex justify-content-start pt-3">
+            <a href="<?= url('index.php?pagina=inicio') ?>" class="text-decoration-none d-inline-flex align-items-center gap-1 text-muted">
+                <i class="bi bi-arrow-left"></i> Volver al inicio
+            </a>
+        </div>
+
         <div class="titulo-cuadro text-center mb-4">
-            <h2 >Novedades<span> y Promociones</span> </h2>
+            <h1 >NOVEDADES Y <span>PROMOCIONES</span> </h1>
         </div>
 
         <!-- Pestañas para alternar entre Novedades y Promociones -->
@@ -80,7 +87,7 @@ if (!in_array($tabActual, ['novedades', 'promociones'], true)) {
                                         <span class="badge text-bg-primary text-capitalize"><?= htmlspecialchars($n['categoria']) ?></span>
                                         <small class="text-muted ms-2"><?= date('d/m/Y', strtotime($n['fechaPublicacion'])) ?></small>
                                     </div>
-                                    <h5 class="card-title fw-bold"><?= htmlspecialchars($n['titulo']) ?></h5>
+                                    <h2 class="card-title fw-bold h5"><?= htmlspecialchars($n['titulo']) ?></h2>
                                     <p class="card-text text-muted small flex-grow-1"><?= htmlspecialchars($n['subtitulo'] ?? '') ?></p>
                                     <a href="<?= url('index.php?pagina=cliente-novedad-detalle&id=' . $n['idNovedad']) ?>" class="btn btn-outline-primary btn-sm mt-3 align-self-start">Leer más</a>
                                 </div>
@@ -90,6 +97,7 @@ if (!in_array($tabActual, ['novedades', 'promociones'], true)) {
                 <?php endif; ?>
             </div>
 
+        <!-- CONTENIDO: PROMOCIONES -->
         <!-- CONTENIDO: PROMOCIONES -->
         <?php else: ?>
             <div class="row g-4">
@@ -104,46 +112,77 @@ if (!in_array($tabActual, ['novedades', 'promociones'], true)) {
                         $fFin = !empty($p['fechaFin']) ? date('d/m/Y', strtotime($p['fechaFin'])) : '';
                     ?>
                         <div class="col-12">
-                            <div class="bg-white rounded-3 border p-2 d-flex align-items-center justify-content-between gap-4 shadow-sm" style="border-left: 5px solid #048d42 !important;">
+                            <div class="bg-white rounded-3 border p-3 shadow-sm" style="border-left: 5px solid #048d42 !important;">
                                 
-                                <!-- 1. Descuento en grande -->
-                                <div class="rounded-3 text-white d-flex flex-column align-items-center justify-content-center text-center p-2 flex-shrink-0" style="min-width: 90px; min-height: 75px; background-color: #048d42;">
-                                    <span class="fw-bold" style="font-size: 1.7rem; line-height: 1.1;"><?= $porcentaje > 0 ? $porcentaje . '%' : 'PROMO' ?></span>
-                                    <span class="text-uppercase fw-semibold" style="font-size: 0.65rem; letter-spacing: 1px; opacity: 0.9;">OFF</span>
+                                <!-- ================= VISTA DESKTOP (md en adelante) ================= -->
+                                <div class="d-none d-md-flex align-items-center justify-content-between gap-4">
+                                    <!-- 1. Descuento -->
+                                    <div class="rounded-3 text-white d-flex flex-column align-items-center justify-content-center text-center p-2 flex-shrink-0" style="min-width: 90px; min-height: 75px; background-color: #048d42;">
+                                        <span class="fw-bold" style="font-size: 1.7rem; line-height: 1.1;"><?= $porcentaje > 0 ? $porcentaje . '%' : 'PROMO' ?></span>
+                                        <span class="text-uppercase fw-semibold" style="font-size: 0.65rem; letter-spacing: 1px; opacity: 0.9;">OFF</span>
+                                    </div>
+
+                                    <!-- 2. Título y Código -->
+                                    <div class="flex-grow-1" style="min-width: 0;">
+                                        <h2 class="fw-bold text-dark m-0 text-truncate" style="font-size: 1.3rem;"><?= htmlspecialchars($p['nombre']) ?></h2>
+                                        <div class="d-flex align-items-center gap-2 mt-1">
+                                            <span class="badge bg-light text-secondary border fw-semibold" style="font-size: 0.7rem; letter-spacing: 0.5px;"><?= htmlspecialchars($p['codigo']) ?></span>
+                                        </div>
+                                        <?php if (!empty($p['descripcion'])): ?>
+                                            <p class="text-muted small m-0 text-truncate mt-1"><?= htmlspecialchars($p['descripcion']) ?></p>
+                                        <?php endif; ?>
+                                    </div>
+
+                                    <!-- 3. Aerolínea -->
+                                    <div class="px-2" style="min-width: 150px;">
+                                        <span class="small text-muted">Aerolínea:</span><br>
+                                        <strong class="text-dark"><?= htmlspecialchars($p['nombreAerolinea'] ?? 'Aerolínea') ?></strong>
+                                    </div>
+
+                                    <!-- 4. Fechas -->
+                                    <div class="d-flex flex-column text-start px-3 border-start text-nowrap" style="min-width: 180px;">
+                                        <div class="d-flex align-items-center gap-1 text-muted" style="font-size: 0.95rem;">
+                                            <i class="bi bi-calendar-check text-success"></i>
+                                            <span>Del <strong><?= $fInicio ?></strong> al <strong><?= $fFin ?></strong></span>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <!-- 2. Título y Código -->
-                                <div class="flex-grow-1" style="min-width: 0;">
-                                    <h5 class="fw-bold text-dark m-0 text-truncate" style="font-size: 1.4rem;"><?= htmlspecialchars($p['nombre']) ?></h5>
-                                    <div class="d-flex align-items-center gap-2 mb-1">
-                                        <span class="badge bg-light text-secondary border fw-semibold" style="font-size: 0.7rem; letter-spacing: 0.5px;"><?= htmlspecialchars($p['codigo']) ?></span>
+                                <!-- ================= VISTA MOBILE (menor a md) ================= -->
+                                <div class="d-flex d-md-none flex-column gap-3">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <!-- Descuento compacto -->
+                                        <div class="rounded-3 text-white d-flex flex-column align-items-center justify-content-center text-center p-2 flex-shrink-0" style="min-width: 75px; min-height: 65px; background-color: #048d42;">
+                                            <span class="fw-bold" style="font-size: 1.3rem; line-height: 1.1;"><?= $porcentaje > 0 ? $porcentaje . '%' : 'PROMO' ?></span>
+                                            <span class="text-uppercase fw-semibold" style="font-size: 0.55rem; letter-spacing: 1px; opacity: 0.9;">OFF</span>
+                                        </div>
+                                        <!-- Título y Código -->
+                                        <div class="flex-grow-1" style="min-width: 0;">
+                                            <h2 class="fw-bold text-dark m-0 text-truncate" style="font-size: 1.1rem;"><?= htmlspecialchars($p['nombre']) ?></h2>
+                                            <span class="badge bg-light text-secondary border fw-semibold mt-1" style="font-size: 0.65rem;"><?= htmlspecialchars($p['codigo']) ?></span>
+                                        </div>
                                     </div>
+
                                     <?php if (!empty($p['descripcion'])): ?>
-                                        <p class="text-muted small m-0 text-truncate"><?= htmlspecialchars($p['descripcion']) ?></p>
+                                        <p class="text-muted small m-0"><?= htmlspecialchars($p['descripcion']) ?></p>
                                     <?php endif; ?>
-                                </div>
 
-                                <!-- 3. Aerolínea -->
-                                <div class="flex-grow-1 d-none d-md-block" style="min-width: 0; font-size: 1.2rem;">
-                                    <div class="d-flex align-items-center gap-1 mb-1">
-                                        <span class="small text-muted">Aerolínea: <strong class="text-dark"><?= htmlspecialchars($p['nombreAerolinea'] ?? 'Aerolínea') ?></strong></span>
+                                    <div class="d-flex justify-content-between align-items-center border-top pt-2 mt-1 small text-muted">
+                                        <span>Aerolínea: <strong class="text-dark"><?= htmlspecialchars($p['nombreAerolinea'] ?? 'Aerolínea') ?></strong></span>
+                                        <div class="d-flex align-items-center gap-1">
+                                            <i class="bi bi-calendar-check text-success"></i>
+                                            <span><?= $fInicio ?> - <?= $fFin ?></span>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <!-- 4. Fechas de vigencia -->
-                                <div class="d-flex flex-column text-start px-3 border-start border-end text-nowrap" style="min-width: 200px;">
-                                    <div class="d-flex align-items-center gap-1 text-muted" style="font-size: 1rem;">
-                                        <i class="bi bi-calendar-check text-success"></i>
-                                        <span>Del <strong><?= $fInicio ?></strong> al <strong><?= $fFin ?></strong></span>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </div>
         <?php endif; ?>
-    </div>
+    </main>
 
     <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
 

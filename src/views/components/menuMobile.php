@@ -14,7 +14,8 @@ require_once __DIR__ . '/navLinks.php';
     <div class="offcanvas offcanvas-start"
          tabindex="-1"
          id="offcanvasNavbar"
-         aria-labelledby="offcanvasNavbarLabel">
+         aria-labelledby="offcanvasNavbarLabel"
+         role="dialog">
         <div class="offcanvas-header">
             <a class="navbar-brand logoLink m-0" href="<?= htmlspecialchars($urlInicio) ?>">
                 <img class="logo" src="<?= url('public/img/aerologo.webp') ?>" alt="Volaré">
@@ -23,7 +24,7 @@ require_once __DIR__ . '/navLinks.php';
         </div>
 
         <div class="offcanvas-body d-flex flex-column">
-            <h2 class="visually-hidden h5" id="offcanvasNavbarLabel">Menú de navegación</h2>
+            <span class="visually-hidden" id="offcanvasNavbarLabel">Menú de navegación</span>
 
             <?php if ($isLoggedIn): ?>
                 <div class="mobile-user-box mb-3">

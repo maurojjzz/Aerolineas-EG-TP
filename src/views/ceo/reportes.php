@@ -174,13 +174,14 @@ $tabs = [
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CEO - Reportes de <?= htmlspecialchars($aero['nombreAerolinea']) ?></title>
+    <title>Reportes de <?= htmlspecialchars($aero['nombreAerolinea']) ?> — Panel de CEO — Volaré</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="<?= url('public/css/admin.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/headerAdmin.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/components/tablaLista.css') ?>?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
 </head>
 <body>
 
@@ -196,18 +197,9 @@ $tabs = [
             <?php require __DIR__ . '/../layouts/headerAdmin.php'; ?>
         </header>
 
-        <main class="container-fluid d-flex flex-column gap-3 p-2 admin-content">
+        <main id="contenido" tabindex="-1" class="container-fluid d-flex flex-column gap-3 p-2 admin-content">
 
             <?php require __DIR__ . '/../components/alertToast.php'; ?>
-
-<style>
-    /* Hover en tabs inactivos para que se vean sobre header azul */
-    .nav-tabs .nav-link:not(.active):hover {
-        background-color: rgba(13, 110, 253, 0.08) !important;
-        color: #0d6efd !important;
-        border-color: #0d6efd #0d6efd transparent !important;
-    }
-</style>
 
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
@@ -217,7 +209,7 @@ $tabs = [
             </nav>
 
             <div class="contForm col-12 d-flex flex-column p-2">
-                <h2 class="m-0 p-0 fs-2 fw-bold">Reportes de <?= htmlspecialchars($aero['nombreAerolinea']) ?></h2>
+                <h1 class="m-0 p-0 fs-2 fw-bold">Reportes de <?= htmlspecialchars($aero['nombreAerolinea']) ?></h1>
                 <p class="m-0 p-0 mb-1 subt">Ventas confirmadas y ocupación de los vuelos de tu aerolínea.</p>
 
                 <!-- Pestañas -->
@@ -288,9 +280,9 @@ $tabs = [
 
                 <div class="table-responsive bg-white shadow rounded-3 pt-3 tablaContenedor">
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center px-2 mb-3 gap-3 gap-sm-0">
-                        <h3 class="m-0 p-0 fs-4 fw-bold">
+                        <h2 class="m-0 p-0 fs-4 fw-bold">
                             <?= $tab === 'ventas' ? 'Ventas de mi aerolínea' : 'Ocupación de vuelos' ?>
-                        </h3>
+                        </h2>
 
                         <div class="d-flex flex-column flex-sm-row gap-2 align-items-stretch align-items-sm-center">
                             <button type="button" class="btn btn-outline-primary text-nowrap"
@@ -348,16 +340,17 @@ $tabs = [
                     </div>
 
                     <table class="table table-hover align-middle border-top mt-2">
+                        <caption class="visually-hidden"><?= $tab === 'ocupacion' ? 'Ocupación por ruta' : 'Ventas del período' ?></caption>
                         <?php if ($tab === 'ventas'): ?>
                             <thead>
                                 <tr>
-                                    <th class="fw-bold text-center">#</th>
-                                    <th class="fw-bold">FECHA</th>
-                                    <th class="fw-bold">CLIENTE</th>
-                                    <th class="fw-bold d-none d-sm-table-cell">RUTA</th>
-                                    <th class="fw-bold d-none d-md-table-cell">SALIDA</th>
-                                    <th class="fw-bold text-center">PASAJEROS</th>
-                                    <th class="fw-bold text-end">TOTAL</th>
+                                    <th scope="col" class="fw-bold text-center">#</th>
+                                    <th scope="col" class="fw-bold">FECHA</th>
+                                    <th scope="col" class="fw-bold">CLIENTE</th>
+                                    <th scope="col" class="fw-bold d-none d-sm-table-cell">RUTA</th>
+                                    <th scope="col" class="fw-bold d-none d-md-table-cell">SALIDA</th>
+                                    <th scope="col" class="fw-bold text-center">PASAJEROS</th>
+                                    <th scope="col" class="fw-bold text-end">TOTAL</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -385,15 +378,15 @@ $tabs = [
                         <?php else: ?>
                             <thead>
                                 <tr>
-                                    <th class="fw-bold text-center">#</th>
-                                    <th class="fw-bold">RUTA</th>
-                                    <th class="fw-bold d-none d-md-table-cell">SALIDA</th>
-                                    <th class="fw-bold d-none d-lg-table-cell">LLEGADA</th>
-                                    <th class="fw-bold text-center">TOTAL</th>
-                                    <th class="fw-bold text-center">VENDIDOS</th>
-                                    <th class="fw-bold text-center d-none d-sm-table-cell">DISPONIBLES</th>
-                                    <th class="fw-bold text-center">OCUPACIÓN</th>
-                                    <th class="fw-bold text-end d-none d-sm-table-cell">INGRESOS</th>
+                                    <th scope="col" class="fw-bold text-center">#</th>
+                                    <th scope="col" class="fw-bold">RUTA</th>
+                                    <th scope="col" class="fw-bold d-none d-md-table-cell">SALIDA</th>
+                                    <th scope="col" class="fw-bold d-none d-lg-table-cell">LLEGADA</th>
+                                    <th scope="col" class="fw-bold text-center">TOTAL</th>
+                                    <th scope="col" class="fw-bold text-center">VENDIDOS</th>
+                                    <th scope="col" class="fw-bold text-center d-none d-sm-table-cell">DISPONIBLES</th>
+                                    <th scope="col" class="fw-bold text-center">OCUPACIÓN</th>
+                                    <th scope="col" class="fw-bold text-end d-none d-sm-table-cell">INGRESOS</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -488,7 +481,7 @@ $tabs = [
                                 <span class="text-muted" style="font-size:0.8rem;">Por página:</span>
                                 <select class="form-select form-select-sm border-0 bg-light rounded-2"
                                         style="width:auto; font-size:0.8rem; cursor:pointer;"
-                                        onchange="window.location.href=this.value">
+                                        onchange="window.location.href=this.value" aria-label="Resultados por página">
                                     <?php foreach ($porPaginaPermitidos as $op): ?>
                                         <option value="<?= repCeoUrl(1, $op) ?>" <?= $op === $porPagina ? 'selected' : '' ?>>
                                             <?= $op ?> por página

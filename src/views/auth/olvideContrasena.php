@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recuperar contraseña</title>
+    <title>Recuperar contraseña — Volaré</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="<?= url('public/css/layout/login.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/header.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/components/menuMobile.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
 </head>
 <body class="container-fluid overflow-x-hidden p-0 m-0 d-flex flex-column align-items-center">
 
     <?php require './src/views/layouts/header.php' ?>
 
-    <section class="container-xxl main-section row p-0 m-0">
+    <main id="contenido" tabindex="-1" class="container-xxl main-section row p-0 m-0">
         <?php require __DIR__ . '/../components/alertToast.php'; ?>
 
         <div class="col-12 d-flex flex-column align-items-center justify-content-center pt-5">
@@ -23,7 +24,7 @@
                   class="formContainer rounded-3 shadow-lg p-4"
                   novalidate>
 
-                <h3 class="fs-1 fw-semibold titleForm">Recuperar contraseña</h3>
+                <h1 class="fs-1 fw-semibold titleForm">Recuperar contraseña</h1>
                 <p class="text-muted">Ingresá tu email y te enviaremos un link para restablecer tu contraseña.</p>
 
                 <div class="form-group d-flex flex-column p-0">
@@ -42,7 +43,7 @@
                 </a>
             </form>
         </div>
-    </section>
+    </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script>

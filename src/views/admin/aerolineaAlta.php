@@ -33,21 +33,25 @@ $paises = require __DIR__ . '/../../data/paises.php';
     </nav>
 
     <div class="contForm col-12 d-flex flex-column p-2 admin-content  h-100">
-        <h2 class="m-0 p-0 fs-2 fw-bold"><?= $modoEditar ? 'Editar Aerolínea' : 'Crear Aerolínea' ?></h2>
+        <h1 class="m-0 p-0 fs-2 fw-bold"><?= $modoEditar ? 'Editar Aerolínea' : 'Crear Aerolínea' ?></h1>
         <p class="m-0 p-0 mb-1 subt"><?= $modoEditar ? 'Modificá los datos de la aerolínea.' : 'Registra una nueva aerolínea en el sistema.' ?></p>
         
         <form 
-            action="<?= $modoEditar ? url('src/routes/aerolinea.php?accion=editar&id=' . $id): url('src/routes/aerolinea.php?accion=crear')?>" 
+            action="<?= $modoEditar ? url('src/routes/aerolinea.php?accion=editar&id=' . $id): url('src/routes/aerolinea.php?accion=crear')?>
+" 
             method="POST" 
             class="row mt-2 m-0 g-0 p-0 gap-2 " 
             enctype="multipart/form-data"
         >
+<p class="small text-secondary mb-2">Los campos con <span class="text-danger" aria-hidden="true">*</span><span class="visually-hidden">asterisco</span> son obligatorios.</p>
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
+
             <!-- seccion del formulario -->
             <div class="col-12 col-lg-9 border shadow rounded-2 py-4">
 
                 <div class="row d-flex justify-content-evenly m-0 g-0 p-0">
                     <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11 ">
-                        <label class="form-label-t" for="nombre">Nombre de la aerolínea:</label>
+                        <label class="form-label-t" for="nombre">Nombre de la aerolínea: <span class="text-danger" aria-hidden="true">*</span></label>
                         <input 
                             type="text" 
                             name="nombre" 
@@ -64,7 +68,7 @@ $paises = require __DIR__ . '/../../data/paises.php';
                     </div>
 
                     <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11 ">
-                        <label class="form-label-t" for="codigo">Codigo:</label>
+                        <label class="form-label-t" for="codigo">Codigo: <span class="text-danger" aria-hidden="true">*</span></label>
                         <input 
                             type="text" 
                             name="codigo" 
@@ -84,7 +88,7 @@ $paises = require __DIR__ . '/../../data/paises.php';
                 <div class="row d-flex justify-content-evenly m-0 g-0 p-0">
                     
                     <div class="pais-autocomplete position-relative col-sm-5 col-11">
-                        <label class="form-label-t " for="pais">Pais:</label>
+                        <label class="form-label-t " for="pais">Pais: <span class="text-danger" aria-hidden="true">*</span></label>
                         <input
                             type="text"
                             id="pais"
@@ -119,7 +123,7 @@ $paises = require __DIR__ . '/../../data/paises.php';
                     </div>
 
                     <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11 ">
-                        <label class="form-label-t" for="email">Email:</label>
+                        <label class="form-label-t" for="email">Email: <span class="text-danger" aria-hidden="true">*</span></label>
                         <input 
                             type="email" 
                             name="email" 
@@ -146,12 +150,15 @@ $paises = require __DIR__ . '/../../data/paises.php';
                 <div class="row d-flex justify-content-evenly m-0 g-0 p-0 ">
                     <div class="form-group d-flex flex-column gap-1 col-sm-4 col-10 ">
 
-                        <label class="form-label-t" for="logo">
-                            <p class="form-label-t mb-1">Logotipo:</p> 
+                        <label class="form-label-t" for="logo">Logotipo:</label>
 
-                            <div class="logoAerolinea rounded-2 d-flex align-items-center gap-2 p-2
+                        <div class="logoAerolinea rounded-2 d-flex align-items-center gap-2 p-2
                                 <?= ($modoEditar && $aero['logoUrl']) ? 'justify-content-start' : 'justify-content-center' ?>"
-                                id="logoPreview">
+                                id="logoPreview"
+                                role="button"
+                                tabindex="0"
+                                aria-controls="logo"
+                                aria-label="Seleccionar el logotipo de la aerolínea">
 
                                 <?php if ($modoEditar && $aero['logoUrl']): ?>
                                     <img
@@ -171,13 +178,14 @@ $paises = require __DIR__ . '/../../data/paises.php';
                                                 data-bs-placement="top"
                                                 data-bs-title="Cambiar logotipo"
                                                 data-bs-trigger="hover"
+                                                aria-label="Cambiar logotipo"
                                             >
-                                                <img src="<?= url('public/img/icons/redo.png') ?>" class="img-fluid btn-mini" alt="cambiar">
+                                                <img src="<?= url('public/img/icons/redo.png') ?>" class="img-fluid btn-mini" alt="">
                                             </button>
                                         </div>
                                     </div>
                                 <?php else: ?>
-                                    <img src="<?= url('public/img/icons/subir.png') ?>" alt="icono subir imagen admin" class="upload-foto">
+                                    <img src="<?= url('public/img/icons/subir.png') ?>" alt="" class="upload-foto">
                                     <div class="d-flex flex-column justify-content-center m-0 p-0 tetxt">
                                         <p class="firstLogoText p-0 m-0">Añada un logo a su aerolinea</p>
                                         <p class="sndLogoText p-0 m-0">haz click para seleccionar</p>
@@ -185,11 +193,11 @@ $paises = require __DIR__ . '/../../data/paises.php';
                                 <?php endif; ?>
 
                             </div>
-                        </label>
 
-                        <input type="file" accept="image/png, image/jpeg, image/webp" name="logo" id="logo" class="d-none" >
+                        <input type="file" accept="image/png, image/jpeg, image/webp" name="logo" id="logo" class="visually-hidden" aria-describedby="infoLogo errorLogo" >
                         
-                        <p id="infoLogo" class="form-text-info">Formatos: JPG, PNG, WEBP. Max: 2MB</p>
+                        <p id="infoLogo" class="form-text-info">Formatos: JPG, PNG, WEBP. Máximo 2 MB.</p>
+                        <p id="errorLogo" class="text-danger small m-0" role="alert"></p>
                     </div>
 
                     <div class="form-group d-flex flex-column gap-1 col-sm-6 col-11 ">
@@ -207,7 +215,7 @@ $paises = require __DIR__ . '/../../data/paises.php';
 
                 <div class="row d-flex justify-content-evenly m-0 g-0 p-0 ">
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end col-11">
-                        <a href="<?= url('index.php?pagina=aerolinea&seccion=listado') ?>"  type="button" class="btn btn-outline-danger me-md-2">Cancelar</a>
+                        <a href="<?= url('index.php?pagina=aerolinea&seccion=listado') ?>" class="btn btn-outline-danger me-md-2">Cancelar</a>
                         <button type="submit" class="btn btn-primary">
                             <?= $modoEditar ? 'Guardar cambios' : 'Crear Aerolínea' ?>
                         </button>
@@ -220,10 +228,10 @@ $paises = require __DIR__ . '/../../data/paises.php';
             <!-- seccion de validaciones -->
             <div class="d-none d-lg-flex col-lg flex-column align-items-center gap-4 ">
 
-                <div class="d-flex flex-column border border-2 border-danger-subtle w-100 rounded-3 shadow d-none" id="erroresBox">
+                <div class="d-flex flex-column border border-2 border-danger-subtle w-100 rounded-3 shadow d-none" id="erroresBox" role="alert" aria-live="assertive">
                     <div class="tituloBoxErrores bg-danger-subtle border-bottom d-flex flex-column align-items-center justify-content-center ">
-                        <img src="<?= url('public/img/icons/alerta.png') ?>" alt="icono alerta validaciones formulario" class="img-fluid my-2" style="width: 28px; height: 28px;">
-                        <h5 class="text-danger">Validacion del Formulario</h5>
+                        <img src="<?= url('public/img/icons/alerta.png') ?>" alt="" class="img-fluid my-2" style="width: 28px; height: 28px;">
+                        <h2 class="h5 text-danger">Validación del Formulario</h2>
                         <p id="cantidadErrores">Errores pendientes: 2</p>
                     </div>
                     <div class="errorBoxContent py-3 pe-3" >
@@ -234,8 +242,8 @@ $paises = require __DIR__ . '/../../data/paises.php';
                 
                 <div class="d-flex flex-column border border-2 border-primary-subtle w-100 rounded-3 shadow " id="recomendacionesBox">
                     <div class="tituloBoxErrores bg-primary-subtle border-bottom d-flex flex-column align-items-center justify-content-center ">
-                        <img src="<?= url('public/img/icons/luz.png') ?>" alt="icono alerta validaciones formulario" class="img-fluid my-2" style="width: 28px; height: 28px;">
-                        <h5 class="text-primary">Recomendaciones</h5>
+                        <img src="<?= url('public/img/icons/luz.png') ?>" alt="" class="img-fluid my-2" style="width: 28px; height: 28px;">
+                        <h2 class="h5 text-primary">Recomendaciones</h2>
                         <p class="text-break text-center px-2">Tené en cuenta estos puntos antes de crear la aerolinea</p>
                     </div>
 

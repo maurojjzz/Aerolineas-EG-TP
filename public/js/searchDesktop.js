@@ -14,8 +14,12 @@ if (tabs.length > 0 && panelVuelos && panelTabs) {
 
     tabs.forEach((tab) => {
         tab.addEventListener("click", () => {
-            tabs.forEach((item) => item.classList.remove("active"));
+            tabs.forEach((item) => {
+                item.classList.remove("active");
+                item.setAttribute("aria-selected", "false");
+            });
             tab.classList.add("active");
+            tab.setAttribute("aria-selected", "true");
 
             const selected = tab.dataset.tab;
             if (!selected) return;
@@ -48,19 +52,45 @@ const inputDestinoLocation = document.getElementById("to-location-desktop");
 
 function renderOpcionesAeropuerto(container, matches, inputEl, locationEl, resultsEl) {
     container.innerHTML = "";
-    matches.forEach(a => {
+
+    const elegir = (aeropuerto) => {
+        inputEl.value = aeropuerto.code;
+        locationEl.textContent = `${aeropuerto.city}, ${aeropuerto.country}`;
+        resultsEl.style.display = "none";
+        inputEl.setAttribute("aria-expanded", "false");
+        inputEl.focus();
+    };
+
+    matches.forEach((a, i) => {
         const div = document.createElement("div");
         div.classList.add("autocomplete-option");
+        div.setAttribute("role", "option");
+        div.setAttribute("aria-selected", "false");
+        div.setAttribute("id", `${container.id}-opcion-${i}`);
+        div.tabIndex = -1;
         div.innerHTML = `<strong>${a.code}</strong><span>${a.city}, ${a.country}</span>`;
 
-        div.addEventListener("click", () => {
-            inputEl.value = a.code;
-            locationEl.textContent = `${a.city}, ${a.country}`;
-            resultsEl.style.display = "none";
+        div.addEventListener("click", () => elegir(a));
+        div.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                elegir(a);
+            } else if (event.key === "ArrowDown") {
+                event.preventDefault();
+                (div.nextElementSibling || div).focus();
+            } else if (event.key === "ArrowUp") {
+                event.preventDefault();
+                (div.previousElementSibling || inputEl).focus();
+            } else if (event.key === "Escape") {
+                resultsEl.style.display = "none";
+                inputEl.setAttribute("aria-expanded", "false");
+                inputEl.focus();
+            }
         });
         container.appendChild(div);
     });
     resultsEl.style.display = matches.length ? "block" : "none";
+    inputEl.setAttribute("aria-expanded", matches.length ? "true" : "false");
 }
 
 if (inputSalida) {
@@ -87,6 +117,33 @@ if (inputDestino) {
         renderOpcionesAeropuerto(inputDestinoResult, matches, inputDestino, inputDestinoLocation, inputDestinoResult);
     });
 }
+
+// Accesibilidad del autocompletado: combobox con lista de opciones navegable
+window.prepararListaAeropuertos = function (inputEl, resultadosEl) {
+    if (!inputEl || !resultadosEl || inputEl.dataset.listaPreparada === "1") return;
+    inputEl.dataset.listaPreparada = "1";
+    inputEl.setAttribute("role", "combobox");
+    inputEl.setAttribute("aria-autocomplete", "list");
+    inputEl.setAttribute("aria-expanded", "false");
+    inputEl.setAttribute("aria-controls", resultadosEl.id);
+    resultadosEl.setAttribute("role", "listbox");
+
+    inputEl.addEventListener("keydown", function (event) {
+        if (event.key === "ArrowDown") {
+            const primera = resultadosEl.querySelector('[role="option"]');
+            if (primera) {
+                event.preventDefault();
+                primera.focus();
+            }
+        } else if (event.key === "Escape") {
+            resultadosEl.style.display = "none";
+            inputEl.setAttribute("aria-expanded", "false");
+        }
+    });
+};
+
+window.prepararListaAeropuertos(inputSalida, inputSalidaResult);
+window.prepararListaAeropuertos(inputDestino, inputDestinoResult);
 
 const swapButton = document.getElementById("swap-desktop");
 if (swapButton) {

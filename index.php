@@ -183,14 +183,17 @@ switch ($pagina) {
     case 'contacto':
         require __DIR__ . '/src/views/contacto.php';
         break;
-        
-    case 'enviar-contacto':
-        // Controlador para procesar el formulario de contacto
-        // $ctrl->procesarFormularioContacto(); 
+
+    case 'sobre':
+        require __DIR__ . '/src/views/sobre.php';
+        break;
+
+    case 'mapa-del-sitio':
+        require __DIR__ . '/src/views/mapaDelSitio.php';
         break;
 
     default:
         http_response_code(404);
-        echo 'Página no encontrada';
+        require __DIR__ . '/src/views/error404.php';
         break;
 }

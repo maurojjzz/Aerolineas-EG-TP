@@ -13,12 +13,13 @@ $vistas = [
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Administrador - CEOs</title>
+        <title>CEOs — Administración — Volaré</title>
 
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
         <link rel="stylesheet" href="<?= url('public/css/admin.css') ?>">
         <link rel="stylesheet" href="<?= url('public/css/layout/headerAdmin.css') ?>">
         <link rel="stylesheet" href="<?= url('public/css/components/tablaLista.css') ?>?v=<?= time() ?>">
+            <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
     </head>
     <body>
 
@@ -34,7 +35,7 @@ $vistas = [
                     <?php require __DIR__ . '/../layouts/headerAdmin.php'; ?>
                 </header>
 
-                <main class="container-fluid d-flex flex-column gap-3 p-2 admin-content ">
+                <main id="contenido" tabindex="-1" class="container-fluid d-flex flex-column gap-3 p-2 admin-content ">
                     <?php
                         if (!isset($vistas[$seccion])) {
                             http_response_code(404);
@@ -48,6 +49,8 @@ $vistas = [
             </div>
 
         </div>
+
+        <?php require __DIR__ . '/../layouts/footer.php'; ?>
 
         <?php require __DIR__ . '/../components/menuMobileAdmin.php' ?>
 

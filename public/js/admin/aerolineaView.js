@@ -86,6 +86,24 @@ const cuadroFoto = document.getElementById("logoPreview");
 if (logoInput && cuadroFoto) {
     const cuadroOg = cuadroFoto.innerHTML;
 
+    const errorLogo = document.getElementById("errorLogo");
+
+    // El cuadro de previsualización abre el selector de archivos.
+    // Antes dependía de estar dentro del <label>, lo que generaba HTML inválido.
+    cuadroFoto.addEventListener("click", function (e) {
+        if (e.target.closest("#cambiarLogo, #quitarLogo")) return;
+        logoInput.click();
+    });
+
+    // El mismo cuadro responde al teclado (Enter y barra espaciadora).
+    cuadroFoto.addEventListener("keydown", function (e) {
+        if (e.target.closest("button")) return;
+        if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            logoInput.click();
+        }
+    });
+
     logoInput.addEventListener("change", function () {
         const archivo = logoInput.files[0];
 
@@ -94,16 +112,21 @@ if (logoInput && cuadroFoto) {
         const validTypes = ["image/jpeg", "image/png", "image/webp"];
 
         if (!validTypes.includes(archivo.type)) {
-            alert("Solo se permiten imágenes JPG, PNG o WEBP.");
+            if (errorLogo) errorLogo.textContent = "Solo se permiten imágenes JPG, PNG o WEBP.";
+            logoInput.setAttribute("aria-invalid", "true");
             logoInput.value = "";
             return;
         }
 
         if (archivo.size > 2 * 1024 * 1024) {
-            alert("La imagen no puede superar los 2MB.");
+            if (errorLogo) errorLogo.textContent = "La imagen no puede superar los 2 MB.";
+            logoInput.setAttribute("aria-invalid", "true");
             logoInput.value = "";
             return;
         }
+
+        if (errorLogo) errorLogo.textContent = "";
+        logoInput.removeAttribute("aria-invalid");
 
         const urlImagen = URL.createObjectURL(archivo);
 
@@ -112,7 +135,7 @@ if (logoInput && cuadroFoto) {
         cuadroFoto.innerHTML = `
 
         <div class="spinner-border text-success" role="status">
-            <span class="visually-hidden">Loading...</span>
+            <span class="visually-hidden">Cargando imagen…</span>
         </div>
     `;
 
@@ -123,7 +146,7 @@ if (logoInput && cuadroFoto) {
             <img
                 src="${urlImagen}"
                 class="logo-preview-img img-fluid"
-                alt="preview logo"
+                alt="Previsualización del logotipo"
             >
 
             <div class="d-flex flex-column w-100">
@@ -144,11 +167,12 @@ if (logoInput && cuadroFoto) {
                         data-bs-placement="top"
                         data-bs-title="Cambiar logotipo"
                         data-bs-trigger="hover"
+                        aria-label="Cambiar logotipo"
                     >
                         <img
                             src="../../../public/img/icons/redo.png"
                             class="img-fluid btn-mini"
-                            alt="icono cambiar foto logo"
+                            alt=""
                         >
                     </button>
 
@@ -160,11 +184,12 @@ if (logoInput && cuadroFoto) {
                         data-bs-placement="top"
                         data-bs-title="Eliminar logotipo"
                         data-bs-trigger="hover"
+                        aria-label="Quitar logotipo"
                     >
                         <img
                             src="../../../public/img/icons/trash.png"
                             class= "img-fluid btn-mini"
-                            alt="icono quitar foto logo"
+                            alt=""
                         >
                     </button>
                 </div>

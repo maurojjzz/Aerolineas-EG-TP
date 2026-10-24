@@ -40,7 +40,7 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Vuelos</title>
+        <title>Vuelos — Panel de CEO — Volaré</title>
 
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
         
@@ -48,6 +48,7 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
         <link rel="stylesheet" href="<?= url('public/css/layout/headerAdmin.css') ?>">
         <link rel="stylesheet" href="<?= url('public/css/components/tablaLista.css') ?>?v=<?= time() ?>">
         <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
+            <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
     </head>
     <body>
         <div class="d-flex min-vh-100 row g-0 m-0 p-2 pe-2">
@@ -62,7 +63,7 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                     <?php require __DIR__ . '/../layouts/headerAdmin.php'; ?>
                 </header>
 
-                <main class="container-fluid d-flex flex-column gap-3 p-3 admin-content">
+                <main id="contenido" tabindex="-1" class="container-fluid d-flex flex-column gap-3 p-3 admin-content">
                     <?php require __DIR__ . '/../components/alertToast.php';  ?>
                     <nav class="breadcrumbCont" aria-label="breadcrumb">
                         <ol class="breadcrumb">
@@ -70,19 +71,20 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                         </ol>
                     </nav>
                     <div class="contForm col-12 d-flex flex-column p-2 admin-content h-100">
-                        <h2 class="m-0 p-0 fs-2 fw-bold">Gestión de Vuelos</h2>
+                        <h1 class="m-0 p-0 fs-2 fw-bold">Gestión de Vuelos</h1>
                         <p class="m-0 p-0 mb-2 subt">Administrá los vuelos de tu aerolínea.</p>
                         <div class="d-flex flex-column gap-2">
                             <div class="table-responsive bg-white shadow rounded-3 pt-3 ">
                                 
                                 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center px-2 mb-3 gap-3 gap-sm-0">
-                                    <h3 class="m-0 p-0 fs-4 fw-bold">Listado de Vuelos</h3>
+                                    <h2 class="m-0 p-0 fs-4 fw-bold">Listado de Vuelos</h2>
                                     <div class="d-flex flex-column flex-sm-row gap-3 align-items-center">
                                         <input
                                             type="text"
                                             id="buscadorVuelo"
                                             class="form-control ctm-inp"
                                             placeholder="Buscar en la tabla..."
+                                            aria-label="Buscar vuelo en la tabla"
                                             autocomplete="off"
                                             style="max-width: 240px;"
                                             value="<?= htmlspecialchars($busqueda) ?>"
@@ -93,6 +95,7 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                                     </div>
                                 </div>
                                 <table class="table table-hover align-middle border-top mt-2 tabla-vuelos">
+                                    <caption class="visually-hidden">Listado de vuelos</caption>
                                     <thead>
                                         <tr>
                                             <th scope="col" class="fw-bold" >ORIGEN</th>
@@ -300,7 +303,7 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                                                 class="form-select form-select-sm border-0 bg-light rounded-2"
                                                 style="width:auto; font-size:0.8rem; cursor:pointer;"
                                                 onchange="window.location.href=this.value"
-                                            >
+                                             aria-label="Resultados por página">
                                                 <?php foreach ($porPaginaPermitidos as$op): ?>
                                                     <option value="<?= urlPaginaVuelo(1, $op) ?>" <?= $op ===$porPagina ? 'selected' : '' ?>>
                                                         <?= $op ?> por página
@@ -320,12 +323,12 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
         </div>
 
         <!-- Modal eliminar vuelo -->
-        <div class="modal fade" id="modalEliminarVuelo" tabindex="-1" aria-hidden="true">
+        <div class="modal fade" id="modalEliminarVuelo" tabindex="-1" role="dialog" aria-labelledby="modalEliminarVueloLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header border-0">
-                        <h5 class="modal-title fw-bold">Eliminar vuelo</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        <h2 class="modal-title fw-bold h5" id="modalEliminarVueloLabel">Eliminar vuelo</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                     </div>
                     <div class="modal-body">
                         <p id="modalEliminarTexto" class="text-muted m-0"></p>
@@ -408,6 +411,6 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
 
         });
         </script>
+    <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
     </body>
 </html>
-<?php require_once './src/views/layouts/footer.php'; ?>

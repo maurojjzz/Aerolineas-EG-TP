@@ -6,10 +6,11 @@ class EmailService {
 
     // ── Verificación de cuenta ────────────────────────────────────────────────
     public static function enviarVerificacion(string $email, string $nombre, string $token): bool {
+        $nombreSeguro = self::e($nombre);
         $enlace = urlAbsoluta('index.php?pagina=verificar&token=' . $token);
 
         $cuerpo = "
-            <h2>Hola, {$nombre}!</h2>
+            <h2>Hola, {$nombreSeguro}!</h2>
             <p>Gracias por registrarte en <strong>Volaré</strong>.</p>
             <p>Para activar tu cuenta hacé click en el botón de abajo:</p>
             <p style='text-align:center;margin:30px 0;'>
@@ -27,8 +28,9 @@ class EmailService {
 
     // ── Notificación CEO: pendiente de aprobación ─────────────────────────────
     public static function enviarNotificacionCEOPendiente(string $email, string $nombre): bool {
+        $nombreSeguro = self::e($nombre);
         $cuerpo = "
-            <h2>Hola, {$nombre}!</h2>
+            <h2>Hola, {$nombreSeguro}!</h2>
             <p>Recibimos tu solicitud de registro como CEO en <strong>Volaré</strong>.</p>
             <p>Tu cuenta está siendo revisada por nuestro equipo. Te notificaremos cuando sea aprobada.</p>
         ";
@@ -38,10 +40,11 @@ class EmailService {
 
     // ── Notificación CEO: cuenta aprobada ─────────────────────────────────────
     public static function enviarAprobacionCEO(string $email, string $nombre): bool {
+        $nombreSeguro = self::e($nombre);
         $enlace = urlAbsoluta('index.php?pagina=login');
 
         $cuerpo = "
-            <h2>¡Buenas noticias, {$nombre}!</h2>
+            <h2>¡Buenas noticias, {$nombreSeguro}!</h2>
             <p>Tu cuenta como CEO en <strong>Volaré</strong> fue aprobada.</p>
             <p style='text-align:center;margin:30px 0;'>
                 <a href='{$enlace}'
@@ -56,8 +59,9 @@ class EmailService {
 
     // ── Notificación CEO: cuenta denegada ─────────────────────────────────────
     public static function enviarDenegacionCEO(string $email, string $nombre): bool {
+        $nombreSeguro = self::e($nombre);
         $cuerpo = "
-            <h2>Hola, {$nombre}!</h2>
+            <h2>Hola, {$nombreSeguro}!</h2>
             <p>Después de revisar tu solicitud para registrarte como CEO en <strong>Volaré</strong>, lamentablemente no pudimos aprobarla.</p>
             <p>Si creés que se trata de un error o querés ampliar la información, podés contactar a nuestro equipo desde la sección de contacto.</p>
         ";
@@ -67,10 +71,11 @@ class EmailService {
 
     // ── Recuperación de contraseña ────────────────────────────────────────────
     public static function enviarRecuperacionContrasena(string $email, string $nombre, string $token): bool {
+        $nombreSeguro = self::e($nombre);
         $enlace = urlAbsoluta('index.php?pagina=reset-password&token=' . $token);
 
         $cuerpo = "
-            <h2>Hola, {$nombre}!</h2>
+            <h2>Hola, {$nombreSeguro}!</h2>
             <p>Recibimos una solicitud para restablecer la contraseña de tu cuenta en <strong>Volaré</strong>.</p>
             <p style='text-align:center;margin:30px 0;'>
                 <a href='{$enlace}'
@@ -415,10 +420,24 @@ class EmailService {
     }
 
     // ── Método base de envío ──────────────────────────────────────────────────
-    private static function enviar(string $destinatario, string $asunto, string $cuerpo): bool {
+    private static function enviar(string $destinatario, string $asunto, string $cuerpo, ?string $responderA = null): bool {
         try {
             $mail = crearMailer();
-            $mail->addAddress($destinatario);
+
+            $destinatarios = array_values(array_filter(array_map('trim', explode(',', $destinatario))));
+            if (!$destinatarios) {
+                throw new Exception('No hay destinatarios válidos para el correo.');
+            }
+
+            foreach ($destinatarios as $direccion) {
+                $mail->addAddress($direccion);
+            }
+
+            if ($responderA !== null && filter_var($responderA, FILTER_VALIDATE_EMAIL)) {
+                $mail->clearReplyTos();
+                $mail->addReplyTo($responderA);
+            }
+
             $mail->Subject = $asunto;
             $mail->isHTML(true);
             $mail->Body    = $cuerpo;
@@ -426,7 +445,13 @@ class EmailService {
             $mail->send();
             return true;
         } catch (Throwable $e) {
-            error_log('Error enviando email a ' . $destinatario . ': ' . $e->getMessage());
+            // No registramos direcciones de correo en el log: se reemplazan por [correo].
+            $detalle = preg_replace(
+                '/[A-Z0-9._%+\-]+@[A-Z0-9.\-]+\.[A-Z]{2,}/i',
+                '[correo]',
+                (string)$e->getMessage()
+            );
+            error_log('No se pudo enviar el correo "' . $asunto . '": ' . $detalle);
             return false;
         }
     }
@@ -435,27 +460,35 @@ class EmailService {
     public static function enviarConsultaContacto(string $nombre, string $email, string $asunto, string $mensaje): bool {
         // Mapear el asunto a un texto más legible para el mail
         $motivos = [
-            'reservas' => 'Consultas sobre Vuelos y Reservas',
-            'equipaje' => 'Equipaje y Requisitos de Viaje',
+            'reservas'    => 'Consultas sobre Vuelos y Reservas',
+            'equipaje'    => 'Equipaje y Requisitos de Viaje',
             'facturacion' => 'Facturación y Comprobantes',
-            'reclamos' => 'Reclamos o Sugerencias',
-            'otro' => 'Otro motivo'
+            'reclamos'    => 'Reclamos o Sugerencias',
+            'otro'        => 'Otro motivo',
         ];
         $motivoLegible = $motivos[$asunto] ?? 'Consulta general';
 
-        $cuerpo = "
-            <h2>Nueva consulta desde el Formulario de Contacto</h2>
-            <p><strong>Nombre:</strong> {$nombre}</p>
-            <p><strong>Correo Electrónico:</strong> {$email}</p>
-            <p><strong>Motivo / Asunto:</strong> {$motivoLegible}</p>
-            <hr style='border:0;border-top:1px solid #ddd;margin:20px 0;'>
-            <p><strong>Mensaje:</strong></p>
-            <p style='background:#f9f9f9;padding:15px;border-radius:6px;color:#333;'>" . nl2br(htmlspecialchars($mensaje)) . "</p>
-        ";
+        $contenido = self::parrafo('Recibimos una nueva consulta desde el formulario de contacto.')
+            . self::tabla([
+                self::fila('Nombre', self::e($nombre)),
+                self::fila('Correo electrónico', self::e($email)),
+                self::fila('Motivo', self::e($motivoLegible)),
+            ])
+            . self::parrafo('<strong>Mensaje:</strong>')
+            . self::parrafo(nl2br(self::e($mensaje)));
 
-        // Enviamos el correo al buzón de soporte o al administrador configurado en el sistema
-        $destinatarioSoporte = 'rodrigojmayer@gmail.com'; // O podés usar alguna constante de config si la tenés
+        $destinatarios = destinoContactoCorreo();
+        if ($destinatarios === '') {
+            error_log('Formulario de contacto sin destinatario configurado (MAIL_CONTACT_TO / MAIL_FROM).');
+            return false;
+        }
 
-        return self::enviar($destinatarioSoporte, 'Nueva consulta de contacto: ' . $motivoLegible, $cuerpo);
+        // El Reply-To apunta al visitante para poder responderle directamente.
+        return self::enviar(
+            $destinatarios,
+            'Nueva consulta de contacto: ' . $motivoLegible,
+            self::plantilla('Nueva consulta de contacto', $contenido),
+            $email
+        );
     }
 }

@@ -39,7 +39,7 @@ $fechaLlegada = date('d/m/Y', strtotime($reserva['fechaHoraLlegadaVuelo']));
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pago de reserva</title>
+    <title>Pago de reserva — Volaré</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="<?= url('public/css/layout/header.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/components/menuMobile.css') ?>">
@@ -145,17 +145,18 @@ $fechaLlegada = date('d/m/Y', strtotime($reserva['fechaHoraLlegadaVuelo']));
         }
         .success-circle { animation: checkIn 0.5s ease forwards; }
     </style>
+    <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
 </head>
 <body class="container-fluid overflow-x-hidden p-0 m-0">
 
 <?php require './src/views/layouts/header.php'; ?>
 
 <div style="min-height:100vh;">
-<div class="container-xxl py-4 px-3 px-lg-5">
+<main id="contenido" tabindex="-1" class="container-xxl py-4 px-3 px-lg-5">
 
     <!-- Título -->
     <div class="text-center mb-4">
-        <p class="text-white text-uppercase fw-semibold" style="letter-spacing:3px;font-size:0.85rem;">Pago seguro</p>
+        <p class="text-white text-uppercase fw-semibold mb-1" style="letter-spacing:3px;font-size:0.85rem;">Paso 3 de 3 · Pago seguro</p>
         <h1 class="fw-bold text-white" style="font-size:2rem;">COMPLETÁ TU PAGO</h1>
         <p class="text-white-50">Todos los datos son simulados. Ningún cobro real se efectuará.</p>
     </div>
@@ -188,15 +189,15 @@ $fechaLlegada = date('d/m/Y', strtotime($reserva['fechaHoraLlegadaVuelo']));
             <div class="bg-white rounded-4 shadow p-4">
 
                 <!-- Método de pago -->
-                <h5 class="fw-bold mb-3">Método de pago</h5>
-                <div class="d-flex gap-2 flex-wrap mb-4">
-                    <button class="metodo-btn selected" onclick="seleccionarMetodo(this,'tarjeta')" type="button">
+                <h2 class="h5 fw-bold mb-3">Método de pago</h2>
+                <div class="d-flex gap-2 flex-wrap mb-4" role="group" aria-label="Método de pago">
+                    <button class="metodo-btn selected" aria-pressed="true" onclick="seleccionarMetodo(this,'tarjeta')" type="button">
                         💳 Tarjeta de crédito
                     </button>
-                    <button class="metodo-btn" onclick="seleccionarMetodo(this,'debito')" type="button">
+                    <button class="metodo-btn" aria-pressed="false" onclick="seleccionarMetodo(this,'debito')" type="button">
                         🏦 Tarjeta de débito
                     </button>
-                    <button class="metodo-btn" onclick="seleccionarMetodo(this,'transferencia')" type="button">
+                    <button class="metodo-btn" aria-pressed="false" onclick="seleccionarMetodo(this,'transferencia')" type="button">
                         📲 Transferencia
                     </button>
                 </div>
@@ -225,33 +226,40 @@ $fechaLlegada = date('d/m/Y', strtotime($reserva['fechaHoraLlegadaVuelo']));
                 <!-- Campos tarjeta -->
                 <div id="seccionTarjeta">
                     <div class="mb-3">
-                        <label class="pago-label">Número de tarjeta</label>
+                        <label class="pago-label" for="numeroTarjeta">Número de tarjeta</label>
                         <input type="text" id="numeroTarjeta" class="pago-input"
                                placeholder="1234 5678 9012 3456" maxlength="19"
+                               aria-describedby="error-numeroTarjeta" autocomplete="cc-number"
                                oninput="formatearTarjeta(this)">
+                        <div class="text-danger small mt-1" id="error-numeroTarjeta" role="alert"></div>
                     </div>
                     <div class="row g-3 mb-3">
                         <div class="col-6">
-                            <label class="pago-label">Fecha de vencimiento</label>
+                            <label class="pago-label" for="vencimiento">Fecha de vencimiento</label>
                             <input type="text" id="vencimiento" class="pago-input"
                                    placeholder="MM/AA" maxlength="5"
+                                   aria-describedby="error-vencimiento" autocomplete="cc-exp"
                                    oninput="formatearVencimiento(this)">
+                            <div class="text-danger small mt-1" id="error-vencimiento" role="alert"></div>
                         </div>
                         <div class="col-6">
-                            <label class="pago-label">CVV</label>
+                            <label class="pago-label" for="cvv">CVV</label>
                             <input type="text" id="cvv" class="pago-input"
                                    placeholder="•••" maxlength="4"
+                                   aria-describedby="error-cvv" autocomplete="cc-csc"
                                    oninput="this.value=this.value.replace(/\D/g,'')">
+                            <div class="text-danger small mt-1" id="error-cvv" role="alert"></div>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="pago-label">Nombre en la tarjeta</label>
+                        <label class="pago-label" for="nombreTarjeta">Nombre en la tarjeta</label>
                         <input type="text" id="nombreTarjeta" class="pago-input"
+                               autocomplete="cc-name"
                                value="<?= strtoupper(htmlspecialchars($u['nombre'] . ' ' . $u['apellido'])) ?>"
                                oninput="document.getElementById('cardNameDisplay').textContent=this.value.toUpperCase()||'TITULAR'">
                     </div>
                     <div class="mb-4">
-                        <label class="pago-label">Cuotas</label>
+                        <label class="pago-label" for="cuotas">Cuotas</label>
                         <select class="pago-input" id="cuotas" style="cursor:pointer;">
                             <option value="1">1 cuota sin interés</option>
                             <option value="3">3 cuotas sin interés</option>
@@ -299,7 +307,7 @@ $fechaLlegada = date('d/m/Y', strtotime($reserva['fechaHoraLlegadaVuelo']));
         <div class="col-12 col-lg-5">
             <div class="bg-white rounded-4 shadow p-4" style="position:sticky;top:20px;">
 
-                <h5 class="fw-bold mb-3">🧾 Resumen del pedido</h5>
+                <h2 class="h5 fw-bold mb-3">🧾 Resumen del pedido</h2>
 
                 <!-- Aerolínea -->
                 <div class="d-flex align-items-center gap-2 mb-3">
@@ -402,7 +410,7 @@ $fechaLlegada = date('d/m/Y', strtotime($reserva['fechaHoraLlegadaVuelo']));
         </div>
     </div>
 
-</div>
+</main>
 </div>
 
 <!-- Form oculto que hace el POST real -->
@@ -417,8 +425,12 @@ $fechaLlegada = date('d/m/Y', strtotime($reserva['fechaHoraLlegadaVuelo']));
 let metodoActual = 'tarjeta';
 
 function seleccionarMetodo(btn, metodo) {
-    document.querySelectorAll('.metodo-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('.metodo-btn').forEach(b => {
+        b.classList.remove('selected');
+        b.setAttribute('aria-pressed', 'false');
+    });
     btn.classList.add('selected');
+    btn.setAttribute('aria-pressed', 'true');
     metodoActual = metodo;
 
     const secTarjeta       = document.getElementById('seccionTarjeta');
@@ -467,22 +479,45 @@ function formatearVencimiento(input) {
 function validarFormulario() {
     if (metodoActual === 'transferencia') return true;
 
-    const num = document.getElementById('numeroTarjeta').value.replace(/\s/g,'');
-    const exp = document.getElementById('vencimiento').value;
-    const cvv = document.getElementById('cvv').value;
+    const num = document.getElementById('numeroTarjeta');
+    const exp = document.getElementById('vencimiento');
+    const cvv = document.getElementById('cvv');
 
-    if (num.length < 16) {
-        alert('Ingresá un número de tarjeta válido (16 dígitos).');
+    const marcarError = (campo, errorId, mensaje) => {
+        campo.setAttribute('aria-invalid', 'true');
+        document.getElementById(errorId).textContent = mensaje;
+    };
+    const limpiarError = (campo, errorId) => {
+        campo.removeAttribute('aria-invalid');
+        document.getElementById(errorId).textContent = '';
+    };
+
+    ['numeroTarjeta', 'vencimiento', 'cvv'].forEach((id) => {
+        const campo = document.getElementById(id);
+        campo.removeAttribute('aria-invalid');
+    });
+    ['error-numeroTarjeta', 'error-vencimiento', 'error-cvv'].forEach((id) => {
+        document.getElementById(id).textContent = '';
+    });
+
+    if (num.value.replace(/\s/g, '').length < 16) {
+        marcarError(num, 'error-numeroTarjeta', 'Ingresá un número de tarjeta válido (16 dígitos).');
+        num.focus();
         return false;
     }
-    if (!/^\d{2}\/\d{2}$/.test(exp)) {
-        alert('Ingresá una fecha de vencimiento válida (MM/AA).');
+    if (!/^\d{2}\/\d{2}$/.test(exp.value)) {
+        marcarError(exp, 'error-vencimiento', 'Ingresá una fecha de vencimiento válida (MM/AA).');
+        exp.focus();
         return false;
     }
-    if (cvv.length < 3) {
-        alert('Ingresá el CVV de tu tarjeta.');
+    if (cvv.value.length < 3) {
+        marcarError(cvv, 'error-cvv', 'Ingresá el CVV de tu tarjeta.');
+        cvv.focus();
         return false;
     }
+    limpiarError(num, 'error-numeroTarjeta');
+    limpiarError(exp, 'error-vencimiento');
+    limpiarError(cvv, 'error-cvv');
     return true;
 }
 
@@ -491,10 +526,14 @@ function procesarPago() {
 
     const btn = document.getElementById('btnPagar');
     btn.disabled = true;
+    btn.setAttribute('aria-busy', 'true');
     btn.innerHTML = `
-        <span class="spinner-border spinner-border-sm me-2"></span>
+        <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
         Procesando pago...
     `;
+
+    const anuncio = document.getElementById('anuncioGlobal');
+    if (anuncio) anuncio.textContent = 'Procesando el pago, esperá un momento.';
 
     // Simular delay de procesamiento (2 segundos)
     setTimeout(() => {

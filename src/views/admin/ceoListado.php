@@ -82,7 +82,7 @@ function badgeEstadoCEO(string $estado): string {
     </nav>
 
     <div class="contForm col-12 d-flex flex-column p-2 admin-content h-100">
-        <h2 class="m-0 p-0 fs-2 fw-bold">Gestión de CEOs</h2>
+        <h1 class="m-0 p-0 fs-2 fw-bold">Gestión de CEOs</h1>
         <p class="m-0 p-0 mb-1 subt">Revisá las solicitudes pendientes y consultá el historial de CEOs aprobados y denegados.</p>
 
         <!-- KPIs -->
@@ -146,7 +146,7 @@ function badgeEstadoCEO(string $estado): string {
         <div class="d-flex flex-column gap-2">
             <div class="table-responsive bg-white shadow rounded-3 pt-3 tablaContenedor">
                 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center px-2 mb-3 gap-3 gap-sm-0">
-                    <h3 class="m-0 p-0 fs-4 fw-bold">Listado de CEOs</h3>
+                    <h2 class="m-0 p-0 fs-4 fw-bold">Listado de CEOs</h2>
 
                     <div class="d-flex flex-column flex-sm-row gap-3 align-items-center">
                         <select
@@ -174,6 +174,7 @@ function badgeEstadoCEO(string $estado): string {
                                 name="busqueda"
                                 class="form-control ctm-inp"
                                 placeholder="Buscar..."
+                                aria-label="Buscar CEO por nombre, email o aerolínea"
                                 value="<?= htmlspecialchars($busqueda) ?>"
                                 style="max-width: 240px;"
                             >
@@ -183,6 +184,7 @@ function badgeEstadoCEO(string $estado): string {
                 </div>
 
                 <table class="table table-hover align-middle border-top mt-2 tabla-aerolineas">
+                    <caption class="visually-hidden">Listado de CEOs</caption>
                     <thead>
                         <tr>
                             <th scope="col" class="fw-bold">CEO</th>
@@ -433,7 +435,7 @@ function badgeEstadoCEO(string $estado): string {
                                 class="form-select form-select-sm border-0 bg-light rounded-2"
                                 style="width:auto; font-size:0.8rem; cursor:pointer;"
                                 onchange="window.location.href=this.value"
-                            >
+                             aria-label="Resultados por página">
                                 <?php foreach ($porPaginaPermitidos as $op): ?>
                                     <option value="<?= urlPaginaCEOs(1, $op, $estadoFiltro, $busqueda) ?>" <?= $op === $porPagina ? 'selected' : '' ?>>
                                         <?= $op ?> por página
@@ -448,11 +450,11 @@ function badgeEstadoCEO(string $estado): string {
     </div>
 
     <!-- Modal confirmar aprobar / denegar -->
-    <div class="modal fade" id="modalResolverCEO" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="modalResolverCEO" tabindex="-1" role="dialog" aria-labelledby="modalResolverTitulo" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header border-0">
-                    <h5 class="modal-title fw-bold" id="modalResolverTitulo"></h5>
+                    <h2 class="modal-title fw-bold h5" id="modalResolverTitulo"></h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">

@@ -4,9 +4,9 @@ require_once __DIR__ . '/../components/navLinks.php';
 <footer class="bg-dark text-light pt-4 pb-2 mt-auto">
     <div class="container-xxl">
         <div class="row gy-4 justify-content-between">
-            
+
             <!-- Columna 1: Brand & Slogan -->
-            <div class="col-12 col-md-2">
+            <div class="col-12 col-md-3">
                 <a class="d-inline-block mb-1" href="<?= htmlspecialchars($urlInicio) ?>">
                     <img class="logo" src="<?= url('public/img/aerologo.webp') ?>" alt="Logo de Volaré" style="max-height: 45px;">
                 </a>
@@ -16,8 +16,8 @@ require_once __DIR__ . '/../components/navLinks.php';
             </div>
 
             <!-- Columna 2: Navegación rápida -->
-            <div class="col-6 col-md-2">
-                <h2 class="h6 text-uppercase text-white fw-bold mb-3">Navegación</h2>
+            <nav class="col-6 col-md-2" aria-labelledby="footerNavegacion">
+                <p class="h6 text-uppercase text-white fw-bold mb-3" id="footerNavegacion">Navegación</p>
                 <ul class="list-unstyled text-small">
                     <?php if (!$isLoggedIn): ?>
                         <li class="mb-2"><a class="link-light text-decoration-none" href="<?= url('index.php?pagina=inicio') ?>">Inicio</a></li>
@@ -30,24 +30,44 @@ require_once __DIR__ . '/../components/navLinks.php';
                         <li class="mb-2"><a class="link-light text-decoration-none" href="<?= htmlspecialchars($urlPanel) ?>">Mi Panel</a></li>
                         <li class="mb-2"><a class="link-light text-decoration-none" href="<?= htmlspecialchars($urlPerfil) ?>">Mi Perfil</a></li>
                     <?php endif; ?>
+                    <li class="mb-2"><a class="link-light text-decoration-none" href="<?= url('index.php?pagina=sobre') ?>">Sobre Volaré</a></li>
+                    <li class="mb-2"><a class="link-light text-decoration-none" href="<?= url('index.php?pagina=mapa-del-sitio') ?>">Mapa del sitio</a></li>
                 </ul>
-            </div>
+            </nav>
 
             <!-- Columna 3: Soporte / Legales -->
-            <div class="col-6 col-md-2">
-                <h2 class="h6 text-uppercase text-white fw-bold mb-3">Soporte</h2>
+            <nav class="col-6 col-md-3" aria-labelledby="footerSoporte">
+                <p class="h6 text-uppercase text-white fw-bold mb-3" id="footerSoporte">Soporte</p>
                 <ul class="list-unstyled text-small">
                     <li class="mb-2"><a class="link-light text-decoration-none" href="<?= url('index.php?pagina=ayuda') ?>">Centro de Ayuda</a></li>
+                    <li class="mb-2"><a class="link-light text-decoration-none" href="<?= url('index.php?pagina=ayuda') ?>#faq">Preguntas Frecuentes</a></li>
+                    <li class="mb-2"><a class="link-light text-decoration-none" href="<?= url('index.php?pagina=contacto') ?>">Contacto</a></li>
                     <li class="mb-2"><a class="link-light text-decoration-none" href="<?= url('index.php?pagina=terminos') ?>">Términos y Condiciones</a></li>
                     <li class="mb-2"><a class="link-light text-decoration-none" href="<?= url('index.php?pagina=privacidad') ?>">Políticas de Privacidad</a></li>
                 </ul>
-            </div>
+            </nav>
 
-            <!-- Columna 4: Contacto / Redes -->
+            <!-- Columna 4: Contacto físico y virtual -->
             <div class="col-12 col-md-3">
-                <ul class="list-unstyled text-small">
-                    <li class="mb-2"><span class="text-white-50"><i class="bi bi-envelope" aria-hidden="true"></i> soporte@volare.com</span></li>
-                    <li class="mb-2"><a class="link-light text-decoration-none" href="<?= url('index.php?pagina=contacto') ?>"><i class="bi bi-headset" aria-hidden="true"></i> Formulario de Contacto</a></li>
+                <p class="h6 text-uppercase text-white fw-bold mb-3" id="footerContacto">Contacto</p>
+                <ul class="list-unstyled text-small" aria-labelledby="footerContacto">
+                    <!-- Reemplazar por los datos reales de la institución -->
+                    <li class="mb-2">
+                        <i class="bi bi-geo-alt" aria-hidden="true"></i>
+                        <span class="text-white-50">Av. Corrientes 1234, Ciudad Autónoma de Buenos Aires</span>
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-telephone" aria-hidden="true"></i>
+                        <a class="link-light text-decoration-none" href="tel:+541155558652">0800-555-8652</a>
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-envelope" aria-hidden="true"></i>
+                        <a class="link-light text-decoration-none" href="mailto:soporte@volare.com">soporte@volare.com</a>
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-clock" aria-hidden="true"></i>
+                        <span class="text-white-50">Lunes a viernes de 9 a 18 h</span>
+                    </li>
                 </ul>
             </div>
 

@@ -18,12 +18,14 @@ $esEdicion = !empty($novedad);
         </ol>
     </nav>
     <div class="contForm col-12 d-flex flex-column p-3 admin-content h-100">
-        <h2 class="m-0 fs-2 fw-bold">
+        <h1 class="m-0 fs-2 fw-bold">
             <?= $esEdicion ? 'Editar Novedad' : 'Nueva Novedad' ?>
-        </h2>
+        </h1>
         <p class="m-0 p-0 mb-3 subt"><?= $esEdicion ? 'Actualizá los datos de la novedad publicada.' : 'Creá un nuevo aviso o novedad para los usuarios/pasajeros.' ?></p>
 
-        <form id="formNovedad" method="POST" action="<?= url('src/routes/novedades.php?accion=' . ($esEdicion ? 'editar' : 'crear')) ?>" novalidate class="row g-3">
+        <form id="formNovedad" method="POST" action="<?= url('src/routes/novedades.php?accion=' . ($esEdicion ? 'editar' : 'crear')) ?>
+" novalidate class="row g-3">
+<p class="small text-secondary mb-2">Los campos con <span class="text-danger" aria-hidden="true">*</span><span class="visually-hidden">asterisco</span> son obligatorios.</p>
             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
             <?php if ($esEdicion): ?>
                 <input type="hidden" name="idNovedad" value="<?= $novedad['idNovedad'] ?>">
@@ -42,17 +44,17 @@ $esEdicion = !empty($novedad);
                 </div>
 
                 <div class="mb-3">
-                    <label for="contenido" class="form-label fw-semibold">Contenido <span class="text-danger">*</span></label>
-                    <textarea class="form-control ctm-inp" id="contenido" name="contenido" rows="6" required><?= htmlspecialchars($novedad['contenido'] ?? '') ?></textarea>
+                    <label for="contenidoNovedad" class="form-label fw-semibold">Contenido <span class="text-danger">*</span></label>
+                    <textarea class="form-control ctm-inp" id="contenidoNovedad" name="contenido" rows="6" required><?= htmlspecialchars($novedad['contenido'] ?? '') ?></textarea>
                     <div id="infoContenido" class="form-text"></div>
                 </div>
 
                 <!-- Selector visual de las 8 imágenes predeterminadas (nove1 a nove8) -->
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Imagen ilustrativa (Seleccioná una)</label>
+                    <span class="form-label fw-semibold d-block" id="presetImagenLabel">Imagen ilustrativa (Seleccioná una)</span>
                     <input type="hidden" id="imagen" name="imagen" value="<?= htmlspecialchars($novedad['imagen'] ?? '') ?>">
                     
-                    <div class="row g-2">
+                    <div class="row g-2" role="group" aria-labelledby="presetImagenLabel">
                         <?php for ($i = 1; $i <= 8; $i++): 
                             // Cambiá la extensión si tus archivos son .jpg o .png (ej: .jpg)
                             $nombreArchivo = 'nove' . $i . '.webp'; 
@@ -60,12 +62,15 @@ $esEdicion = !empty($novedad);
                             $isSelected = (($novedad['imagen'] ?? '') === $rutaImagen);
                         ?>
                             <div class="col-6 col-sm-3">
-                                <div class="card h-100 border preset-img-card <?= $isSelected ? 'border-primary bg-light' : '' ?>" style="cursor: pointer;" onclick="seleccionarPreset('<?= $rutaImagen ?>', this)">
-                                    <img src="<?= $rutaImagen ?>" class="card-img-top rounded-top" alt="Nove <?= $i ?>" style="height: 70px; object-fit: cover;">
-                                    <div class="card-body p-1 text-center">
+                                <button type="button"
+                                        class="card h-100 w-100 border preset-img-card p-0 text-center <?= $isSelected ? 'border-primary bg-light' : '' ?>"
+                                        aria-pressed="<?= $isSelected ? 'true' : 'false' ?>"
+                                        onclick="seleccionarPreset('<?= $rutaImagen ?>', this)">
+                                    <img src="<?= $rutaImagen ?>" class="card-img-top rounded-top" alt="" style="height: 70px; object-fit: cover;">
+                                    <span class="card-body p-1 text-center d-block">
                                         <small class="text-muted" style="font-size: 0.75rem;">Imagen <?= $i ?></small>
-                                    </div>
-                                </div>
+                                    </span>
+                                </button>
                             </div>
                         <?php endfor; ?>
                     </div>
@@ -113,8 +118,12 @@ $esEdicion = !empty($novedad);
         <script>
         function seleccionarPreset(urlImagen, cardElement) {
             document.getElementById('imagen').value = urlImagen;
-            document.querySelectorAll('.preset-img-card').forEach(c => c.classList.remove('border-primary', 'bg-light'));
+            document.querySelectorAll('.preset-img-card').forEach(c => {
+                c.classList.remove('border-primary', 'bg-light');
+                c.setAttribute('aria-pressed', 'false');
+            });
             cardElement.classList.add('border-primary', 'bg-light');
+            cardElement.setAttribute('aria-pressed', 'true');
         }
         </script>
         <script src="<?= url('public/js/admin/validacionNovedad.js') ?>"></script>

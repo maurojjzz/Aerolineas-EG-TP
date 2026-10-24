@@ -23,26 +23,32 @@ if (!$novedad || $novedad['estado'] !== 'publicada') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($novedad['titulo']) ?> - Novedades</title>
+    <title><?= htmlspecialchars($novedad['titulo']) ?> — Novedades — Volaré</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="<?= url('public/css/layout/homeCliente.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/header.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/components/menuMobile.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
 </head>
 <body class="container-fluid overflow-x-hidden p-0 m-0 bg-light">
     
     <!-- Header compartido -->
     <?php require __DIR__ . '/../layouts/header.php'; ?>
 
-    <div class="container py-5">
+    <main id="contenido" tabindex="-1" class="container py-5">
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 
                 <!-- Botón volver -->
-                <a href="<?= url('index.php?pagina=cliente-novedades') ?>" class="text-decoration-none d-inline-flex align-items-center gap-1 mb-4 text-muted">
-                    <i class="bi bi-arrow-left"></i> Volver a novedades
-                </a>
+                <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
+                    <a href="<?= url('index.php?pagina=cliente-novedades') ?>" class="text-decoration-none d-inline-flex align-items-center gap-1 text-muted">
+                        <i class="bi bi-arrow-left"></i> Volver a novedades
+                    </a>
+                    <a href="<?= url('index.php?pagina=inicio') ?>" class="text-decoration-none d-inline-flex align-items-center gap-1 text-muted">
+                        <i class="bi bi-house-door"></i> Volver al inicio
+                    </a>
+                </div>
 
                 <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
                     <?php if (!empty($novedad['imagen'])): ?>
@@ -71,7 +77,7 @@ if (!$novedad || $novedad['estado'] !== 'publicada') {
 
             </div>
         </div>
-    </div>
+    </main>
 
     <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
 

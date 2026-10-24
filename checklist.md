@@ -38,7 +38,7 @@ Antes de entregar, revisá **cada punto** de esta lista. Si algo no se cumple, e
 - [x] El email de registro / confirmación de cuenta **llega efectivamente** a la casilla.
 - [x] El email de recuperación de contraseña **llega** y el link funciona.
 - [x] Los links dentro de los emails apuntan al dominio de producción, no a `localhost`.
-- [x] Los emails no caen en spam (probalo con al menos dos proveedores distintos, ej. Gmail y Outlook).
+- [ ] Los emails no caen en spam (probalo con al menos dos proveedores distintos, ej. Gmail y Outlook).
 - [x] El contenido del email está en español y sin textos de plantilla sin reemplazar (`{{nombre}}`, "Lorem ipsum", etc.).
 - [x] El remitente es identificable (no "no-reply@algo-raro").
 
@@ -93,10 +93,10 @@ Antes de entregar, revisá **cada punto** de esta lista. Si algo no se cumple, e
 - [x] La consola del navegador no muestra errores en rojo.
 - [x] No quedan `var_dump`, `console.log`, `dd()` ni mensajes de debug visibles.
 - [x] El modo debug está apagado en producción.
-- [ ] Recorriste el sistema completo desde cero, en una ventana de incógnito, como si fueras un usuario nuevo.
-- [ ] Se lo hiciste probar a alguien ajeno al grupo y pudo usarlo sin ayuda.
-- [ ] La entrega incluye: URL de producción, URL del repositorio, usuarios de prueba e integrantes e Informe completo.
-- [ ] Entregado en tiempo y forma según lo pedido en la consigna.
+- [x] Recorriste el sistema completo desde cero, en una ventana de incógnito, como si fueras un usuario nuevo.
+- [x] Se lo hiciste probar a alguien ajeno al grupo y pudo usarlo sin ayuda.
+- [x] La entrega incluye: URL de producción, URL del repositorio, usuarios de prueba e integrantes e Informe completo.
+- [x] Entregado en tiempo y forma según lo pedido en la consigna.
 
 ---
 ## Informe final
@@ -122,12 +122,12 @@ Antes de entregar, revisá **cada punto** de esta lista. Si algo no se cumple, e
 
 ## 15. Sistema de Navegación
 
-- [ ] Definió el sistema de navegación.
+- [x] Definió el sistema de navegación.
 - [ ] Listó todos los elementos de navegación del sitio clasificándolos en Textuales y Contextuales.
 
 ## 16. Diseño Visual
 
-- [ ] Realizó los bocetos o maquetas del sitio completo.
+- [x] Realizó los bocetos o maquetas del sitio completo.
 
 ## 17. Presupuesto Económico 
 

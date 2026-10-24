@@ -59,13 +59,14 @@ $cards = [
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CEO - <?= htmlspecialchars($aero['nombreAerolinea']) ?></title>
+    <title><?= htmlspecialchars($aero['nombreAerolinea']) ?> — Panel de CEO — Volaré</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="<?= url('public/css/admin.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/headerAdmin.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/components/tablaLista.css') ?>?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
 </head>
 <body>
 
@@ -81,7 +82,7 @@ $cards = [
             <?php require __DIR__ . '/../layouts/headerAdmin.php'; ?>
         </header>
 
-        <main class="container-fluid d-flex flex-column gap-3 p-2 admin-content">
+        <main id="contenido" tabindex="-1" class="container-fluid d-flex flex-column gap-3 p-2 admin-content">
 
             <!-- Breadcrumb -->
             <nav aria-label="breadcrumb">
@@ -112,7 +113,7 @@ $cards = [
 
                             <div class="d-flex flex-column flex-grow-1 justify-content-between" style="min-height:152px;">
                                 <div class="d-flex align-items-center gap-4 flex-wrap">
-                                    <h2 class="fw-bold m-0"><?= htmlspecialchars($aero['nombreAerolinea']) ?></h2>
+                                    <h1 class="fw-bold m-0"><?= htmlspecialchars($aero['nombreAerolinea']) ?></h1>
                                     <span class="badge text-primary border fs-6 text-uppercase"
                                         style="background-color:#E3F1FE;">
                                         <?= htmlspecialchars($aero['codigoIATA']) ?>
@@ -182,8 +183,8 @@ $cards = [
 
                     <div class="d-flex flex-column flex-md-row justify-content-md-between row p-0 m-0 gap-3 gap-md-0 mb-3">
                         <?php foreach ($cards as $card): ?>
-                            <div class="col-md-3">
-                                <div class="bg-white shadow rounded-3 py-2 px-4 overflow-hidden h-100">
+                            <div class="col-12 col-sm-6 col-xxl-3">
+                                <div class="bg-white shadow rounded-3 py-2 px-3 overflow-hidden h-100">
                                     <div class="d-flex flex-row align-items-center justify-content-start gap-3">
                                         <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
                                             style="width:55px;height:55px;background-color:#E3F0FE;">
@@ -192,7 +193,7 @@ $cards = [
                                         </div>
                                         <div class="d-flex flex-column justify-content-center p-0 m-0">
                                             <p class="fw-semibold m-0 p-0 text-muted" style="font-size:14px;"><?= htmlspecialchars($card['titulo']) ?></p>
-                                            <p class="fs-3 fw-bold text-dark m-0 p-0"><?= $card['valor'] ?></p>
+                                            <p class="fs-4 fw-bold text-dark m-0 p-0 text-break"><?= $card['valor'] ?></p>
                                         </div>
                                     </div>
                                     <div class="d-flex flex-row justify-content-start p-0 m-0 gap-2 mt-1">
@@ -217,11 +218,12 @@ $cards = [
                                 </div>
                                 <div class="px-3 py-2">
                                     <table class="table table-sm table-hover align-middle mb-0" style="font-size:0.82rem;">
+                                        <caption class="visually-hidden">Vuelos más vendidos</caption>
                                         <thead>
                                             <tr class="text-muted">
-                                                <th class="fw-medium border-0 ps-0">RUTA</th>
-                                                <th class="fw-medium border-0 text-end">VUELOS</th>
-                                                <th class="fw-medium border-0 text-end">PASAJEROS</th>
+                                                <th scope="col" class="fw-medium border-0 ps-0">RUTA</th>
+                                                <th scope="col" class="fw-medium border-0 text-end">VUELOS</th>
+                                                <th scope="col" class="fw-medium border-0 text-end">PASAJEROS</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -293,10 +295,11 @@ $cards = [
                                 </div>
                                 <div class="px-3 py-2">
                                     <table class="table table-sm table-hover align-middle mb-0" style="font-size:0.82rem;">
+                                        <caption class="visually-hidden">Tramos más recaudados</caption>
                                         <thead>
                                             <tr class="text-muted">
-                                                <th class="fw-medium border-0 ps-0">RUTA</th>
-                                                <th class="fw-medium border-0 text-end">RECAUDADO</th>
+                                                <th scope="col" class="fw-medium border-0 ps-0">RUTA</th>
+                                                <th scope="col" class="fw-medium border-0 text-end">RECAUDADO</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -334,7 +337,7 @@ $cards = [
     </div>
 </div>
 
-<?php require_once './src/views/layouts/footer.php'; ?>
+<?php require_once __DIR__ . '/../layouts/footer.php'; ?>
 
 <?php require __DIR__ . '/../components/menuMobileAdmin.php' ?>
 

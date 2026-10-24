@@ -38,7 +38,7 @@ if (iTitulo) {
     iTitulo.addEventListener("blur", validarTitulo);
 }
 
-const iContenido = document.getElementById("contenido");
+const iContenido = document.getElementById("contenidoNovedad");
 const infoContenido = document.getElementById("infoContenido");
 const labContenido = document.getElementById("labContenido");
 

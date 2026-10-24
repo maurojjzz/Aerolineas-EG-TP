@@ -36,26 +36,27 @@ $conteos = [
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mis Reservas</title>
+    <title>Mis Reservas — Volaré</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="<?= url('public/css/layout/header.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/components/menuMobile.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/reservas.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/misReservas.css') ?>">
     
+    <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
 </head>
 <body class="container-fluid overflow-x-hidden p-0 m-0">
 
 <?php require './src/views/layouts/header.php'; ?>
 
 <div style="min-height:100vh;">
-<div class="container-xxl py-4 px-3 px-lg-5">
+<main id="contenido" tabindex="-1" class="container-xxl py-4 px-3 px-lg-5">
 
     <?php require __DIR__ . '/../components/alertToast.php';  ?>
 
     <div class="titulo-cuadro text-center mb-4">
-        <h5 class="fw-bold">Vuela sin limites</h5>
-        <h2 >MIS <span>RESERVAS</span> </h2>
+        <p class="h5 fw-bold">Vuela sin límites</p>
+        <h1>MIS <span>RESERVAS</span></h1>
         <p>Consultá, confirmá o cancelá tus reservas fácilmente.</p>
     </div>
 
@@ -105,17 +106,18 @@ $conteos = [
         <!-- Tabla -->
         <div class="table-responsive">
             <table class="tabla-reservas">
+                <caption class="visually-hidden">Mis reservas</caption>
                 <thead>
                     <tr>
-                        <th>Código</th>
-                        <th>Ruta</th>
-                        <th>Aerolínea</th>
-                        <th>Fecha salida</th>
-                        <th>Estado</th>
-                        <th>Pasajeros</th>
-                        <th>Promoción</th>
-                        <th>Total</th>
-                        <th>Acciones</th>
+                        <th scope="col">Código</th>
+                        <th scope="col">Ruta</th>
+                        <th scope="col">Aerolínea</th>
+                        <th scope="col">Fecha salida</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Pasajeros</th>
+                        <th scope="col">Promoción</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -259,16 +261,16 @@ $conteos = [
         </div>
 
     </div>
-</div>
+</main>
 </div>
 
 <!-- Modal detalle de reserva -->
-<div class="modal fade" id="modalDetalle" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="modalDetalle" tabindex="-1" role="dialog" aria-labelledby="modalDetalleLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 rounded-4 shadow">
             <div class="modal-header border-0 pb-0">
-                <h5 class="modal-title fw-bold">Detalle de reserva</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h2 class="modal-title fw-bold h5" id="modalDetalleLabel">Detalle de reserva</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body p-4" id="modalDetalleContenido">
                 <!-- Se rellena con JS -->

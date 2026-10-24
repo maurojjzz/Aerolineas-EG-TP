@@ -71,7 +71,7 @@ if ($diff > 0) {
     </nav>
 
     <div class="contForm col-12 d-flex flex-column p-2 admin-content  h-100">
-        <h2 class="m-0 p-0 fs-2 fw-bold">Gestion de Aerolíneas</h2>
+        <h1 class="m-0 p-0 fs-2 fw-bold">Gestión de Aerolíneas</h1>
         <p class="m-0 p-0 mb-1 subt ">Administra las aerolineas del sistema.</p>
 
         <div class="d-flex flex-column flex-md-row justify-content-md-between row p-0 m-0 gap-3 gap-md-0 mb-3">
@@ -135,7 +135,7 @@ if ($diff > 0) {
         <div class="d-flex flex-column gap-2">
             <div class="table-responsive bg-white shadow rounded-3 pt-3 tablaContenedor">
                 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center px-2 mb-3 gap-3 gap-sm-0">
-                    <h3 class="m-0 p-0 fs-4 fw-bold">Listado de Aerolíneas</h3>
+                    <h2 class="m-0 p-0 fs-4 fw-bold">Listado de Aerolíneas</h2>
 
                     <div class="filtros-aerolineas d-flex flex-column flex-sm-row gap-2 align-items-stretch align-items-sm-center">
                         <button
@@ -172,6 +172,7 @@ if ($diff > 0) {
                                 id="buscadorAerolinea"
                                 class="form-control ctm-inp"
                                 placeholder="Buscar..."
+                                aria-label="Buscar aerolínea por nombre o código"
                                 autocomplete="off"
                                 value="<?= htmlspecialchars($busqueda) ?>"
                                 style="max-width: 240px;"
@@ -187,6 +188,7 @@ if ($diff > 0) {
                 </div>
 
                 <table class="table table-hover align-middle border-top mt-2 tabla-aerolineas">
+                    <caption class="visually-hidden">Listado de aerolíneas</caption>
                     <thead>
                         <tr>
                             <th scope="col" class=" text-center  fw-bold " >CODIGO</th>
@@ -239,8 +241,7 @@ if ($diff > 0) {
                                 <div class="d-flex justify-content-evenly w-100">
                                     <a 
                                         href="<?= url('index.php?pagina=aerolinea&seccion=detalle&id=' . $aero['idAerolinea']) ?>"
-                                        type="button"
-                                        id="btnVerAerolinea"
+                                        id="btnVerAerolinea-<?= $aero['idAerolinea'] ?>"
                                         class=" p-0 text-start bg-transparent border-0"
                                         data-bs-toggle="tooltip"
                                         data-bs-placement="top"
@@ -257,8 +258,7 @@ if ($diff > 0) {
                                     </a>
                                     <a 
                                         href="<?= url('index.php?pagina=aerolinea&seccion=editar&id=' . $aero['idAerolinea']) ?>" 
-                                        type="button"
-                                        id="btnEditarAerolinea"
+                                        id="btnEditarAerolinea-<?= $aero['idAerolinea'] ?>"
                                         class=" p-0 text-start bg-transparent border-0"
                                         data-bs-toggle="tooltip"
                                         data-bs-placement="top"
@@ -424,7 +424,7 @@ if ($diff > 0) {
                                 class="form-select form-select-sm border-0 bg-light rounded-2"
                                 style="width:auto; font-size:0.8rem; cursor:pointer;"
                                 onchange="window.location.href=this.value"
-                            >
+                             aria-label="Resultados por página">
                                 <?php foreach ([5, 10, 25, 50] as $op): ?>
                                     <option value="<?= urlPagina(1, $op) ?>" <?= $op === $porPagina ? 'selected' : '' ?>>
                                         <?= $op ?> por página
@@ -500,51 +500,12 @@ if ($diff > 0) {
         </form>
     </div>
 
-    <style>
-        .filtros-aerolineas {
-            width: 100%;
-        }
-
-        @media (min-width: 576px) {
-            .filtros-aerolineas {
-                width: auto;
-            }
-        }
-
-        .filtros-aerolineas-backdrop {
-            position: fixed;
-            inset: 0;
-            z-index: 1050;
-            background: rgba(3, 31, 71, 0.25);
-        }
-
-        .filtros-aerolineas-panel {
-            position: fixed;
-            z-index: 1055;
-            width: 340px;
-            max-width: calc(100vw - 1rem);
-            max-height: calc(100vh - 1rem);
-            overflow-y: auto;
-        }
-
-        @media (max-width: 575.98px) {
-            .filtros-aerolineas-panel {
-                left: 0.5rem !important;
-                right: 0.5rem;
-                top: auto !important;
-                bottom: 0.5rem;
-                width: auto !important;
-                max-width: none;
-            }
-        }
-    </style>
-
-    <div class="modal fade" id="modalToggleEstado" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="modalToggleEstado" tabindex="-1" role="dialog" aria-labelledby="modalToggleTitulo" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header border-0">
-                    <h5 class="modal-title fw-bold" id="modalToggleTitulo"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h2 class="modal-title fw-bold h5" id="modalToggleTitulo"></h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
                     <p id="modalToggleTexto" class="text-muted m-0"></p>
@@ -552,6 +513,7 @@ if ($diff > 0) {
                 <div class="modal-footer border-0">
                     <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
                     <form method="POST" action="<?= url('src/routes/aerolinea.php?accion=toggleEstado') ?>" data-loading-form>
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
                         <input type="hidden" name="id" id="modalToggleId">
                         <button type="submit" class="btn btn-sm" id="modalToggleConfirmar">Confirmar</button>
                     </form>

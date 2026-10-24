@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const main      = document.querySelector(".admin-main");
     const links     = document.querySelectorAll(".admin-sidebar .nav-link");
     const spans     = document.querySelectorAll(".admin-sidebar span");
-    const titleSide = document.querySelector(".custom-logo h6");
+    const titleSide = document.querySelector(".custom-logo .h6");
     const logo      = document.querySelector(".logo-sidebar");
 
     if (!btn || !sidebar || !main || !titleSide || !logo) {
@@ -20,11 +20,12 @@ document.addEventListener("DOMContentLoaded", function () {
             main.classList.remove("col-md-11", "col-xxl-11");
             main.classList.add("col-md-9", "col-xxl-10");
 
-            spans.forEach(s => s.classList.remove("d-none"));
+            spans.forEach(s => s.classList.remove("visually-hidden"));
             titleSide.classList.remove("d-none");
             logo.style.width  = "80px";
             logo.style.height = "58px";
             links.forEach(l => l.classList.remove("justify-content-center"));
+            btn.setAttribute("aria-expanded", "true");
         } else {
             sidebar.classList.remove("col-md-3", "col-xxl-2");
             sidebar.classList.add("col-md-1", "col-xxl-1");
@@ -32,11 +33,12 @@ document.addEventListener("DOMContentLoaded", function () {
             main.classList.remove("col-md-9", "col-xxl-10");
             main.classList.add("col-md-11", "col-xxl-11");
 
-            spans.forEach(s => s.classList.add("d-none"));
+            spans.forEach(s => s.classList.add("visually-hidden"));
             titleSide.classList.add("d-none");
             logo.style.width  = "46px";
             logo.style.height = "35px";
             links.forEach(l => l.classList.add("justify-content-center"));
+            btn.setAttribute("aria-expanded", "false");
         }
     }
 

@@ -6,6 +6,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Volaré — Vuelos, promociones y novedades</title>
+        <link rel="icon" href="<?= url('../../public/img/aerologo.webp') ?>" type="image/x-icon">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 
         <link rel="stylesheet" href="<?= url('public/css/index.css') ?>">
@@ -17,11 +18,10 @@
         <link rel="stylesheet" href="<?= url('public/css/components/homeDestacados.css') ?>">
         <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
 
+            <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
     </head>
 
     <body class="container-fluid overflow-x-hidden p-0 m-0">
-        <a class="skip-link" href="#contenido">Saltar al contenido</a>
-
         <?php require './src/views/layouts/header.php' ?>
 
         <img src="<?= url('public/img/clouds.png') ?>" class="nubes" alt="" aria-hidden="true">

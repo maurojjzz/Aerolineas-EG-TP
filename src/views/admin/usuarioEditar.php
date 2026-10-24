@@ -49,14 +49,16 @@ $esCeo = ($rolActual === 'ceo');
     </nav>
 
     <div class="contForm col-12 d-flex flex-column p-2 admin-content h-100">
-        <h2 class="m-0 p-0 fs-2 fw-bold">Editar Usuario</h2>
+        <h1 class="m-0 p-0 fs-2 fw-bold">Editar Usuario</h1>
         <p class="m-0 p-0 mb-1 subt">Modificá los datos del usuario seleccionado.</p>
         
         <form 
-            action="<?= url('src/routes/usuarios.php?accion=editar&id=' . $id) ?>" 
+            action="<?= url('src/routes/usuarios.php?accion=editar&id=' . $id) ?>
+" 
             method="POST" 
             class="row mt-2 m-0 g-0 p-0 gap-2"
         >
+<p class="small text-secondary mb-2">Los campos con <span class="text-danger" aria-hidden="true">*</span><span class="visually-hidden">asterisco</span> son obligatorios.</p>
             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
 
             <div class="col-12 col-lg-9 border shadow rounded-2 py-4">
@@ -64,7 +66,7 @@ $esCeo = ($rolActual === 'ceo');
                 <!-- Fila 1: Nombre y Apellido -->
                 <div class="row d-flex justify-content-evenly m-0 g-0 p-0">
                     <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11 mb-3">
-                        <label class="form-label-t" for="nombre">Nombre:</label>
+                        <label class="form-label-t" for="nombre">Nombre: <span class="text-danger" aria-hidden="true">*</span></label>
                         <input 
                             type="text" 
                             name="nombre" 
@@ -81,7 +83,7 @@ $esCeo = ($rolActual === 'ceo');
                     </div>
 
                     <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11 mb-3">
-                        <label class="form-label-t" for="apellido">Apellido:</label>
+                        <label class="form-label-t" for="apellido">Apellido: <span class="text-danger" aria-hidden="true">*</span></label>
                         <input 
                             type="text" 
                             name="apellido" 
@@ -101,8 +103,9 @@ $esCeo = ($rolActual === 'ceo');
                 <!-- Fila 2: Tipo Documento y Número Documento -->
                 <div class="row d-flex justify-content-evenly m-0 g-0 p-0">
                     <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11 mb-3">
-                        <label class="form-label-t" for="tipoDocumento">Tipo de Documento:</label>
+                        <label class="form-label-t" for="tipoDocumento">Tipo de Documento: <span class="text-danger" aria-hidden="true">*</span></label>
                         <select name="tipoDocumento" id="tipoDocumento" class="form-select ctm-inp" required>
+                            <option value="">Seleccioná un tipo de documento</option>
                             <?php foreach ($tiposDoc as $td): ?>
                                 <option value="<?= $td ?>" <?= (strcasecmp(trim($usuario['tipoDocumento'] ?? ''), $td) === 0) ? 'selected' : '' ?>>
                                     <?= $td ?>
@@ -113,7 +116,7 @@ $esCeo = ($rolActual === 'ceo');
                     </div>
 
                     <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11 mb-3">
-                        <label class="form-label-t" for="nroDocumento">Número de Documento:</label>
+                        <label class="form-label-t" for="nroDocumento">Número de Documento: <span class="text-danger" aria-hidden="true">*</span></label>
                         <input 
                             type="text" 
                             name="nroDocumento" 
@@ -133,7 +136,7 @@ $esCeo = ($rolActual === 'ceo');
                 <!-- Fila 3: Email y Teléfono -->
                 <div class="row d-flex justify-content-evenly m-0 g-0 p-0">
                     <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11 mb-3">
-                        <label class="form-label-t" for="email">Email:</label>
+                        <label class="form-label-t" for="email">Email: <span class="text-danger" aria-hidden="true">*</span></label>
                         <input 
                             type="email" 
                             name="email" 
@@ -165,8 +168,9 @@ $esCeo = ($rolActual === 'ceo');
                 <!-- Fila 4: Rol y Aerolínea Asociada (sólo CEO) -->
                 <div class="row d-flex justify-content-evenly m-0 g-0 p-0">
                     <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11 mb-3">
-                        <label class="form-label-t" for="selectRol">Rol de Usuario:</label>
+                        <label class="form-label-t" for="selectRol">Rol de Usuario: <span class="text-danger" aria-hidden="true">*</span></label>
                         <select name="rol" id="selectRol" class="form-select ctm-inp" required>
+                            <option value="">Seleccioná un rol</option>
                             <option value="cliente" <?= $rolActual === 'cliente' ? 'selected' : '' ?>>Cliente</option>
                             <option value="ceo" <?= $rolActual === 'ceo' ? 'selected' : '' ?>>CEO Aerolínea</option>
                         </select>
@@ -229,7 +233,7 @@ $esCeo = ($rolActual === 'ceo');
                 <div class="d-flex flex-column border border-2 border-primary-subtle w-100 rounded-3 shadow" id="recomendacionesBox">
                     <div class="tituloBoxErrores bg-primary-subtle border-bottom d-flex flex-column align-items-center justify-content-center">
                         <img src="<?= url('public/img/icons/luz.png') ?>" alt="icono recomendaciones" class="img-fluid my-2" style="width: 28px; height: 28px;">
-                        <h5 class="text-primary">Recomendaciones</h5>
+                        <h2 class="h5 text-primary">Recomendaciones</h2>
                         <p class="text-break text-center px-2">Tené en cuenta estos puntos antes de guardar los cambios</p>
                     </div>
 

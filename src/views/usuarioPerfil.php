@@ -36,34 +36,38 @@ $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Perfil — Vuela Sin Límites</title>
+    <title>Mi Perfil — Volaré</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="<?= url('public/css/layout/header.css') ?>?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= url('public/css/components/menuMobile.css') ?>?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/homeCliente.css') ?>?v=<?= time() ?>">
+    <link rel="stylesheet" href="<?= url('public/css/components/searchMobile.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/components/searchDesktop.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/layout/reservas.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
 </head>
 <body>
 
     <!-- Header unificado -->
     <?php require __DIR__ . '/layouts/header.php'; ?>
 
-    <div class="container py-4">
+    <main id="contenido" tabindex="-1" class="container pb-4">
         <div class="row justify-content-center">
             <div class="col-12 col-md-8 col-lg-7">
                 
                 
                 <!-- Cabecera de la sección -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h2 class="fw-bold m-0 text-dark">Mi Perfil</h2>
-                    </div>
+                <div class="titulo-cuadro-resul text-center mt-0 mb-5 user-select-none">
+                    <h1 class="fw-bold text-dark display-6">MI <span>PERFIL</span></h1>
                 </div>
                 
                 <!-- Formulario principal con novalidate -->
                 <div class="card shadow-sm border-0 rounded-4 p-4 bg-white">
                     <?php require __DIR__ . '/components/alertToast.php'; ?>
                     <form action="<?= url('src/routes/usuarios.php?accion=editarPerfilPropio') ?>" method="POST" class="d-flex flex-column gap-3" id="formPerfil" novalidate>
+<p class="small text-secondary mb-2">Los campos con <span class="text-danger" aria-hidden="true">*</span><span class="visually-hidden">asterisco</span> son obligatorios.</p>
                         
                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
                         <input type="hidden" name="idUsuario" value="<?= $idUsuario ?>">
@@ -74,13 +78,13 @@ $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
                                 <label class="form-label fw-semibold" for="nombre" style="font-size:0.9rem;">Nombre *</label>
                                 <input type="text" name="nombre" id="nombre" class="form-control" required minlength="2" maxlength="50"
                                        value="<?= htmlspecialchars($perfil['nombre'] ?? '') ?>">
-                                <div class="invalid-feedback text-danger small" id="error-nombre"></div>
+                                <div class="invalid-feedback text-danger small" id="error-nombre" role="alert"></div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold" for="apellido" style="font-size:0.9rem;">Apellido *</label>
                                 <input type="text" name="apellido" id="apellido" class="form-control" required minlength="2" maxlength="50"
                                        value="<?= htmlspecialchars($perfil['apellido'] ?? '') ?>">
-                                <div class="invalid-feedback text-danger small" id="error-apellido"></div>
+                                <div class="invalid-feedback text-danger small" id="error-apellido" role="alert"></div>
                             </div>
                         </div>
 
@@ -89,6 +93,7 @@ $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold" for="tipoDocumento" style="font-size:0.9rem;">Tipo de Documento *</label>
                                 <select name="tipoDocumento" id="tipoDocumento" class="form-select" required>
+                                    <option value="">Seleccioná un tipo de documento</option>
                                     <?php foreach ($tiposDoc as $td): ?>
                                         <option value="<?= $td ?>" <?= (strcasecmp(trim($perfil['tipoDocumento'] ?? ''),$td) === 0) ? 'selected' : '' ?>>
                                             <?= $td ?>
@@ -109,7 +114,7 @@ $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
                                     maxlength="15"
                                     value="<?= htmlspecialchars($perfil['nroDocumento'] ) ?>"
                                 >
-                                <div class="invalid-feedback text-danger small" id="error-nroDocumento"></div>
+                                <div class="invalid-feedback text-danger small" id="error-nroDocumento" role="alert"></div>
                             </div>
                         </div>
 
@@ -119,13 +124,13 @@ $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
                                 <label class="form-label fw-semibold" for="email" style="font-size:0.9rem;">Correo Electrónico *</label>
                                 <input type="email" name="email" id="email" class="form-control" required
                                        value="<?= htmlspecialchars($perfil['email'] ?? '') ?>">
-                                <div class="invalid-feedback text-danger small" id="error-email"></div>
+                                <div class="invalid-feedback text-danger small" id="error-email" role="alert"></div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold" for="telefono" style="font-size:0.9rem;">Teléfono de Contacto</label>
                                 <input type="text" name="telefono" id="telefono" class="form-control" placeholder="Ej. +54 341 1234567"
                                        value="<?= htmlspecialchars($perfil['telefono'] ?? '') ?>">
-                                <div class="invalid-feedback text-danger small" id="error-telefono"></div>
+                                <div class="invalid-feedback text-danger small" id="error-telefono" role="alert"></div>
                             </div>
                         </div>
 
@@ -140,18 +145,18 @@ $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
 
                         <!-- Fila de Cambio de Contraseña (Opcional) -->
                         <hr >
-                        <h5 class="fw-bold fs-6 text-primary">Cambiar Contraseña (Opcional)</h5>
+                        <h2 class="h5 fw-bold fs-6 text-primary">Cambiar Contraseña (Opcional)</h2>
                         
                         <div class="row">
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold" for="passwordActual" style="font-size:0.9rem;">Contraseña Actual</label>
                                 <div class="input-group">
                                     <input type="password" name="passwordActual" id="passwordActual" class="form-control" placeholder="••••••••">
-                                    <button class="btn btn-outline-secondary toggle-password" type="button" data-target="passwordActual">
-                                        <i class="bi bi-eye"></i>
+                                    <button class="btn btn-outline-secondary toggle-password" type="button" data-target="passwordActual" aria-label="Mostrar contraseña actual" aria-pressed="false">
+                                        <i class="bi bi-eye" aria-hidden="true"></i>
                                     </button>
                                 </div>
-                                <div class="invalid-feedback text-danger small d-block" id="error-passwordActual" style="min-height: 20px;"></div>
+                                <div class="invalid-feedback text-danger small d-block" id="error-passwordActual" style="min-height: 20px;" role="alert"></div>
                             </div>
                         </div>
 
@@ -160,21 +165,21 @@ $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
                                 <label class="form-label fw-semibold" for="passwordNueva" style="font-size:0.9rem;">Nueva Contraseña</label>
                                 <div class="input-group">
                                     <input type="password" name="passwordNueva" id="passwordNueva" class="form-control" placeholder="••••••••" minlength="8">
-                                    <button class="btn btn-outline-secondary toggle-password" type="button" data-target="passwordNueva">
-                                        <i class="bi bi-eye"></i>
+                                    <button class="btn btn-outline-secondary toggle-password" type="button" data-target="passwordNueva" aria-label="Mostrar nueva contraseña" aria-pressed="false">
+                                        <i class="bi bi-eye" aria-hidden="true"></i>
                                     </button>
                                 </div>
-                                <div class="invalid-feedback text-danger small d-block" id="error-passwordNueva" style="min-height: 20px;"></div>
+                                <div class="invalid-feedback text-danger small d-block" id="error-passwordNueva" style="min-height: 20px;" role="alert"></div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold" for="passwordConfirmar" style="font-size:0.9rem;">Confirmar Nueva Contraseña</label>
                                 <div class="input-group">
                                     <input type="password" name="passwordConfirmar" id="passwordConfirmar" class="form-control" placeholder="••••••••" minlength="8">
-                                    <button class="btn btn-outline-secondary toggle-password" type="button" data-target="passwordConfirmar">
-                                        <i class="bi bi-eye"></i>
+                                    <button class="btn btn-outline-secondary toggle-password" type="button" data-target="passwordConfirmar" aria-label="Mostrar confirmación de contraseña" aria-pressed="false">
+                                        <i class="bi bi-eye" aria-hidden="true"></i>
                                     </button>
                                 </div>
-                                <div class="invalid-feedback text-danger small d-block" id="error-passwordConfirmar" style="min-height: 20px;"></div>
+                                <div class="invalid-feedback text-danger small d-block" id="error-passwordConfirmar" style="min-height: 20px;" role="alert"></div>
                             </div>
                         </div>
 
@@ -189,7 +194,9 @@ $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
 
             </div>
         </div>
-    </div>
+    </main>
+
+    <?php require __DIR__ . '/layouts/footer.php'; ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 <script>
@@ -293,15 +300,20 @@ document.addEventListener("DOMContentLoaded", function() {
             const targetId = this.getAttribute("data-target");
             const inputField = document.getElementById(targetId);
             const icon = this.querySelector("i");
+            const etiquetaBase = this.getAttribute("aria-label").replace(/^Mostrar /, "").replace(/^Ocultar /, "");
 
             if (inputField.type === "password") {
                 inputField.type = "text";
                 icon.classList.remove("bi-eye");
                 icon.classList.add("bi-eye-slash");
+                this.setAttribute("aria-pressed", "true");
+                this.setAttribute("aria-label", "Ocultar " + etiquetaBase);
             } else {
                 inputField.type = "password";
                 icon.classList.remove("bi-eye-slash");
                 icon.classList.add("bi-eye");
+                this.setAttribute("aria-pressed", "false");
+                this.setAttribute("aria-label", "Mostrar " + etiquetaBase);
             }
         });
     });

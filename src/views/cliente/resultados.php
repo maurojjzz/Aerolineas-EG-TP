@@ -218,10 +218,9 @@ $textoVacio = !$esIdaVuelta
     <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/reservas.css') ?>">
     
+    <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
 </head>
 <body class="container-fluid overflow-x-hidden p-0 m-0">
-
-<a class="skip-link" href="#contenido">Saltar al contenido</a>
 
 <?php require './src/views/layouts/header.php'; ?>
 <?php require './src/views/components/alertToast.php'; ?>
@@ -231,7 +230,7 @@ $textoVacio = !$esIdaVuelta
     <div class="container-xxl py-4 px-3 px-lg-5">
 
         <div class="titulo-cuadro-resul text-center ">
-            <h1>RESULTADO DE <span>VUELOS</span> </h1>
+            <h1 class="fw-bold text-dark display-6">RESULTADO DE <span>VUELOS</span></h1>
         </div>
 
         <?php if ($esIdaVuelta): ?>
@@ -599,7 +598,7 @@ $textoVacio = !$esIdaVuelta
 </main>
 
 <!-- Filtros en mobile -->
-<div class="offcanvas offcanvas-bottom filtros-offcanvas" tabindex="-1" id="filtrosMobile" aria-labelledby="filtrosMobileLabel">
+<div class="offcanvas offcanvas-bottom filtros-offcanvas" tabindex="-1" id="filtrosMobile" role="dialog" aria-labelledby="filtrosMobileLabel">
     <div class="offcanvas-header">
         <h2 class="offcanvas-title h5" id="filtrosMobileLabel">Filtros</h2>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar filtros"></button>
