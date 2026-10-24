@@ -1,0 +1,618 @@
+/* ============================================================
+   Sección de Promociones destacadas + Últimas novedades +
+   beneficios del home público.
+   ============================================================ */
+
+.home-destacados {
+    position: relative;
+    z-index: 2;
+}
+
+/* ── Grilla principal ─────────────────────────────────────── */
+.home-destacados-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: 20px;
+    align-items: stretch;
+}
+
+.home-destacados-panel {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 20px 22px;
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 12px 30px rgba(8, 33, 73, 0.14);
+}
+
+/* ── Encabezado de cada panel ─────────────────────────────── */
+.home-destacados-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px 16px;
+    margin-bottom: 16px;
+}
+
+.home-destacados-head-text {
+    min-width: 0;
+}
+
+.home-destacados-title {
+    margin: 0;
+    color: #102a4c;
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.home-destacados-sub {
+    margin: 3px 0 0;
+    color: #6b7a90;
+    font-size: 0.78rem;
+    line-height: 1.3;
+}
+
+.home-destacados-link {
+    flex: 0 0 auto;
+    align-self: center;
+    color: #0d6efd;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.home-destacados-link:hover {
+    color: #0a58ca;
+    text-decoration: underline;
+}
+
+/* ── Carrusel de promociones ──────────────────────────────── */
+.home-promos-carousel {
+    position: relative;
+    min-width: 0;
+}
+
+.home-promos-viewport {
+    min-width: 0;
+}
+
+.home-promos-track {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+    padding: 4px 0; /* deja respirar el hover arriba y abajo */
+    margin: -4px 0;
+}
+
+.home-promos-track::-webkit-scrollbar {
+    display: none;
+}
+
+.home-promos-track:focus-visible {
+    outline: 2px solid #0d6efd;
+    outline-offset: 2px;
+    border-radius: 16px;
+}
+
+/* ── Card de promoción ────────────────────────────────────── */
+.home-promo-card {
+    position: relative;
+    display: flex;
+    flex: 0 0 calc((100% - 32px) / 3);
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+    min-height: 178px;
+    padding: 16px;
+    overflow: hidden;
+    border: 1px solid #e3eaf3;
+    border-radius: 16px;
+    background-color: #ffffff;
+    color: inherit;
+    text-decoration: none;
+    scroll-snap-align: start;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.home-promo-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 4px;
+    background-color: #198754;
+}
+
+.home-promo-card--a::before {
+    background: linear-gradient(90deg, #116b45, #2f9e5b);
+}
+
+.home-promo-card--b::before {
+    background: linear-gradient(90deg, #0f5f66, #2a9d8f);
+}
+
+.home-promo-card--c::before {
+    background: linear-gradient(90deg, #6b7a12, #8fae1f);
+}
+
+.home-promo-card:hover {
+    border-color: #c9d9ee;
+    color: inherit;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(16, 42, 82, 0.12);
+}
+
+.home-promo-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.home-promo-airline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    padding: 4px;
+    overflow: hidden;
+    border: 1px solid #e3eaf3;
+    border-radius: 12px;
+    background-color: #f5f8fc;
+}
+
+.home-promo-logo {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.home-promo-iata {
+    color: #0d3262;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-align: center;
+}
+
+.home-promo-badge {
+    flex: 0 0 auto;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background-color: #e7f6ee;
+    color: #137a45;
+    font-size: 0.74rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.home-promo-name {
+    color: #102a4c;
+    font-size: 0.94rem;
+    font-weight: 700;
+    line-height: 1.28;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.home-promo-route {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #0d6efd;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.home-promo-dates {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #6b7a90;
+    font-size: 0.73rem;
+    line-height: 1.3;
+}
+
+.home-promo-route i,
+.home-promo-dates i {
+    flex: 0 0 auto;
+    font-size: 0.8rem;
+}
+
+.home-promo-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 9px;
+    border-top: 1px dashed #e3eaf3;
+}
+
+.home-promo-code {
+    flex: 0 0 auto;
+    padding: 2px 7px;
+    border-radius: 6px;
+    background-color: #f5f8fc;
+    color: #6b7a90;
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.home-promo-airline-name {
+    min-width: 0;
+    overflow: hidden;
+    color: #6b7a90;
+    font-size: 0.7rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* ── Navegación del carrusel ──────────────────────────────── */
+.home-carousel-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.home-carousel-dots {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 10px;
+}
+
+.home-carousel-dot {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: none;
+    border-radius: 999px;
+    background-color: #c9d6e8;
+    cursor: pointer;
+    transition: width 0.2s ease, background-color 0.2s ease;
+}
+
+.home-carousel-dot:hover {
+    background-color: #9db4d4;
+}
+
+.home-carousel-dot.is-active {
+    width: 22px;
+    background-color: #0d6efd;
+}
+
+.home-carousel-arrows {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.home-carousel-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid #dbe4f0;
+    border-radius: 50%;
+    background-color: #ffffff;
+    color: #0d3262;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.home-carousel-arrow:hover:not(:disabled) {
+    border-color: #0d3262;
+    background-color: #0d3262;
+    color: #ffffff;
+}
+
+.home-carousel-arrow:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+/* Cuando hay una sola página no mostramos flechas ni puntos */
+.home-promos-carousel.is-static .home-carousel-nav {
+    display: none;
+}
+
+/* ── Lista de últimas novedades ───────────────────────────── */
+.home-novedades-list {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.home-novedad-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border: 1px solid transparent;
+    border-radius: 14px;
+    color: inherit;
+    text-decoration: none;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.home-novedad-item:hover {
+    border-color: #e3eaf3;
+    background-color: #f6f9fd;
+    color: inherit;
+}
+
+.home-novedad-thumb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 54px;
+    height: 54px;
+    flex: 0 0 54px;
+    overflow: hidden;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #e3f0fe, #cfe3fb);
+    color: #0d6efd;
+    font-size: 1.3rem;
+}
+
+.home-novedad-thumb img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.home-novedad-body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.home-novedad-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 8px;
+}
+
+.home-novedad-meta .badge {
+    padding: 0.22em 0.5em;
+    font-size: 0.6rem;
+    font-weight: 600;
+}
+
+.home-novedad-fecha {
+    color: #8391a6;
+    font-size: 0.68rem;
+}
+
+.home-novedad-title {
+    color: #102a4c;
+    font-size: 0.86rem;
+    font-weight: 700;
+    line-height: 1.25;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.home-novedad-sub {
+    overflow: hidden;
+    color: #6b7a90;
+    font-size: 0.72rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.home-novedad-chevron {
+    flex: 0 0 auto;
+    color: #9aa8bd;
+    font-size: 0.85rem;
+    transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.home-novedad-item:hover .home-novedad-title {
+    color: #0d6efd;
+}
+
+.home-novedad-item:hover .home-novedad-chevron {
+    color: #0d6efd;
+    transform: translateX(2px);
+}
+
+/* ── Estados vacíos ───────────────────────────────────────── */
+.home-destacados-empty {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 28px 12px;
+    color: #6b7a90;
+    text-align: center;
+}
+
+.home-destacados-empty i {
+    font-size: 1.9rem;
+    opacity: 0.55;
+}
+
+.home-destacados-empty p {
+    margin: 0;
+    font-size: 0.84rem;
+}
+
+/* ── Franja de beneficios ─────────────────────────────────── */
+.home-beneficios {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-top: 20px;
+    padding: 18px 6px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 18px;
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 8px 24px rgba(8, 33, 73, 0.12);
+}
+
+.home-beneficio {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    padding: 0 18px;
+}
+
+.home-beneficio + .home-beneficio {
+    border-left: 1px solid #e3eaf3;
+}
+
+.home-beneficio-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    border-radius: 12px;
+    background-color: #eaf3ff;
+    color: #0d3262;
+    font-size: 1.15rem;
+}
+
+.home-beneficio-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.home-beneficio-text strong {
+    color: #102a4c;
+    font-size: 0.82rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.home-beneficio-text span {
+    color: #6b7a90;
+    font-size: 0.72rem;
+    line-height: 1.3;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 1199.98px) {
+    .home-promo-card {
+        flex-basis: calc((100% - 16px) / 2);
+    }
+}
+
+@media (max-width: 991.98px) {
+    .home-destacados-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+    }
+
+    .home-destacados-panel {
+        padding: 18px;
+    }
+
+    .home-beneficios {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        row-gap: 14px;
+    }
+
+    .home-beneficio:nth-child(odd) {
+        border-left: none;
+    }
+
+    .home-beneficio:nth-child(n + 3) {
+        border-top: 1px solid #e3eaf3;
+        padding-top: 14px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .home-destacados-panel {
+        padding: 15px;
+        border-radius: 16px;
+    }
+
+    .home-destacados-title {
+        font-size: 1.08rem;
+    }
+
+    .home-destacados-link {
+        align-self: flex-start;
+        font-size: 0.76rem;
+    }
+
+    .home-promo-card {
+        flex-basis: 100%;
+    }
+
+    .home-novedades-list {
+        justify-content: flex-start;
+    }
+
+    .home-novedad-item {
+        padding: 8px 4px;
+    }
+
+    .home-novedad-thumb {
+        width: 46px;
+        height: 46px;
+        flex-basis: 46px;
+    }
+
+    .home-beneficios {
+        grid-template-columns: minmax(0, 1fr);
+        row-gap: 0;
+        padding: 6px 16px;
+    }
+
+    .home-beneficio {
+        padding: 12px 0;
+    }
+
+    .home-beneficio + .home-beneficio {
+        border-top: 1px solid #e3eaf3;
+        border-left: none;
+    }
+
+    .home-beneficio:nth-child(n + 3) {
+        padding-top: 12px;
+    }
+}

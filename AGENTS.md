@@ -4,9 +4,9 @@ Volaré is a server-rendered airline booking app: PHP 8.2 + MySQL 8, no framewor
 
 ## Run and verify
 
-- `cp .env.example .env` and fill it. Add `MAIL_HOST`, `MAIL_USER`, `MAIL_PASS`, `MAIL_PORT`, `MAIL_FROM`, `MAIL_FROM_NAME`; PHPMailer requires them but `.env.example` omits them.
+- `cp .env.example .env` and fill it. `MAIL_*` keys (`HOST`, `USER`, `PASS`, `PORT`, `FROM`, `FROM_NAME`, `ENCRYPTION`, `TIMEOUT`) are required to send mail; if missing, the app keeps working but logs the failure and sends nothing.
 - `docker compose up --build` → http://localhost:8000. MySQL is published on host port `3307`.
-- Config is read from `../../.env` with `parse_ini_file()` in `src/config/{conexion,cloudinary,mailer}.php`, not a dotenv package. `DB_*` can also come from real env vars (Compose sets `DB_HOST=db`); Mail and Cloudinary only read the file.
+- Config is read from `../../.env` with `parse_ini_file()` in `src/config/{conexion,cloudinary,mailer}.php`, not a dotenv package. `DB_*` can also come from real env vars (Compose sets `DB_HOST=db`); Mail also honors real env vars over the file (handy for local SMTP testing); Cloudinary only reads the file.
 - Keep `DB_NAME=aerolinea`: `sql/aerolinea.sql` hardcodes `CREATE DATABASE aerolinea`.
 - The dump is imported only when the MySQL volume is first created. After editing `sql/aerolinea.sql`, run `docker compose down -v && docker compose up --build` (destroys local data).
 - `conexion.php` has no `DB_PORT`; host PHP cannot reach the Compose DB on `3307`. Run the app through Compose, or publish MySQL on `3306` for host PHP.

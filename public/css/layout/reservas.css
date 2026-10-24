@@ -83,22 +83,26 @@ body {
 
 .filtros-contenido {
     opacity: 0;
+    visibility: hidden;
     pointer-events: none;
-    transition: opacity 0.15s ease;
-    white-space: nowrap;
-    min-width: 200px;
+    transition: opacity 0.15s ease, visibility 0s linear 0.15s;
+    white-space: normal;
+    min-width: 0;
+    max-height: calc(100vh - 190px);
+    overflow-y: auto;
 }
 
 .filtros-sidebar-abierto .filtros-contenido {
     opacity: 1;
+    visibility: visible;
     pointer-events: auto;
-    transition: opacity 0.2s ease 0.1s;
+    transition: opacity 0.2s ease 0.1s, visibility 0s;
 }
 
 
 
 
-.titulo-cuadro-resul h2 {
+.titulo-cuadro-resul h1 {
     font-size: 2.5rem;
     font-weight: 700;
     min-width: 300px;
@@ -106,8 +110,190 @@ body {
 }
 
 
-.titulo-cuadro-resul h2 span {
+.titulo-cuadro-resul h1 span {
     color: transparent;
     -webkit-text-stroke: 1.7px #082149;
     font-weight: 800;
+}
+
+/* ── Filtros de búsqueda ─────────────────────────────────────────────────── */
+.filtro-titulo-panel {
+    font-size: 0.95rem;
+    color: #0d3262;
+}
+
+.filtros-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.filtro-grupo {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+}
+
+.filtro-titulo {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #0d3262;
+    margin-bottom: 6px;
+    padding: 0;
+}
+
+.filtro-ayuda {
+    font-size: 0.72rem;
+    color: #5c6b80;
+    margin: -2px 0 8px;
+}
+
+.filtro-vacio {
+    font-size: 0.78rem;
+    color: #54637a;
+    margin: 0;
+}
+
+.filtro-opciones {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 170px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.filtro-check {
+    margin: 0;
+    font-size: 0.82rem;
+}
+
+.filtro-check .form-check-label {
+    cursor: pointer;
+}
+
+.filtro-cantidad {
+    color: #54637a;
+    font-size: 0.72rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.filtro-precio {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.filtro-precio .form-label {
+    font-size: 0.72rem;
+    color: #4b5a70;
+    margin-bottom: 2px;
+}
+
+.filtro-acciones {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Chips de filtros activos */
+.filtros-chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+}
+
+.filtros-chips-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #0d3262;
+}
+
+.filtros-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    border: 1px solid #b9d3ee;
+    background: #ffffff;
+    color: #0d3262;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.filtros-chip:hover,
+.filtros-chip:focus-visible {
+    background: #eaf3ff;
+    color: #082149;
+}
+
+.filtros-chip--limpiar {
+    border-style: dashed;
+    border-color: #d9a9a6;
+    color: #8a1f1a;
+}
+
+/* Offcanvas de filtros en mobile */
+.filtros-offcanvas {
+    --bs-offcanvas-height: 85vh;
+    width: 100%;
+    height: 85vh;
+    max-height: 85vh;
+    background-color: #ffffff;
+    backdrop-filter: none;
+    border-radius: 16px 16px 0 0;
+}
+
+.filtros-offcanvas .offcanvas-body {
+    padding-top: 0;
+}
+
+/* En mobile los botones quedan siempre a mano al scrollear los filtros */
+.filtros-offcanvas .filtro-acciones {
+    position: sticky;
+    bottom: 0;
+    padding: 8px 0;
+    background-color: #ffffff;
+}
+
+/* Link para saltar al contenido */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 2000;
+    padding: 10px 16px;
+    background: #0d3262;
+    color: #ffffff;
+    font-weight: 600;
+    border-radius: 0 0 8px 0;
+}
+
+.skip-link:focus {
+    left: 0;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+@media (max-width: 991.98px) {
+    .filtro-opciones {
+        max-height: none;
+    }
+}
+
+@media (min-width: 992px) {
+    .filtros-sidebar {
+        position: sticky;
+        top: 16px;
+        align-self: flex-start;
+    }
+}
+
+/* El destino del enlace de salto no necesita contorno */
+#contenido:focus {
+    outline: none;
 }

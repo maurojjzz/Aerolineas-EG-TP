@@ -1,10 +1,64 @@
 <?php 
 date_default_timezone_set('America/Argentina/Buenos_Aires');
 require_once __DIR__ . '/../../controllers/NovedadController.php';
+require_once __DIR__ . '/../../controllers/ReservaController.php';
 require_once __DIR__ . '/../../config/conexion.php';
 
 $novedadCtrl = new NovedadController($link);
 $novedades = $novedadCtrl->obtenerUltimasPublicadas(3); // Obtiene las últimas 3 publicadas
+
+// ── Próximas reservas del cliente logueado ────────────────────────────────
+$idUsuario = (int)($_SESSION['usuario']['idUsuario'] ?? 0);
+$proximasReservas = [];
+
+if ($idUsuario > 0) {
+    $reservaCtrl = new ReservaController($link);
+    $reservaCtrl->limpiarReservasVencidas();
+
+    $todasReservas = $reservaCtrl->listarMisReservas($idUsuario);
+    $ahora = time();
+
+    $proximasReservas = array_values(array_filter(
+        $todasReservas,
+        static function (array $r) use ($ahora): bool {
+            if (($r['estadoReserva'] ?? '') === 'cancelada') {
+                return false;
+            }
+            $salida = strtotime((string)($r['fechaHoraSalidaVuelo'] ?? ''));
+            return $salida !== false && $salida >= $ahora;
+        }
+    ));
+
+    usort($proximasReservas, static function (array $a, array $b): int {
+        return strtotime((string)$a['fechaHoraSalidaVuelo']) <=> strtotime((string)$b['fechaHoraSalidaVuelo']);
+    });
+
+    $proximasReservas = array_slice($proximasReservas, 0, 2);
+}
+
+$fmtFechaReserva = static function (?string $fecha, string $formato = 'd/m/Y • H:i'): string {
+    if ($fecha === null || $fecha === '') {
+        return '—';
+    }
+    $timestamp = strtotime($fecha);
+    return $timestamp !== false ? date($formato, $timestamp) : '—';
+};
+
+$nombreCiudadReserva = static function (?string $texto): string {
+    $texto = trim((string)$texto);
+    if ($texto === '') {
+        return '—';
+    }
+    return trim((string)preg_replace('/\s*\([A-Z]{3}\)\s*$/', '', $texto));
+};
+
+$badgeReserva = static function (string $estado): array {
+    return match ($estado) {
+        'confirmada'        => ['text-bg-success', '✓ Confirmada'],
+        'pendiente de pago' => ['bg-warning text-dark', '⏳ Pendiente de pago'],
+        default             => ['text-bg-secondary', ucfirst($estado)],
+    };
+};
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -20,6 +74,7 @@ $novedades = $novedadCtrl->obtenerUltimasPublicadas(3); // Obtiene las últimas 
         <link rel="stylesheet" href="<?= url('public/css/components/menuMobile.css') ?>">
         <link rel="stylesheet" href="<?= url('public/css/components/searchMobile.css') ?>">
         <link rel="stylesheet" href="<?= url('public/css/components/searchDesktop.css') ?>">
+        <link rel="stylesheet" href="<?= url('public/css/components/homeTabsCards.css') ?>">
         <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
 
     </head>
@@ -58,73 +113,59 @@ $novedades = $novedadCtrl->obtenerUltimasPublicadas(3); // Obtiene las últimas 
                         </a>
                     </div>
 
-                    <div class="row g-3">
-
-                        <!-- Reserva 1 -->
-                        <div class="col-12 col-md-6">
-                            <div class="bg-white rounded-3 border p-3 h-100">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <div>
-                                        <p class="text-muted m-0" style="font-size:0.75rem;">Código de reserva</p>
-                                        <p class="fw-bold fs-5 m-0">VSL8X7</p>
-                                    </div>
-                                    <span class="badge text-bg-success px-2 py-1" style="font-size:0.75rem;">✓ Confirmada</span>
-                                </div>
-
-                                <div class="d-flex align-items-center justify-content-between my-3">
-                                    <div>
-                                        <p class="fw-semibold m-0">Bogotá (BOG)</p>
-                                        <p class="text-muted m-0" style="font-size:0.8rem;">15 Jun 2024 • 08:45</p>
-                                    </div>
-                                    <span class="text-primary fs-5">✈</span>
-                                    <div class="text-end">
-                                        <p class="fw-semibold m-0">Madrid (MAD)</p>
-                                        <p class="text-muted m-0" style="font-size:0.8rem;">15 Jun 2024 • 23:35</p>
-                                    </div>
-                                </div>
-
-                                <hr class="my-2">
-
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <p class="text-muted m-0" style="font-size:0.8rem;">1 pasajero &nbsp;|&nbsp; Económica &nbsp;|&nbsp; Ida</p>
-                                    <a href="<?= url('index.php?pagina=mis-reservas') ?>" class="btn btn-outline-primary btn-sm" style="font-size:0.8rem;">Ver detalles</a>
-                                </div>
-                            </div>
+                    <?php if (empty($proximasReservas)): ?>
+                        <div class="bg-white rounded-3 border p-4 text-center">
+                            <i class="bi bi-calendar2-x text-muted" style="font-size:2.2rem;"></i>
+                            <p class="fw-semibold mt-3 mb-1">No tenés reservas próximas por ahora.</p>
+                            <p class="text-muted mb-3" style="font-size:0.9rem;">Buscá un vuelo y tu próxima reserva va a aparecer acá.</p>
+                            <a href="<?= url('index.php?pagina=buscar-vuelos') ?>" class="btn btn-primary btn-sm">Buscar vuelos</a>
                         </div>
+                    <?php else: ?>
+                        <div class="row g-3">
+                            <?php foreach ($proximasReservas as $r):
+                                [$badgeClass, $badgeTexto] = $badgeReserva((string)$r['estadoReserva']);
+                                $cantPasajeros = (int)($r['cantPasajeros'] ?? 0);
+                            ?>
+                                <div class="col-12 col-md-6">
+                                    <div class="bg-white rounded-3 border p-3 h-100">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div>
+                                                <p class="text-muted m-0" style="font-size:0.75rem;">Código de reserva</p>
+                                                <p class="fw-bold fs-5 m-0">#<?= str_pad((string)(int)$r['idReserva'], 6, '0', STR_PAD_LEFT) ?></p>
+                                            </div>
+                                            <span class="badge <?= $badgeClass ?> px-2 py-1" style="font-size:0.75rem;"><?= htmlspecialchars($badgeTexto) ?></span>
+                                        </div>
 
-                        <!-- Reserva 2 -->
-                        <div class="col-12 col-md-6">
-                            <div class="bg-white rounded-3 border p-3 h-100">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <div>
-                                        <p class="text-muted m-0" style="font-size:0.75rem;">Código de reserva</p>
-                                        <p class="fw-bold fs-5 m-0">K9Z2Q1</p>
+                                        <div class="d-flex align-items-center justify-content-between my-3">
+                                            <div>
+                                                <p class="fw-semibold m-0"><?= htmlspecialchars($nombreCiudadReserva($r['origenVuelo'] ?? '')) ?> (<?= htmlspecialchars($r['codigoOrigen'] ?? '—') ?>)</p>
+                                                <p class="text-muted m-0" style="font-size:0.8rem;"><?= $fmtFechaReserva($r['fechaHoraSalidaVuelo'] ?? null) ?></p>
+                                            </div>
+                                            <span class="text-primary fs-5">✈</span>
+                                            <div class="text-end">
+                                                <p class="fw-semibold m-0"><?= htmlspecialchars($nombreCiudadReserva($r['destinoVuelo'] ?? '')) ?> (<?= htmlspecialchars($r['codigoDestino'] ?? '—') ?>)</p>
+                                                <p class="text-muted m-0" style="font-size:0.8rem;"><?= $fmtFechaReserva($r['fechaHoraLlegadaVuelo'] ?? null) ?></p>
+                                            </div>
+                                        </div>
+
+                                        <hr class="my-2">
+
+                                        <div class="d-flex justify-content-between align-items-center gap-2">
+                                            <p class="text-muted m-0" style="font-size:0.8rem;">
+                                                <?= $cantPasajeros ?> pasajero<?= $cantPasajeros === 1 ? '' : 's' ?>
+                                                &nbsp;|&nbsp; Total $ <?= number_format((float)($r['precioTotal'] ?? 0), 0, ',', '.') ?>
+                                            </p>
+                                            <?php if ($r['estadoReserva'] === 'pendiente de pago'): ?>
+                                                <a href="<?= url('index.php?pagina=pago&idReserva=' . (int)$r['idReserva']) ?>" class="btn btn-primary btn-sm text-nowrap" style="font-size:0.8rem;">Continuar pago</a>
+                                            <?php else: ?>
+                                                <a href="<?= url('index.php?pagina=mis-reservas') ?>" class="btn btn-outline-primary btn-sm text-nowrap" style="font-size:0.8rem;">Ver detalles</a>
+                                            <?php endif; ?>
+                                        </div>
                                     </div>
-                                    <span class="badge bg-warning text-dark px-2 py-1" style="font-size:0.75rem;">⏳ Pendiente de pago</span>
                                 </div>
-
-                                <div class="d-flex align-items-center justify-content-between my-3">
-                                    <div>
-                                        <p class="fw-semibold m-0">Medellín (MDE)</p>
-                                        <p class="text-muted m-0" style="font-size:0.8rem;">02 Jul 2024 • 11:20</p>
-                                    </div>
-                                    <span class="text-primary fs-5">✈</span>
-                                    <div class="text-end">
-                                        <p class="fw-semibold m-0">Cancún (CUN)</p>
-                                        <p class="text-muted m-0" style="font-size:0.8rem;">02 Jul 2024 • 16:30</p>
-                                    </div>
-                                </div>
-
-                                <hr class="my-2">
-
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <p class="text-muted m-0" style="font-size:0.8rem;">2 pasajeros &nbsp;|&nbsp; Económica &nbsp;|&nbsp; Ida y vuelta</p>
-                                    <a href="<?= url('index.php?pagina=mis-reservas') ?>" class="btn btn-primary btn-sm" style="font-size:0.8rem;">Continuar pago</a>
-                                </div>
-                            </div>
+                            <?php endforeach; ?>
                         </div>
-
-                    </div>
+                    <?php endif; ?>
                 </div>
 
                 <!-- Novedades -->

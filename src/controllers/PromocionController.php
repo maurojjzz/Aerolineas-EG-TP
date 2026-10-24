@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../config/conexion.php';
 require_once __DIR__ . '/../models/Promocion.php';
+require_once __DIR__ . '/../services/EmailService.php';
 
 class PromocionController {
 
@@ -194,6 +195,10 @@ class PromocionController {
         }
 
         mysqli_stmt_close($stmt);
+
+        $idPromocion = (int)mysqli_insert_id($this->conexion);
+        $this->notificarSeguro(fn() => $this->notificarPromocionPendiente($idPromocion));
+
         flash_set('success', 'Promoción enviada. Quedó pendiente de aprobación por el administrador.');
         redirect('index.php?pagina=promociones');
     }
@@ -392,6 +397,8 @@ class PromocionController {
             redirect('index.php?pagina=promociones&seccion=listado');
         }
 
+        $promocion = $this->obtenerPromocionParaMail($id, true);
+
         $stmt = mysqli_prepare($this->conexion,
             "UPDATE promocion SET estado = ? WHERE idPromocion = ? AND estado = 'Pendiente'");
         mysqli_stmt_bind_param($stmt, 'si', $estado, $id);
@@ -402,6 +409,8 @@ class PromocionController {
             mysqli_stmt_close($stmt);
 
             if ($afectadas > 0) {
+                $this->notificarSeguro(fn() => $this->notificarPromocionResuelta($promocion, $estado));
+
                 flash_set('success', $estado === 'Aprobada'
                     ? 'Promoción aprobada correctamente.'
                     : 'Promoción denegada correctamente.');
@@ -639,7 +648,7 @@ class PromocionController {
     // ── Obtener las últimas promociones habilitadas (Aprobadas y vigentes) ──
     public function obtenerUltimasPublicadas(int $limite = 3): array {
         $stmt = mysqli_prepare($this->conexion,
-            "SELECT p.*, a.nombreAerolinea, a.codigoIATA
+            "SELECT p.*, a.nombreAerolinea, a.codigoIATA, a.logoUrl
              FROM promocion p
              JOIN aerolinea a ON p.idAerolinea = a.idAerolinea
              WHERE p.estado = 'Aprobada'
@@ -679,5 +688,139 @@ class PromocionController {
             $filas[] = $row;
         }
         return $filas;
+    }
+
+    // ── Notificaciones por mail ───────────────────────────────────────────────
+
+    private function notificarPromocionPendiente(int $idPromocion): void {
+        if ($idPromocion <= 0) {
+            return;
+        }
+
+        $promocion = $this->obtenerPromocionParaMail($idPromocion);
+        if (!$promocion) {
+            return;
+        }
+
+        $datos = $this->datosPromocionParaMail($promocion);
+        $ceo   = $this->nombreCompleto([
+            'nombre'   => $promocion['ceoNombre'] ?? '',
+            'apellido' => $promocion['ceoApellido'] ?? '',
+        ]);
+
+        $stmt = mysqli_prepare($this->conexion,
+            "SELECT nombre, apellido, email
+             FROM usuario
+             WHERE rol = 'admin' AND activo = 1 AND email <> ''
+             ORDER BY idUsuario");
+        if (!$stmt) {
+            return;
+        }
+
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        while ($admin = mysqli_fetch_assoc($result)) {
+            if (empty($admin['email'])) {
+                continue;
+            }
+
+            try {
+                EmailService::enviarPromocionPendienteAdmin(
+                    (string)$admin['email'],
+                    $this->nombreCompleto($admin),
+                    $datos,
+                    (string)($promocion['nombreAerolinea'] ?? ''),
+                    $ceo
+                );
+            } catch (Throwable $e) {
+                error_log('Error al notificar la promoción pendiente #' . $idPromocion . ': ' . $e->getMessage());
+            }
+        }
+
+        mysqli_stmt_close($stmt);
+    }
+
+    private function notificarPromocionResuelta(?array $promocion, string $estado): void {
+        if (!$promocion || empty($promocion['ceoEmail'])) {
+            return;
+        }
+
+        $datos  = $this->datosPromocionParaMail($promocion);
+        $nombre = $this->nombreCompleto([
+            'nombre'   => $promocion['ceoNombre'] ?? '',
+            'apellido' => $promocion['ceoApellido'] ?? '',
+        ]);
+
+        try {
+            EmailService::enviarPromocionResuelta(
+                (string)$promocion['ceoEmail'],
+                $nombre,
+                $datos,
+                $estado
+            );
+        } catch (Throwable $e) {
+            error_log('Error al notificar la promoción resuelta #' . ($promocion['idPromocion'] ?? 0) . ': ' . $e->getMessage());
+        }
+    }
+
+    private function obtenerPromocionParaMail(int $idPromocion, bool $soloPendiente = false): ?array {
+        if ($idPromocion <= 0) {
+            return null;
+        }
+
+        $sql = "SELECT p.idPromocion, p.codigo, p.nombre, p.descripcion,
+                       p.descuentoPorcentaje, p.fechaInicio, p.fechaFin, p.estado,
+                       a.nombreAerolinea,
+                       u.nombre AS ceoNombre, u.apellido AS ceoApellido, u.email AS ceoEmail
+                FROM promocion p
+                JOIN aerolinea a ON p.idAerolinea = a.idAerolinea
+                JOIN usuario u ON p.idUsuarioCreador = u.idUsuario
+                WHERE p.idPromocion = ?";
+
+        if ($soloPendiente) {
+            $sql .= " AND p.estado = 'Pendiente'";
+        }
+
+        $stmt = mysqli_prepare($this->conexion, $sql);
+        if (!$stmt) {
+            return null;
+        }
+
+        mysqli_stmt_bind_param($stmt, 'i', $idPromocion);
+        mysqli_stmt_execute($stmt);
+        $fila = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+        mysqli_stmt_close($stmt);
+
+        return $fila ?: null;
+    }
+
+    private function datosPromocionParaMail(array $promocion): array {
+        return [
+            'codigo'              => $promocion['codigo'] ?? '',
+            'nombre'              => $promocion['nombre'] ?? '',
+            'descuentoPorcentaje' => $promocion['descuentoPorcentaje'] ?? 0,
+            'fechaInicio'         => $promocion['fechaInicio'] ?? null,
+            'fechaFin'            => $promocion['fechaFin'] ?? null,
+            'aerolinea'           => $promocion['nombreAerolinea'] ?? '',
+        ];
+    }
+
+    private function nombreCompleto(array $usuario): string {
+        $nombre = trim(
+            (string)($usuario['nombre'] ?? '') . ' ' . (string)($usuario['apellido'] ?? '')
+        );
+
+        return $nombre !== '' ? $nombre : 'usuario';
+    }
+
+    // Ejecuta una notificación sin permitir que un error de correo
+    // interrumpa la creación o resolución de la promoción.
+    private function notificarSeguro(callable $callback): void {
+        try {
+            $callback();
+        } catch (Throwable $e) {
+            error_log('Error al enviar notificaciones por mail: ' . $e->getMessage());
+        }
     }
 }

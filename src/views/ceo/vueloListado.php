@@ -52,11 +52,11 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
     <body>
         <div class="d-flex min-vh-100 row g-0 m-0 p-2 pe-2">
             
-            <aside class="admin-sidebar text-white d-none d-md-block col-md-3 col-xxl-1 pe-1 ">
+            <aside class="admin-sidebar text-white d-none d-md-block col-md-3 col-xxl-2 pe-1 ">
                 <?php require __DIR__ . '/../layouts/sidebarAdmin.php'; ?>
             </aside>
 
-            <div class="admin-main col-12 col-md-11 col-xxl-11 bg-light rounded-3 overflow-hidden">
+            <div class="admin-main col-12 col-md-9 col-xxl-10 bg-light rounded-3 overflow-hidden">
 
                 <header class="admin-header">
                     <?php require __DIR__ . '/../layouts/headerAdmin.php'; ?>
@@ -333,6 +333,7 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                     <div class="modal-footer border-0">
                         <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
                         <form method="POST" action="<?= url('src/routes/vuelo.php?accion=eliminar') ?>">
+                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
                             <input type="hidden" name="id" id="modalEliminarId">
                             <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                         </form>
