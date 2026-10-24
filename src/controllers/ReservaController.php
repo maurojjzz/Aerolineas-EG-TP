@@ -115,8 +115,9 @@ class ReservaController {
                 }
                 $descuentoTotal = min($descuentoTotal, 100);
                 
-                // Guardar IDs de promos como JSON
-                $idPromocionAplicada = !empty($promosIds) ? json_encode($promosIds) : null;
+                // reserva.idPromocion es una FK INT: guarda la promoción de
+                // mayor prioridad que respaldó el precio de la reserva.
+                $idPromocionAplicada = !empty($promosIds) ? (string)$promosIds[0] : null;
                 $precioTotal = (float)$vuelo['precioVuelo'] * $cantPasajeros * (1 - $descuentoTotal / 100);
 
                 $stmt = mysqli_prepare($this->conexion,
@@ -359,21 +360,18 @@ class ReservaController {
         $result = mysqli_stmt_get_result($stmt);
         $filas = [];
         while ($row = mysqli_fetch_assoc($result)) {
-            // Decodificar promos aplicadas (JSON array)
+            // reserva.idPromocion es una FK INT.
             $promosData = [];
-            if (!empty($row['idPromocion'])) {
-                $ids = json_decode($row['idPromocion'], true);
-                if (is_array($ids)) {
-                    $placeholders = implode(',', array_fill(0, count($ids), '?'));
-                    $stmtP = mysqli_prepare($this->conexion,
-                        "SELECT idPromocion, nombre, descuentoPorcentaje FROM promocion WHERE idPromocion IN ($placeholders)");
-                    $types = str_repeat('i', count($ids));
-                    mysqli_stmt_bind_param($stmtP, $types, ...$ids);
-                    mysqli_stmt_execute($stmtP);
-                    $resP = mysqli_stmt_get_result($stmtP);
-                    while ($p = mysqli_fetch_assoc($resP)) $promosData[] = $p;
-                    mysqli_stmt_close($stmtP);
-                }
+            $idPromocion = (int)($row['idPromocion'] ?? 0);
+            if ($idPromocion > 0) {
+                $stmtP = mysqli_prepare($this->conexion,
+                    "SELECT idPromocion, nombre, descuentoPorcentaje
+                     FROM promocion WHERE idPromocion = ?");
+                mysqli_stmt_bind_param($stmtP, 'i', $idPromocion);
+                mysqli_stmt_execute($stmtP);
+                $resP = mysqli_stmt_get_result($stmtP);
+                while ($p = mysqli_fetch_assoc($resP)) $promosData[] = $p;
+                mysqli_stmt_close($stmtP);
             }
             $row['promos_aplicadas'] = $promosData;
             $filas[] = $row;
@@ -501,21 +499,18 @@ class ReservaController {
         
         if (!$fila) return null;
         
-        // Decodificar promos aplicadas (JSON array)
+        // reserva.idPromocion es una FK INT.
         $promosData = [];
-        if (!empty($fila['idPromocion'])) {
-            $ids = json_decode($fila['idPromocion'], true);
-            if (is_array($ids)) {
-                $placeholders = implode(',', array_fill(0, count($ids), '?'));
-                $stmtP = mysqli_prepare($this->conexion,
-                    "SELECT idPromocion, nombre, descuentoPorcentaje FROM promocion WHERE idPromocion IN ($placeholders)");
-                $types = str_repeat('i', count($ids));
-                mysqli_stmt_bind_param($stmtP, $types, ...$ids);
-                mysqli_stmt_execute($stmtP);
-                $resP = mysqli_stmt_get_result($stmtP);
-                while ($p = mysqli_fetch_assoc($resP)) $promosData[] = $p;
-                mysqli_stmt_close($stmtP);
-            }
+        $idPromocion = (int)($fila['idPromocion'] ?? 0);
+        if ($idPromocion > 0) {
+            $stmtP = mysqli_prepare($this->conexion,
+                "SELECT idPromocion, nombre, descuentoPorcentaje
+                 FROM promocion WHERE idPromocion = ?");
+            mysqli_stmt_bind_param($stmtP, 'i', $idPromocion);
+            mysqli_stmt_execute($stmtP);
+            $resP = mysqli_stmt_get_result($stmtP);
+            while ($p = mysqli_fetch_assoc($resP)) $promosData[] = $p;
+            mysqli_stmt_close($stmtP);
         }
         $fila['promos_aplicadas'] = $promosData;
         

@@ -623,12 +623,6 @@ $textoVacio = !$esIdaVuelta
 </script>
 
 <script>
-    // console.log('Resultados de todos los vuelos', <?= json_encode($resultado['data']) ?>);
-    // console.log('Origen:', <?= json_encode($origen) ?>);
-    // console.log('Destino:', <?= json_encode($destino) ?>);
-    // console.log('Fecha:', <?= json_encode($fecha) ?>);
-    // console.log('Pasajeros:', <?= json_encode($pasajeros) ?>);
-
     const filtroBtn          = document.getElementById('filtroBtn');
     const filtrosColumna     = document.getElementById('filtrosColumna');
     const resultadosColumna  = document.getElementById('resultadosColumna');

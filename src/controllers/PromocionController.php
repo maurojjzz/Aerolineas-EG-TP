@@ -304,8 +304,9 @@ class PromocionController {
         return $filas;
     }
 
-    // ── Obtener TODAS las promos aplicables a un vuelo (para stacking) ───────────
-    // Retorna array ordenado por prioridad: 1=vuelo, 2=ruta, 3=aerolinea
+    // ── Obtener la promoción aplicable de mayor prioridad ─────────────────────
+    // reserva.idPromocion es una FK INT, por lo que cada reserva registra una
+    // sola promoción: 1=vuelo, 2=ruta, 3=aerolinea.
     public function obtenerPromosAplicables(int $idVuelo, int $idAerolinea, string $codigoOrigen, string $codigoDestino): array {
         $stmt = mysqli_prepare($this->conexion,
             "SELECT p.idPromocion, p.nombre, p.descuentoPorcentaje, p.acumulable, p.idVuelo, p.codigoOrigen, p.codigoDestino,
@@ -324,7 +325,8 @@ class PromocionController {
                    OR (p.idVuelo IS NULL AND p.codigoOrigen = ? AND p.codigoDestino = ?)
                    OR (p.idVuelo IS NULL AND p.codigoOrigen IS NULL AND p.codigoDestino IS NULL)
                )
-             ORDER BY prioridad ASC");
+             ORDER BY prioridad ASC, p.fechaCreacion DESC, p.idPromocion DESC
+             LIMIT 1");
         mysqli_stmt_bind_param($stmt, 'iiss', $idAerolinea, $idVuelo, $codigoOrigen, $codigoDestino);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
