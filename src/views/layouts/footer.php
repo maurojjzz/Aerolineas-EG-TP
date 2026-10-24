@@ -17,7 +17,7 @@ require_once __DIR__ . '/../components/navLinks.php';
 
             <!-- Columna 2: Navegación rápida -->
             <div class="col-6 col-md-2">
-                <h6 class="text-uppercase text-white fw-bold mb-3">Navegación</h6>
+                <h2 class="text-uppercase text-white fw-bold mb-3 fs-6">Navegación</h2>
                 <ul class="list-unstyled text-small">
                     <?php if (!$isLoggedIn): ?>
                         <li class="mb-2"><a class="link-secondary text-decoration-none" href="<?= url('index.php?pagina=inicio') ?>">Inicio</a></li>
@@ -35,7 +35,7 @@ require_once __DIR__ . '/../components/navLinks.php';
 
             <!-- Columna 3: Soporte / Legales -->
             <div class="col-6 col-md-2">
-                <h6 class="text-uppercase text-white fw-bold mb-3">Soporte</h6>
+                <h2 class="text-uppercase text-white fw-bold mb-3 fs-6">Soporte</h2>
                 <ul class="list-unstyled text-small">
                     <li class="mb-2"><a class="link-secondary text-decoration-none" href="<?= url('index.php?pagina=ayuda') ?>">Centro de Ayuda</a></li>
                     <li class="mb-2"><a class="link-secondary text-decoration-none" href="<?= url('index.php?pagina=terminos') ?>">Términos y Condiciones</a></li>

@@ -42,22 +42,24 @@ $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
     <link rel="stylesheet" href="<?= url('public/css/layout/header.css') ?>?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= url('public/css/components/menuMobile.css') ?>?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/homeCliente.css') ?>?v=<?= time() ?>">
+    <link rel="stylesheet" href="<?= url('public/css/components/searchMobile.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/components/searchDesktop.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/layout/reservas.css') ?>">
 </head>
 <body>
 
     <!-- Header unificado -->
     <?php require __DIR__ . '/layouts/header.php'; ?>
 
-    <div class="container py-4">
+    <div class="container pb-4">
         <div class="row justify-content-center">
             <div class="col-12 col-md-8 col-lg-7">
                 
                 
                 <!-- Cabecera de la sección -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h2 class="fw-bold m-0 text-dark">Mi Perfil</h2>
-                    </div>
+                <div class="titulo-cuadro-resul text-center mt-0 mb-5 user-select-none">
+                    <h2 class="fw-bold text-dark display-6">MI <span>PERFIL</span></h2>
                 </div>
                 
                 <!-- Formulario principal con novalidate -->

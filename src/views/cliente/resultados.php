@@ -127,10 +127,10 @@ $textoVacio = !$esIdaVuelta
 
 <!-- Hero con datos de búsqueda -->
 <div style="min-height: 100vh;">
-    <div class="container-xxl py-4 px-3 px-lg-5">
+    <div class="container-xxl pb-4 px-3 px-lg-5">
 
         <div class="titulo-cuadro-resul text-center ">
-            <h2 >RESULTADO DE <span>VUELOS</span> </h2>
+            <h2 class="fw-bold text-dark display-6">RESULTADO DE <span>VUELOS</span> </h2>
         </div>
 
         <?php if ($esIdaVuelta): ?>
@@ -150,7 +150,7 @@ $textoVacio = !$esIdaVuelta
         <?php endif; ?>
 
         <div class="d-flex flex-column mb-2">
-            <p class="d-flex align-items-center justify-content-center gap-2 text-light ">
+            <p class="d-flex align-items-center justify-content-center gap-2 ">
                 <span class="fw-semibold fs-5">
                     <?= $origenActual ? htmlspecialchars($origenActualTexto) : 'Cualquier origen' ?>
                 </span> 

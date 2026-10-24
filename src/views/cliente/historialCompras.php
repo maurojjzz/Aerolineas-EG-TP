@@ -189,12 +189,11 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
 <?php require __DIR__ . '/../layouts/header.php'; ?>
 
 <div style="min-height:100vh;">
-    <div class="container-xxl py-4 px-3 px-lg-5">
+    <div class="container-xxl pb-4 px-3 px-lg-5">
 
         <?php require __DIR__ . '/../components/alertToast.php'; ?>
 
         <div class="titulo-cuadro text-center mb-4">
-            <h5 class="fw-bold">Tus viajes, paso a paso</h5>
             <h2>HISTORIAL DE <span>COMPRAS</span></h2>
             <p>Revisá tus compras confirmadas y el detalle de cada viaje.</p>
         </div>
@@ -314,7 +313,7 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
         <div class="bg-white rounded-4 shadow p-3 p-lg-4">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
                 <div>
-                    <h5 class="fw-bold m-0">Compras confirmadas</h5>
+                    <h4 class="fw-bold m-0 fs-5">Compras confirmadas</h4>
                     <p class="text-muted m-0 historial-resultado">
                         <?= $totalFiltrado ?> compra<?= $totalFiltrado !== 1 ? 's' : '' ?> encontrada<?= $totalFiltrado !== 1 ? 's' : '' ?>
                         <?= $totalFiltrado !== $totalCompras ? 'de ' . $totalCompras . ' en total' : '' ?>

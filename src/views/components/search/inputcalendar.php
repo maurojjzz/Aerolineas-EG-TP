@@ -8,7 +8,6 @@
             class="form-control form-control-lg custom-cal-in " 
             id="fecha" 
             name="fecha" 
-            placeholder="Fecha"
             min="<?php echo date('Y-m-d'); ?>"
         >
         <p id="fecha-sub" class="fecha-sub position-absolute "></p>
@@ -23,7 +22,6 @@
             class="form-control form-control-lg custom-cal-in " 
             id="fecha-vuelta" 
             name="fecha_vuelta"
-            placeholder="Fecha de vuelta"
             min="<?php echo date('Y-m-d'); ?>"
         >
         <p id="fecha-vuelta-sub" class="fecha-sub position-absolute "></p>

@@ -6,6 +6,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Aerolinea</title>
+        <link rel="icon" href="<?= url('../../public/img/aerologo.webp') ?>" type="image/x-icon">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 
         <link rel="stylesheet" href="<?= url('public/css/index.css') ?>">
@@ -24,7 +25,7 @@
 
         <section class="container-xxl custom-main">
             
-            <div class="hero-content text-center mt-3 mt-sm-4 mt-md-5 user-select-none">
+            <div class="hero-content text-center mt-3 mt-sm-4 mt-md-3 user-select-none">
                 <h5 >Volaré</h5>
                 <h2 >DONDE CADA <span>VIAJE</span> COMIENZA</h2>
                 <p>Conectamos personas y destinos con una experiencia rapida, segura y confiable.</p>

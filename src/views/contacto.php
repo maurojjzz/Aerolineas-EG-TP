@@ -32,20 +32,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="<?= url('public/css/layout/header.css') ?>?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/homeCliente.css') ?>?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= url('public/css/components/menuMobile.css') ?>?v=<?= time() ?>">
+    <link rel="stylesheet" href="<?= url('public/css/components/searchDesktop.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/layout/reservas.css') ?>">
 </head>
 <body>
 
     <!-- Header unificado -->
     <?php require __DIR__ . '/layouts/header.php'; ?>
 
-    <div class="container py-5">
+    <div class="container pb-5">
         <div class="row justify-content-center">
             <div class="col-12 col-lg-8">
                 
                 <!-- Cabecera de la sección -->
-                <div class="text-center mb-5">
-                    <h2 class="fw-bold text-dark display-6">Formulario de Contacto</h2>
-                    <p class="text-white m-0 fs-5" style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">¿Tenés alguna consulta o sugerencia? Escribinos y te responderemos a la brevedad.</p>
+                <div class="titulo-cuadro-resul text-center mt-0 mb-5 user-select-none">
+                    <h2 class="fw-bold text-dark display-6">FORMULARIO DE <span>CONTACTO</span></h2>
+                    <p class=" m-0 fs-5" style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">¿Tenés alguna consulta o sugerencia? Escribinos y te responderemos a la brevedad.</p>
                 </div>
 
                 <!-- Tarjeta del Formulario -->

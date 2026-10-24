@@ -14,21 +14,25 @@ if (session_status() === PHP_SESSION_NONE) {
     <link rel="stylesheet" href="<?= url('public/css/layout/header.css') ?>?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/homeCliente.css') ?>?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= url('public/css/components/menuMobile.css') ?>?v=<?= time() ?>">
+    <link rel="stylesheet" href="<?= url('public/css/components/searchDesktop.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/layout/reservas.css') ?>">
 </head>
 <body>
 
     <!-- Header unificado -->
     <?php require __DIR__ . '/layouts/header.php'; ?>
 
-    <div class="container py-5">
+    <div class="container pb-5">
         <div class="row justify-content-center">
             <div class="col-12 col-lg-9">
                 
                 <!-- Cabecera de la sección -->
-                <div class="text-center mb-5">
-                    <h2 class="fw-bold text-dark display-6">Centro de Ayuda</h2>
-                    <p class="text-white m-0 fs-5" style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">¿Tenés dudas? Encontrá respuestas rápidas a las consultas más frecuentes.</p>
+                <div class="titulo-cuadro-resul text-center mt-0 mb-5 user-select-none">
+                    <h2 class="fw-bold text-dark display-6">CENTRO DE <span>AYUDA</span></h2>
+                    <p class="m-0 fs-5" style="text-shadow: 0 1px 2px rgba(0,0,0,0.3);">¿Tenés dudas? Encontrá respuestas rápidas a las consultas más frecuentes.</p>
                 </div>
+                
 
                 <!-- Tarjeta con el Acordeón de Preguntas Frecuentes -->
                 <div class="card shadow-sm border-0 rounded-4 p-4 p-md-5 bg-white mb-4" id="faq">

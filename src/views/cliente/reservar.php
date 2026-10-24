@@ -177,7 +177,7 @@ foreach ($tramos as $tramo) {
 
                 <div class="d-flex align-items-center gap-2 mb-3">
                     <span style="font-size:1.3rem;">👤</span>
-                    <h5 class="fw-bold m-0">Datos del pasajero</h5>
+                    <h4 class="fw-bold m-0 fs-5">Datos del pasajero</h4>
                 </div>
 
                 <p class="text-muted mb-3" style="font-size:0.85rem;">
@@ -237,7 +237,7 @@ foreach ($tramos as $tramo) {
 
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div class="d-flex align-items-center gap-2">
-                        <h5 class="fw-bold m-0">Resumen de la reserva</h5>
+                        <h4 class="fw-bold m-0 fs-5">Resumen de la reserva</h4>
                     </div>
                     <span class="badge-estado-pend">Pendiente de pago</span>
                 </div>

@@ -19,9 +19,9 @@
         
         <section class="container-xxl main-section row p-0 m-0">
             <?php require __DIR__ . '/../components/alertToast.php';  ?>
-            <div class="d-none d-lg-flex col-lg-5  mt-5 pt-3  h-100">
+            <div class="d-none d-lg-flex col-lg-5  mt-1 pt-3  h-100">
                 
-                <div class="hero-content text-left mt-5 user-select-none">
+                <div class="hero-content text-left user-select-none">
                     <h5 class="fw-bold">Volaré</h5>
                     <h2 >DONDE CADA <span>VIAJE</span> COMIENZA</h2>
                     <p>Conectamos personas y destinos con una experiencia rapida, segura y confiable.</p>

@@ -3,6 +3,7 @@
     tabindex="-1"
     id="offcanvasAdmin"
     aria-labelledby="offcanvasAdminLabel"
+    role="dialog"
 >
     <div class="offcanvas-header">
         <div class="d-flex align-items-center justify-content-center w-100">

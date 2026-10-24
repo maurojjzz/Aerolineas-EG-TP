@@ -28,19 +28,19 @@ $novedades = $novedadCtrl->obtenerUltimasPublicadas(3); // Obtiene las últimas 
         <?php require './src/views/layouts/header.php' ?>
 
         <div class="hero-content text-center mt-4 user-select-none">
-            <h5 class="text-uppercase" >Volaré</h5>
+            <h2 class="text-uppercase fs-5" >Volaré</h2>
             <h2 >DONDE CADA <span>VIAJE</span> COMIENZA</h2>                
             <p>Busca vuelos, gestiona tus reservas y descubre destinos increibles.</p>
         </div>
         <!-- Mobile -->
-        <section class="searchbox d-lg-none px-3 mb-5">
+        <div class="searchbox d-lg-none px-3 mb-5">
             <?php require './src/views/components/searchMobile.php' ?>
-        </section>
+        </div>
 
         <!-- Desktop -->
-        <section class="searchbox-desktop d-none d-lg-block mb-5">
+        <div class="searchbox-desktop d-none d-lg-block mb-5">
             <?php require './src/views/components/searchDesktop.php' ?>
-        </section>
+        </div>
 
         <!-- Reservas + Novedades -->
         <section class="container px-3 px-lg-5 mb-5">
@@ -51,7 +51,7 @@ $novedades = $novedadCtrl->obtenerUltimasPublicadas(3); // Obtiene las últimas 
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div class="d-flex align-items-center gap-2">
                             <img src="<?= url('public/img/icons/reserva.png') ?>" style="width:30px;height:30px;object-fit:contain;" alt="">
-                            <h5 class="fw-bold m-0">Mis próximas reservas</h5>
+                            <h3 class="fw-bold m-0 fs-5">Mis próximas reservas</h3>
                         </div>
                         <a href="<?= url('index.php?pagina=mis-reservas') ?>" class="badge bg-primary bg-opacity-10 text-primary fw-semibold text-decoration-none px-3 py-2 rounded-pill shadow-sm" style="font-size: 0.875rem; transition: all 0.2s;" onmouseover="this.className='badge bg-primary text-white fw-semibold text-decoration-none px-3 py-2 rounded-pill shadow-sm'" onmouseout="this.className='badge bg-primary bg-opacity-10 text-primary fw-semibold text-decoration-none px-3 py-2 rounded-pill shadow-sm'">
                             Ver todas mis reservas <span style="font-size: 1.1rem; vertical-align: middle;">→</span>
@@ -132,7 +132,7 @@ $novedades = $novedadCtrl->obtenerUltimasPublicadas(3); // Obtiene las últimas 
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div class="d-flex align-items-center gap-2">
                             <span class="text-primary fs-5">📢</span>
-                            <h5 class="fw-bold m-0">Novedades</h5>
+                            <h4 class="fw-bold m-0 fs-5">Novedades</h4>
                         </div>
                         <a href="<?= url('index.php?pagina=cliente-novedades') ?>" class="badge bg-primary bg-opacity-10 text-primary fw-semibold text-decoration-none px-3 py-2 rounded-pill shadow-sm" style="font-size: 0.875rem; transition: all 0.2s;" onmouseover="this.className='badge bg-primary text-white fw-semibold text-decoration-none px-3 py-2 rounded-pill shadow-sm'" onmouseout="this.className='badge bg-primary bg-opacity-10 text-primary fw-semibold text-decoration-none px-3 py-2 rounded-pill shadow-sm'">
                             Ver todas las novedades <span style="font-size: 1.1rem; vertical-align: middle;">→</span>
