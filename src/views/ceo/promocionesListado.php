@@ -562,7 +562,7 @@ function badgeVigenciaPromo(array $p): string {
                             <form action="<?= url('src/routes/promociones.php?accion=crear') ?>" method="POST" novalidate id="formCrearPromocion">
                                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
                                 <div class="modal-header border-0">
-                                    <h5 class="modal-title fw-bold">Crear Nueva Promoción</h5>
+                                    <h2 class="modal-title fw-bold h5">Crear Nueva Promoción</h2>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                                 </div>
                                 <div class="modal-body d-flex flex-column gap-3">
@@ -572,33 +572,33 @@ function badgeVigenciaPromo(array $p): string {
                                         <div class="d-flex flex-column flex-md-row gap-2" id="alcanceOptions">
                                             <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option active" data-alcance="aerolinea">
                                                 <input type="radio" name="alcance" value="aerolinea" checked class="d-none">
-                                                <div class="d-flex align-items-center gap-2">
+                                                <span class="d-flex align-items-center gap-2">
                                                     <i class="bi bi-building fs-4"></i>
-                                                    <div>
-                                                        <div class="fw-semibold alcance-title">Aerolínea completa</div>
-                                                        <div class="alcance-subtitle small">Aplica a todos los vuelos de tu aerolínea</div>
-                                                    </div>
-                                                </div>
+                                                    <span class="d-block">
+                                                        <span class="d-block fw-semibold alcance-title">Aerolínea completa</span>
+                                                        <span class="d-block alcance-subtitle small">Aplica a todos los vuelos de tu aerolínea</span>
+                                                    </span>
+                                                </span>
                                             </label>
                                             <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option" data-alcance="ruta">
                                                 <input type="radio" name="alcance" value="ruta" class="d-none">
-                                                <div class="d-flex align-items-center gap-2">
+                                                <span class="d-flex align-items-center gap-2">
                                                     <i class="bi bi-geo-alt fs-4"></i>
-                                                    <div>
-                                                        <div class="fw-semibold alcance-title">Ruta específica</div>
-                                                        <div class="alcance-subtitle small">Origen → Destino (todos los vuelos de esa ruta)</div>
-                                                    </div>
-                                                </div>
+                                                    <span class="d-block">
+                                                        <span class="d-block fw-semibold alcance-title">Ruta específica</span>
+                                                        <span class="d-block alcance-subtitle small">Origen → Destino (todos los vuelos de esa ruta)</span>
+                                                    </span>
+                                                </span>
                                             </label>
                                             <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option" data-alcance="vuelo">
                                                 <input type="radio" name="alcance" value="vuelo" class="d-none">
-                                                <div class="d-flex align-items-center gap-2">
+                                                <span class="d-flex align-items-center gap-2">
                                                     <i class="bi bi-airplane fs-4"></i>
-                                                    <div>
-                                                        <div class="fw-semibold alcance-title">Vuelo individual</div>
-                                                        <div class="alcance-subtitle small">Un solo vuelo específico</div>
-                                                    </div>
-                                                </div>
+                                                    <span class="d-block">
+                                                        <span class="d-block fw-semibold alcance-title">Vuelo individual</span>
+                                                        <span class="d-block alcance-subtitle small">Un solo vuelo específico</span>
+                                                    </span>
+                                                </span>
                                             </label>
                                         </div>
                                     </div>
@@ -711,7 +711,7 @@ function badgeVigenciaPromo(array $p): string {
                                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
                                 <input type="hidden" name="id" id="editar_id">
                                 <div class="modal-header border-0">
-                                    <h5 class="modal-title fw-bold">Editar Promoción</h5>
+                                    <h2 class="modal-title fw-bold h5">Editar Promoción</h2>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                                 </div>
                                 <div class="modal-body d-flex flex-column gap-3">
@@ -721,33 +721,33 @@ function badgeVigenciaPromo(array $p): string {
                                         <div class="d-flex flex-column flex-md-row gap-2" id="alcanceOptionsEditar">
                                             <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option" data-alcance="aerolinea">
                                                 <input type="radio" name="alcance" value="aerolinea" class="d-none">
-                                                <div class="d-flex align-items-center gap-2">
+                                                <span class="d-flex align-items-center gap-2">
                                                     <i class="bi bi-building fs-4"></i>
-                                                    <div>
-                                                        <div class="fw-semibold alcance-title">Aerolínea completa</div>
-                                                        <div class="alcance-subtitle small">Aplica a todos los vuelos de tu aerolínea</div>
-                                                    </div>
-                                                </div>
+                                                    <span class="d-block">
+                                                        <span class="d-block fw-semibold alcance-title">Aerolínea completa</span>
+                                                        <span class="d-block alcance-subtitle small">Aplica a todos los vuelos de tu aerolínea</span>
+                                                    </span>
+                                                </span>
                                             </label>
                                             <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option" data-alcance="ruta">
                                                 <input type="radio" name="alcance" value="ruta" class="d-none">
-                                                <div class="d-flex align-items-center gap-2">
+                                                <span class="d-flex align-items-center gap-2">
                                                     <i class="bi bi-geo-alt fs-4"></i>
-                                                    <div>
-                                                        <div class="fw-semibold alcance-title">Ruta específica</div>
-                                                        <div class="alcance-subtitle small">Origen → Destino (todos los vuelos de esa ruta)</div>
-                                                    </div>
-                                                </div>
+                                                    <span class="d-block">
+                                                        <span class="d-block fw-semibold alcance-title">Ruta específica</span>
+                                                        <span class="d-block alcance-subtitle small">Origen → Destino (todos los vuelos de esa ruta)</span>
+                                                    </span>
+                                                </span>
                                             </label>
                                             <label class="btn btn-outline-secondary flex-fill text-start p-3 alcance-option" data-alcance="vuelo">
                                                 <input type="radio" name="alcance" value="vuelo" class="d-none">
-                                                <div class="d-flex align-items-center gap-2">
+                                                <span class="d-flex align-items-center gap-2">
                                                     <i class="bi bi-airplane fs-4"></i>
-                                                    <div>
-                                                        <div class="fw-semibold alcance-title">Vuelo individual</div>
-                                                        <div class="alcance-subtitle small">Un solo vuelo específico</div>
-                                                    </div>
-                                                </div>
+                                                    <span class="d-block">
+                                                        <span class="d-block fw-semibold alcance-title">Vuelo individual</span>
+                                                        <span class="d-block alcance-subtitle small">Un solo vuelo específico</span>
+                                                    </span>
+                                                </span>
                                             </label>
                                         </div>
                                     </div>
@@ -850,8 +850,6 @@ function badgeVigenciaPromo(array $p): string {
                         </div>
                     </div>
                 </div>
-
-            </div>
 
         </main>
     </div>
@@ -1445,7 +1443,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 </script>
+
+<?php require_once __DIR__ . '/../layouts/footer.php'; ?>
 </body>
 </html>
-
-<?php require_once './src/views/layouts/footer.php'; ?>

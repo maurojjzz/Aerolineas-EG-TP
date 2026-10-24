@@ -392,7 +392,7 @@ if ($diff > 0) {
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header border-0">
-                    <h5 class="modal-title fw-bold" id="modalToggleTituloUsuario"></h5>
+                    <h2 class="modal-title fw-bold h5" id="modalToggleTituloUsuario"></h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">

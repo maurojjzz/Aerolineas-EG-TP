@@ -201,7 +201,7 @@ if ($modoEditar) {
                         <div class="d-flex flex-column border border-2 border-danger-subtle w-100 rounded-3 shadow d-none" id="erroresBox">
                             <div class="tituloBoxErrores bg-danger-subtle border-bottom d-flex flex-column align-items-center justify-content-center">
                                 <img src="<?= url('public/img/icons/alerta.png') ?>" alt="icono alerta validaciones formulario" class="img-fluid my-2" style="width:28px;height:28px;">
-                                <h5 class="text-danger">Validación del Formulario</h5>
+                                <h3 class="h5 text-danger">Validación del Formulario</h3>
                                 <p id="cantidadErrores">Errores pendientes: 0</p>
                             </div>
                             <div class="errorBoxContent py-3 pe-3">
@@ -212,7 +212,7 @@ if ($modoEditar) {
                         <div class="d-flex flex-column border border-2 border-primary-subtle w-100 rounded-3 shadow" id="recomendacionesBox">
                             <div class="tituloBoxErrores bg-primary-subtle border-bottom d-flex flex-column align-items-center justify-content-center">
                                 <img src="<?= url('public/img/icons/luz.png') ?>" alt="icono alerta validaciones formulario" class="img-fluid my-2" style="width:28px;height:28px;">
-                                <h5 class="text-primary">Recomendaciones</h5>
+                                <h3 class="h5 text-primary">Recomendaciones</h3>
                                 <p class="text-break text-center px-2">Tené en cuenta estos puntos antes de crear el vuelo</p>
                             </div>
 

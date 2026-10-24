@@ -45,7 +45,7 @@ $homeTabsVariantes  = ['a', 'b', 'c'];
                                 <span class="home-card-code"><?= htmlspecialchars($homeTabsPromo['codigo']) ?></span>
                             <?php endif; ?>
 
-                            <h3 class="home-card-title"><?= htmlspecialchars($homeTabsPromo['nombre'] ?? 'Promoción') ?></h3>
+                            <h2 class="home-card-title"><?= htmlspecialchars($homeTabsPromo['nombre'] ?? 'Promoción') ?></h2>
 
                             <?php if (!empty($homeTabsPromo['nombreAerolinea'])): ?>
                                 <p class="home-card-meta">
@@ -111,7 +111,7 @@ $homeTabsVariantes  = ['a', 'b', 'c'];
                                 <span class="home-card-fecha"><?= homeTabsCardFecha($homeTabsNovedad['fechaPublicacion'] ?? null) ?></span>
                             </div>
 
-                            <h3 class="home-card-title"><?= htmlspecialchars($homeTabsNovedad['titulo'] ?? 'Novedad') ?></h3>
+                            <h2 class="home-card-title"><?= htmlspecialchars($homeTabsNovedad['titulo'] ?? 'Novedad') ?></h2>
 
                             <?php if (!empty($homeTabsNovedad['subtitulo'])): ?>
                                 <p class="home-card-desc"><?= htmlspecialchars($homeTabsNovedad['subtitulo']) ?></p>

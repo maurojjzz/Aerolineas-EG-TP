@@ -36,7 +36,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
                 <!-- Tarjeta con el Acordeón de Preguntas Frecuentes -->
                 <div class="card shadow-sm border-0 rounded-4 p-4 p-md-5 bg-white mb-4" id="faq">
-                    <h4 class="fw-bold text-primary mb-4"><i class="bi bi-question-circle me-2"></i>Preguntas Frecuentes</h4>
+                    <h2 class="h4 fw-bold text-primary mb-4"><i class="bi bi-question-circle me-2"></i>Preguntas Frecuentes</h2>
 
                     <div class="accordion accordion-flush" id="accordionFAQ">
                         
@@ -47,7 +47,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                     ¿Cómo puedo buscar y reservar un vuelo?
                                 </button>
                             </h2>
-                            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionFAQ">
+                            <div id="collapseOne" class="accordion-collapse collapse" role="region" aria-labelledby="headingOne" data-bs-parent="#accordionFAQ">
                                 <div class="accordion-body text-secondary">
                                     Para buscar un vuelo, ingresá a la sección de <strong>Vuelos</strong> desde el menú principal. Completá la ciudad de origen, destino y fecha estimada en nuestro buscador inteligente. Seleccioná el vuelo que mejor se adapte a tus necesidades y seguí los pasos indicados para confirmar tu reserva.
                                 </div>
@@ -61,7 +61,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                     ¿Cómo modifico o actualizo los datos de mi perfil?
                                 </button>
                             </h2>
-                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionFAQ">
+                            <div id="collapseTwo" class="accordion-collapse collapse" role="region" aria-labelledby="headingTwo" data-bs-parent="#accordionFAQ">
                                 <div class="accordion-body text-secondary">
                                     Haciendo clic sobre tu nombre de usuario en la esquina superior derecha, seleccioná la opción <strong>Mi Perfil</strong>. Allí podrás editar tu información personal, cambiar tu contraseña de forma segura y guardar los cambios al instante.
                                 </div>
@@ -75,7 +75,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                     ¿Qué debo hacer si olvidé mi contraseña?
                                 </button>
                             </h2>
-                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionFAQ">
+                            <div id="collapseThree" class="accordion-collapse collapse" role="region" aria-labelledby="headingThree" data-bs-parent="#accordionFAQ">
                                 <div class="accordion-body text-secondary">
                                     En la pantalla de inicio de sesión, hacé clic en el enlace <em>"¿Olvidaste tu contraseña?"</em>. Ingresá el correo electrónico registrado y te enviaremos un enlace de recuperación seguro para que puedas establecer una nueva contraseña.
                                 </div>
@@ -89,7 +89,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                     ¿Cómo puedo verificar el estado actual de mi vuelo o posibles demoras?
                                 </button>
                             </h2>
-                            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionFAQ">
+                            <div id="collapseFour" class="accordion-collapse collapse" role="region" aria-labelledby="headingFour" data-bs-parent="#accordionFAQ">
                                 <div class="accordion-body text-secondary">
                                     Podés consultar el estado en tiempo real de cualquier vuelo ingresando a la sección de novedades o buscando el número de vuelo en nuestro buscador para conocer si hay reprogramaciones, demoras o cambios en la puerta de embarque.
                                 </div>
@@ -103,7 +103,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                     ¿Qué cantidad y peso de equipaje tengo permitido llevar?
                                 </button>
                             </h2>
-                            <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#accordionFAQ">
+                            <div id="collapseFive" class="accordion-collapse collapse" role="region" aria-labelledby="headingFive" data-bs-parent="#accordionFAQ">
                                 <div class="accordion-body text-secondary">
                                     El equipaje permitido depende de la tarifa seleccionada al momento de comprar tu pasaje. Por lo general, se incluye una mochila o bolso de mano pequeño que entra bajo el asiento delantero, y podés sumar equipaje de mano o bodega según las condiciones de tu pasaje.
                                 </div>
@@ -117,7 +117,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                     ¿Con cuánta anticipación debo presentarme en el aeropuerto?
                                 </button>
                             </h2>
-                            <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix" data-bs-parent="#accordionFAQ">
+                            <div id="collapseSix" class="accordion-collapse collapse" role="region" aria-labelledby="headingSix" data-bs-parent="#accordionFAQ">
                                 <div class="accordion-body text-secondary">
                                     Para vuelos nacionales te recomendamos llegar al menos 2 horas antes de la hora de salida programada. Para vuelos internacionales, sugerimos estar en el aeropuerto con 3 horas de anticipación para realizar el despacho de equipaje y los controles de seguridad sin apuros.
                                 </div>
@@ -131,7 +131,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                     ¿Cómo y cuándo puedo realizar el check-in online?
                                 </button>
                             </h2>
-                            <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven" data-bs-parent="#accordionFAQ">
+                            <div id="collapseSeven" class="accordion-collapse collapse" role="region" aria-labelledby="headingSeven" data-bs-parent="#accordionFAQ">
                                 <div class="accordion-body text-secondary">
                                     El check-in digital se habilita entre 48 y 2 horas antes de la salida de tu vuelo. Podés realizarlo ingresando a la sección de tus reservas o vuelos, lo que te permitirá obtener tu tarjeta de embarque digital y ahorrar tiempo en el aeropuerto.
                                 </div>
@@ -145,7 +145,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                     ¿Puedo cambiar la fecha o cancelar mi pasaje?
                                 </button>
                             </h2>
-                            <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEight" data-bs-parent="#accordionFAQ">
+                            <div id="collapseEight" class="accordion-collapse collapse" role="region" aria-labelledby="headingEight" data-bs-parent="#accordionFAQ">
                                 <div class="accordion-body text-secondary">
                                     Sí, las modificaciones o cancelaciones dependen de las condiciones de la tarifa que adquiriste. Podés revisar los detalles de flexibilidad y posibles penalidades ingresando al detalle de tu reserva desde tu perfil de usuario.
                                 </div>
@@ -159,7 +159,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                     ¿Qué documentación necesito presentar para abordar el vuelo?
                                 </button>
                             </h2>
-                            <div id="collapseNine" class="accordion-collapse collapse" aria-labelledby="headingNine" data-bs-parent="#accordionFAQ">
+                            <div id="collapseNine" class="accordion-collapse collapse" role="region" aria-labelledby="headingNine" data-bs-parent="#accordionFAQ">
                                 <div class="accordion-body text-secondary">
                                     Para vuelos nacionales debés presentar tu DNI físico vigente. Para vuelos internacionales, es obligatorio contar con tu pasaporte al día, además de las visas o certificados sanitarios que requiera el país de destino.
                                 </div>
@@ -173,7 +173,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                     ¿Puedo seleccionar mi asiento con anticipación?
                                 </button>
                             </h2>
-                            <div id="collapseTen" class="accordion-collapse collapse" aria-labelledby="headingTen" data-bs-parent="#accordionFAQ">
+                            <div id="collapseTen" class="accordion-collapse collapse" role="region" aria-labelledby="headingTen" data-bs-parent="#accordionFAQ">
                                 <div class="accordion-body text-secondary">
                                     Sí, tenés la opción de elegir tu asiento preferido durante el proceso de compra del vuelo o ingresando posteriormente a los detalles de tu reserva, sujeto a la disponibilidad del avión.
                                 </div>
@@ -187,7 +187,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                     ¿Cómo puedo solicitar asistencia especial o silla de ruedas?
                                 </button>
                             </h2>
-                            <div id="collapseEleven" class="accordion-collapse collapse" aria-labelledby="headingEleven" data-bs-parent="#accordionFAQ">
+                            <div id="collapseEleven" class="accordion-collapse collapse" role="region" aria-labelledby="headingEleven" data-bs-parent="#accordionFAQ">
                                 <div class="accordion-body text-secondary">
                                     Si necesitás asistencia por movilidad reducida, atención médica especial o viajar con un perro guía, podés solicitarlo comunicándote a través de nuestro <a href="<?= url('index.php?pagina=contacto') ?>" class="text-primary text-decoration-underline">Formulario de Contacto</a> con al menos 48 horas hábiles de anticipación a tu vuelo.
                                 </div>
@@ -201,7 +201,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                     ¿Está permitido viajar con mascotas?
                                 </button>
                             </h2>
-                            <div id="collapseTwelve" class="accordion-collapse collapse" aria-labelledby="headingTwelve" data-bs-parent="#accordionFAQ">
+                            <div id="collapseTwelve" class="accordion-collapse collapse" role="region" aria-labelledby="headingTwelve" data-bs-parent="#accordionFAQ">
                                 <div class="accordion-body text-secondary">
                                     Sí, aceptamos mascotas (perros y gatos pequeños) en cabina bajo ciertas normativas de peso, contenedor y documentación veterinaria al día. Te sugerimos consultar las condiciones específicas de transporte animal antes de realizar tu reserva.
                                 </div>
@@ -215,7 +215,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                     ¿Dónde puedo descargar la factura o comprobante de mi compra?
                                 </button>
                             </h2>
-                            <div id="collapseThirteen" class="accordion-collapse collapse" aria-labelledby="headingThirteen" data-bs-parent="#accordionFAQ">
+                            <div id="collapseThirteen" class="accordion-collapse collapse" role="region" aria-labelledby="headingThirteen" data-bs-parent="#accordionFAQ">
                                 <div class="accordion-body text-secondary">
                                     Una vez confirmado el pago de tu vuelo, el comprobante y los detalles de la factura se envían automáticamente a tu correo electrónico registrado. También podés solicitarlos o visualizarlos desde el historial de transacciones en tu perfil.
                                 </div>
@@ -229,7 +229,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                     ¿Cómo se aplican los códigos de descuento o promociones?
                                 </button>
                             </h2>
-                            <div id="collapseFourteen" class="accordion-collapse collapse" aria-labelledby="headingFourteen" data-bs-parent="#accordionFAQ">
+                            <div id="collapseFourteen" class="accordion-collapse collapse" role="region" aria-labelledby="headingFourteen" data-bs-parent="#accordionFAQ">
                                 <div class="accordion-body text-secondary">
                                     Si disponés de un código promocional, podrás ingresarlo en el campo habilitado dentro del resumen de tu compra antes de confirmar el pago, aplicando el descuento de manera automática sobre la tarifa base.
                                 </div>
@@ -241,7 +241,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
                 <!-- Tarjeta de llamada a la acción (Contacto) -->
                 <div class="card shadow-sm border-0 rounded-4 p-4 text-center bg-white">
-                    <h5 class="fw-bold text-dark mb-2">¿No encontraste lo que buscabas?</h5>
+                    <h2 class="h5 fw-bold text-dark mb-2">¿No encontraste lo que buscabas?</h2>
                     <p class="text-secondary mb-3">Estamos para ayudarte a resolver cualquier duda o inconveniente.</p>
                     <div>
                         <a href="<?= url('index.php?pagina=contacto') ?>" class="btn btn-primary px-4 py-2">

@@ -54,7 +54,7 @@ $conteos = [
     <?php require __DIR__ . '/../components/alertToast.php';  ?>
 
     <div class="titulo-cuadro text-center mb-4">
-        <h5 class="fw-bold">Vuela sin limites</h5>
+        <p class="h5 fw-bold">Vuela sin limites</p>
         <h2 >MIS <span>RESERVAS</span> </h2>
         <p>Consultá, confirmá o cancelá tus reservas fácilmente.</p>
     </div>
@@ -267,7 +267,7 @@ $conteos = [
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 rounded-4 shadow">
             <div class="modal-header border-0 pb-0">
-                <h5 class="modal-title fw-bold">Detalle de reserva</h5>
+                <h2 class="modal-title fw-bold h5">Detalle de reserva</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4" id="modalDetalleContenido">

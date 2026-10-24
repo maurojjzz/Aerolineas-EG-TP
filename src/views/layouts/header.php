@@ -91,4 +91,4 @@ require_once __DIR__ . '/../components/navLinks.php';
     const URL_LISTADO_CEOS = "<?= url('index.php?pagina=ceos&seccion=listado') ?>";
     const URL_LISTADO_PROMOCIONES = "<?= url('index.php?pagina=promociones&seccion=listado') ?>";
 </script>
-<script src="<?= url('../../../public/js/admin/notificaciones.js') ?>"></script>
+<script src="<?= url('public/js/admin/notificaciones.js') ?>"></script>

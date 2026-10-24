@@ -293,3 +293,47 @@ ul .nav-item .nav-link:hover {
     border: none !important;
     box-shadow: none !important;
 }
+/* ── Filtros del listado de aerolíneas (antes inline en aerolineaListado.php) ── */
+.filtros-aerolineas {
+    width: 100%;
+}
+
+@media (min-width: 576px) {
+    .filtros-aerolineas {
+        width: auto;
+    }
+}
+
+.filtros-aerolineas-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1050;
+    background: rgba(3, 31, 71, 0.25);
+}
+
+.filtros-aerolineas-panel {
+    position: fixed;
+    z-index: 1055;
+    width: 340px;
+    max-width: calc(100vw - 1rem);
+    max-height: calc(100vh - 1rem);
+    overflow-y: auto;
+}
+
+@media (max-width: 575.98px) {
+    .filtros-aerolineas-panel {
+        left: 0.5rem !important;
+        right: 0.5rem;
+        top: auto !important;
+        bottom: 0.5rem;
+        width: auto !important;
+        max-width: none;
+    }
+}
+
+/* Hover en tabs inactivos para que se vean sobre el header azul (antes inline) */
+.nav-tabs .nav-link:not(.active):hover {
+    background-color: rgba(13, 110, 253, 0.08) !important;
+    color: #0d6efd !important;
+    border-color: #0d6efd #0d6efd transparent !important;
+}

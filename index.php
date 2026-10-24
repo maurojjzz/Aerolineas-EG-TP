@@ -183,11 +183,6 @@ switch ($pagina) {
     case 'contacto':
         require __DIR__ . '/src/views/contacto.php';
         break;
-        
-    case 'enviar-contacto':
-        // Controlador para procesar el formulario de contacto
-        // $ctrl->procesarFormularioContacto(); 
-        break;
 
     default:
         http_response_code(404);

@@ -40,9 +40,14 @@ if (!$novedad || $novedad['estado'] !== 'publicada') {
             <div class="col-lg-8">
                 
                 <!-- Botón volver -->
-                <a href="<?= url('index.php?pagina=cliente-novedades') ?>" class="text-decoration-none d-inline-flex align-items-center gap-1 mb-4 text-muted">
-                    <i class="bi bi-arrow-left"></i> Volver a novedades
-                </a>
+                <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
+                    <a href="<?= url('index.php?pagina=cliente-novedades') ?>" class="text-decoration-none d-inline-flex align-items-center gap-1 text-muted">
+                        <i class="bi bi-arrow-left"></i> Volver a novedades
+                    </a>
+                    <a href="<?= url('index.php?pagina=inicio') ?>" class="text-decoration-none d-inline-flex align-items-center gap-1 text-muted">
+                        <i class="bi bi-house-door"></i> Volver al inicio
+                    </a>
+                </div>
 
                 <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
                     <?php if (!empty($novedad['imagen'])): ?>

@@ -103,6 +103,7 @@ $esCeo = ($rolActual === 'ceo');
                     <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11 mb-3">
                         <label class="form-label-t" for="tipoDocumento">Tipo de Documento:</label>
                         <select name="tipoDocumento" id="tipoDocumento" class="form-select ctm-inp" required>
+                            <option value="">Seleccioná un tipo de documento</option>
                             <?php foreach ($tiposDoc as $td): ?>
                                 <option value="<?= $td ?>" <?= (strcasecmp(trim($usuario['tipoDocumento'] ?? ''), $td) === 0) ? 'selected' : '' ?>>
                                     <?= $td ?>
@@ -167,6 +168,7 @@ $esCeo = ($rolActual === 'ceo');
                     <div class="form-group d-flex flex-column gap-1 col-sm-5 col-11 mb-3">
                         <label class="form-label-t" for="selectRol">Rol de Usuario:</label>
                         <select name="rol" id="selectRol" class="form-select ctm-inp" required>
+                            <option value="">Seleccioná un rol</option>
                             <option value="cliente" <?= $rolActual === 'cliente' ? 'selected' : '' ?>>Cliente</option>
                             <option value="ceo" <?= $rolActual === 'ceo' ? 'selected' : '' ?>>CEO Aerolínea</option>
                         </select>
@@ -229,7 +231,7 @@ $esCeo = ($rolActual === 'ceo');
                 <div class="d-flex flex-column border border-2 border-primary-subtle w-100 rounded-3 shadow" id="recomendacionesBox">
                     <div class="tituloBoxErrores bg-primary-subtle border-bottom d-flex flex-column align-items-center justify-content-center">
                         <img src="<?= url('public/img/icons/luz.png') ?>" alt="icono recomendaciones" class="img-fluid my-2" style="width: 28px; height: 28px;">
-                        <h5 class="text-primary">Recomendaciones</h5>
+                        <h3 class="h5 text-primary">Recomendaciones</h3>
                         <p class="text-break text-center px-2">Tené en cuenta estos puntos antes de guardar los cambios</p>
                     </div>
 

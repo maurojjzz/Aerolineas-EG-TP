@@ -11,6 +11,14 @@ $accion = $_GET['accion'] ?? '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+    $tokenPost    = $_POST['csrf_token'] ?? '';
+    $tokenSession = $_SESSION['csrf_token'] ?? '';
+
+    if (empty($tokenPost) || empty($tokenSession) || !hash_equals($tokenSession, $tokenPost)) {
+        flash_set('error', 'Token de seguridad inválido o sesión expirada.');
+        redirect(rolActual() === 'ceo' ? 'index.php?pagina=ceo' : 'index.php?pagina=aerolinea&seccion=listado');
+    }
+
     switch ($accion) {
         case 'crear':
             if (!puedeCrearAerolinea()) {

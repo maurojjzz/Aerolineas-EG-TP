@@ -9,16 +9,52 @@ $enviadoExitoso = false;
 
 // Si se envió el formulario por POST, procesamos acá mismo
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nombre = trim($_POST['nombre'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    $asunto = trim($_POST['asunto'] ?? '');
+    $tokenPost    = $_POST['csrf_token'] ?? '';
+    $tokenSession = $_SESSION['csrf_token'] ?? '';
+
+    if (empty($tokenPost) || empty($tokenSession) || !hash_equals($tokenSession, $tokenPost)) {
+        flash_set('error', 'Token de seguridad inválido o sesión expirada. Volvé a intentarlo.');
+        redirect('index.php?pagina=contacto');
+    }
+
+    $nombre  = trim($_POST['nombre'] ?? '');
+    $email   = trim($_POST['email'] ?? '');
+    $asunto  = trim($_POST['asunto'] ?? '');
     $mensaje = trim($_POST['mensaje'] ?? '');
 
-    // Acá harías la lógica (enviar mail, guardar en BD, etc.)
-    
-    // Redirigimos a la misma página con el parámetro enviado=1 para mostrar el cartel verde y evitar reenvíos al refrescar
-    header('Location: ' . url('index.php?pagina=contacto&enviado=1'));
-    exit;
+    $motivosValidos = ['reservas', 'equipaje', 'facturacion', 'reclamos', 'otro'];
+    $errores = [];
+
+    if ($nombre === '' || mb_strlen($nombre) > 120) {
+        $errores[] = 'Ingresá un nombre válido (máximo 120 caracteres).';
+    }
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errores[] = 'Ingresá un correo electrónico válido.';
+    }
+
+    if (!in_array($asunto, $motivosValidos, true)) {
+        $errores[] = 'Seleccioná el motivo de tu consulta.';
+    }
+
+    if (mb_strlen($mensaje) < 10) {
+        $errores[] = 'Contanos un poco más: el mensaje debe tener al menos 10 caracteres.';
+    } elseif (mb_strlen($mensaje) > 5000) {
+        $errores[] = 'El mensaje no puede superar los 5000 caracteres.';
+    }
+
+    if ($errores) {
+        flash_set('error', implode(' ', $errores));
+        redirect('index.php?pagina=contacto');
+    }
+
+    if (EmailService::enviarConsultaContacto($nombre, $email, $asunto, $mensaje)) {
+        flash_set('success', '¡Tu mensaje fue enviado con éxito! Nos pondremos en contacto pronto.');
+        redirect('index.php?pagina=contacto');
+    }
+
+    flash_set('error', 'No pudimos enviar tu mensaje en este momento. Intentá nuevamente o escribinos a soporte@volare.com.');
+    redirect('index.php?pagina=contacto');
 }
 ?>
 <!DOCTYPE html>
@@ -53,15 +89,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <!-- Tarjeta del Formulario -->
                 <div class="card shadow-sm border-0 rounded-4 p-4 p-md-5 bg-white mb-4">
-                    
+
+                    <?php require __DIR__ . '/components/alertToast.php'; ?>
+
                     <?php if (isset($_GET['enviado']) && $_GET['enviado'] == '1'): ?>
                         <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
                             <i class="bi bi-check-circle-fill me-2"></i>¡Tu mensaje fue enviado con éxito! Nos pondremos en contacto pronto.
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
                         </div>
                     <?php endif; ?>
 
                     <form action="<?= url('index.php?pagina=contacto') ?>" method="POST" novalidate>
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
 
                         <div class="row">
                             <!-- Nombre y Apellido -->

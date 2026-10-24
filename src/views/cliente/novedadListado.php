@@ -36,7 +36,13 @@ if (!in_array($tabActual, ['novedades', 'promociones'], true)) {
     <?php require __DIR__ . '/../layouts/header.php'; ?>
 
     <div class="container pb-5">
-        
+
+        <div class="d-flex justify-content-start pt-3">
+            <a href="<?= url('index.php?pagina=inicio') ?>" class="text-decoration-none d-inline-flex align-items-center gap-1 text-muted">
+                <i class="bi bi-arrow-left"></i> Volver al inicio
+            </a>
+        </div>
+
         <div class="titulo-cuadro text-center mb-4">
             <h1 >NOVEDADES Y <span>PROMOCIONES</span> </h1>
         </div>
@@ -80,7 +86,7 @@ if (!in_array($tabActual, ['novedades', 'promociones'], true)) {
                                         <span class="badge text-bg-primary text-capitalize"><?= htmlspecialchars($n['categoria']) ?></span>
                                         <small class="text-muted ms-2"><?= date('d/m/Y', strtotime($n['fechaPublicacion'])) ?></small>
                                     </div>
-                                    <h5 class="card-title fw-bold"><?= htmlspecialchars($n['titulo']) ?></h5>
+                                    <h2 class="card-title fw-bold h5"><?= htmlspecialchars($n['titulo']) ?></h2>
                                     <p class="card-text text-muted small flex-grow-1"><?= htmlspecialchars($n['subtitulo'] ?? '') ?></p>
                                     <a href="<?= url('index.php?pagina=cliente-novedad-detalle&id=' . $n['idNovedad']) ?>" class="btn btn-outline-primary btn-sm mt-3 align-self-start">Leer más</a>
                                 </div>

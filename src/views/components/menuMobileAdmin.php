@@ -83,26 +83,6 @@
                 </a>
             </li>
 
-            <!-- <li class="nav-item">
-                <a
-                    class="nav-link rounded-3"
-                    href="<?= url('index.php?pagina=reportes&seccion=listado') ?>"
-                >
-                    <img src="<?= url('public/img/icons/reporteSidebar.png') ?>" class="iconos-sidebar" alt="">
-                    <span>Reportes</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a
-                    class="nav-link rounded-3"
-                    href="<?= url('index.php?pagina=configuracion') ?>"
-                >
-                    <img src="<?= url('public/img/icons/configuracionSidebar.png') ?>" class="iconos-sidebar" alt="">
-                    <span>Configuraciones</span>
-                </a>
-            </li> -->
-
         </ul>
     </div>
 </div>

@@ -67,14 +67,14 @@ function badgeEstadoPromoDetalle(string $estado): string {
                 </div>
 
                 <div class="mb-4">
-                    <h5 class="fw-semibold text-muted mb-2" style="font-size:0.9rem; text-transform:uppercase; letter-spacing:1px;">Descripción</h5>
+                    <h2 class="h5 fw-semibold text-muted mb-2" style="font-size:0.9rem; text-transform:uppercase; letter-spacing:1px;">Descripción</h2>
                     <p class="text-dark m-0" style="line-height:1.6;">
                         <?= !empty($promo['descripcion']) ? nl2br(htmlspecialchars($promo['descripcion'])) : 'Sin descripción detallada.' ?>
                     </p>
                 </div>
 
                 <div>
-                    <h5 class="fw-semibold text-muted mb-2" style="font-size:0.9rem; text-transform:uppercase; letter-spacing:1px;">Condiciones</h5>
+                    <h2 class="h5 fw-semibold text-muted mb-2" style="font-size:0.9rem; text-transform:uppercase; letter-spacing:1px;">Condiciones</h2>
                     <div class="bg-light rounded-3 p-3">
                         <p class="text-muted m-0" style="font-size:0.9rem; line-height:1.5;">
                             <?= !empty($promo['condiciones']) ? nl2br(htmlspecialchars($promo['condiciones'])) : 'Sin condiciones especificadas.' ?>
@@ -96,7 +96,7 @@ function badgeEstadoPromoDetalle(string $estado): string {
 
             <!-- Tarjeta de Fechas -->
             <div class="bg-white shadow rounded-3 p-4 mb-4">
-                <h5 class="fw-semibold text-muted mb-3" style="font-size:0.9rem; text-transform:uppercase; letter-spacing:1px;">Vigencia</h5>
+                <h2 class="h5 fw-semibold text-muted mb-3" style="font-size:0.9rem; text-transform:uppercase; letter-spacing:1px;">Vigencia</h2>
                 
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <span class="text-muted"><i class="bi bi-calendar-event me-1"></i> Inicio</span>
@@ -111,7 +111,7 @@ function badgeEstadoPromoDetalle(string $estado): string {
 
             <!-- Tarjeta de Aerolínea / CEO -->
             <div class="bg-white shadow rounded-3 p-4">
-                <h5 class="fw-semibold text-muted mb-3" style="font-size:0.9rem; text-transform:uppercase; letter-spacing:1px;">Información del Creador</h5>
+                <h2 class="h5 fw-semibold text-muted mb-3" style="font-size:0.9rem; text-transform:uppercase; letter-spacing:1px;">Información del Creador</h2>
                 
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <span class="text-muted">Aerolínea</span>

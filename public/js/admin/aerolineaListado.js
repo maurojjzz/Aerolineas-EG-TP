@@ -7,11 +7,7 @@
 
         const btn = e.target.closest(".btn-accion");
         if (btn) {
-            const id     = btn.dataset.id;
-            const accion = btn.dataset.accion;
-            if (accion === "ver")      console.log("ver", id);
-            if (accion === "editar")   console.log("editar", id);
-            if (accion === "eliminar") console.log("eliminar", id);
+            // Los enlaces de acción navegan por su href; no deben abrir el detalle.
             return;
         }
 

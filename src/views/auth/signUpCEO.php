@@ -32,7 +32,7 @@
             <div class="d-none d-lg-flex col-lg-4  mt-5 pt-3  h-100">
                 
                 <div class="hero-content text-left mt-5 user-select-none">
-                    <h5 class="fw-bold">Volaré</h5>
+                    <p class="h5 fw-bold">Volaré</p>
                     <h2 >SOLICITA TU <span>REGISTRO</span> COMO CEO  </h2>
                     <p class="fs-6">Se parte de nuestra comunidad de aerolineas. Completa el formulario y nuestro equipo revisara tu solicitud antes de activar tu cuenta.</p>
                 </div>
@@ -96,7 +96,7 @@
                         
                         <div class="form-group d-flex flex-column w-100">
                             <label class="form-label-t" id="labFechaNacimiento" for="fecha_nacimiento">Fecha de nacimiento:</label>
-                            <input type="date" name="fecha_nacimiento" id="fecha_nacimiento" class="form-control ctm-inp" required placeholder="Ingrese su fecha de nacimiento" max="<?= date('Y-m-d', strtotime('-18 years')) ?>">
+                            <input type="date" name="fecha_nacimiento" id="fecha_nacimiento" class="form-control ctm-inp" required max="<?= date('Y-m-d', strtotime('-18 years')) ?>">
                             <p id="infoFechaNacimiento" class="text-break text-center form-text-info text-danger fs-6"></p>
                         </div>
                     </div>
@@ -125,7 +125,7 @@
                         <div class="form-group d-flex flex-column p-0  w-100 ">
                             <label class="form-label-t" id="labAerolinea" for="aerolinea">Aerolinea solicitada:</label>
                             <div class="input-group">
-                                <select class="form-select w-100" name="aerolinea" id="aerolinea" placeholder="Seleccione su aerolinea">
+                                <select class="form-select w-100" name="aerolinea" id="aerolinea">
                                     <option value="" disabled selected>Seleccione su aerolinea</option>
                                     <?php foreach($aerolineas as $aero): 
                                         if($aero->getActivo() == 1): ?>

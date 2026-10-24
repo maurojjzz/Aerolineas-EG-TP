@@ -436,7 +436,7 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
                 <div class="tab-pane fade <?= $tabActiva === 'vuelos' ? 'show active' : '' ?>" id="tab-vuelos">
 
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3 mb-3">
-                        <h4 class="m-0 fs-5 fw-bold">Vuelos de la aerolínea</h4>
+                        <h3 class="m-0 fs-5 fw-bold">Vuelos de la aerolínea</h3>
 
                         <form method="GET" action="index.php" class="d-flex flex-column flex-sm-row gap-2 align-items-stretch">
                             <input type="hidden" name="pagina" value="aerolinea">

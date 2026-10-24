@@ -288,7 +288,7 @@ $urlReservas = static function (int $pagina) use ($id): string {
                 <div class="tab-pane fade <?= $tabActiva === 'reservas' ? 'show active' : '' ?>" id="tab-reservas">
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-3">
                         <div>
-                            <h4 class="m-0 fs-5 fw-bold">Historial de reservas</h4>
+                            <h3 class="m-0 fs-5 fw-bold">Historial de reservas</h3>
                             <p class="text-muted m-0" style="font-size:0.82rem;">
                                 Todas las reservas asociadas a <?= htmlspecialchars($u['nombre'] . ' ' . $u['apellido']) ?>.
                             </p>

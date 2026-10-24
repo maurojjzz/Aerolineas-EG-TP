@@ -313,7 +313,7 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
         <div class="bg-white rounded-4 shadow p-3 p-lg-4">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
                 <div>
-                    <h4 class="fw-bold m-0 fs-5">Compras confirmadas</h4>
+                    <h3 class="h4 fw-bold m-0 fs-5">Compras confirmadas</h3>
                     <p class="text-muted m-0 historial-resultado">
                         <?= $totalFiltrado ?> compra<?= $totalFiltrado !== 1 ? 's' : '' ?> encontrada<?= $totalFiltrado !== 1 ? 's' : '' ?>
                         <?= $totalFiltrado !== $totalCompras ? 'de ' . $totalCompras . ' en total' : '' ?>
@@ -487,11 +487,11 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
     </div>
 </div>
 
-<div class="modal fade" id="modalDetalleCompra" tabindex="-1" aria-labelledby="modalDetalleCompraLabel" aria-hidden="true">
+<div class="modal fade" id="modalDetalleCompra" tabindex="-1" role="dialog" aria-labelledby="modalDetalleCompraLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 rounded-4 shadow">
             <div class="modal-header border-0 pb-0">
-                <h5 class="modal-title fw-bold" id="modalDetalleCompraLabel">Detalle de compra</h5>
+                <h2 class="modal-title fw-bold h5" id="modalDetalleCompraLabel">Detalle de compra</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body p-4" id="modalDetalleCompraContenido"></div>

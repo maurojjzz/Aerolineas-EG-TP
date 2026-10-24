@@ -324,7 +324,7 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header border-0">
-                        <h5 class="modal-title fw-bold">Eliminar vuelo</h5>
+                        <h2 class="modal-title fw-bold h5">Eliminar vuelo</h2>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
@@ -408,6 +408,6 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
 
         });
         </script>
+    <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
     </body>
 </html>
-<?php require_once './src/views/layouts/footer.php'; ?>

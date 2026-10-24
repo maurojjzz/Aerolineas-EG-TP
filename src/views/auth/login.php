@@ -22,7 +22,7 @@
             <div class="d-none d-lg-flex col-lg-5  mt-1 pt-3  h-100">
                 
                 <div class="hero-content text-left user-select-none">
-                    <h5 class="fw-bold">Volaré</h5>
+                    <p class="h5 fw-bold">Volaré</p>
                     <h2 >DONDE CADA <span>VIAJE</span> COMIENZA</h2>
                     <p>Conectamos personas y destinos con una experiencia rapida, segura y confiable.</p>
                 </div>

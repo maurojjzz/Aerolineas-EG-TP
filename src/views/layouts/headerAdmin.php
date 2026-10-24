@@ -125,16 +125,16 @@ if (isset($link) && $link instanceof mysqli) {
                     data-bs-toggle="dropdown"
                     aria-expanded="false">
 
-                <div class="pfp-icon d-flex align-items-center justify-content-center rounded-circle">
+                <span class="pfp-icon d-flex align-items-center justify-content-center rounded-circle">
                     <?= strtoupper(substr($usuario['nombre'] ?? 'A', 0, 1) . substr($usuario['apellido'] ?? 'J', 0, 1)) ?>
-                </div>
+                </span>
 
-                <div class="d-none d-md-flex flex-column align-items-start justify-content-center gap-0 ctm-user-text">
-                    <p class="m-0 p-0 ctm-rol"><?= htmlspecialchars(ucfirst($rol)) ?></p>
-                    <p class="m-0 p-0 ctm-name">
+                <span class="d-none d-md-flex flex-column align-items-start justify-content-center gap-0 ctm-user-text">
+                    <span class="d-block m-0 p-0 ctm-rol"><?= htmlspecialchars(ucfirst($rol)) ?></span>
+                    <span class="d-block m-0 p-0 ctm-name">
                         <?= htmlspecialchars($usuario['nombre'] ?? '') . ' ' . htmlspecialchars($usuario['apellido'] ?? '') ?>
-                    </p>
-                </div>
+                    </span>
+                </span>
 
                 <span class="down-arrow" style="font-size:1.5rem;font-weight:500;">⌄</span>
             </button>
@@ -184,4 +184,4 @@ if (isset($link) && $link instanceof mysqli) {
     const URL_LISTADO_CEOS = "<?= url('index.php?pagina=ceos&seccion=listado') ?>";
     const URL_LISTADO_PROMOCIONES = "<?= url('index.php?pagina=promociones&seccion=listado') ?>";
 </script>
-<script src="<?= url('../../../public/js/admin/notificaciones.js') ?>"></script>
+<script src="<?= url('public/js/admin/notificaciones.js') ?>"></script>

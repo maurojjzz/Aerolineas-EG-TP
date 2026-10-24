@@ -194,7 +194,7 @@ $stats =$ctrl->obtenerEstadisticas();
                             <tr class="fila-detalle d-none" id="detalle-<?= $n['idNovedad'] ?>">
                                 <td colspan="6" class="p-3 bg-light">
                                     <div class="px-3 py-2 bg-white rounded border">
-                                        <h6 class="fw-bold mb-1">Contenido completo:</h6>
+                                        <h4 class="h6 fw-bold mb-1">Contenido completo:</h4>
                                         <p class="m-0 text-secondary" style="font-size: 0.9rem; white-space: pre-line;"><?= nl2br(htmlspecialchars($n['contenido'])) ?></p>
                                     </div>
                                 </td>
@@ -270,7 +270,7 @@ $stats =$ctrl->obtenerEstadisticas();
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header border-0">
-                    <h5 class="modal-title fw-bold">Eliminar Novedad</h5>
+                    <h2 class="modal-title fw-bold h5">Eliminar Novedad</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">

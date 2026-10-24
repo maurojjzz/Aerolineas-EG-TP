@@ -599,7 +599,7 @@ $textoVacio = !$esIdaVuelta
 </main>
 
 <!-- Filtros en mobile -->
-<div class="offcanvas offcanvas-bottom filtros-offcanvas" tabindex="-1" id="filtrosMobile" aria-labelledby="filtrosMobileLabel">
+<div class="offcanvas offcanvas-bottom filtros-offcanvas" tabindex="-1" id="filtrosMobile" role="dialog" aria-labelledby="filtrosMobileLabel">
     <div class="offcanvas-header">
         <h2 class="offcanvas-title h5" id="filtrosMobileLabel">Filtros</h2>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar filtros"></button>

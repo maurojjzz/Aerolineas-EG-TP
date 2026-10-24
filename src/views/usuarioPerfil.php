@@ -91,6 +91,7 @@ $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold" for="tipoDocumento" style="font-size:0.9rem;">Tipo de Documento *</label>
                                 <select name="tipoDocumento" id="tipoDocumento" class="form-select" required>
+                                    <option value="">Seleccioná un tipo de documento</option>
                                     <?php foreach ($tiposDoc as $td): ?>
                                         <option value="<?= $td ?>" <?= (strcasecmp(trim($perfil['tipoDocumento'] ?? ''),$td) === 0) ? 'selected' : '' ?>>
                                             <?= $td ?>
@@ -142,7 +143,7 @@ $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
 
                         <!-- Fila de Cambio de Contraseña (Opcional) -->
                         <hr >
-                        <h5 class="fw-bold fs-6 text-primary">Cambiar Contraseña (Opcional)</h5>
+                        <h3 class="h5 fw-bold fs-6 text-primary">Cambiar Contraseña (Opcional)</h3>
                         
                         <div class="row">
                             <div class="col-md-6">

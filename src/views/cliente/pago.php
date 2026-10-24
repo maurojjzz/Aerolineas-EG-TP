@@ -188,7 +188,7 @@ $fechaLlegada = date('d/m/Y', strtotime($reserva['fechaHoraLlegadaVuelo']));
             <div class="bg-white rounded-4 shadow p-4">
 
                 <!-- Método de pago -->
-                <h5 class="fw-bold mb-3">Método de pago</h5>
+                <h2 class="h5 fw-bold mb-3">Método de pago</h2>
                 <div class="d-flex gap-2 flex-wrap mb-4">
                     <button class="metodo-btn selected" onclick="seleccionarMetodo(this,'tarjeta')" type="button">
                         💳 Tarjeta de crédito
@@ -299,7 +299,7 @@ $fechaLlegada = date('d/m/Y', strtotime($reserva['fechaHoraLlegadaVuelo']));
         <div class="col-12 col-lg-5">
             <div class="bg-white rounded-4 shadow p-4" style="position:sticky;top:20px;">
 
-                <h5 class="fw-bold mb-3">🧾 Resumen del pedido</h5>
+                <h2 class="h5 fw-bold mb-3">🧾 Resumen del pedido</h2>
 
                 <!-- Aerolínea -->
                 <div class="d-flex align-items-center gap-2 mb-3">

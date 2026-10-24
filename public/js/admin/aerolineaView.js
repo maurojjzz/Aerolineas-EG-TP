@@ -86,6 +86,13 @@ const cuadroFoto = document.getElementById("logoPreview");
 if (logoInput && cuadroFoto) {
     const cuadroOg = cuadroFoto.innerHTML;
 
+    // El cuadro de previsualización abre el selector de archivos.
+    // Antes dependía de estar dentro del <label>, lo que generaba HTML inválido.
+    cuadroFoto.addEventListener("click", function (e) {
+        if (e.target.closest("#cambiarLogo, #quitarLogo")) return;
+        logoInput.click();
+    });
+
     logoInput.addEventListener("change", function () {
         const archivo = logoInput.files[0];
 

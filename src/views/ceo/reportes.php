@@ -200,15 +200,6 @@ $tabs = [
 
             <?php require __DIR__ . '/../components/alertToast.php'; ?>
 
-<style>
-    /* Hover en tabs inactivos para que se vean sobre header azul */
-    .nav-tabs .nav-link:not(.active):hover {
-        background-color: rgba(13, 110, 253, 0.08) !important;
-        color: #0d6efd !important;
-        border-color: #0d6efd #0d6efd transparent !important;
-    }
-</style>
-
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=ceo') ?>">Mi Aerolínea</a></li>

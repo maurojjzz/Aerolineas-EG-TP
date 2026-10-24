@@ -24,7 +24,7 @@ require_once __DIR__ . '/navLinks.php';
         </div>
 
         <div class="offcanvas-body d-flex flex-column">
-            <h2 class="visually-hidden h5" id="offcanvasNavbarLabel">Menú de navegación</h2>
+            <span class="visually-hidden" id="offcanvasNavbarLabel">Menú de navegación</span>
 
             <?php if ($isLoggedIn): ?>
                 <div class="mobile-user-box mb-3">

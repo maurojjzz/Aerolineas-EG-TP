@@ -33,19 +33,19 @@ if (session_status() === PHP_SESSION_NONE) {
                     </div>
 
                     <div class="text-secondary">
-                        <h5 class="fw-bold text-dark mt-4">1. Recopilación de Información</h5>
+                        <h3 class="h5 fw-bold text-dark mt-4">1. Recopilación de Información</h3>
                         <p>En <strong>Volaré</strong> recopilamos información personal que nos proporcionás directamente al registrarte, actualizar tu perfil, realizar una reserva de vuelo o comunicarte con nuestro soporte (como tu nombre, correo electrónico, DNI/pasaporte y datos de contacto).</p>
 
-                        <h5 class="fw-bold text-dark mt-4">2. Uso de los Datos</h5>
+                        <h3 class="h5 fw-bold text-dark mt-4">2. Uso de los Datos</h3>
                         <p>Utilizamos tus datos personales exclusivamente para procesar tus reservas de pasajes, emitir comprobantes, gestionar la seguridad de tu cuenta, enviar notificaciones importantes sobre el estado de tus vuelos y responder a tus consultas de asistencia.</p>
 
-                        <h5 class="fw-bold text-dark mt-4">3. Protección y Seguridad</h5>
+                        <h3 class="h5 fw-bold text-dark mt-4">3. Protección y Seguridad</h3>
                         <p>Implementamos medidas de seguridad técnicas y organizativas adecuadas para proteger tu información personal contra accesos no autorizados, alteraciones, divulgación o destrucción indebida.</p>
 
-                        <h5 class="fw-bold text-dark mt-4">4. Compartir Información</h5>
+                        <h3 class="h5 fw-bold text-dark mt-4">4. Compartir Información</h3>
                         <p>No comercializamos ni alquilamos tus datos personales a terceros. La información solo se comparte cuando es estrictamente necesario para cumplir con regulaciones de transporte aéreo o procesamientos de pago autorizados.</p>
 
-                        <h5 class="fw-bold text-dark mt-4">5. Tus Derechos</h5>
+                        <h3 class="h5 fw-bold text-dark mt-4">5. Tus Derechos</h3>
                         <p>Tenés derecho a acceder, rectificar o solicitar la eliminación de tus datos personales ingresando a la configuración de tu perfil o comunicándote directamente a través de nuestro formulario de contacto.</p>
                     </div>
 
