@@ -1,6 +1,9 @@
 <?php
 
 date_default_timezone_set('America/Argentina/Buenos_Aires');
+ini_set('display_errors', '0');
+ini_set('display_startup_errors', '0');
+ini_set('log_errors', '1');
 
 /*
  * Estado de aprobación de CEOs sin cambios de esquema:
@@ -85,6 +88,71 @@ function flash_get(string $key, $default = null) {
     return $value;
 }
 
+function solicitudEsJson(): bool {
+    $accept = strtolower((string)($_SERVER['HTTP_ACCEPT'] ?? ''));
+    $ruta = strtolower((string)($_SERVER['REQUEST_URI'] ?? ''));
+    foreach (headers_list() as $header) {
+        if (stripos($header, 'content-type: application/json') === 0) {
+            return true;
+        }
+    }
+    return str_contains($accept, 'application/json') || str_contains($ruta, '-json');
+}
+
+function registrarErrorAplicacion(string $tipo, string $detalle): void {
+    error_log(sprintf('[%s] %s', $tipo, $detalle));
+}
+
+function responderErrorAplicacion(int $status = 500, string $tipo = 'Error inesperado'): void {
+    registrarErrorAplicacion($tipo, 'Se mostró una respuesta genérica al usuario.');
+    http_response_code($status);
+
+    if (solicitudEsJson()) {
+        if (!headers_sent()) {
+            header('Content-Type: application/json; charset=utf-8');
+        }
+        echo json_encode([
+            'success' => false,
+            'error' => 'Ocurrió un error inesperado. Intentá nuevamente más tarde.'
+        ], JSON_UNESCAPED_UNICODE);
+        return;
+    }
+
+    if (!headers_sent()) {
+        header('Content-Type: text/html; charset=utf-8');
+    }
+    require __DIR__ . '/../views/error500.php';
+}
+
+set_exception_handler(function (Throwable $exception): void {
+    registrarErrorAplicacion(
+        'Excepción no controlada',
+        $exception->getMessage() . ' en ' . $exception->getFile() . ':' . $exception->getLine()
+    );
+
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+
+    responderErrorAplicacion();
+});
+
+register_shutdown_function(function (): void {
+    $error = error_get_last();
+    if (!$error || !in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
+        return;
+    }
+
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+
+    registrarErrorAplicacion(
+        'Error fatal',
+        $error['message'] . ' en ' . $error['file'] . ':' . $error['line']
+    );
+    responderErrorAplicacion();
+});
+
 require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/policies.php';
-

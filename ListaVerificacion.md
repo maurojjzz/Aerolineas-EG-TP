@@ -61,8 +61,8 @@ Antes de entregar, revisá **cada punto** de esta lista. Si algo no se cumple, e
 
 ## 6. Idioma y textos
 
-- [ ] Todos los textos visibles están en español: botones, títulos, menús, placeholders.
-- [ ] Los mensajes de validación están en español ("El email es obligatorio", no "This field is required").
+- [X] Todos los textos visibles están en español: botones, títulos, menús, placeholders.
+- [X] Los mensajes de validación están en español ("El email es obligatorio", no "This field is required").
 - [ ] Las alertas y mensajes de error del framework están traducidos o interceptados.
 - [ ] Los mensajes de error de la base de datos nunca se muestran crudos al usuario.
 - [ ] Sin faltas de ortografía ni textos de prueba ("asdasd", "probando 123").
