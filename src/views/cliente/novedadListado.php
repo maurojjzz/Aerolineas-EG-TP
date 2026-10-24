@@ -52,12 +52,14 @@ if (!in_array($tabActual, ['novedades', 'promociones'], true)) {
         <ul class="nav nav-pills justify-content-center mb-4 gap-2">
             <li class="nav-item">
                 <a class="nav-link <?= $tabActual === 'novedades' ? 'active fw-bold' : 'bg-white text-dark border' ?>" 
+                   <?= $tabActual === 'novedades' ? 'aria-current="page"' : '' ?>
                    href="<?= url('index.php?pagina=cliente-novedades&tab=novedades') ?>">
                    📢 Novedades
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link <?= $tabActual === 'promociones' ? 'active fw-bold' : 'bg-white text-dark border' ?>" 
+                   <?= $tabActual === 'promociones' ? 'aria-current="page"' : '' ?>
                    href="<?= url('index.php?pagina=cliente-novedades&tab=promociones') ?>">
                    🏷️ Promociones
                 </a>
@@ -76,7 +78,7 @@ if (!in_array($tabActual, ['novedades', 'promociones'], true)) {
                         <div class="col-md-4">
                             <div class="card border-0 shadow-sm h-100 rounded-3">
                                 <?php if (!empty($n['imagen'])): ?>
-                                    <img src="<?= htmlspecialchars($n['imagen']) ?>" class="card-img-top rounded-top-3" alt="imagen" style="height: 180px; object-fit: cover;">
+                                    <img src="<?= htmlspecialchars($n['imagen']) ?>" class="card-img-top rounded-top-3" alt="Imagen de la novedad: <?= htmlspecialchars($n['titulo']) ?>" style="height: 180px; object-fit: cover;">
                                 <?php else: ?>
                                     <div class="card-img-top rounded-top-3 bg-primary text-white d-flex align-items-center justify-content-center" style="height: 180px;">
                                         <i class="bi bi-megaphone fs-1"></i>

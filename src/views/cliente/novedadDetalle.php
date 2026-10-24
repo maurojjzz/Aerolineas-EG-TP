@@ -53,7 +53,7 @@ if (!$novedad || $novedad['estado'] !== 'publicada') {
                 <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
                     <?php if (!empty($novedad['imagen'])): ?>
                         <!-- Reducimos la altura máxima a 200px para que no se deforme ni ocupe tanto espacio -->
-                        <img src="<?= htmlspecialchars($novedad['imagen']) ?>" class="w-100" alt="Imagen de novedad" style="max-height: 200px; object-fit: cover;">
+                        <img src="<?= htmlspecialchars($novedad['imagen']) ?>" class="w-100" alt="Imagen de la novedad: <?= htmlspecialchars($novedad['titulo']) ?>" style="max-height: 200px; object-fit: cover;">
                     <?php endif; ?>
 
                     <div class="card-body p-4 p-md-5">
