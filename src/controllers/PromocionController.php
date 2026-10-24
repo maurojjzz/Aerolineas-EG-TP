@@ -155,6 +155,44 @@ class PromocionController {
             mysqli_stmt_close($stmtR);
         }
 
+        // Evitar duplicados accidentales por doble clic o reenvíos del
+        // formulario mientras la primera solicitud todavía se procesa.
+        $stmtDuplicado = mysqli_prepare($this->conexion,
+            "SELECT idPromocion
+             FROM promocion
+             WHERE idAerolinea = ?
+               AND idUsuarioCreador = ?
+               AND estado = 'Pendiente'
+               AND idVuelo <=> ?
+               AND codigoOrigen <=> ?
+               AND codigoDestino <=> ?
+               AND nombre = ?
+               AND descuentoPorcentaje = ?
+               AND fechaInicio = ?
+               AND fechaFin = ?
+             LIMIT 1");
+        mysqli_stmt_bind_param(
+            $stmtDuplicado,
+            'iiisssdss',
+            $idAerolinea,
+            $idUsuario,
+            $idVuelo,
+            $codigoOrigen,
+            $codigoDestino,
+            $nombre,
+            $descuentoPorcentaje,
+            $fechaInicio,
+            $fechaFin
+        );
+        mysqli_stmt_execute($stmtDuplicado);
+        $duplicado = mysqli_fetch_assoc(mysqli_stmt_get_result($stmtDuplicado));
+        mysqli_stmt_close($stmtDuplicado);
+
+        if ($duplicado) {
+            flash_set('error', 'Ya enviaste esta promoción y está pendiente de aprobación.');
+            redirect('index.php?pagina=ceo&seccion=promociones');
+        }
+
         $codigo = 'PROM-' . strtoupper(substr(md5(uniqid()), 0, 4));
 
         $query = "INSERT INTO promocion

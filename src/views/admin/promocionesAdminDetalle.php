@@ -43,6 +43,74 @@ function badgeEstadoPromoDetalle(string $estado): string {
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1 class="m-0 fs-2 fw-bold">Detalle de la Promoción</h1>
+        <?php if ($estado === 'Pendiente'): ?>
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-success btn-resolver-promo" data-accion="aprobar"
+                        data-nombre="<?= htmlspecialchars($promo['nombre'] ?? $promo['codigo'] ?? 'esta promoción', ENT_QUOTES, 'UTF-8') ?>">
+                    Aceptar promoción
+                </button>
+                <button type="button" class="btn btn-outline-danger btn-resolver-promo" data-accion="denegar"
+                        data-nombre="<?= htmlspecialchars($promo['nombre'] ?? $promo['codigo'] ?? 'esta promoción', ENT_QUOTES, 'UTF-8') ?>">
+                    Rechazar promoción
+                </button>
+            </div>
+
+            <!-- Modal confirmar aprobar / denegar -->
+            <div class="modal fade" id="modalResolverPromo" tabindex="-1" role="dialog" aria-labelledby="modalResolverTitulo" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header border-0">
+                            <h2 class="modal-title fw-bold h5" id="modalResolverTitulo"></h2>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="modalResolverTexto" class="text-muted m-0"></p>
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                            <form method="POST" id="formResolverPromo" data-loading-form>
+                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
+                                <input type="hidden" name="id" id="modalResolverId" value="<?= (int)$id ?>">
+                                <button type="submit" class="btn btn-sm" id="modalResolverConfirmar">Confirmar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const modalEl = document.getElementById("modalResolverPromo");
+                const form = document.getElementById("formResolverPromo");
+                const modalTitulo = document.getElementById("modalResolverTitulo");
+                const modalTexto = document.getElementById("modalResolverTexto");
+                const modalBtn = document.getElementById("modalResolverConfirmar");
+                const bsModal = new bootstrap.Modal(modalEl);
+
+                document.querySelectorAll(".btn-resolver-promo").forEach(function (btn) {
+                    btn.addEventListener("click", function () {
+                        const aprobar = this.dataset.accion === "aprobar";
+                        form.action = aprobar
+                            ? "<?= url('src/routes/promociones.php?accion=aprobar') ?>"
+                            : "<?= url('src/routes/promociones.php?accion=denegar') ?>";
+
+                        if (aprobar) {
+                            modalTitulo.textContent = "Aprobar promoción";
+                            modalTexto.textContent = `¿Seguro que querés aprobar "${this.dataset.nombre}"? Quedará activa para su vigencia.`;
+                            modalBtn.textContent = "Aprobar";
+                            modalBtn.className = "btn btn-success btn-sm";
+                        } else {
+                            modalTitulo.textContent = "Denegar promoción";
+                            modalTexto.textContent = `¿Seguro que querés denegar "${this.dataset.nombre}"?`;
+                            modalBtn.textContent = "Denegar";
+                            modalBtn.className = "btn btn-danger btn-sm";
+                        }
+                        bsModal.show();
+                    });
+                });
+            });
+            </script>
+        <?php endif; ?>
     </div>
 
     <div class="row g-4">
@@ -55,6 +123,7 @@ function badgeEstadoPromoDetalle(string $estado): string {
                     <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center flex-shrink-0" style="width:70px; height:70px;">
                         <span class="text-white fw-bold text-uppercase fs-3"><?= htmlspecialchars(substr($promo['codigo'] ?? 'PR', 0, 2)) ?></span>
                     </div>
+
                     <div>
                         <div class="d-flex align-items-center gap-2 mb-1">
                             <h2 class="fw-bold m-0 text-uppercase"><?= htmlspecialchars($promo['codigo'] ?? '') ?></h2>
@@ -62,6 +131,7 @@ function badgeEstadoPromoDetalle(string $estado): string {
                                 <?= htmlspecialchars($estado) ?>
                             </span>
                         </div>
+
                         <p class="text-muted m-0 fs-5"><?= htmlspecialchars($promo['nombre'] ?? '') ?></p>
                     </div>
                 </div>

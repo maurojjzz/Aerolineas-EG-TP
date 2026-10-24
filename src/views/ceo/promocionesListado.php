@@ -267,6 +267,7 @@ function badgeVigenciaPromo(array $p): string {
                                             style="min-width: 220px;"
                                         >
                                             <option value="pendientes_aprobadas_vigentes" selected>Pendientes y Aprobadas vigentes</option>
+                                            <option value="pendientes">Solo pendientes de aprobación</option>
                                             <option value="todas">Todas</option>
                                             <option value="canceladas">Canceladas (Denegadas)</option>
                                             <option value="en_vigencia">En vigencia (Aprobadas vigentes)</option>
@@ -700,7 +701,10 @@ function badgeVigenciaPromo(array $p): string {
                                 </div>
                                 <div class="modal-footer border-0">
                                     <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
-                                    <button type="submit" class="btn btn-primary btn-sm">Enviar a Aprobación</button>
+                                    <button type="submit" class="btn btn-primary btn-sm" id="btnEnviarPromocion">
+                                        <span class="btn-enviar-texto">Enviar a Aprobación</span>
+                                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -1133,6 +1137,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Al enviar se validan todos los campos y se bloquea si hay errores
         formCrear.addEventListener("submit", function (e) {
+            if (formCrear.dataset.enviando === "true") {
+                e.preventDefault();
+                return;
+            }
             let primero = null;
             // Validar campos base
             camposBase.forEach(function (c) {
@@ -1153,12 +1161,22 @@ document.addEventListener("DOMContentLoaded", function () {
             if (primero) {
                 e.preventDefault();
                 primero.focus();
+                return;
+            }
+
+            formCrear.dataset.enviando = "true";
+            const botonEnviar = document.getElementById("btnEnviarPromocion");
+            if (botonEnviar) {
+                botonEnviar.disabled = true;
+                botonEnviar.querySelector(".btn-enviar-texto").textContent = "Enviando...";
+                botonEnviar.querySelector(".spinner-border").classList.remove("d-none");
             }
         });
 
         // Al cerrar el modal se limpia todo
         modalCrear.addEventListener("hidden.bs.modal", function () {
             formCrear.reset();
+            formCrear.dataset.enviando = "false";
             tocados.clear();
             // Resetear alcance a aerolinea
             activarAlcance('aerolinea');
@@ -1175,6 +1193,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (fb) fb.textContent = "";
                 }
             });
+            const botonEnviar = document.getElementById("btnEnviarPromocion");
+            if (botonEnviar) {
+                botonEnviar.disabled = false;
+                botonEnviar.querySelector(".btn-enviar-texto").textContent = "Enviar a Aprobación";
+                botonEnviar.querySelector(".spinner-border").classList.add("d-none");
+            }
             inpFin.min = "";
             inpInicio.max = "";
         });
@@ -1412,6 +1436,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     } else {
                         coincideEstado = false;
                     }
+                    break;
+                case 'pendientes':
+                    coincideEstado = estado === 'Pendiente';
                     break;
                 case 'todas':
                     coincideEstado = true;
