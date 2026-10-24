@@ -172,7 +172,6 @@ class VueloController {
             $fechaHoraLlegada,
             $asientosTot,
             $asientosDisp,
-            $nuevosDisponibles,
             $precio,
             $idVuelo,
             $idAerolinea

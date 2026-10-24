@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../config/conexion.php';
 require_once __DIR__ . '/../models/Reserva.php';
 require_once __DIR__ . '/PromocionController.php';
+require_once __DIR__ . '/../services/EmailService.php';
 
 class ReservaController {
 
@@ -35,6 +36,8 @@ class ReservaController {
         if ($idVueloVuelta > 0) {
             $ids[] = $idVueloVuelta;
         }
+
+        $reservasCreadas = [];
 
         mysqli_begin_transaction($this->conexion);
 
@@ -121,6 +124,12 @@ class ReservaController {
                      VALUES (?, ?, ?, ?, 'pendiente de pago', ?)");
                 mysqli_stmt_bind_param($stmt, 'iiids', $idUsuario, $id, $cantPasajeros, $precioTotal, $idPromocionAplicada);
                 mysqli_stmt_execute($stmt);
+                $reservasCreadas[] = [
+                    'idReserva'     => (int)mysqli_insert_id($this->conexion),
+                    'vuelo'         => $vuelo,
+                    'cantPasajeros' => $cantPasajeros,
+                    'precioTotal'   => $precioTotal,
+                ];
                 mysqli_stmt_close($stmt);
 
                 $stmt = mysqli_prepare($this->conexion,
@@ -138,6 +147,8 @@ class ReservaController {
             }
 
             mysqli_commit($this->conexion);
+
+            $this->notificarSeguro(fn() => $this->enviarMailsReservasCreadas($idUsuario, $reservasCreadas));
 
             $mensaje = count($vuelos) > 1
                 ? '¡Reservas creadas! Se generaron dos reservas independientes (ida y vuelta). Pagalas por separado desde Mis Reservas.'
@@ -253,6 +264,8 @@ class ReservaController {
 
             mysqli_commit($this->conexion);
 
+            $this->notificarSeguro(fn() => $this->notificarPagoConfirmado($idReserva, $idUsuario));
+
             flash_set('success', '¡Pago confirmado! Tu reserva está asegurada.');
             redirect('index.php?pagina=mis-reservas');
 
@@ -274,9 +287,13 @@ class ReservaController {
 
         // Obtener reserva con datos del vuelo
         $stmt = mysqli_prepare($this->conexion,
-            "SELECT r.*, v.fechaHoraSalidaVuelo, r.cantPasajeros
+            "SELECT r.*,
+                    v.origenVuelo, v.destinoVuelo,
+                    v.fechaHoraSalidaVuelo, v.fechaHoraLlegadaVuelo,
+                    a.nombreAerolinea
              FROM reserva r
              JOIN vuelo v ON r.idVuelo = v.idVuelo
+             JOIN aerolinea a ON v.idAerolinea = a.idAerolinea
              WHERE r.idReserva = ? AND r.idUsuario = ? AND r.estadoReserva != 'cancelada'");
         mysqli_stmt_bind_param($stmt, 'ii', $idReserva, $idUsuario);
         mysqli_stmt_execute($stmt);
@@ -314,6 +331,9 @@ class ReservaController {
             mysqli_stmt_close($stmt);
 
             mysqli_commit($this->conexion);
+
+            $this->notificarSeguro(fn() => $this->notificarReservaCancelada($reserva, $idUsuario));
+
             flash_set('success', 'Reserva cancelada correctamente.');
 
         } catch (Exception $e) {
@@ -408,17 +428,28 @@ class ReservaController {
     // Cancelar reservas pendientes con más de 3 días sin pagar y devolver los asientos en una sola transacción
 
     public function limpiarReservasVencidas(): void {
-        
+        $vencidas  = [];
+        $commitOk  = false;
+
         mysqli_begin_transaction($this->conexion);
         try {
-            // Obtener las que van a cancelarse para devolver asientos
+            // Bloqueamos las reservas vencidas para que dos requests simultáneos
+            // no las cancelen (ni envíen los mails) dos veces.
             $stmt = mysqli_prepare($this->conexion,
-                "SELECT idVuelo, cantPasajeros FROM reserva
-                WHERE estadoReserva = 'pendiente de pago'
-                AND fechaReserva < NOW() - INTERVAL 3 DAY");
+                "SELECT r.idReserva, r.idUsuario, r.idVuelo, r.cantPasajeros, r.precioTotal, r.fechaReserva,
+                        v.origenVuelo, v.destinoVuelo,
+                        v.fechaHoraSalidaVuelo, v.fechaHoraLlegadaVuelo,
+                        a.nombreAerolinea,
+                        u.nombre, u.apellido, u.email
+                 FROM reserva r
+                 JOIN vuelo v ON r.idVuelo = v.idVuelo
+                 JOIN aerolinea a ON v.idAerolinea = a.idAerolinea
+                 JOIN usuario u ON r.idUsuario = u.idUsuario
+                 WHERE r.estadoReserva = 'pendiente de pago'
+                   AND r.fechaReserva < NOW() - INTERVAL 3 DAY
+                 FOR UPDATE");
             mysqli_stmt_execute($stmt);
             $result = mysqli_stmt_get_result($stmt);
-            $vencidas = [];
             while ($row = mysqli_fetch_assoc($result)) $vencidas[] = $row;
             mysqli_stmt_close($stmt);
 
@@ -443,8 +474,14 @@ class ReservaController {
             }
 
             mysqli_commit($this->conexion);
+            $commitOk = true;
         } catch (Exception $e) {
             mysqli_rollback($this->conexion);
+            error_log('Error al limpiar reservas vencidas: ' . $e->getMessage());
+        }
+
+        if ($commitOk && !empty($vencidas)) {
+            $this->notificarSeguro(fn() => $this->enviarMailsReservasVencidas($vencidas));
         }
     }
 
@@ -452,7 +489,7 @@ class ReservaController {
         $stmt = mysqli_prepare($this->conexion,
             "SELECT r.*, v.origenVuelo, v.codigoOrigen, v.destinoVuelo, v.codigoDestino,
                     v.fechaHoraSalidaVuelo, v.fechaHoraLlegadaVuelo, v.asientosTotales,
-                    v.precioVuelo, a.nombreAerolinea, a.codigoIATA, a.logoUrl
+                    v.precioVuelo, a.idAerolinea, a.nombreAerolinea, a.codigoIATA, a.logoUrl
             FROM reserva r
             JOIN vuelo v ON r.idVuelo = v.idVuelo
             JOIN aerolinea a ON v.idAerolinea = a.idAerolinea
@@ -483,6 +520,203 @@ class ReservaController {
         $fila['promos_aplicadas'] = $promosData;
         
         return $fila;
+    }
+
+    // ── Notificaciones por mail ───────────────────────────────────────────────
+
+    private function enviarMailsReservasCreadas(int $idUsuario, array $reservasCreadas): void {
+        if (empty($reservasCreadas)) {
+            return;
+        }
+
+        $usuario = $this->obtenerUsuarioParaMail($idUsuario);
+        if (!$usuario || empty($usuario['email'])) {
+            return;
+        }
+
+        $nombre      = $this->nombreCompleto($usuario);
+        $vencimiento = date('Y-m-d H:i:s', strtotime('+3 days'));
+
+        foreach ($reservasCreadas as $item) {
+            $vuelo = $item['vuelo'] ?? [];
+            $datos = [
+                'idReserva'        => (int)($item['idReserva'] ?? 0),
+                'origen'           => $vuelo['origenVuelo'] ?? '',
+                'destino'          => $vuelo['destinoVuelo'] ?? '',
+                'fechaSalida'      => $vuelo['fechaHoraSalidaVuelo'] ?? null,
+                'fechaLlegada'     => $vuelo['fechaHoraLlegadaVuelo'] ?? null,
+                'cantPasajeros'    => (int)($item['cantPasajeros'] ?? 1),
+                'precioTotal'      => (float)($item['precioTotal'] ?? 0),
+                'fechaVencimiento' => $vencimiento,
+            ];
+
+            try {
+                EmailService::enviarReservaCreada($usuario['email'], $nombre, $datos);
+            } catch (Throwable $e) {
+                error_log('Error al notificar la reserva creada #' . $datos['idReserva'] . ': ' . $e->getMessage());
+            }
+        }
+    }
+
+    private function notificarPagoConfirmado(int $idReserva, int $idUsuario): void {
+        $reserva = $this->obtenerReservaPorId($idReserva, $idUsuario);
+        if (!$reserva) {
+            return;
+        }
+
+        $usuario = $this->obtenerUsuarioParaMail($idUsuario);
+        if (!$usuario || empty($usuario['email'])) {
+            return;
+        }
+
+        $nombre = $this->nombreCompleto($usuario);
+        $datos  = $this->datosReservaDesdeFila($reserva);
+
+        try {
+            EmailService::enviarPagoConfirmado($usuario['email'], $nombre, $datos);
+        } catch (Throwable $e) {
+            error_log('Error al notificar el pago de la reserva #' . $idReserva . ': ' . $e->getMessage());
+        }
+
+        $idAerolinea = (int)($reserva['idAerolinea'] ?? 0);
+
+        foreach ($this->obtenerCEOsAerolinea($idAerolinea) as $ceo) {
+            if (empty($ceo['email'])) {
+                continue;
+            }
+
+            try {
+                EmailService::enviarVentaCEO(
+                    $ceo['email'],
+                    $this->nombreCompleto($ceo),
+                    $datos,
+                    $nombre
+                );
+            } catch (Throwable $e) {
+                error_log('Error al notificar la venta al CEO de la reserva #' . $idReserva . ': ' . $e->getMessage());
+            }
+        }
+    }
+
+    private function notificarReservaCancelada(array $reserva, int $idUsuario): void {
+        $usuario = $this->obtenerUsuarioParaMail($idUsuario);
+        if (!$usuario || empty($usuario['email'])) {
+            return;
+        }
+
+        try {
+            EmailService::enviarReservaCancelada(
+                $usuario['email'],
+                $this->nombreCompleto($usuario),
+                $this->datosReservaDesdeFila($reserva)
+            );
+        } catch (Throwable $e) {
+            error_log('Error al notificar la cancelación de la reserva #' . ($reserva['idReserva'] ?? 0) . ': ' . $e->getMessage());
+        }
+    }
+
+    private function enviarMailsReservasVencidas(array $vencidas): void {
+        $inicio = microtime(true);
+
+        foreach ($vencidas as $reserva) {
+            // Si hay muchas reservas vencidas, no bloqueamos la página
+            // más de 15 segundos enviando correos.
+            if ((microtime(true) - $inicio) > 15) {
+                error_log('Se cortó el envío de mails de reservas vencidas por límite de tiempo. Total: ' . count($vencidas));
+                break;
+            }
+
+            if (empty($reserva['email'])) {
+                continue;
+            }
+
+            try {
+                EmailService::enviarReservaVencida(
+                    (string)$reserva['email'],
+                    $this->nombreCompleto($reserva),
+                    $this->datosReservaDesdeFila($reserva)
+                );
+            } catch (Throwable $e) {
+                error_log('Error al notificar la reserva vencida #' . ($reserva['idReserva'] ?? 0) . ': ' . $e->getMessage());
+            }
+        }
+    }
+
+    private function datosReservaDesdeFila(array $reserva): array {
+        return [
+            'idReserva'     => (int)($reserva['idReserva'] ?? 0),
+            'origen'        => $reserva['origenVuelo'] ?? '',
+            'destino'       => $reserva['destinoVuelo'] ?? '',
+            'fechaSalida'   => $reserva['fechaHoraSalidaVuelo'] ?? null,
+            'fechaLlegada'  => $reserva['fechaHoraLlegadaVuelo'] ?? null,
+            'cantPasajeros' => (int)($reserva['cantPasajeros'] ?? 1),
+            'precioTotal'   => (float)($reserva['precioTotal'] ?? 0),
+            'aerolinea'     => $reserva['nombreAerolinea'] ?? '',
+        ];
+    }
+
+    private function obtenerUsuarioParaMail(int $idUsuario): ?array {
+        if ($idUsuario <= 0) {
+            return null;
+        }
+
+        $stmt = mysqli_prepare($this->conexion,
+            "SELECT nombre, apellido, email FROM usuario WHERE idUsuario = ?");
+        if (!$stmt) {
+            return null;
+        }
+
+        mysqli_stmt_bind_param($stmt, 'i', $idUsuario);
+        mysqli_stmt_execute($stmt);
+        $fila = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+        mysqli_stmt_close($stmt);
+
+        return $fila ?: null;
+    }
+
+    private function obtenerCEOsAerolinea(int $idAerolinea): array {
+        if ($idAerolinea <= 0) {
+            return [];
+        }
+
+        $stmt = mysqli_prepare($this->conexion,
+            "SELECT nombre, apellido, email
+             FROM usuario
+             WHERE rol = 'ceo' AND idAerolinea = ? AND activo = 1 AND email <> ''
+             ORDER BY idUsuario");
+        if (!$stmt) {
+            return [];
+        }
+
+        mysqli_stmt_bind_param($stmt, 'i', $idAerolinea);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        $ceos = [];
+        while ($fila = mysqli_fetch_assoc($result)) {
+            $ceos[] = $fila;
+        }
+        mysqli_stmt_close($stmt);
+
+        return $ceos;
+    }
+
+    private function nombreCompleto(array $usuario): string {
+        $nombre = trim(
+            (string)($usuario['nombre'] ?? '') . ' ' . (string)($usuario['apellido'] ?? '')
+        );
+
+        return $nombre !== '' ? $nombre : 'pasajero';
+    }
+
+    // Ejecuta una notificación sin permitir que un error de correo
+    // interrumpa el flujo de reserva, pago o cancelación.
+    private function notificarSeguro(callable $callback): void {
+        try {
+            $callback();
+        } catch (Throwable $e) {
+            error_log('Error al enviar notificaciones por mail: ' . $e->getMessage());
+        }
     }
     
 }
