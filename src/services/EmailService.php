@@ -2,6 +2,8 @@
 
 require_once __DIR__ . '/../config/mailer.php';
 
+use PHPMailer\PHPMailer\PHPMailer;
+
 class EmailService {
 
     // ── Verificación de cuenta ────────────────────────────────────────────────
@@ -180,7 +182,7 @@ class EmailService {
                     : 'Si querés revisar los datos o volver a enviarla con cambios, podés hacerlo desde tu panel.',
                 $aprobada ? 'success' : 'danger'
             )
-            . self::boton('Ver mis promociones', urlAbsoluta('index.php?pagina=promociones'));
+            . self::boton('Ver mis promociones', urlAbsoluta('index.php?pagina=promociones&seccion=listado'));
 
         return self::enviar(
             $email,
@@ -421,15 +423,40 @@ class EmailService {
 
     // ── Método base de envío ──────────────────────────────────────────────────
     private static function enviar(string $destinatario, string $asunto, string $cuerpo, ?string $responderA = null): bool {
+        $mail = null;
+
         try {
             $mail = crearMailer();
 
-            $destinatarios = array_values(array_filter(array_map('trim', explode(',', $destinatario))));
+            $destinatarios = array_values(array_filter(
+                array_map('trim', explode(',', $destinatario)),
+                static fn(string $direccion): bool => $direccion !== ''
+            ));
+
             if (!$destinatarios) {
-                throw new Exception('No hay destinatarios válidos para el correo.');
+                throw new Exception('No hay destinatarios para el correo.');
             }
 
+            $validos   = [];
+            $invalidos = 0;
+
             foreach ($destinatarios as $direccion) {
+                if (filter_var($direccion, FILTER_VALIDATE_EMAIL)) {
+                    $validos[] = $direccion;
+                } else {
+                    $invalidos++;
+                }
+            }
+
+            if ($invalidos > 0) {
+                error_log('Correo "' . $asunto . '": se descartaron ' . $invalidos . ' destinatario(s) con formato inválido.');
+            }
+
+            if (!$validos) {
+                throw new Exception('Ningún destinatario tiene un correo electrónico válido.');
+            }
+
+            foreach ($validos as $direccion) {
                 $mail->addAddress($direccion);
             }
 
@@ -443,6 +470,10 @@ class EmailService {
             $mail->Body    = $cuerpo;
             $mail->AltBody = trim(strip_tags($cuerpo));
             $mail->send();
+
+            // Diagnóstico: dejamos constancia del envío sin exponer la casilla completa.
+            error_log('Correo enviado: "' . $asunto . '" a ' . self::mascararCorreo(implode(',', $validos)) . '.');
+
             return true;
         } catch (Throwable $e) {
             // No registramos direcciones de correo en el log: se reemplazan por [correo].
@@ -451,9 +482,46 @@ class EmailService {
                 '[correo]',
                 (string)$e->getMessage()
             );
-            error_log('No se pudo enviar el correo "' . $asunto . '": ' . $detalle);
+
+            if ($mail instanceof PHPMailer && trim((string)$mail->ErrorInfo) !== '') {
+                $detalle .= ' | SMTP: ' . preg_replace(
+                    '/[A-Z0-9._%+\-]+@[A-Z0-9.\-]+\.[A-Z]{2,}/i',
+                    '[correo]',
+                    trim((string)$mail->ErrorInfo)
+                );
+            }
+
+            error_log(
+                'No se pudo enviar el correo "' . $asunto . '" a '
+                . self::mascararCorreo($destinatario) . ': ' . $detalle
+            );
+
             return false;
         }
+    }
+
+    /**
+     * Enmascara una o varias direcciones para poder diagnosticar sin exponerlas.
+     */
+    public static function mascararCorreo(string $email): string {
+        $partes = [];
+
+        foreach (explode(',', $email) as $direccion) {
+            $direccion = trim($direccion);
+            if ($direccion === '') {
+                continue;
+            }
+
+            if (str_contains($direccion, '@')) {
+                [$usuario, $dominio] = explode('@', $direccion, 2);
+                $usuario = mb_substr($usuario, 0, 2) . '***';
+                $partes[] = $usuario . '@' . $dominio;
+            } else {
+                $partes[] = '[correo]';
+            }
+        }
+
+        return $partes ? implode(',', $partes) : '[correo]';
     }
 
     // ── Consulta de Contacto ──────────────────────────────────────────────────

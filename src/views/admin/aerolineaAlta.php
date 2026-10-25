@@ -42,6 +42,7 @@ $paises = require __DIR__ . '/../../data/paises.php';
             method="POST" 
             class="row mt-2 m-0 g-0 p-0 gap-2 " 
             enctype="multipart/form-data"
+            data-loading-form
         >
 <p class="small text-secondary mb-2">Los campos con <span class="text-danger" aria-hidden="true">*</span><span class="visually-hidden">asterisco</span> son obligatorios.</p>
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">

@@ -195,9 +195,15 @@ $conteos = [
                         </span>
                     </td>
                     <td data-label="Promoción">
-                        <?php if (!empty($r['promos_aplicadas'])): ?>
+                        <?php
+                            $descuentoMostrado = (float)($r['descuento_efectivo'] ?? 0);
+                            if ($descuentoMostrado <= 0 && !empty($r['promos_aplicadas'])) {
+                                $descuentoMostrado = array_sum(array_column($r['promos_aplicadas'], 'descuentoPorcentaje'));
+                            }
+                        ?>
+                        <?php if ($descuentoMostrado > 0): ?>
                             <div class="d-flex flex-wrap gap-1">
-                                <span class="badge bg-success" style="font-size:0.65rem;">🎉 -<?= array_sum(array_column($r['promos_aplicadas'], 'descuentoPorcentaje')) ?>%</span>
+                                <span class="badge bg-success" style="font-size:0.65rem;">🎉 -<?= number_format($descuentoMostrado, 2, ',', '.') ?>%</span>
                                 <?php foreach ($r['promos_aplicadas'] as $idx => $p): ?>
                                     <span class="badge bg-light text-dark border" style="font-size:0.6rem;" title="<?= htmlspecialchars($p['nombre']) ?>">
                                         <?= $idx + 1 ?>. -<?= (float)$p['descuentoPorcentaje'] ?>%
@@ -222,7 +228,7 @@ $conteos = [
                             </button>
 
                             <?php if ($puedeConfirmar): ?>
-                            <form method="POST" action="<?= url('src/routes/reserva.php?accion=ir-a-pago') ?>">
+                            <form method="POST" action="<?= url('src/routes/reserva.php?accion=ir-a-pago') ?>" data-loading-form>
                                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
                                 <input type="hidden" name="idReserva"  value="<?= $r['idReserva'] ?>">
                                 <button type="submit" class="btn btn-primary btn-sm fw-semibold">
@@ -233,11 +239,25 @@ $conteos = [
 
                             <?php if ($puedeCancelar): ?>
                             <form method="POST" action="<?= url('src/routes/reserva.php?accion=cancelar') ?>"
-                                  onsubmit="return confirm('¿Seguro que querés cancelar esta reserva?')">
+                                  onsubmit="return confirm('¿Seguro que querés cancelar esta reserva?')"
+                                  data-loading-form>
                                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
                                 <input type="hidden" name="idReserva"  value="<?= $r['idReserva'] ?>">
                                 <button type="submit" class="btn btn-outline-danger btn-sm">
                                     Cancelar
+                                </button>
+                            </form>
+                            <?php endif; ?>
+
+                            <?php if (($r['estadoReserva'] ?? '') === 'confirmada'): ?>
+                            <form method="POST" action="<?= url('src/routes/reserva.php?accion=reenviar-comprobante') ?>"
+                                  data-loading-form>
+                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+                                <input type="hidden" name="idReserva"  value="<?= $r['idReserva'] ?>">
+                                <button type="submit" class="btn btn-outline-primary btn-sm"
+                                        data-loading-text="Enviando…"
+                                        title="Reenviar el comprobante de pago por correo">
+                                    Comprobante
                                 </button>
                             </form>
                             <?php endif; ?>
@@ -367,7 +387,7 @@ function abrirDetalle(idReserva) {
             <div class="col-12 detalle-campo">
                 <label>Promociones aplicadas</label>
                 <div class="d-flex flex-wrap gap-1 mb-1">
-                    <span class="badge bg-success">🎉 -${r.promos_aplicadas.reduce((sum, p) => sum + parseFloat(p.descuentoPorcentaje), 0).toFixed(2)}%</span>
+                    <span class="badge bg-success">🎉 -${parseFloat(r.descuento_efectivo || r.promos_aplicadas.reduce((sum, p) => sum + parseFloat(p.descuentoPorcentaje), 0)).toFixed(2)}%</span>
                     ${r.promos_aplicadas.map((p, i) => `<span class="badge bg-light text-dark border" style="font-size:0.65rem;">${i+1}. ${escapeHtml(p.nombre)} (-${parseFloat(p.descuentoPorcentaje).toFixed(2)}%)</span>`).join('')}
                 </div>
             </div>

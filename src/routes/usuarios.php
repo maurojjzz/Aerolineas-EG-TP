@@ -75,6 +75,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ctrl->toggleEstadoUsuario($id);
             break;
 
+        case 'reenviar-comprobante':
+            requireRol('admin');
+
+            $tokenPost = $_POST['csrf_token'] ?? '';
+            $tokenSession = $_SESSION['csrf_token'] ?? '';
+            if (empty($tokenPost) || empty($tokenSession) || !hash_equals($tokenSession, $tokenPost)) {
+                flash_set('error', 'Token de seguridad inválido o sesión expirada.');
+                redirect('index.php?pagina=usuarios&seccion=listado');
+            }
+
+            $idReserva = (int)($_POST['idReserva'] ?? 0);
+            $idUsuario = (int)($_POST['idUsuario'] ?? 0);
+
+            if (!$idReserva) {
+                flash_set('error', 'Reserva inválida.');
+                redirect($idUsuario > 0
+                    ? 'index.php?pagina=usuarios&seccion=detalle&id=' . $idUsuario . '&tab=reservas'
+                    : 'index.php?pagina=usuarios&seccion=listado');
+            }
+
+            require_once __DIR__ . '/../controllers/ReservaController.php';
+            $reservaCtrl = new ReservaController($link);
+
+            $reservaCtrl->reenviarComprobante(
+                $idReserva,
+                $idUsuario > 0
+                    ? 'index.php?pagina=usuarios&seccion=detalle&id=' . $idUsuario . '&tab=reservas'
+                    : 'index.php?pagina=usuarios&seccion=listado'
+            );
+            break;
+
         case 'aprobar-ceo':
         case 'denegar-ceo':
             requireRol('admin');

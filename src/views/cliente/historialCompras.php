@@ -416,9 +416,15 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
                                     <span class="precio-unitario"><?= $fmtPesos($compra['precioVuelo'] ?? 0) ?></span>
                                 </td>
                                 <td data-label="Promoción">
-                                    <?php if (!empty($compra['promos_aplicadas'])): ?>
+                                    <?php
+                                        $descuentoMostrado = (float)($compra['descuento_efectivo'] ?? 0);
+                                        if ($descuentoMostrado <= 0 && !empty($compra['promos_aplicadas'])) {
+                                            $descuentoMostrado = array_sum(array_column($compra['promos_aplicadas'], 'descuentoPorcentaje'));
+                                        }
+                                    ?>
+                                    <?php if ($descuentoMostrado > 0): ?>
                                         <div class="d-flex flex-wrap gap-1">
-                                            <span class="badge bg-success" style="font-size:0.65rem;">🎉 -<?= array_sum(array_column($compra['promos_aplicadas'], 'descuentoPorcentaje')) ?>%</span>
+                                            <span class="badge bg-success" style="font-size:0.65rem;">🎉 -<?= number_format($descuentoMostrado, 2, ',', '.') ?>%</span>
                                             <?php foreach ($compra['promos_aplicadas'] as $idx => $p): ?>
                                                 <span class="badge bg-light text-dark border" style="font-size:0.6rem;" title="<?= htmlspecialchars($p['nombre']) ?>">
                                                     <?= $idx + 1 ?>. -<?= (float)$p['descuentoPorcentaje'] ?>%
@@ -602,7 +608,7 @@ function abrirDetalleCompra(idCompra) {
             <div class="col-12 detalle-campo">
                 <label>Promociones aplicadas</label>
                 <div class="d-flex flex-wrap gap-1 mb-1">
-                    <span class="badge bg-success">🎉 -${compra.promos_aplicadas.reduce((sum, p) => sum + parseFloat(p.descuentoPorcentaje), 0).toFixed(2)}%</span>
+                    <span class="badge bg-success">🎉 -${parseFloat(compra.descuento_efectivo || compra.promos_aplicadas.reduce((sum, p) => sum + parseFloat(p.descuentoPorcentaje), 0)).toFixed(2)}%</span>
                     ${compra.promos_aplicadas.map((p, i) => `<span class="badge bg-light text-dark border" style="font-size:0.65rem;">${i+1}. ${escapeHtml(p.nombre)} (-${parseFloat(p.descuentoPorcentaje).toFixed(2)}%)</span>`).join('')}
                 </div>
             </div>

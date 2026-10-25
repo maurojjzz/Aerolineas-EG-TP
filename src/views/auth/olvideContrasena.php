@@ -22,15 +22,17 @@
                   method="POST"
                   id="formOlvide"
                   class="formContainer rounded-3 shadow-lg p-4"
-                  >
+                  novalidate
+                  data-loading-form>
 
                 <h1 class="fs-1 fw-semibold titleForm">Recuperar contraseña</h1>
                 <p class="text-muted">Ingresá tu email y te enviaremos un link para restablecer tu contraseña.</p>
 
                 <div class="form-group d-flex flex-column p-0">
                     <label class="form-label-t" for="email">Email:</label>
-                    <input type="email" name="email" id="email" class="form-control ctm-inp" required placeholder="tu@email.com" autocomplete="email" aria-describedby="infoEmail">
-                    <p id="infoEmail" class="form-text-info text-danger m-0 mt-1" aria-live="polite" style="font-size: 0.82rem; min-height: 1.25rem;">&nbsp;</p>
+                    <input type="email" name="email" id="email" class="form-control ctm-inp" placeholder="tu@email.com" autocomplete="off">
+                    <!-- Mantiene espacio constante de 1 línea mediante &nbsp; por defecto -->
+                    <p id="infoEmail" class="form-text-info text-danger m-0 mt-1" style="font-size: 0.82rem; min-height: 1.25rem;">&nbsp;</p>
                 </div>
 
                 <button type="submit" class="btn btnLogin py-2 w-100 mt-2">
@@ -45,13 +47,12 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="<?= url('public/js/admin/actionLoading.js') ?>"></script>
     <script>
     document.addEventListener("DOMContentLoaded", function () {
         const form = document.getElementById("formOlvide");
         const emailInput = document.getElementById("email");
         const infoEmail = document.getElementById("infoEmail");
-
-        form.setAttribute("novalidate", "");
 
         // Regex que exige dominio completo de al menos 2 letras al final (ej. .com, .ar)
         const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;

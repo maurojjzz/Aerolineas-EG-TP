@@ -426,7 +426,7 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                     </div>
                     <div class="modal-footer border-0">
                         <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
-                        <form method="POST" action="<?= url('src/routes/vuelo.php?accion=eliminar') ?>">
+                        <form method="POST" action="<?= url('src/routes/vuelo.php?accion=eliminar') ?>" data-loading-form>
                             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
                             <input type="hidden" name="id" id="modalEliminarId">
                             <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>

@@ -19,7 +19,10 @@ class ReservaController {
     public function crearReserva(): void {
         $idVuelo       = (int)($_POST['idVuelo'] ?? 0);
         $idVueloVuelta = (int)($_POST['idVueloVuelta'] ?? 0);
-        $cantPasajeros = filter_var(trim((string)($_POST['cantPasajeros'] ?? '')), FILTER_VALIDATE_INT);
+        $cantPasajeros = filter_var(
+            trim((string)($_POST['cantPasajeros'] ?? '')),
+            FILTER_VALIDATE_INT
+        );
         $idUsuario     = (int)($_SESSION['usuario']['idUsuario'] ?? 0);
 
         if (!$idVuelo || !$idUsuario || $cantPasajeros === false || $cantPasajeros < 1) {
@@ -102,28 +105,34 @@ class ReservaController {
                 );
 
                 $descuentoTotal = 0;
-                $promosIds = [];
+                $promoPrincipal = null;
                 foreach ($promos as $p) {
+                    $porcentaje = (float)$p['descuentoPorcentaje'];
+
                     if ($p['acumulable']) {
-                        $descuentoTotal += (float)$p['descuentoPorcentaje'];
-                        $promosIds[] = (int)$p['idPromocion'];
+                        $descuentoTotal += $porcentaje;
                     } else {
-                        $descuentoTotal = (float)$p['descuentoPorcentaje'];
-                        $promosIds = [(int)$p['idPromocion']];
+                        $descuentoTotal = $porcentaje;
+                        $promoPrincipal = $p;
                         break;
+                    }
+
+                    // reserva.idPromocion es un INT con FK: guardamos una sola
+                    // promoción (la de mayor descuento) aunque el precio acumule
+                    // varias. El descuento real se recalcula al leer la reserva.
+                    if ($promoPrincipal === null || $porcentaje > (float)$promoPrincipal['descuentoPorcentaje']) {
+                        $promoPrincipal = $p;
                     }
                 }
                 $descuentoTotal = min($descuentoTotal, 100);
-                
-                // reserva.idPromocion es una FK INT: guarda la promoción de
-                // mayor prioridad que respaldó el precio de la reserva.
-                $idPromocionAplicada = !empty($promosIds) ? (string)$promosIds[0] : null;
+
+                $idPromocionAplicada = $promoPrincipal ? (int)$promoPrincipal['idPromocion'] : null;
                 $precioTotal = (float)$vuelo['precioVuelo'] * $cantPasajeros * (1 - $descuentoTotal / 100);
 
                 $stmt = mysqli_prepare($this->conexion,
                     "INSERT INTO reserva (idUsuario, idVuelo, cantPasajeros, precioTotal, estadoReserva, idPromocion)
                      VALUES (?, ?, ?, ?, 'pendiente de pago', ?)");
-                mysqli_stmt_bind_param($stmt, 'iiids', $idUsuario, $id, $cantPasajeros, $precioTotal, $idPromocionAplicada);
+                mysqli_stmt_bind_param($stmt, 'iiidi', $idUsuario, $id, $cantPasajeros, $precioTotal, $idPromocionAplicada);
                 mysqli_stmt_execute($stmt);
                 $reservasCreadas[] = [
                     'idReserva'     => (int)mysqli_insert_id($this->conexion),
@@ -360,21 +369,7 @@ class ReservaController {
         $result = mysqli_stmt_get_result($stmt);
         $filas = [];
         while ($row = mysqli_fetch_assoc($result)) {
-            // reserva.idPromocion es una FK INT.
-            $promosData = [];
-            $idPromocion = (int)($row['idPromocion'] ?? 0);
-            if ($idPromocion > 0) {
-                $stmtP = mysqli_prepare($this->conexion,
-                    "SELECT idPromocion, nombre, descuentoPorcentaje
-                     FROM promocion WHERE idPromocion = ?");
-                mysqli_stmt_bind_param($stmtP, 'i', $idPromocion);
-                mysqli_stmt_execute($stmtP);
-                $resP = mysqli_stmt_get_result($stmtP);
-                while ($p = mysqli_fetch_assoc($resP)) $promosData[] = $p;
-                mysqli_stmt_close($stmtP);
-            }
-            $row['promos_aplicadas'] = $promosData;
-            $filas[] = $row;
+            $filas[] = $this->enriquecerConPromos($row);
         }
         mysqli_stmt_close($stmt);
         return $filas;
@@ -415,6 +410,91 @@ class ReservaController {
 
         mysqli_stmt_close($stmt);
         return $vuelos;
+    }
+
+    /**
+     * Normaliza el valor guardado en reserva.idPromocion.
+     * La columna es INT, pero registros viejos pueden tener un JSON con varios IDs.
+     */
+    private function normalizarIdsPromocion($valor): array {
+        $ids = [];
+
+        if (is_array($valor)) {
+            $ids = $valor;
+        } elseif (is_int($valor) || is_float($valor)) {
+            $ids = [(int)$valor];
+        } elseif (is_string($valor) && trim($valor) !== '') {
+            if (ctype_digit(trim($valor))) {
+                $ids = [(int)trim($valor)];
+            } else {
+                $decodificado = json_decode($valor, true);
+                if (is_array($decodificado)) {
+                    $ids = $decodificado;
+                } elseif (is_numeric($decodificado)) {
+                    $ids = [(int)$decodificado];
+                }
+            }
+        }
+
+        $ids = array_map('intval', $ids);
+        return array_values(array_unique(array_filter(
+            $ids,
+            static fn(int $id): bool => $id > 0
+        )));
+    }
+
+    private function obtenerPromosPorIds(array $ids): array {
+        if (empty($ids)) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $stmt = mysqli_prepare($this->conexion,
+            "SELECT idPromocion, nombre, descuentoPorcentaje
+             FROM promocion
+             WHERE idPromocion IN ($placeholders)");
+
+        if (!$stmt) {
+            return [];
+        }
+
+        $types = str_repeat('i', count($ids));
+        mysqli_stmt_bind_param($stmt, $types, ...$ids);
+        mysqli_stmt_execute($stmt);
+        $res = mysqli_stmt_get_result($stmt);
+
+        $promos = [];
+        while ($p = mysqli_fetch_assoc($res)) {
+            $promos[] = $p;
+        }
+        mysqli_stmt_close($stmt);
+
+        return $promos;
+    }
+
+    /**
+     * Calcula el descuento real aplicado desde el precio guardado: el total
+     * puede acumular varias promociones aunque en idPromocion quede una sola.
+     */
+    private function calcularDescuentoEfectivo(array $fila): float {
+        $base = (float)($fila['precioVuelo'] ?? 0) * max(1, (int)($fila['cantPasajeros'] ?? 1));
+        if ($base <= 0) {
+            return 0.0;
+        }
+
+        $total = (float)($fila['precioTotal'] ?? 0);
+        $efectivo = (1 - ($total / $base)) * 100;
+
+        return round(max(0, min(100, $efectivo)), 2);
+    }
+
+    private function enriquecerConPromos(array $fila): array {
+        $ids = $this->normalizarIdsPromocion($fila['idPromocion'] ?? null);
+
+        $fila['promos_aplicadas']  = $this->obtenerPromosPorIds($ids);
+        $fila['descuento_efectivo'] = $this->calcularDescuentoEfectivo($fila);
+
+        return $fila;
     }
 
     // Obtener reserva por id (para pantalla de reservar)
@@ -462,7 +542,7 @@ class ReservaController {
 
     // Cancelar reservas pendientes con más de 3 días sin pagar y devolver los asientos en una sola transacción
 
-    public function limpiarReservasVencidas(): void {
+    public function limpiarReservasVencidas(): int {
         $vencidas  = [];
         $commitOk  = false;
 
@@ -518,6 +598,81 @@ class ReservaController {
         if ($commitOk && !empty($vencidas)) {
             $this->notificarSeguro(fn() => $this->enviarMailsReservasVencidas($vencidas));
         }
+
+        return count($vencidas);
+    }
+
+    // ── Reenvío manual del comprobante de pago ────────────────────────────────
+    public function reenviarComprobante(int $idReserva, string $redireccion, int $idUsuario = 0): void {
+        $reserva = $this->obtenerReservaParaComprobante($idReserva, $idUsuario);
+
+        if (!$reserva) {
+            flash_set('error', 'No encontramos la reserva indicada.');
+            redirect($redireccion);
+        }
+
+        if (($reserva['estadoReserva'] ?? '') !== 'confirmada') {
+            flash_set('error', 'Solo se puede reenviar el comprobante de una reserva confirmada.');
+            redirect($redireccion);
+        }
+
+        $destinatario = trim((string)($reserva['email'] ?? ''));
+        if ($destinatario === '' || !filter_var($destinatario, FILTER_VALIDATE_EMAIL)) {
+            flash_set('error', 'El pasajero no tiene un correo electrónico válido para recibir el comprobante.');
+            redirect($redireccion);
+        }
+
+        $enviado = false;
+        try {
+            $enviado = EmailService::enviarPagoConfirmado(
+                $destinatario,
+                $this->nombreCompleto($reserva),
+                $this->datosReservaDesdeFila($reserva)
+            );
+        } catch (Throwable $e) {
+            error_log('Error al reenviar el comprobante de la reserva #' . $idReserva . ': ' . $e->getMessage());
+        }
+
+        if ($enviado) {
+            flash_set('success', 'Comprobante reenviado a ' . EmailService::mascararCorreo($destinatario) . '.');
+        } else {
+            flash_set('error', 'No pudimos reenviar el comprobante. Revisá la configuración de correo.');
+        }
+
+        redirect($redireccion);
+    }
+
+    private function obtenerReservaParaComprobante(int $idReserva, int $idUsuario = 0): ?array {
+        $sql = "SELECT r.*, v.origenVuelo, v.destinoVuelo,
+                       v.fechaHoraSalidaVuelo, v.fechaHoraLlegadaVuelo,
+                       a.nombreAerolinea,
+                       u.nombre, u.apellido, u.email
+                FROM reserva r
+                JOIN vuelo v ON r.idVuelo = v.idVuelo
+                JOIN aerolinea a ON v.idAerolinea = a.idAerolinea
+                JOIN usuario u ON r.idUsuario = u.idUsuario
+                WHERE r.idReserva = ?";
+
+        $tipos  = 'i';
+        $params = [$idReserva];
+
+        if ($idUsuario > 0) {
+            $sql .= " AND r.idUsuario = ?";
+            $tipos .= 'i';
+            $params[] = $idUsuario;
+        }
+
+        $stmt = mysqli_prepare($this->conexion, $sql);
+        if (!$stmt) {
+            return null;
+        }
+
+        mysqli_stmt_bind_param($stmt, $tipos, ...$params);
+        mysqli_stmt_execute($stmt);
+        $fila = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+        mysqli_stmt_close($stmt);
+
+        return $fila ?: null;
     }
 
     public function obtenerReservaPorId(int $idReserva, int $idUsuario): ?array {
@@ -536,22 +691,7 @@ class ReservaController {
         
         if (!$fila) return null;
         
-        // reserva.idPromocion es una FK INT.
-        $promosData = [];
-        $idPromocion = (int)($fila['idPromocion'] ?? 0);
-        if ($idPromocion > 0) {
-            $stmtP = mysqli_prepare($this->conexion,
-                "SELECT idPromocion, nombre, descuentoPorcentaje
-                 FROM promocion WHERE idPromocion = ?");
-            mysqli_stmt_bind_param($stmtP, 'i', $idPromocion);
-            mysqli_stmt_execute($stmtP);
-            $resP = mysqli_stmt_get_result($stmtP);
-            while ($p = mysqli_fetch_assoc($resP)) $promosData[] = $p;
-            mysqli_stmt_close($stmtP);
-        }
-        $fila['promos_aplicadas'] = $promosData;
-        
-        return $fila;
+        return $this->enriquecerConPromos($fila);
     }
 
     // ── Notificaciones por mail ───────────────────────────────────────────────

@@ -317,6 +317,7 @@ $urlReservas = static function (int $pagina) use ($id): string {
                                         <th scope="col" class="fw-bold d-none d-sm-table-cell">PASAJEROS</th>
                                         <th scope="col" class="fw-bold text-end">TOTAL</th>
                                         <th scope="col" class="fw-bold text-center">ESTADO</th>
+                                        <th scope="col" class="fw-bold text-center">ACCIONES</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -369,16 +370,41 @@ $urlReservas = static function (int $pagina) use ($id): string {
                                             </td>
                                             <td class="text-end">
                                                 <span class="fw-semibold"><?= $fmtMoneda($r['precioTotal'] ?? 0) ?></span>
-                                                <?php if (!empty($r['promos_aplicadas'])): ?>
+                                                <?php
+                                                    $descuentoMostrado = (float)($r['descuento_efectivo'] ?? 0);
+                                                    if ($descuentoMostrado <= 0 && !empty($r['promos_aplicadas'])) {
+                                                        $descuentoMostrado = array_sum(array_column($r['promos_aplicadas'], 'descuentoPorcentaje'));
+                                                    }
+                                                ?>
+                                                <?php if ($descuentoMostrado > 0): ?>
                                                     <div class="mt-1">
                                                         <span class="badge bg-success" style="font-size:0.65rem;">
-                                                            🎉 -<?= array_sum(array_column($r['promos_aplicadas'], 'descuentoPorcentaje')) ?>%
+                                                            🎉 -<?= number_format($descuentoMostrado, 2, ',', '.') ?>%
                                                         </span>
                                                     </div>
                                                 <?php endif; ?>
                                             </td>
                                             <td class="text-center">
                                                 <span class="badge <?= $badgeClass ?>"><?= htmlspecialchars($badgeTexto) ?></span>
+                                            </td>
+                                            <td class="text-center">
+                                                <?php if (($r['estadoReserva'] ?? '') === 'confirmada'): ?>
+                                                    <form method="POST"
+                                                          action="<?= url('src/routes/usuarios.php?accion=reenviar-comprobante') ?>"
+                                                          data-loading-form>
+                                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
+                                                        <input type="hidden" name="idReserva" value="<?= (int)$r['idReserva'] ?>">
+                                                        <input type="hidden" name="idUsuario" value="<?= (int)$id ?>">
+                                                        <button type="submit" class="btn btn-outline-primary btn-sm"
+                                                                data-loading-text="Enviando…"
+                                                                title="Reenviar el comprobante de pago por correo">
+                                                            <i class="bi bi-envelope" aria-hidden="true"></i>
+                                                            <span class="d-none d-lg-inline">Reenviar</span>
+                                                        </button>
+                                                    </form>
+                                                <?php else: ?>
+                                                    <span class="text-muted" style="font-size:0.75rem;">—</span>
+                                                <?php endif; ?>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>

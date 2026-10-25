@@ -30,7 +30,7 @@
             </div>
 
             <div class="col-12 col-lg-7 d-flex flex-column align-items-center align-items-lg-end justify-content-center ">
-                <form action="<?= url('src/routes/usuarios.php?accion=login') ?>" method="POST" class="formContainer  rounded-3 shadow-lg p-4 me-lg-5 " >
+                <form action="<?= url('src/routes/usuarios.php?accion=login') ?>" method="POST" class="formContainer  rounded-3 shadow-lg p-4 me-lg-5 " data-loading-form >
 <p class="small text-secondary mb-2">Los campos con <span class="text-danger" aria-hidden="true">*</span><span class="visually-hidden">asterisco</span> son obligatorios.</p>
                     <h1 class="fs-1 fw-semibold titleForm">Iniciar Sesión</h1>
                     <p class="text-muted text-break">Accedé a tu cuenta para gestionar reservas, vuelos o promociones.</p>
@@ -76,6 +76,7 @@
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
         <script src="<?= url('public/js/admin/validacionLogin.js') ?>"></script>
+        <script src="<?= url('public/js/admin/actionLoading.js') ?>"></script>
 
 
     </body>

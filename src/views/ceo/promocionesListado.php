@@ -384,7 +384,8 @@ function badgeVigenciaPromo(array $p): string {
                                                     <!-- Eliminar -->
                                                     <form method="POST"
                                                         action="<?= url('src/routes/promociones.php?accion=eliminar') ?>"
-                                                        class="d-inline">
+                                                        class="d-inline"
+                                                        data-loading-form>
                                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
                                                         <input type="hidden" name="id" value="<?= htmlspecialchars((string)$idPromo) ?>">
                                                         <button type="button"
@@ -408,7 +409,8 @@ function badgeVigenciaPromo(array $p): string {
                                                     <!-- Eliminar para denegadas -->
                                                     <form method="POST"
                                                         action="<?= url('src/routes/promociones.php?accion=eliminar') ?>"
-                                                        class="d-inline">
+                                                        class="d-inline"
+                                                        data-loading-form>
                                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
                                                         <input type="hidden" name="id" value="<?= htmlspecialchars((string)$idPromo) ?>">
                                                         <button type="button"
@@ -634,7 +636,7 @@ function badgeVigenciaPromo(array $p): string {
                 <div class="modal fade" id="modalCrearPromocion" tabindex="-1" role="dialog" aria-labelledby="modalCrearPromocionLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-lg">
                         <div class="modal-content">
-                            <form action="<?= url('src/routes/promociones.php?accion=crear') ?>" method="POST" novalidate id="formCrearPromocion">
+                            <form action="<?= url('src/routes/promociones.php?accion=crear') ?>" method="POST" novalidate id="formCrearPromocion" data-loading-form>
                                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
                                 <div class="modal-header border-0">
                                     <h2 class="modal-title fw-bold h5" id="modalCrearPromocionLabel">Crear Nueva Promoción</h2>
@@ -786,7 +788,7 @@ function badgeVigenciaPromo(array $p): string {
                 <div class="modal fade" id="modalEditarPromocion" tabindex="-1" role="dialog" aria-labelledby="modalEditarPromocionLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-lg">
                         <div class="modal-content">
-                            <form action="<?= url('src/routes/promociones.php?accion=editar') ?>" method="POST" novalidate id="formEditarPromocion">
+                            <form action="<?= url('src/routes/promociones.php?accion=editar') ?>" method="POST" novalidate id="formEditarPromocion" data-loading-form>
                                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
                                 <input type="hidden" name="id" id="editar_id">
                                 <div class="modal-header border-0">

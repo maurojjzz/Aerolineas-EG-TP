@@ -1,10 +1,12 @@
 (function () {
     "use strict";
 
-    if (window.__actionLoadingInitialized) {
+    // El script puede cargarse desde el layout global y desde una vista puntual.
+    // Con este guard evitamos registrar dos veces los listeners.
+    if (window.__actionLoadingInit) {
         return;
     }
-    window.__actionLoadingInitialized = true;
+    window.__actionLoadingInit = true;
 
     var lastActionTrigger = null;
     var originalContent = new WeakMap();
@@ -43,6 +45,26 @@
         if (region) {
             region.textContent = mensaje;
         }
+    }
+
+    function findSubmitButton(form) {
+        var explicito = form.querySelector("[data-loading-button]");
+        if (explicito) {
+            return explicito;
+        }
+
+        var boton = form.querySelector('button[type="submit"]') || form.querySelector("button");
+        if (boton) {
+            return boton;
+        }
+
+        // Hay formularios cuyo botón vive fuera del <form> y se asocia con
+        // el atributo form="idFormulario".
+        if (form.id) {
+            boton = document.querySelector('[type="submit"][form="' + form.id + '"]');
+        }
+
+        return boton || null;
     }
 
     function setSubmitButtonLoading(button) {
@@ -89,8 +111,12 @@
     document.addEventListener("submit", function (event) {
         var form = event.target;
 
-        if (!(form instanceof HTMLFormElement) || form.method.toUpperCase() !== "POST" ||
-            event.defaultPrevented || form.hasAttribute("data-no-loading")) {
+        if (!(form instanceof HTMLFormElement) || !form.hasAttribute("data-loading-form")) {
+            return;
+        }
+
+        // Otra validación ya canceló el envío: no mostramos el spinner.
+        if (event.defaultPrevented || form.hasAttribute("data-loading-skip")) {
             return;
         }
 
@@ -101,12 +127,7 @@
 
         form.dataset.submitting = "1";
 
-        var submitButton = event.submitter ||
-            form.querySelector("[data-loading-button]") ||
-            form.querySelector('button[type="submit"]') ||
-            form.querySelector("button");
-
-        setSubmitButtonLoading(submitButton);
+        setSubmitButtonLoading(findSubmitButton(form));
         markTriggerAsLoading();
     });
 
