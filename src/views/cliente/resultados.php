@@ -62,9 +62,6 @@ $idVueloIda = max(0, (int)($_GET['idVueloIda'] ?? 0));
 
 $errorFechaVuelta = '';
 $errorBusqueda = '';
-if (!estaLogueado() && ($origen === '' || $destino === '')) {
-    $errorBusqueda = 'Elegí un origen y un destino para buscar vuelos.';
-}
 if ($esIdaVuelta && $paso === 'vuelta') {
     if ($fechaVuelta === '') {
         $errorFechaVuelta = 'Elegí una fecha de vuelta para ver los vuelos disponibles.';
