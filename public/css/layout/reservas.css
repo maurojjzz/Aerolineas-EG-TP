@@ -44,8 +44,21 @@ body {
 .linea-vuelo {
     height: 2px;
     background: #d1d5db;
-    flex: 1;
+    width: 100%;
+    min-width: 0;
     position: relative;
+}
+
+.ruta-vuelo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(90px, 1.5fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.ruta-vuelo-punto {
+    min-width: 0;
 }
 
 .linea-vuelo::after {
@@ -56,6 +69,13 @@ body {
     transform: translateX(-50%);
     font-size: 1.1rem;
     color: #2066ba;
+}
+
+@media (max-width: 767.98px) {
+    .ruta-vuelo {
+        grid-template-columns: minmax(0, 1fr) minmax(65px, 1fr) minmax(0, 1fr);
+        gap: 0.5rem;
+    }
 }
 
 .filtro{

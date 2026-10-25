@@ -62,9 +62,6 @@ $idVueloIda = max(0, (int)($_GET['idVueloIda'] ?? 0));
 
 $errorFechaVuelta = '';
 $errorBusqueda = '';
-if (!estaLogueado() && ($origen === '' || $destino === '')) {
-    $errorBusqueda = 'Elegí un origen y un destino para buscar vuelos.';
-}
 if ($esIdaVuelta && $paso === 'vuelta') {
     if ($fechaVuelta === '') {
         $errorFechaVuelta = 'Elegí una fecha de vuelta para ver los vuelos disponibles.';
@@ -509,14 +506,14 @@ $textoVacio = !$esIdaVuelta
 
                                 <!-- Ruta -->
                                 <div class="col-12 col-md-6 ">
-                                    <div class="d-flex align-items-center gap-3">
-                                        <div class="text-center">
+                                    <div class="ruta-vuelo">
+                                        <div class="ruta-vuelo-punto text-center">
                                             <p class="fw-bold fs-5 m-0"><?= $horaSalida ?></p>
                                             <p class="m-0" style="font-size:0.8rem;"><?= htmlspecialchars($v['origenVuelo']) ?></p>
                                             <p class="text-muted m-0" style="font-size:0.75rem;"><?= $fechaSalida ?></p>
                                         </div>
-                                        <div class="linea-vuelo"></div>
-                                        <div class="text-center">
+                                        <div class="linea-vuelo" aria-hidden="true"></div>
+                                        <div class="ruta-vuelo-punto text-center">
                                             <?php if (!empty($v['fechaHoraLlegadaVuelo'])): ?>
                                                 <p class="fw-bold fs-5 m-0"><?= date('H:i', strtotime($v['fechaHoraLlegadaVuelo'])) ?></p>
                                             <?php else: ?>
