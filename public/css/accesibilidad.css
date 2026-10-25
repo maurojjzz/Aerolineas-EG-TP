@@ -109,6 +109,19 @@ footer a:visited,
     font-weight: 800;
 }
 
+/* Mantiene visible el texto en navegadores sin soporte para el contorno */
+@supports not (-webkit-text-stroke: 1px #082149) {
+    .hero-content .hero-titulo span,
+    .hero-content .hero-slogan span,
+    .hero-content h2 span,
+    .titulo-cuadro h1 span,
+    .titulo-cuadro h2 span,
+    .titulo-cuadro-resul h1 span {
+        color: #082149 !important;
+        -webkit-text-stroke: 0;
+    }
+}
+
 /* Opciones tipo tarjeta: el foco del control oculto se refleja en la tarjeta */
 .alcance-option:focus-within {
     outline: 3px solid #0b5ed7;
