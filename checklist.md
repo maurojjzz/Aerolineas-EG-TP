@@ -18,7 +18,7 @@ Antes de entregar, revisá **cada punto** de esta lista. Si algo no se cumple, e
 ## 2. Repositorio
 
 - [x] El repositorio es público y la URL está incluida en la entrega.
-- [ ] Tiene un `README.md` con: qué hace el sistema, URL de producción, tecnologías usadas, integrantes del grupo y usuarios de prueba.
+- [X] Tiene un `README.md` con: qué hace el sistema, URL de producción, tecnologías usadas, integrantes del grupo y usuarios de prueba.
 - [x] Historial de commits real y distribuido entre los integrantes (no un único commit "final").
 - [x] Mensajes de commit entendibles.
 - [x] Hay un `.gitignore` correcto: **no** están subidos `vendor/`, `node_modules/`, `.env`, ni archivos temporales.
@@ -38,7 +38,7 @@ Antes de entregar, revisá **cada punto** de esta lista. Si algo no se cumple, e
 - [x] El email de registro / confirmación de cuenta **llega efectivamente** a la casilla.
 - [x] El email de recuperación de contraseña **llega** y el link funciona.
 - [x] Los links dentro de los emails apuntan al dominio de producción, no a `localhost`.
-- [ ] Los emails no caen en spam (probalo con al menos dos proveedores distintos, ej. Gmail y Outlook).
+- [X] Los emails no caen en spam (probalo con al menos dos proveedores distintos, ej. Gmail y Outlook).
 - [x] El contenido del email está en español y sin textos de plantilla sin reemplazar (`{{nombre}}`, "Lorem ipsum", etc.).
 - [x] El remitente es identificable (no "no-reply@algo-raro").
 
@@ -47,7 +47,7 @@ Antes de entregar, revisá **cada punto** de esta lista. Si algo no se cumple, e
 - [x] Un usuario que no conoce el sistema entiende qué hacer al entrar.
 - [x] Todas las pantallas son alcanzables desde el menú o desde algún flujo lógico. No hay pantallas "huérfanas" que solo se llegan escribiendo la URL.
 - [x] Siempre se puede volver atrás o a la pantalla principal.
-- [ ] Los botones y links dicen qué hacen ("Guardar cambios", no "Enviar").
+- [X] Los botones y links dicen qué hacen ("Guardar cambios", no "Enviar").
 - [x] El estado actual es visible: se sabe si estás logueado, en qué sección estás y con qué usuario.
 - [x] Las acciones destructivas (borrar) piden confirmación.
 - [x] Después de cada acción hay feedback: mensaje de éxito o de error.
@@ -117,13 +117,13 @@ Antes de entregar, revisá **cada punto** de esta lista. Si algo no se cumple, e
 
 ## 14. Estructura del Sitio
 
-- [ ] Realizó los diagramas de estructura de todas las páginas.
-- [ ] Realizó los diagramas de flujo de todas las páginas con transacción.
+- [X] Realizó los diagramas de estructura de todas las páginas.
+- [X] Realizó los diagramas de flujo de todas las páginas con transacción.
 
 ## 15. Sistema de Navegación
 
 - [x] Definió el sistema de navegación.
-- [ ] Listó todos los elementos de navegación del sitio clasificándolos en Textuales y Contextuales.
+- [X] Listó todos los elementos de navegación del sitio clasificándolos en Textuales y Contextuales.
 
 ## 16. Diseño Visual
 
@@ -131,23 +131,23 @@ Antes de entregar, revisá **cada punto** de esta lista. Si algo no se cumple, e
 
 ## 17. Presupuesto Económico 
 
-- [ ] Realizó el diagrama de Gantt con las actividades que deben realizar para llevar a cabo el proyecto.
-- [ ] Definió los costos en recursos humanos para el proyecto.
-- [ ] Citó las fuentes de donde obtuvo los diferentes valores monetarios que se considera en el presupuesto (ejemplo: valor hora hombre, costo de hosting, costo de amortizaciones según valores reales de máquinas, etc).
-- [ ] Realizó la estimación del tamaño del proyecto según Puntos de Función.
-- [ ] Calculó el costo y el precio del sitio web.
-- [ ] Armó y dejó plasmado en el informe un presupuesto modelo con la información que analizó para entregar a un cliente.
-- [ ] Los valores del presupuesto se citan de fuentes reales. Valor hora hombre, costo de hosting, amortizaciones y cualquier otro monto deben tener fuente
+- [X] Realizó el diagrama de Gantt con las actividades que deben realizar para llevar a cabo el proyecto.
+- [X] Definió los costos en recursos humanos para el proyecto.
+- [X] Citó las fuentes de donde obtuvo los diferentes valores monetarios que se considera en el presupuesto (ejemplo: valor hora hombre, costo de hosting, costo de amortizaciones según valores reales de máquinas, etc).
+- [X] Realizó la estimación del tamaño del proyecto según Puntos de Función.
+- [X] Calculó el costo y el precio del sitio web.
+- [X] Armó y dejó plasmado en el informe un presupuesto modelo con la información que analizó para entregar a un cliente.
+- [X] Los valores del presupuesto se citan de fuentes reales. Valor hora hombre, costo de hosting, amortizaciones y cualquier otro monto deben tener fuente
       verificable y fecha. Un número generado por IA sin fuente se considera un dato inventado e invalida la sección.
-- [ ] No se cargan credenciales, datos reales de usuarios ni volcados de la base de datos en herramientas públicas de IA. Vale como criterio profesional, no solo
+- [X] No se cargan credenciales, datos reales de usuarios ni volcados de la base de datos en herramientas públicas de IA. Vale como criterio profesional, no solo
       como regla de la materia.
-- [ ] Los diagramas, modelos y checklists los interpreta el grupo. Se puede usar IA para producirlos, pero la fundamentación tiene que ser propia y coherente con el
+- [X] Los diagramas, modelos y checklists los interpreta el grupo. Se puede usar IA para producirlos, pero la fundamentación tiene que ser propia y coherente con el
       sistema entregado.
 
 ## 18. Modelos 
 
-- [ ] Realizó y dejó plasmado en el informe el diagrama del MODELO lógico de Datos
-- [ ] Realizó y dejó plasmado en el informe el diagrama del MODELO Físico
+- [X] Realizó y dejó plasmado en el informe el diagrama del MODELO lógico de Datos
+- [X] Realizó y dejó plasmado en el informe el diagrama del MODELO Físico
 
 ## 19. Check List 
 
