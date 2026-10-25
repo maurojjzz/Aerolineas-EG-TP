@@ -8,6 +8,17 @@ class UsuarioController {
 
     private $conexion;
 
+    private function obtenerEscalar(string $query, string $columna): int {
+        $stmt = mysqli_prepare($this->conexion, $query);
+        if (!$stmt) {
+            return 0;
+        }
+        mysqli_stmt_execute($stmt);
+        $fila = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+        mysqli_stmt_close($stmt);
+        return (int)($fila[$columna] ?? 0);
+    }
+
     public function __construct($conexion) {
         $this->conexion = $conexion;
     }
@@ -599,20 +610,15 @@ class UsuarioController {
                          )
                      )";
 
-        $resTotal = mysqli_query($this->conexion, "SELECT COUNT(*) as total FROM usuario u WHERE {$visibles}");
-        $total = mysqli_fetch_assoc($resTotal)['total'] ?? 0;
-
-        $resNuevos = mysqli_query($this->conexion, "SELECT COUNT(*) as nuevos FROM usuario u WHERE {$visibles} AND MONTH(u.fechaCreacion) = MONTH(CURRENT_DATE()) AND YEAR(u.fechaCreacion) = YEAR(CURRENT_DATE())");
-        $nuevosEsteMes = mysqli_fetch_assoc($resNuevos)['nuevos'] ?? 0;
-
-        $resAnterior = mysqli_query($this->conexion, "SELECT COUNT(*) as anterior FROM usuario u WHERE {$visibles} AND MONTH(u.fechaCreacion) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(u.fechaCreacion) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH)");
-        $mesAnterior = mysqli_fetch_assoc($resAnterior)['anterior'] ?? 0;
+        $total = $this->obtenerEscalar("SELECT COUNT(*) as total FROM usuario u WHERE {$visibles}", 'total');
+        $nuevosEsteMes = $this->obtenerEscalar("SELECT COUNT(*) as nuevos FROM usuario u WHERE {$visibles} AND MONTH(u.fechaCreacion) = MONTH(CURRENT_DATE()) AND YEAR(u.fechaCreacion) = YEAR(CURRENT_DATE())", 'nuevos');
+        $mesAnterior = $this->obtenerEscalar("SELECT COUNT(*) as anterior FROM usuario u WHERE {$visibles} AND MONTH(u.fechaCreacion) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(u.fechaCreacion) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH)", 'anterior');
 
         $diff = $nuevosEsteMes - $mesAnterior;
 
         // El KPI de roles refleja los usuarios visibles en el listado:
         // clientes y CEOs aprobados. Los admins quedan fuera del panel.
-        $resRoles = mysqli_query($this->conexion,
+        $stmtRoles = mysqli_prepare($this->conexion,
             "SELECT u.rol, COUNT(*) as cantidad
              FROM usuario u
              WHERE u.rol IN ('cliente', 'ceo')
@@ -622,10 +628,13 @@ class UsuarioController {
                    OR (u.fecha_hora_autorizacion IS NULL AND u.activo = 1)
                )
              GROUP BY u.rol");
+        mysqli_stmt_execute($stmtRoles);
+        $resRoles = mysqli_stmt_get_result($stmtRoles);
         $roles = ['cliente' => 0, 'ceo' => 0];
         while ($row = mysqli_fetch_assoc($resRoles)) {
             $roles[$row['rol']] = (int)$row['cantidad'];
         }
+        mysqli_stmt_close($stmtRoles);
 
         return [
             'total'         => (int)$total,
@@ -1041,12 +1050,16 @@ class UsuarioController {
                     FROM usuario 
                     WHERE rol = 'ceo' AND activo = 0 AND fecha_hora_autorizacion IS NULL AND notificacion_vista = 0
                     ORDER BY fechaCreacion DESC LIMIT 5";
-        $resCEOs = mysqli_query($this->conexion, $sqlCEOs);
+        $stmtCEOs = mysqli_prepare($this->conexion, $sqlCEOs);
+        if (!$stmtCEOs) return ['ceos' => [], 'promociones' => [], 'total' => 0];
+        mysqli_stmt_execute($stmtCEOs);
+        $resCEOs = mysqli_stmt_get_result($stmtCEOs);
         $ceos = [];
         if ($resCEOs) {
             while ($row = mysqli_fetch_assoc($resCEOs)) {
                 $ceos[] = $row;
             }
+            mysqli_stmt_close($stmtCEOs);
         }
 
         // 2. Promociones pendientes
@@ -1055,12 +1068,16 @@ class UsuarioController {
                       JOIN aerolinea a ON p.idAerolinea = a.idAerolinea 
                       WHERE p.estado = 'Pendiente' AND p.notificacion_vista = 0
                       ORDER BY p.fechaCreacion DESC LIMIT 5";
-        $resPromos = mysqli_query($this->conexion, $sqlPromos);
+        $stmtPromos = mysqli_prepare($this->conexion, $sqlPromos);
+        if (!$stmtPromos) return ['ceos' => $ceos, 'promociones' => [], 'total' => count($ceos)];
+        mysqli_stmt_execute($stmtPromos);
+        $resPromos = mysqli_stmt_get_result($stmtPromos);
         $promos = [];
         if ($resPromos) {
             while ($row = mysqli_fetch_assoc($resPromos)) {
                 $promos[] = $row;
             }
+            mysqli_stmt_close($stmtPromos);
         }
 
         return [

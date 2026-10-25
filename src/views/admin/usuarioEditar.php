@@ -24,13 +24,17 @@ if (!$usuario) {
 $idAeroActual = (int)($usuario['idAerolinea'] ?? 0);
 $sqlAeros = "SELECT idAerolinea, nombreAerolinea 
              FROM aerolinea 
-             WHERE activo = 1 OR idAerolinea = {$idAeroActual} 
+             WHERE activo = 1 OR idAerolinea = ?
              ORDER BY nombreAerolinea ASC";
-$resAeros = mysqli_query($link, $sqlAeros);
+$stmtAeros = mysqli_prepare($link, $sqlAeros);
+mysqli_stmt_bind_param($stmtAeros, 'i', $idAeroActual);
+mysqli_stmt_execute($stmtAeros);
+$resAeros = mysqli_stmt_get_result($stmtAeros);
 $aerolineas = [];
 while ($row = mysqli_fetch_assoc($resAeros)) {
     $aerolineas[] = $row;
 }
+mysqli_stmt_close($stmtAeros);
 
 $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
 $rolActual = strtolower(trim($usuario['rol'] ?? ''));

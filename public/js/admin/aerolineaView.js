@@ -150,9 +150,7 @@ if (logoInput && cuadroFoto) {
             >
 
             <div class="d-flex flex-column w-100">
-                <p class="m-0 fw-semibold text-break">
-                    ${archivo.name}
-                </p>
+                <p class="m-0 fw-semibold text-break" data-logo-name></p>
 
                 <p class="m-0 form-text-info">
                     ${(archivo.size / 1024 / 1024).toFixed(2)} MB
@@ -195,6 +193,7 @@ if (logoInput && cuadroFoto) {
                 </div>
         </div>
         `;
+        cuadroFoto.querySelector("[data-logo-name]").textContent = archivo.name;
             iniciarTooltips();
 
             document.getElementById("cambiarLogo").addEventListener("click", function (e) {

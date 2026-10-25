@@ -193,14 +193,17 @@ class NovedadController {
 
     // ── Estadísticas para cards del listado admin ─────────────────────────────
     public function obtenerEstadisticas(): array {
-        $result = mysqli_query($this->conexion,
+        $stmt = mysqli_prepare($this->conexion,
             "SELECT
                 COUNT(*) as total,
                 SUM(CASE WHEN estado='publicada'  THEN 1 ELSE 0 END) as publicadas,
                 SUM(CASE WHEN estado='borrador'   THEN 1 ELSE 0 END) as borradores,
                 SUM(CASE WHEN estado='archivada'  THEN 1 ELSE 0 END) as archivadas
              FROM novedades");
-        return mysqli_fetch_assoc($result) ?? ['total'=>0,'publicadas'=>0,'borradores'=>0,'archivadas'=>0];
+        mysqli_stmt_execute($stmt);
+        $resultado = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+        mysqli_stmt_close($stmt);
+        return $resultado ?? ['total'=>0,'publicadas'=>0,'borradores'=>0,'archivadas'=>0];
     }
 
     // ── Últimas N publicadas (para home del cliente) ──────────────────────────
@@ -219,12 +222,15 @@ class NovedadController {
 
     // ── Todas las publicadas (para listado del cliente) ───────────────────────
     public function listarTodasPublicadas(): array {
-        $result = mysqli_query($this->conexion,
+        $stmt = mysqli_prepare($this->conexion,
             "SELECT * FROM novedades WHERE estado = 'publicada'
              ORDER BY fechaPublicacion DESC");
-        if (!$result) return [];
+        if (!$stmt) return [];
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
         $filas = [];
         while ($row = mysqli_fetch_assoc($result)) $filas[] = $row;
+        mysqli_stmt_close($stmt);
         return $filas;
     }
 }

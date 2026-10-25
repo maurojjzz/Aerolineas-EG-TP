@@ -199,7 +199,7 @@ $tabs = [
     <title>Reportes de <?= htmlspecialchars($aero['nombreAerolinea']) ?> — Panel de CEO — Volaré</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" href="<?= url('public/css/admin.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/admin.css') ?>?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/headerAdmin.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/components/tablaLista.css') ?>?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
@@ -414,7 +414,7 @@ $tabs = [
                         </form>
                     </div>
 
-                    <table class="table table-hover align-middle border-top mt-2">
+                    <table class="table table-hover align-middle border-top mt-2 reporte-tabla reporte-ceo-<?= htmlspecialchars($tab) ?>">
                         <caption class="visually-hidden"><?= $tab === 'ocupacion' ? 'Ocupación por ruta' : 'Ventas del período' ?></caption>
                         <?php if ($tab === 'ventas'): ?>
                             <thead>

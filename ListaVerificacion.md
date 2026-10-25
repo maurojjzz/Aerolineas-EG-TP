@@ -50,7 +50,7 @@ Antes de entregar, revisá **cada punto** de esta lista. Si algo no se cumple, e
 
 ## 5. Navegación y usabilidad
 
-- [ ] Un usuario que no conoce el sistema entiende qué hacer al entrar.
+- [X] Un usuario que no conoce el sistema entiende qué hacer al entrar.
 - [X] Todas las pantallas son alcanzables desde el menú o desde algún flujo lógico. No hay pantallas "huérfanas" que solo se llegan escribiendo la URL.
 - [X] Siempre se puede volver atrás o a la pantalla principal.
 - [X] Los botones y links dicen qué hacen ("Guardar cambios", no "Enviar").
@@ -65,7 +65,7 @@ Antes de entregar, revisá **cada punto** de esta lista. Si algo no se cumple, e
 - [X] Los mensajes de validación están en español ("El email es obligatorio", no "This field is required").
 - [X] Las alertas y mensajes de error del framework están traducidos o interceptados.
 - [X] Los mensajes de error de la base de datos nunca se muestran crudos al usuario.
-- [] Sin faltas de ortografía ni textos de prueba ("asdasd", "probando 123").
+- [X] Sin faltas de ortografía ni textos de prueba ("asdasd", "probando 123").
 - [X] Fechas, números y moneda en formato local.
 
 ## 7. Formularios y validaciones
@@ -78,12 +78,12 @@ Antes de entregar, revisá **cada punto** de esta lista. Si algo no se cumple, e
 
 ## 8. Seguridad mínima
 
-- [ ] Las contraseñas están hasheadas en la base de datos, nunca en texto plano.
-- [ ] Las páginas privadas no se pueden abrir sin estar logueado (probá pegando la URL directa en una ventana de incógnito).
-- [ ] Un usuario no puede ver ni editar datos de otro usuario cambiando el ID en la URL.
-- [ ] Las consultas usan sentencias preparadas (nada de concatenar SQL). **La revisión encontró consultas `mysqli_query()` con SQL construido en varios controladores; hay que auditar y convertirlas antes de marcar este punto.**
-- [ ] El contenido cargado por usuarios se escapa al mostrarlo (sin XSS).
-- [ ] El logout funciona y cierra realmente la sesión.
+- [X] Las contraseñas están hasheadas en la base de datos, nunca en texto plano.
+- [X] Las páginas privadas no se pueden abrir sin estar logueado (probá pegando la URL directa en una ventana de incógnito).
+- [X] Un usuario no puede ver ni editar datos de otro usuario cambiando el ID en la URL. Clientes y CEOs quedan limitados por la sesión y/o su aerolínea; el administrador puede gestionar usuarios por diseño.
+- [X] Las consultas usan sentencias preparadas (nada de concatenar SQL). Se auditaron y migraron las consultas que usaban `mysqli_query()`; los fragmentos dinámicos restantes corresponden a cláusulas internas controladas y valores se envían como parámetros.
+- [X] El contenido cargado por usuarios se escapa al mostrarlo (sin XSS). Se revisaron las vistas PHP y las inserciones dinámicas JavaScript; los valores se escapan con `htmlspecialchars`, `textContent` o una función de escape HTML.
+- [X] El logout funciona y cierra realmente la sesión.
 
 ## 9. Visual y responsive
 

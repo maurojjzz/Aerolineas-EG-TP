@@ -54,7 +54,7 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
 
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
         
-        <link rel="stylesheet" href="<?= url('public/css/admin.css') ?>">
+        <link rel="stylesheet" href="<?= url('public/css/admin.css') ?>?v=<?= time() ?>">
         <link rel="stylesheet" href="<?= url('public/css/layout/headerAdmin.css') ?>">
         <link rel="stylesheet" href="<?= url('public/css/components/tablaLista.css') ?>?v=<?= time() ?>">
         <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
@@ -153,7 +153,7 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                                         </div>
                                     </form>
                                 </div>
-                                <table class="table table-hover align-middle border-top mt-2 tabla-vuelos">
+                                <table class="table table-hover align-middle border-top mt-2 tabla-vuelos ceo-tabla-vuelos">
                                     <caption class="visually-hidden">Listado de vuelos</caption>
                                     <thead>
                                         <tr>
@@ -298,6 +298,33 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                                         <?php endforeach; endif; ?>
                                     </tbody>
                                 </table>
+
+                                <div class="admin-mobile-cards ceo-mobile-cards d-md-none">
+                                    <?php if (empty($vuelos)): ?>
+                                        <div class="admin-mobile-empty">Todavía no hay vuelos cargados para tu aerolínea.</div>
+                                    <?php else: ?>
+                                        <?php foreach ($vuelos as $v): ?>
+                                            <article class="admin-mobile-card">
+                                                <div class="admin-mobile-card__header">
+                                                    <div>
+                                                        <strong><?= htmlspecialchars($v['origenVuelo']) ?> → <?= htmlspecialchars($v['destinoVuelo']) ?></strong>
+                                                        <small>Salida: <?= date('d/m/Y H:i', strtotime($v['fechaHoraSalidaVuelo'])) ?></small>
+                                                    </div>
+                                                    <span class="badge text-bg-light">$<?= number_format($v['precioVuelo'], 2, ',', '.') ?></span>
+                                                </div>
+                                                <dl class="admin-mobile-card__data">
+                                                    <div><dt>Llegada</dt><dd><?= date('d/m/Y H:i', strtotime($v['fechaHoraLlegadaVuelo'])) ?></dd></div>
+                                                    <div><dt>Asientos</dt><dd><?= $v['asientosTotales'] ?></dd></div>
+                                                    <div><dt>Disponibles</dt><dd><?= $v['asientosDisponibles'] ?></dd></div>
+                                                </dl>
+                                                <div class="admin-mobile-card__actions">
+                                                    <a class="btn btn-outline-secondary btn-sm" href="<?= url('index.php?pagina=vuelo&id=' . $v['idVuelo']) ?>">Editar vuelo</a>
+                                                    <button type="button" class="btn btn-outline-danger btn-sm btn-eliminar-vuelo" data-id="<?= $v['idVuelo'] ?>" data-ruta="<?= htmlspecialchars($v['origenVuelo'] . ' → ' . $v['destinoVuelo']) ?>">Eliminar</button>
+                                                </div>
+                                            </article>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </div>
                                 
                                 <!-- Bloque de Paginación Estandarizado -->
                                 <div class="border-top px-3 py-3">

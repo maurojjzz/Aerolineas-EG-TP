@@ -51,19 +51,26 @@ if (!$isLoggedIn) {
         ['label' => 'Inicio', 'href' => $urlInicio, 'active' => in_array($paginaActual, ['cliente', 'inicio'], true)],
         ['label' => 'Vuelos', 'href' => url('index.php?pagina=buscar-vuelos'), 'active' => $paginaActual === 'buscar-vuelos'],
         ['label' => 'Promociones', 'href' => $urlPromociones, 'active' => $paginaActual === 'cliente-novedades' && $tabActual === 'promociones'],
-        // ['label' => 'Mis reservas', 'href' => url('index.php?pagina=mis-reservas'), 'active' => $paginaActual === 'mis-reservas'],
         ['label' => 'Historial de compras', 'href' => url('index.php?pagina=historial-compras'), 'active' => $paginaActual === 'historial-compras'],
         ['label' => 'Perfil', 'href' => $urlPerfil, 'active' => $paginaActual === 'perfil'],
         ['label' => 'Ayuda', 'href' => url('index.php?pagina=ayuda'), 'active' => $paginaActual === 'ayuda'],
     ];
 } else {
-    $panelPages = $rol === 'admin'
-        ? ['aerolinea', 'usuario', 'usuarios', 'novedad', 'novedades', 'promociones', 'ceos']
-        : ['ceo', 'vuelo', 'vuelos', 'promociones'];
-
-    $navLinks = [
-        ['label' => 'Mi Panel', 'href' => $urlPanel, 'active' => in_array($paginaActual, $panelPages, true)],
-        ['label' => 'Perfil', 'href' => $urlPerfil, 'active' => $paginaActual === 'perfil'],
-        ['label' => 'Ayuda', 'href' => url('index.php?pagina=ayuda'), 'active' => $paginaActual === 'ayuda'],
-    ];
+    if ($rol === 'admin') {
+        $navLinks = [
+            ['label' => 'Aerolíneas', 'href' => url('index.php?pagina=aerolinea&seccion=listado'), 'active' => $paginaActual === 'aerolinea'],
+            ['label' => 'Promociones', 'href' => url('index.php?pagina=promociones&seccion=listado'), 'active' => $paginaActual === 'promociones'],
+            ['label' => 'Novedades', 'href' => url('index.php?pagina=novedades&seccion=listado'), 'active' => in_array($paginaActual, ['novedad', 'novedades'], true)],
+            ['label' => 'Usuarios', 'href' => url('index.php?pagina=usuarios&seccion=listado'), 'active' => in_array($paginaActual, ['usuario', 'usuarios'], true)],
+            ['label' => 'Aprobar CEOs', 'href' => url('index.php?pagina=ceos&seccion=listado'), 'active' => $paginaActual === 'ceos'],
+            ['label' => 'Reportes', 'href' => url('index.php?pagina=reportes&seccion=listado'), 'active' => $paginaActual === 'reportes'],
+        ];
+    } else {
+        $navLinks = [
+            ['label' => 'Aerolínea', 'href' => url('index.php?pagina=ceo'), 'active' => $paginaActual === 'ceo' && empty($_GET['seccion'])],
+            ['label' => 'Vuelos', 'href' => url('index.php?pagina=vuelos'), 'active' => in_array($paginaActual, ['vuelo', 'vuelos'], true)],
+            ['label' => 'Promociones', 'href' => url('index.php?pagina=ceo&seccion=promociones'), 'active' => $paginaActual === 'ceo' && in_array($_GET['seccion'] ?? '', ['promociones', 'promocion-detalle'], true)],
+            ['label' => 'Reportes', 'href' => url('index.php?pagina=ceo&seccion=reportes'), 'active' => $paginaActual === 'ceo' && ($_GET['seccion'] ?? '') === 'reportes'],
+        ];
+    }
 }

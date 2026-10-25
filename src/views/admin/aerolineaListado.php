@@ -363,6 +363,41 @@ if ($diff > 0) {
                         <?php endif; ?>
                     </tbody>
                 </table>
+
+                <div class="admin-mobile-cards d-md-none">
+                    <?php if (empty($aerolineas)): ?>
+                        <div class="admin-mobile-empty">Todavía no hay aerolíneas cargadas.</div>
+                    <?php else: ?>
+                        <?php foreach ($aerolineas as $aero): ?>
+                            <article class="admin-mobile-card">
+                                <div class="admin-mobile-card__header">
+                                    <div class="admin-mobile-card__identity">
+                                        <?php if (!empty($aero['logoUrl'])): ?>
+                                            <img class="admin-mobile-avatar admin-mobile-avatar--image" src="<?= htmlspecialchars($aero['logoUrl']) ?>" alt="Logo de <?= htmlspecialchars($aero['nombreAerolinea']) ?>">
+                                        <?php else: ?>
+                                            <span class="admin-mobile-avatar"><?= htmlspecialchars(substr($aero['codigoIATA'], 0, 2)) ?></span>
+                                        <?php endif; ?>
+                                        <div>
+                                            <strong><?= htmlspecialchars($aero['nombreAerolinea']) ?></strong>
+                                            <small><?= htmlspecialchars($aero['codigoIATA']) ?></small>
+                                        </div>
+                                    </div>
+                                    <span class="badge <?= $aero['activo'] ? 'text-bg-success' : 'text-bg-secondary' ?>"><?= $aero['activo'] ? 'Activa' : 'Inactiva' ?></span>
+                                </div>
+                                <dl class="admin-mobile-card__data">
+                                    <div><dt>País</dt><dd><?= htmlspecialchars($aero['codPais']) ?></dd></div>
+                                    <div><dt>CEO asociado</dt><dd><?= $aero['ceoNombre'] ? htmlspecialchars($aero['ceoNombre'] . ' ' . $aero['ceoApellido']) : '—' ?></dd></div>
+                                </dl>
+                                <div class="admin-mobile-card__actions">
+                                    <a class="btn btn-outline-primary btn-sm" href="<?= url('index.php?pagina=aerolinea&seccion=detalle&id=' . $aero['idAerolinea']) ?>">Ver detalle</a>
+                                    <a class="btn btn-outline-secondary btn-sm" href="<?= url('index.php?pagina=aerolinea&seccion=editar&id=' . $aero['idAerolinea']) ?>">Editar</a>
+                                    <button type="button" class="btn <?= $aero['activo'] ? 'btn-outline-danger' : 'btn-outline-success' ?> btn-sm btn-toggle-estado" data-id="<?= $aero['idAerolinea'] ?>" data-activo="<?= $aero['activo'] ?>" data-nombre="<?= htmlspecialchars($aero['nombreAerolinea']) ?>"><?= $aero['activo'] ? 'Desactivar' : 'Activar' ?></button>
+                                </div>
+                            </article>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+
                 <div class="border-top px-3 py-3">
                     <div class="d-flex flex-column flex-sm-row justify-content-center justify-content-sm-between align-items-center flex-wrap gap-3">
 

@@ -46,6 +46,15 @@ require_once __DIR__ . '/navLinks.php';
                         </a>
                     </li>
                 <?php endforeach; ?>
+                <?php if ($isLoggedIn && $rol === 'cliente'): ?>
+                    <li class="nav-item">
+                        <a class="nav-link text-white <?= $paginaActual === 'mis-reservas' ? 'active fw-bold' : '' ?>"
+                           href="<?= url('index.php?pagina=mis-reservas') ?>"
+                           <?= $paginaActual === 'mis-reservas' ? 'aria-current="page"' : '' ?>>
+                            Mis reservas
+                        </a>
+                    </li>
+                <?php endif; ?>
             </ul>
 
             <div class="mt-auto pt-4">

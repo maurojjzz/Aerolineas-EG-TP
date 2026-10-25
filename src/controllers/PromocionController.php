@@ -402,16 +402,19 @@ class PromocionController {
 
     // ── ADMIN: listar todas las promociones ───────────────────────────────────
     public function listarTodas(): array {
-        $result = mysqli_query($this->conexion,
+        $stmt = mysqli_prepare($this->conexion,
             "SELECT p.*, a.nombreAerolinea, a.codigoIATA,
                     u.nombre AS ceoNombre, u.apellido AS ceoApellido
             FROM promocion p
             JOIN aerolinea a ON p.idAerolinea = a.idAerolinea
             JOIN usuario   u ON p.idUsuarioCreador = u.idUsuario
             ORDER BY p.fechaCreacion DESC");
-        if (!$result) return [];
+        if (!$stmt) return [];
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
         $filas = [];
         while ($row = mysqli_fetch_assoc($result)) $filas[] = $row;
+        mysqli_stmt_close($stmt);
         return $filas;
     }
 
@@ -761,7 +764,7 @@ class PromocionController {
 
     // ── Listar TODAS las promociones habilitadas (Aprobadas y vigentes) ──
     public function listarTodasPublicadas(): array {
-        $result = mysqli_query($this->conexion,
+        $stmt = mysqli_prepare($this->conexion,
             "SELECT p.*, a.nombreAerolinea, a.codigoIATA
              FROM promocion p
              JOIN aerolinea a ON p.idAerolinea = a.idAerolinea
@@ -770,12 +773,15 @@ class PromocionController {
                AND p.fechaFin >= CURDATE()
              ORDER BY p.fechaCreacion DESC");
              
-        if (!$result) return [];
+        if (!$stmt) return [];
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
         
         $filas = [];
         while ($row = mysqli_fetch_assoc($result)) {
             $filas[] = $row;
         }
+        mysqli_stmt_close($stmt);
         return $filas;
     }
 

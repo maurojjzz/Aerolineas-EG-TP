@@ -505,7 +505,7 @@ $tabs = [
                 </div>
 
                 <!-- Tabla según pestaña -->
-                <table class="table table-hover align-middle border-top mt-2">
+                <table class="table table-hover align-middle border-top mt-2 reporte-tabla reporte-<?= htmlspecialchars($tab) ?>">
                     <caption class="visually-hidden"><?= $tab === 'usuarios' ? 'Actividad de usuarios' : ($tab === 'vuelos' ? 'Rendimiento por ruta' : 'Ventas del período') ?></caption>
                     <?php if ($tab === 'ventas'): ?>
                         <thead>

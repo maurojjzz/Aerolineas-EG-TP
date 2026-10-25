@@ -100,7 +100,7 @@ function badgeVigenciaPromo(array $p): string {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    <link rel="stylesheet" href="<?= url('public/css/admin.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/admin.css') ?>?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/headerAdmin.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/components/tablaLista.css') ?>?v=<?= time() ?>">
     <style>
@@ -292,7 +292,7 @@ function badgeVigenciaPromo(array $p): string {
                                 </div>
                             </div>
 
-                            <table class="table table-hover align-middle border-top mt-2 tabla-aerolineas">
+                            <table class="table table-hover align-middle border-top mt-2 tabla-aerolineas ceo-tabla-promociones">
                                 <caption class="visually-hidden">Listado de promociones</caption>
                                 <thead>
                                     <tr>
@@ -507,6 +507,49 @@ function badgeVigenciaPromo(array $p): string {
                                     <?php endif; ?>
                                 </tbody>
                             </table>
+
+                            <div class="admin-mobile-cards ceo-mobile-cards d-md-none">
+                                <?php if (empty($promociones)): ?>
+                                    <div class="admin-mobile-empty">Todavía no hay promociones cargadas para tu aerolínea.</div>
+                                <?php else: ?>
+                                    <?php foreach ($promociones as $p):
+                                        $idCard = $p['idPromocion'] ?? $p['codigo'];
+                                        $inicioCard = date('d/m/Y', strtotime($p['fechaInicio']));
+                                        $finCard = date('d/m/Y', strtotime($p['fechaFin']));
+                                        $alcanceCard = textoAlcancePromo($p);
+                                    ?>
+                                        <article class="admin-mobile-card">
+                                            <div class="admin-mobile-card__header">
+                                                <div>
+                                                    <strong><?= htmlspecialchars($p['nombre']) ?></strong>
+                                                    <small>Código: <?= htmlspecialchars($p['codigo']) ?></small>
+                                                </div>
+                                                <span class="badge <?= badgeEstadoPromo($p['estado']) ?>"><?= htmlspecialchars($p['estado']) ?></span>
+                                            </div>
+                                            <dl class="admin-mobile-card__data">
+                                                <div><dt>Descuento</dt><dd class="text-success fw-bold"><?= (float)$p['descuentoPorcentaje'] ?>%</dd></div>
+                                                <div><dt>Alcance</dt><dd><?= htmlspecialchars($alcanceCard) ?></dd></div>
+                                                <div><dt>Vigencia</dt><dd><?= $inicioCard ?> - <?= $finCard ?></dd></div>
+                                                <div><dt>Estado</dt><dd><?= badgeVigenciaPromo($p) ?></dd></div>
+                                            </dl>
+                                            <div class="admin-mobile-card__actions">
+                                                <a class="btn btn-outline-primary btn-sm" href="<?= url('index.php?pagina=ceo&seccion=promocion-detalle&id=' . urlencode((string)$idCard)) ?>">Ver detalle</a>
+                                                <?php if ($p['estado'] === 'Pendiente'): ?>
+                                                    <button type="button" class="btn btn-outline-secondary btn-sm btn-editar-promo" data-bs-toggle="modal" data-bs-target="#modalEditarPromocion" data-id="<?= htmlspecialchars((string)$idCard) ?>">Editar</button>
+                                                <?php endif; ?>
+                                                <?php if (in_array($p['estado'], ['Pendiente', 'Denegada', 'Aprobada'], true)): ?>
+                                                    <button type="button" class="btn btn-outline-danger btn-sm <?= $p['estado'] === 'Aprobada' ? 'btn-cancelar-promo' : 'btn-eliminar-promo' ?>"
+                                                        data-bs-toggle="modal" data-bs-target="#modalConfirmarAccionPromo"
+                                                        data-promo-accion="<?= $p['estado'] === 'Aprobada' ? 'cancelar' : 'eliminar' ?>"
+                                                        data-promo-id="<?= htmlspecialchars((string)$idCard) ?>"
+                                                        data-promo-titulo="<?= $p['estado'] === 'Aprobada' ? 'Cancelar promoción' : 'Eliminar promoción' ?>"
+                                                        data-promo-mensaje="¿Seguro que querés realizar esta acción?"><?= $p['estado'] === 'Aprobada' ? 'Cancelar' : 'Eliminar' ?></button>
+                                                <?php endif; ?>
+                                            </div>
+                                        </article>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </div>
 
                             <!-- Paginación -->
                             <div class="border-top px-3 py-3">

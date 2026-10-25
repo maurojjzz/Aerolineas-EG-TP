@@ -106,6 +106,546 @@ ul .nav-item .nav-link:hover {
     width: 20px;
     height: 18px;
 }
+
+.mobile-admin-menu {
+    background-color: rgba(107, 163, 209, 0.87);
+    backdrop-filter: blur(12px);
+    width: min(320px, 88vw);
+}
+
+.mobile-admin-menu .offcanvas-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+    padding: 1rem;
+}
+
+.mobile-admin-menu .logo {
+    width: 74px !important;
+    height: 46px !important;
+    object-fit: contain;
+}
+
+.mobile-admin-menu .offcanvas-body {
+    padding-top: 1rem;
+}
+
+.mobile-admin-menu .offcanvas-body .nav-link {
+    display: block;
+    justify-content: initial;
+    gap: initial;
+}
+
+.mobile-admin-menu .nav-item {
+    min-height: 0;
+    max-width: none;
+    width: 100%;
+    height: auto;
+    display: block;
+    justify-content: initial;
+    overflow: visible;
+}
+
+.mobile-admin-menu .mobile-menu-link {
+    color: #fff !important;
+    font-size: 1.05rem;
+    padding: 0.7rem 0.75rem;
+    border-radius: 0.6rem;
+    text-decoration: none;
+}
+
+.mobile-admin-menu .mobile-menu-link:hover,
+.mobile-admin-menu .mobile-menu-link:focus {
+    color: #fff !important;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.mobile-admin-menu .mobile-menu-link.active {
+    background: rgba(255, 255, 255, 0.2) !important;
+}
+
+.mobile-admin-menu .mobile-user-box {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 0.9rem;
+    border-radius: 0.8rem;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    margin-bottom: 1rem !important;
+}
+
+.mobile-admin-menu .mobile-user-box .min-width-0 {
+    min-width: 0;
+}
+
+.mobile-admin-menu .mobile-user-name {
+    margin: 0;
+    font-weight: 600;
+    color: #fff;
+    font-size: 0.95rem;
+}
+
+.mobile-admin-menu .mobile-user-role {
+    margin: 0;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.mobile-admin-menu .icono_perfil-mobile {
+    width: 30px;
+    height: 30px;
+}
+
+.mobile-admin-menu .mobile-menu-divider {
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    margin: 0.75rem 0;
+}
+
+@media (min-width: 768px) {
+    .admin-main .table-responsive {
+        overflow-x: hidden;
+    }
+
+    .admin-main .table {
+        table-layout: fixed;
+        width: 100%;
+    }
+
+    .admin-main .table th,
+    .admin-main .table td {
+        padding-left: 0.45rem;
+        padding-right: 0.45rem;
+        overflow-wrap: anywhere;
+        font-size: 0.82rem;
+    }
+
+    .admin-main .tabla-ceos th:nth-child(1),
+    .admin-main .tabla-ceos td:nth-child(1) { width: 18%; }
+    .admin-main .tabla-ceos th:nth-child(2),
+    .admin-main .tabla-ceos td:nth-child(2) { width: 12%; }
+    .admin-main .tabla-ceos th:nth-child(3),
+    .admin-main .tabla-ceos td:nth-child(3) { width: 23%; }
+    .admin-main .tabla-ceos th:nth-child(4),
+    .admin-main .tabla-ceos td:nth-child(4) { width: 15%; }
+    .admin-main .tabla-ceos th:nth-child(5),
+    .admin-main .tabla-ceos td:nth-child(5) { width: 12%; }
+    .admin-main .tabla-ceos th:nth-child(6),
+    .admin-main .tabla-ceos td:nth-child(6) { width: 10%; }
+    .admin-main .tabla-ceos th:nth-child(7),
+    .admin-main .tabla-ceos td:nth-child(7) { width: 10%; }
+
+    .admin-main .tabla-promociones th:nth-child(1),
+    .admin-main .tabla-promociones td:nth-child(1) { width: 12%; }
+    .admin-main .tabla-promociones th:nth-child(2),
+    .admin-main .tabla-promociones td:nth-child(2) { width: 20%; }
+    .admin-main .tabla-promociones th:nth-child(3),
+    .admin-main .tabla-promociones td:nth-child(3) { width: 22%; }
+    .admin-main .tabla-promociones th:nth-child(4),
+    .admin-main .tabla-promociones td:nth-child(4) { width: 10%; }
+    .admin-main .tabla-promociones th:nth-child(5),
+    .admin-main .tabla-promociones td:nth-child(5) { width: 16%; }
+    .admin-main .tabla-promociones th:nth-child(6),
+    .admin-main .tabla-promociones td:nth-child(6) { width: 10%; }
+    .admin-main .tabla-promociones th:nth-child(7),
+    .admin-main .tabla-promociones td:nth-child(7) { width: 10%; }
+}
+
+@media (max-width: 767.98px) {
+    .admin-main .table-responsive {
+        overflow-x: visible;
+    }
+
+    .admin-main .tabla-vuelos,
+    .admin-main .tabla-aerolineas,
+    .admin-main .tabla-ceos,
+    .admin-main .tabla-promociones,
+    .admin-main .tabla-usuarios,
+    .admin-main .reporte-tabla {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100%;
+        min-width: 0 !important;
+        table-layout: auto;
+    }
+
+    .admin-main .tabla-vuelos tbody,
+    .admin-main .tabla-aerolineas tbody,
+    .admin-main .tabla-ceos tbody,
+    .admin-main .tabla-promociones tbody,
+    .admin-main .tabla-usuarios tbody,
+    .admin-main .reporte-tabla tbody {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100%;
+    }
+
+    .admin-main .tabla-vuelos thead,
+    .admin-main .tabla-aerolineas thead,
+    .admin-main .tabla-ceos thead,
+    .admin-main .tabla-promociones thead,
+    .admin-main .tabla-usuarios thead,
+    .admin-main .reporte-tabla thead {
+        display: none;
+    }
+
+    .admin-main .tabla-vuelos tr,
+    .admin-main .tabla-aerolineas tr,
+    .admin-main .tabla-ceos tr,
+    .admin-main .tabla-promociones tr,
+    .admin-main .tabla-usuarios tr,
+    .admin-main .reporte-tabla tr {
+        display: block;
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+        border: 1px solid #e3e8f0;
+        border-radius: 0.75rem;
+        background: #fff;
+        box-shadow: 0 0.2rem 0.7rem rgba(8, 33, 73, 0.06);
+    }
+
+    .admin-main .tabla-vuelos tr,
+    .admin-main .tabla-aerolineas tr,
+    .admin-main .tabla-ceos tr,
+    .admin-main .tabla-promociones tr,
+    .admin-main .tabla-usuarios tr,
+    .admin-main .reporte-tabla tr {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100%;
+    }
+
+    .admin-main .tabla-vuelos tr.d-none,
+    .admin-main .tabla-aerolineas tr.d-none,
+    .admin-main .tabla-ceos tr.d-none,
+    .admin-main .tabla-promociones tr.d-none,
+    .admin-main .tabla-usuarios tr.d-none,
+    .admin-main .reporte-tabla tr.d-none,
+    .admin-main .tabla-vuelos .fila-detalle,
+    .admin-main .tabla-aerolineas .fila-detalle,
+    .admin-main .tabla-usuarios .fila-detalle,
+    .admin-main .reporte-tabla .fila-detalle {
+        display: none !important;
+    }
+
+    .admin-main .tabla-vuelos td,
+    .admin-main .tabla-aerolineas td,
+    .admin-main .tabla-ceos td,
+    .admin-main .tabla-promociones td,
+    .admin-main .tabla-usuarios td,
+    .admin-main .reporte-tabla td {
+        display: grid !important;
+        grid-template-columns: minmax(7rem, 36%) minmax(0, 1fr);
+        align-items: center;
+        gap: 0.5rem;
+        min-height: 2.25rem;
+        padding: 0.45rem 0.15rem;
+        border: 0;
+        overflow-wrap: anywhere;
+        min-width: 0 !important;
+        max-width: 100%;
+    }
+
+    .admin-main .tabla-vuelos td.d-none,
+    .admin-main .tabla-aerolineas td.d-none,
+    .admin-main .tabla-ceos td.d-none,
+    .admin-main .tabla-promociones td.d-none,
+    .admin-main .tabla-usuarios td.d-none,
+    .admin-main .reporte-tabla td.d-none {
+        display: none !important;
+    }
+
+    .admin-main .tabla-vuelos td > *,
+    .admin-main .tabla-aerolineas td > *,
+    .admin-main .tabla-ceos td > *,
+    .admin-main .tabla-promociones td > *,
+    .admin-main .tabla-usuarios td > *,
+    .admin-main .reporte-tabla td > * {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .admin-main .tabla-vuelos td::before,
+    .admin-main .tabla-aerolineas td::before,
+    .admin-main .tabla-ceos td::before,
+    .admin-main .tabla-promociones td::before,
+    .admin-main .tabla-usuarios td::before,
+    .admin-main .reporte-tabla td::before {
+        color: #6c757d;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .admin-main .tabla-vuelos td:nth-child(1)::before { content: "Origen"; }
+    .admin-main .tabla-vuelos td:nth-child(2)::before { content: "Destino"; }
+    .admin-main .tabla-vuelos td:nth-child(3)::before { content: "Salida"; }
+    .admin-main .tabla-vuelos td:nth-child(4)::before { content: "Llegada"; }
+    .admin-main .tabla-vuelos td:nth-child(5)::before { content: "Asientos"; }
+    .admin-main .tabla-vuelos td:nth-child(6)::before { content: "Disponibles"; }
+    .admin-main .tabla-vuelos td:nth-child(7)::before { content: "Precio"; }
+    .admin-main .tabla-vuelos td:nth-child(8)::before { content: "Acciones"; }
+
+    .admin-main .tabla-aerolineas td:nth-child(1)::before { content: "Código"; }
+    .admin-main .tabla-aerolineas td:nth-child(2)::before { content: "Nombre"; }
+    .admin-main .tabla-aerolineas td:nth-child(3)::before { content: "País"; }
+    .admin-main .tabla-aerolineas td:nth-child(4)::before { content: "Estado"; }
+    .admin-main .tabla-aerolineas td:nth-child(5)::before { content: "CEO asociado"; }
+    .admin-main .tabla-aerolineas td:nth-child(n+6)::before { content: "Acciones"; }
+
+    .admin-main .tabla-usuarios td:nth-child(1)::before { content: "Usuario"; }
+    .admin-main .tabla-usuarios td:nth-child(2)::before { content: "Documento"; }
+    .admin-main .tabla-usuarios td:nth-child(3)::before { content: "Email"; }
+    .admin-main .tabla-usuarios td:nth-child(4)::before { content: "Rol"; }
+    .admin-main .tabla-usuarios td:nth-child(5)::before { content: "Estado"; }
+    .admin-main .tabla-usuarios td:nth-child(6)::before { content: "Acciones"; }
+
+    .admin-main .tabla-ceos td:nth-child(1)::before { content: "CEO"; }
+    .admin-main .tabla-ceos td:nth-child(2)::before { content: "Documento"; }
+    .admin-main .tabla-ceos td:nth-child(3)::before { content: "Email"; }
+    .admin-main .tabla-ceos td:nth-child(4)::before { content: "Aerolínea"; }
+    .admin-main .tabla-ceos td:nth-child(5)::before { content: "Registro"; }
+    .admin-main .tabla-ceos td:nth-child(6)::before { content: "Estado"; }
+    .admin-main .tabla-ceos td:nth-child(7)::before { content: "Acciones"; }
+
+    .admin-main .tabla-promociones td:nth-child(1)::before { content: "Código"; }
+    .admin-main .tabla-promociones td:nth-child(2)::before { content: "Nombre"; }
+    .admin-main .tabla-promociones td:nth-child(3)::before { content: "Aerolínea / CEO"; }
+    .admin-main .tabla-promociones td:nth-child(4)::before { content: "Descuento"; }
+    .admin-main .tabla-promociones td:nth-child(5)::before { content: "Vigencia"; }
+    .admin-main .tabla-promociones td:nth-child(6)::before { content: "Estado"; }
+    .admin-main .tabla-promociones td:nth-child(7)::before { content: "Acciones"; }
+
+    .admin-main .reporte-ventas td:nth-child(1)::before { content: "Código"; }
+    .admin-main .reporte-ventas td:nth-child(2)::before { content: "Fecha"; }
+    .admin-main .reporte-ventas td:nth-child(3)::before { content: "Cliente"; }
+    .admin-main .reporte-ventas td:nth-child(4)::before { content: "Aerolínea"; }
+    .admin-main .reporte-ventas td:nth-child(5)::before { content: "Ruta"; }
+    .admin-main .reporte-ventas td:nth-child(6)::before { content: "Salida"; }
+    .admin-main .reporte-ventas td:nth-child(7)::before { content: "Pasajeros"; }
+    .admin-main .reporte-ventas td:nth-child(8)::before { content: "Total"; }
+    .admin-main .reporte-vuelos td:nth-child(1)::before { content: "Código"; }
+    .admin-main .reporte-vuelos td:nth-child(2)::before { content: "Ruta"; }
+    .admin-main .reporte-vuelos td:nth-child(3)::before { content: "Aerolínea"; }
+    .admin-main .reporte-vuelos td:nth-child(4)::before { content: "Salida"; }
+    .admin-main .reporte-vuelos td:nth-child(5)::before { content: "Llegada"; }
+    .admin-main .reporte-vuelos td:nth-child(6)::before { content: "Total"; }
+    .admin-main .reporte-vuelos td:nth-child(7)::before { content: "Vendidos"; }
+    .admin-main .reporte-vuelos td:nth-child(8)::before { content: "Disponibles"; }
+    .admin-main .reporte-vuelos td:nth-child(9)::before { content: "Ocupación"; }
+    .admin-main .reporte-vuelos td:nth-child(10)::before { content: "Ingresos"; }
+    .admin-main .reporte-usuarios td:nth-child(1)::before { content: "Código"; }
+    .admin-main .reporte-usuarios td:nth-child(2)::before { content: "Cliente"; }
+    .admin-main .reporte-usuarios td:nth-child(3)::before { content: "Contacto"; }
+    .admin-main .reporte-usuarios td:nth-child(4)::before { content: "Registro"; }
+    .admin-main .reporte-usuarios td:nth-child(5)::before { content: "Estado"; }
+    .admin-main .reporte-usuarios td:nth-child(6)::before { content: "Verificado"; }
+    .admin-main .reporte-usuarios td:nth-child(7)::before { content: "Reservas"; }
+    .admin-main .reporte-usuarios td:nth-child(8)::before { content: "Compras"; }
+    .admin-main .reporte-usuarios td:nth-child(9)::before { content: "Pasajeros"; }
+    .admin-main .reporte-usuarios td:nth-child(10)::before { content: "Gastado"; }
+
+    .admin-main .tabla-vuelos td[colspan],
+    .admin-main .tabla-aerolineas td[colspan],
+    .admin-main .tabla-ceos td[colspan],
+    .admin-main .tabla-promociones td[colspan],
+    .admin-main .tabla-usuarios td[colspan],
+    .admin-main .reporte-tabla td[colspan] {
+        display: block;
+        text-align: center;
+    }
+
+    .admin-main .tabla-vuelos td[colspan],
+    .admin-main .tabla-aerolineas td[colspan],
+    .admin-main .tabla-ceos td[colspan],
+    .admin-main .tabla-promociones td[colspan],
+    .admin-main .tabla-usuarios td[colspan],
+    .admin-main .reporte-tabla td[colspan] {
+        display: block !important;
+    }
+
+    .admin-main #filtroEstadoPromo,
+    .admin-main #buscadorPromocion,
+    .admin-main .alcance-panel select.form-control,
+    .admin-main .tablaContenedor [style*="min-width: 280px"] {
+        min-width: 0 !important;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .admin-main .reporte-ceo-ventas td:nth-child(1)::before { content: "Código"; }
+    .admin-main .reporte-ceo-ventas td:nth-child(2)::before { content: "Fecha"; }
+    .admin-main .reporte-ceo-ventas td:nth-child(3)::before { content: "Cliente"; }
+    .admin-main .reporte-ceo-ventas td:nth-child(4)::before { content: "Ruta"; }
+    .admin-main .reporte-ceo-ventas td:nth-child(5)::before { content: "Salida"; }
+    .admin-main .reporte-ceo-ventas td:nth-child(6)::before { content: "Pasajeros"; }
+    .admin-main .reporte-ceo-ventas td:nth-child(7)::before { content: "Total"; }
+    .admin-main .reporte-ceo-ocupacion td:nth-child(1)::before { content: "Código"; }
+    .admin-main .reporte-ceo-ocupacion td:nth-child(2)::before { content: "Ruta"; }
+    .admin-main .reporte-ceo-ocupacion td:nth-child(3)::before { content: "Salida"; }
+    .admin-main .reporte-ceo-ocupacion td:nth-child(4)::before { content: "Llegada"; }
+    .admin-main .reporte-ceo-ocupacion td:nth-child(5)::before { content: "Total"; }
+    .admin-main .reporte-ceo-ocupacion td:nth-child(6)::before { content: "Vendidos"; }
+    .admin-main .reporte-ceo-ocupacion td:nth-child(7)::before { content: "Disponibles"; }
+    .admin-main .reporte-ceo-ocupacion td:nth-child(8)::before { content: "Ocupación"; }
+    .admin-main .reporte-ceo-ocupacion td:nth-child(9)::before { content: "Ingresos"; }
+}
+
+
+.mobile-logout {
+    color: #dc3545 !important;
+}
+
+.mobile-logout:hover,
+.mobile-logout:focus {
+    color: #b02a37 !important;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.admin-mobile-cards {
+    width: 100%;
+    padding: 0.25rem 0.75rem 0.75rem;
+}
+
+.admin-mobile-card {
+    width: 100%;
+    margin-bottom: 0.85rem;
+    padding: 0.9rem;
+    border: 1px solid #dfe6ef;
+    border-radius: 0.85rem;
+    background: #fff;
+    box-shadow: 0 0.2rem 0.65rem rgba(8, 33, 73, 0.07);
+}
+
+.admin-mobile-card__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #edf0f4;
+}
+
+.admin-mobile-card__identity {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    min-width: 0;
+}
+
+.admin-mobile-card__identity > div {
+    min-width: 0;
+}
+
+.admin-mobile-card__identity strong,
+.admin-mobile-card__identity small,
+.admin-mobile-card__header > div > strong,
+.admin-mobile-card__header > div > small {
+    display: block;
+    overflow-wrap: anywhere;
+}
+
+.admin-mobile-card__identity small,
+.admin-mobile-card__header > div > small {
+    margin-top: 0.15rem;
+    color: #6c757d;
+    font-size: 0.76rem;
+}
+
+.admin-mobile-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 2.35rem;
+    width: 2.35rem;
+    height: 2.35rem;
+    border-radius: 50%;
+    background: #0d6efd;
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.admin-mobile-avatar--image {
+    border: 1px solid #dfe6ef;
+    background: #fff;
+    object-fit: contain;
+}
+
+.admin-mobile-card__data {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+    padding: 0.8rem 0;
+}
+
+.admin-mobile-card__data > div {
+    display: grid;
+    grid-template-columns: minmax(6.8rem, 38%) minmax(0, 1fr);
+    gap: 0.5rem;
+    align-items: start;
+}
+
+.admin-mobile-card__data dt {
+    color: #6c757d;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.035em;
+    text-transform: uppercase;
+}
+
+.admin-mobile-card__data dd {
+    min-width: 0;
+    margin: 0;
+    color: #26384f;
+    font-size: 0.85rem;
+    overflow-wrap: anywhere;
+}
+
+.admin-mobile-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    padding-top: 0.7rem;
+    border-top: 1px solid #edf0f4;
+}
+
+.admin-mobile-card__actions .btn {
+    flex: 1 1 auto;
+    min-width: 5.5rem;
+}
+
+.admin-mobile-empty {
+    padding: 1.25rem;
+    color: #6c757d;
+    text-align: center;
+}
+
+@media (max-width: 767.98px) {
+    .admin-main .ceo-tabla-vuelos,
+    .admin-main .ceo-tabla-promociones {
+        display: none !important;
+    }
+
+    .admin-main .tabla-ceos,
+    .admin-main .tabla-promociones,
+    .admin-main .tabla-aerolineas {
+        display: none !important;
+    }
+
+    .admin-main .admin-mobile-cards {
+        display: block !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .admin-main .admin-mobile-cards {
+        display: none !important;
+    }
+}
+
 .logo-sidebar {
     width: 80px;
     height: 58px;

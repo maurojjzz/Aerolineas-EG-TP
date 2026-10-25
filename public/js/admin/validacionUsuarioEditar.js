@@ -178,7 +178,9 @@ const actualizarCajaErrores = () => {
 
     lista.forEach((error) => {
         const li = document.createElement("li");
-        li.innerHTML = `<b>${error.titulo}:</b> ${error.mensaje}`;
+        const titulo = document.createElement("b");
+        titulo.textContent = `${error.titulo}:`;
+        li.append(titulo, ` ${error.mensaje}`);
         listaErrores.appendChild(li);
     });
 };
