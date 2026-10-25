@@ -35,7 +35,7 @@
                 <div class="hero-content text-left mt-5 user-select-none">
                     <p class="h5 fw-bold">Volaré</p>
                     <p class="hero-slogan">SOLICITA TU <span>REGISTRO</span> COMO CEO</p>
-                    <p class="fs-6">Se parte de nuestra comunidad de aerolineas. Completa el formulario y nuestro equipo revisara tu solicitud antes de activar tu cuenta.</p>
+                    <p class="fs-6">Sé parte de nuestra comunidad de aerolíneas. Completá el formulario y nuestro equipo revisará tu solicitud antes de activar tu cuenta.</p>
                 </div>
             </div>
 
@@ -43,19 +43,19 @@
                 <form action="<?= url('src/routes/usuarios.php?accion=registrar-ceo') ?>" method="POST" id="formRegistroCEO" class="formContainer rounded-3 shadow-lg p-4  " data-loading-form >
 <p class="small text-secondary mb-2">Los campos con <span class="text-danger" aria-hidden="true">*</span><span class="visually-hidden">asterisco</span> son obligatorios.</p>
                     <h1 class="fs-1 fw-semibold titleForm">Registrarme como CEO</h1>
-                    <p class="text-muted text-break">Completa tus datos para solicitar el registro de tu aerolinea.</p>
+                    <p class="text-muted text-break">Completá tus datos para solicitar el registro de tu aerolínea.</p>
 
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-4 ">
                         <div class="form-group d-flex flex-column p-0  w-100">
                             <label class="form-label-t" id="labNombre" for="nombre">Nombre: <span class="text-danger" aria-hidden="true">*</span></label>
-                            <input type="text" name="nombre" id="nombre" class="form-control ctm-inp" required placeholder="Ingrese su nombre">
-                            <p id="infoNombre" class=" text-break text-center form-text-info text-danger fs-6"></p>
+                            <input type="text" name="nombre" id="nombre" class="form-control ctm-inp" required autocomplete="given-name" placeholder="Ingresá tu nombre" aria-describedby="infoNombre">
+                            <p id="infoNombre" class="text-break text-center form-text-info text-danger fs-6" aria-live="polite"></p>
                         </div>
                         
                         <div class="form-group d-flex flex-column w-100">
                             <label class="form-label-t" id="labApellido" for="apellido">Apellido: <span class="text-danger" aria-hidden="true">*</span></label>
-                            <input type="text" name="apellido" id="apellido" class="form-control ctm-inp" required placeholder="Ingrese su apellido">
-                            <p id="infoApellido" class="text-break text-center form-text-info text-danger fs-6"></p>
+                            <input type="text" name="apellido" id="apellido" class="form-control ctm-inp" required autocomplete="family-name" placeholder="Ingresá tu apellido" aria-describedby="infoApellido">
+                            <p id="infoApellido" class="text-break text-center form-text-info text-danger fs-6" aria-live="polite"></p>
                         </div>
                     </div>
 
@@ -77,29 +77,30 @@
                                     id="numero_documento"
                                     placeholder="Número de documento"
                                     required
+                                    aria-describedby="infoNumeroDocumento"
                                 >
                             </div>
-                            <p id="infoNumeroDocumento" class="text-break text-center form-text-info text-danger fs-6"></p>
+                            <p id="infoNumeroDocumento" class="text-break text-center form-text-info text-danger fs-6" aria-live="polite"></p>
                         </div>
                         
                         <div class="form-group d-flex flex-column w-100">
                             <label class="form-label-t" id="labEmail" for="email">Email: <span class="text-danger" aria-hidden="true">*</span></label>
-                            <input type="email" name="email" id="email" class="form-control ctm-inp" required placeholder="Ingrese su email">
-                            <p id="infoEmail" class="text-break text-center form-text-info text-danger fs-6"></p>
+                            <input type="email" name="email" id="email" class="form-control ctm-inp" required autocomplete="email" placeholder="Ingresá tu email" aria-describedby="infoEmail">
+                            <p id="infoEmail" class="text-break text-center form-text-info text-danger fs-6" aria-live="polite"></p>
                         </div>
                     </div>
 
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-4 ">
                         <div class="form-group d-flex flex-column p-0  w-100">
-                            <label class="form-label-t" id="labTelefono" for="telefono">Telefono: <span class="text-danger" aria-hidden="true">*</span></label>
-                            <input type="tel" name="telefono" id="telefono" class="form-control ctm-inp" required placeholder="Ingrese su telefono">
-                            <p id="infoTelefono" class=" text-break text-center form-text-info text-danger fs-6"></p>
+                            <label class="form-label-t" id="labTelefono" for="telefono">Teléfono: <span class="text-danger" aria-hidden="true">*</span></label>
+                            <input type="tel" name="telefono" id="telefono" class="form-control ctm-inp" required pattern="[0-9+() -]{7,}" maxlength="25" autocomplete="tel" placeholder="Ingresá tu teléfono" aria-describedby="infoTelefono">
+                            <p id="infoTelefono" class="text-break text-center form-text-info text-danger fs-6" aria-live="polite"></p>
                         </div>
                         
                         <div class="form-group d-flex flex-column w-100">
                             <label class="form-label-t" id="labFechaNacimiento" for="fecha_nacimiento">Fecha de nacimiento: <span class="text-danger" aria-hidden="true">*</span></label>
-                            <input type="date" name="fecha_nacimiento" id="fecha_nacimiento" class="form-control ctm-inp" required max="<?= date('Y-m-d', strtotime('-18 years')) ?>">
-                            <p id="infoFechaNacimiento" class="text-break text-center form-text-info text-danger fs-6"></p>
+                            <input type="date" name="fecha_nacimiento" id="fecha_nacimiento" class="form-control ctm-inp" required max="<?= date('Y-m-d', strtotime('-18 years')) ?>" aria-describedby="infoFechaNacimiento">
+                            <p id="infoFechaNacimiento" class="text-break text-center form-text-info text-danger fs-6" aria-live="polite"></p>
                         </div>
                     </div>
 
@@ -108,27 +109,30 @@
                         <div class="form-group d-flex flex-column p-0 w-100">
                             <label class="form-label-t" id="labContrasena" for="contrasena">Contraseña: <span class="text-danger" aria-hidden="true">*</span></label>
 
-                            <input type="password" name="contrasena" id="contrasena" class="form-control ctm-inp" required placeholder="Ingrese su contraseña">
+                            <input type="password" name="contrasena" id="contrasena" class="form-control ctm-inp" required minlength="8" autocomplete="new-password" placeholder="Ingrese su contraseña"
+                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                title="La contraseña debe tener al menos 8 caracteres."
+                                aria-describedby="infoContrasena">
 
-                            <p id="infoContrasena" class="text-break text-center form-text-info text-danger fs-6"></p>
+                            <p id="infoContrasena" class="text-break text-center form-text-info text-danger fs-6" aria-live="polite"></p>
                         </div>
 
                         <div class="form-group d-flex flex-column w-100">
                             <label class="form-label-t" id="labConfirmarContrasena" for="confirmar_contrasena">Confirmar contraseña: <span class="text-danger" aria-hidden="true">*</span></label>
 
-                            <input type="password" name="confirmar_contrasena" id="confirmar_contrasena" class="form-control ctm-inp" required placeholder="Repita su contraseña">
+                            <input type="password" name="confirmar_contrasena" id="confirmar_contrasena" class="form-control ctm-inp" required autocomplete="new-password" placeholder="Repetí tu contraseña" aria-describedby="infoConfirmarContrasena">
 
-                            <p id="infoConfirmarContrasena" class="text-break text-center form-text-info text-danger fs-6"></p>
+                            <p id="infoConfirmarContrasena" class="text-break text-center form-text-info text-danger fs-6" aria-live="polite"></p>
                         </div>
                     </div>
 
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-4">
 
                         <div class="form-group d-flex flex-column p-0  w-100 ">
-                            <label class="form-label-t" id="labAerolinea" for="aerolinea">Aerolinea solicitada:</label>
+                            <label class="form-label-t" id="labAerolinea" for="aerolinea">Aerolínea solicitada:</label>
                             <div class="input-group">
-                                <select class="form-select w-100" name="aerolinea" id="aerolinea">
-                                    <option value="" disabled selected>Seleccione su aerolinea</option>
+                                <select class="form-select w-100" name="aerolinea" id="aerolinea" required aria-describedby="infoAerolinea">
+                                    <option value="" disabled selected>Seleccioná tu aerolínea</option>
                                     <?php foreach($aerolineas as $aero): 
                                         if($aero->getActivo() == 1): ?>
                                             <option value="<?= htmlspecialchars($aero->getIdAerolinea()) ?>" class="text-truncate text-uppercase"  >
@@ -141,7 +145,7 @@
                                 </select>
 
                             </div>
-                            <p id="infoAerolinea" class="text-break text-center form-text-info text-danger fs-6"></p>
+                            <p id="infoAerolinea" class="text-break text-center form-text-info text-danger fs-6" aria-live="polite"></p>
                         </div>
 
                         
@@ -152,7 +156,7 @@
                     </div>
 
                     <button type="submit" class="btn btnLogin py-2 w-100 d-flex align-items-center justify-content-center gap-2 mt-3">
-                        <img src=" <?= url('public/img/icons/agregar-usuario.png') ?>" alt="Icono de crear usuario" class="iconoBtnLgn">
+                        <img src=" <?= url('public/img/icons/agregar-usuario.png') ?>" alt="" aria-hidden="true" class="iconoBtnLgn">
                         <span class="fs-5 fw-medium">Crear CEO</span>
                     </button>
 

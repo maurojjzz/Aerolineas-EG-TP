@@ -87,7 +87,7 @@ $badgeReserva = static function (string $estado): array {
         <p class="text-center text-uppercase fs-5 mt-4 mb-1 user-select-none">Volaré</p>
         <div class="hero-content text-center mt-1 user-select-none">
             <h1>DONDE CADA <span>VIAJE</span> COMIENZA</h1>
-            <p>Busca vuelos, gestiona tus reservas y descubre destinos increibles.</p>
+            <p>Buscá vuelos, gestioná tus reservas y descubrí destinos increíbles.</p>
         </div>
         <!-- Mobile -->
         <div class="searchbox d-lg-none px-3 mb-5">

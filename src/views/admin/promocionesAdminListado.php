@@ -157,7 +157,7 @@ function badgeEstadoPromoAdmin(string $estado): string {
                     </div>
                 </div>
 
-                <table class="table table-hover align-middle border-top mt-2 tabla-aerolineas">
+                <table class="table table-hover align-middle border-top mt-2 tabla-aerolineas tabla-promociones">
                     <caption class="visually-hidden">Listado de promociones</caption>
                     <thead>
                         <tr>
@@ -174,7 +174,7 @@ function badgeEstadoPromoAdmin(string $estado): string {
                         <?php if (empty($promociones)): ?>
                             <tr>
                                 <td colspan="7" class="text-center py-4 text-muted">
-                                    No hay promociones<?= $estadoFiltro !== '' ? ' con estado "' . htmlspecialchars($estadoFiltro) . '"' : ' cargadas todavía' ?>.
+                                    <?= $estadoFiltro !== '' ? 'No hay promociones con estado "' . htmlspecialchars($estadoFiltro) . '".' : 'Todavía no hay promociones cargadas.' ?>
                                 </td>
                             </tr>
                         <?php else:
@@ -333,6 +333,42 @@ function badgeEstadoPromoAdmin(string $estado): string {
                         <?php endif; ?>
                     </tbody>
                 </table>
+
+                <div class="admin-mobile-cards d-md-none">
+                    <?php if (empty($promociones)): ?>
+                        <div class="admin-mobile-empty">Todavía no hay promociones cargadas.</div>
+                    <?php else: ?>
+                        <?php foreach ($promociones as $p):
+                            $idCard = $p['idPromocion'] ?? $p['codigo'];
+                            $aeroCard = $p['nombreAerolinea'] ?? ($p['codigoIATA'] ?? '—');
+                            $ceoCard = trim(($p['ceoNombre'] ?? '') . ' ' . ($p['ceoApellido'] ?? ''));
+                            $estadoCard = $p['estado'];
+                        ?>
+                            <article class="admin-mobile-card">
+                                <div class="admin-mobile-card__header">
+                                    <div>
+                                        <strong><?= htmlspecialchars($p['nombre']) ?></strong>
+                                        <small>Código: <?= htmlspecialchars($p['codigo']) ?></small>
+                                    </div>
+                                    <span class="badge <?= badgeEstadoPromoAdmin($estadoCard) ?>"><?= htmlspecialchars($estadoCard) ?></span>
+                                </div>
+                                <dl class="admin-mobile-card__data">
+                                    <div><dt>Aerolínea</dt><dd><?= htmlspecialchars($aeroCard) ?></dd></div>
+                                    <?php if ($ceoCard !== ''): ?><div><dt>CEO</dt><dd><?= htmlspecialchars($ceoCard) ?></dd></div><?php endif; ?>
+                                    <div><dt>Descuento</dt><dd class="text-success fw-bold"><?= (float)$p['descuentoPorcentaje'] ?>%</dd></div>
+                                    <div><dt>Vigencia</dt><dd><?= date('d/m/Y', strtotime($p['fechaInicio'])) ?> - <?= date('d/m/Y', strtotime($p['fechaFin'])) ?></dd></div>
+                                </dl>
+                                <div class="admin-mobile-card__actions">
+                                    <?php if ($estadoCard === 'Pendiente'): ?>
+                                        <button type="button" class="btn btn-outline-success btn-sm btn-resolver-promo" data-id="<?= htmlspecialchars((string)$idCard) ?>" data-nombre="<?= htmlspecialchars($p['nombre']) ?>" data-accion="aprobar">Aprobar</button>
+                                        <button type="button" class="btn btn-outline-danger btn-sm btn-resolver-promo" data-id="<?= htmlspecialchars((string)$idCard) ?>" data-nombre="<?= htmlspecialchars($p['nombre']) ?>" data-accion="denegar">Denegar</button>
+                                    <?php endif; ?>
+                                    <a class="btn btn-outline-primary btn-sm" href="<?= url('index.php?pagina=promociones&seccion=detalle&id=' . htmlspecialchars((string)$idCard)) ?>">Ver detalle</a>
+                                </div>
+                            </article>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
 
                 <!-- Paginación -->
                 <div class="border-top px-3 py-3">
@@ -494,8 +530,8 @@ function badgeEstadoPromoAdmin(string $estado): string {
         // Buscador en tiempo real
         const inputBuscador = document.getElementById("buscadorPromocion");
         if (inputBuscador) {
-            inputBuscador.addEventListener("keyup", function () {
-                const filtro = this.value.toLowerCase();
+            inputBuscador.addEventListener("input", function () {
+                const filtro = this.value.toLowerCase().trim();
                 tbody.querySelectorAll("tr.fila-tabla").forEach(function (fila) {
                     const coincide = fila.textContent.toLowerCase().includes(filtro);
                     fila.style.display = coincide ? "" : "none";

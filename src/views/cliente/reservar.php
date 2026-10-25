@@ -378,7 +378,9 @@ foreach ($tramos as $tramo) {
                 </form>
 
                 <button type="submit" form="formReserva"
-                        class="btn btn-primary w-100 fw-semibold py-2 mb-2" style="font-size:1rem;">
+                        class="btn btn-primary w-100 fw-semibold py-2 mb-2"
+                        data-loading-text="Confirmando reserva..."
+                        style="font-size:1rem;">
                     <?= $esIdaVuelta ? 'Confirmar y reservar ambos vuelos' : 'Confirmar y reservar' ?>
                 </button>
                 <a href="<?= url('index.php?pagina=cliente') ?>" class="btn btn-outline-secondary w-100">

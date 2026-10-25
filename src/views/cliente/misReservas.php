@@ -41,7 +41,7 @@ $conteos = [
     <link rel="stylesheet" href="<?= url('public/css/layout/header.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/components/menuMobile.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/reservas.css') ?>">
-    <link rel="stylesheet" href="<?= url('public/css/layout/misReservas.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/layout/misReservas.css') ?>?v=<?= time() ?>">
     
     <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
 </head>
@@ -74,7 +74,8 @@ $conteos = [
             ];
             foreach ($tabs as $key => $label):
             ?>
-            <a href="index.php?pagina=mis-reservas&tab=<?= $key ?>" class="tab-btn <?= $tabActiva === $key ? 'active' : '' ?>">
+            <a href="index.php?pagina=mis-reservas&tab=<?= $key ?>" class="tab-btn <?= $tabActiva === $key ? 'active' : '' ?>"
+               <?= $tabActiva === $key ? 'aria-current="page"' : '' ?>>
                 <?= $label ?>
                 <span class="tab-badge"><?= $conteos[$key] ?></span>
             </a>
@@ -94,7 +95,7 @@ $conteos = [
                         'pendientes'  => 'No tenés reservas pendientes de pago.',
                         'confirmadas' => 'No tenés reservas confirmadas.',
                         'canceladas'  => 'No tenés reservas canceladas.',
-                        default       => 'No tenés reservas todavía.',
+                        default       => 'Todavía no tenés reservas cargadas.',
                     } ?>
                 </p>
                 <a href="<?= url('index.php?pagina=buscar-vuelos') ?>" class="btn btn-primary">
@@ -142,7 +143,7 @@ $conteos = [
                     $dataId = $r['idReserva'];
                 ?>
                 <tr onclick="abrirDetalle(<?= $dataId ?>)" title="Ver detalle">
-                    <td>
+                    <td data-label="Código">
                         <p class="fw-bold m-0" style="font-size:0.9rem;">
                             #<?= str_pad($r['idReserva'], 6, '0', STR_PAD_LEFT) ?>
                         </p>
@@ -150,7 +151,7 @@ $conteos = [
                             <?= date('d/m/Y', strtotime($r['fechaReserva'])) ?>
                         </p>
                     </td>
-                    <td>
+                    <td data-label="Ruta">
                         <div class="ruta-mini">
                             <div>
                                 <div class="aeropuerto"><?= htmlspecialchars($r['origenVuelo']) ?></div>
@@ -161,7 +162,7 @@ $conteos = [
                             </div>
                         </div>
                     </td>
-                    <td>
+                    <td data-label="Aerolínea">
                         <div class="d-flex align-items-center gap-2">
                             <?php if (!empty($r['logoUrl']) && $r['logoUrl'] !== '0'): ?>
                                 <img src="<?= htmlspecialchars($r['logoUrl']) ?>"
@@ -170,13 +171,13 @@ $conteos = [
                             <span style="font-size:0.82rem;"><?= htmlspecialchars($r['nombreAerolinea']) ?></span>
                         </div>
                     </td>
-                    <td>
+                    <td data-label="Fecha salida">
                         <p class="m-0 fw-medium"><?= date('d/m/Y', strtotime($r['fechaHoraSalidaVuelo'])) ?></p>
                         <p class="text-muted m-0" style="font-size:0.75rem;">
                             <?= date('H:i', strtotime($r['fechaHoraSalidaVuelo'])) ?>
                         </p>
                     </td>
-                    <td onclick="event.stopPropagation()">
+                    <td data-label="Estado" onclick="event.stopPropagation()">
                         <span class="badge-estado <?= $badgeClass ?>"><?= $badgeLabel ?></span>
                         <?php if ($r['estadoReserva'] === 'pendiente de pago'): ?>
                             <p class="m-0 mt-1" style="font-size:0.7rem;color:#856404;">
@@ -188,12 +189,12 @@ $conteos = [
                             </p>
                         <?php endif; ?>
                     </td>
-                    <td>
+                    <td data-label="Pasajeros">
                         <span style="font-size:0.85rem;">
                             <?= $r['cantPasajeros'] ?> pasajero<?= $r['cantPasajeros'] > 1 ? 's' : '' ?>
                         </span>
                     </td>
-                    <td>
+                    <td data-label="Promoción">
                         <?php
                             $descuentoMostrado = (float)($r['descuento_efectivo'] ?? 0);
                             if ($descuentoMostrado <= 0 && !empty($r['promos_aplicadas'])) {
@@ -213,12 +214,12 @@ $conteos = [
                             <span class="text-muted" style="font-size:0.75rem;">—</span>
                         <?php endif; ?>
                     </td>
-                    <td>
+                    <td data-label="Total">
                         <span class="fw-bold" style="color:#0d3262;font-size:0.9rem;">
                             $ <?= number_format($r['precioTotal'], 2, ',', '.') ?>
                         </span>
                     </td>
-                    <td onclick="event.stopPropagation()">
+                    <td data-label="Acciones" onclick="event.stopPropagation()">
                         <div class="d-flex gap-1 flex-wrap align-items-center">
                             <!-- Ver detalle -->
                             <button type="button" class="btn btn-outline-secondary btn-sm"

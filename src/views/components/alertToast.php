@@ -32,8 +32,10 @@ $titulosPorDefecto = [
 $alertTitle = $alertTitle ?: ($titulosPorDefecto[$alertType] ?? '');
 ?>
 
-<div class="position-absolute top-0 start-0 end-0 mt-3 px-3 d-flex flex-column align-items-center" style="z-index: 1085;">
-    <div class="alert alert-<?= htmlspecialchars($alertType) ?> alert-dismissible fade show" role="alert" style="width: 100%; max-width: 600px;">
+<div class="position-fixed top-0 start-0 end-0 mt-3 px-3 d-flex flex-column align-items-center"
+     style="z-index: 1085; pointer-events: none;">
+    <div class="alert alert-<?= htmlspecialchars($alertType) ?> alert-dismissible fade show"
+         role="alert" style="width: 100%; max-width: 600px; pointer-events: auto;">
         <?php if ($alertTitle): ?>
             <p class="alert-heading h4"><?= htmlspecialchars($alertTitle) ?></p>
         <?php endif; ?>

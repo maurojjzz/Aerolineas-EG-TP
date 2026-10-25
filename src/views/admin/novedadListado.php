@@ -100,7 +100,7 @@ $stats =$ctrl->obtenerEstadisticas();
                             <input type="hidden" name="pagina" value="novedades">
                             <input type="hidden" name="seccion" value="listado">
                             
-                            <select name="categoria" class="form-select form-select-sm ctm-inp" aria-label="Filtrar por categoría" style="width:auto;">
+                            <select name="categoria" class="form-select form-select-sm ctm-inp" aria-label="Filtrar por categoría" style="width:auto;" onchange="this.form.submit()">
                                 <option value="">Todas las categorías</option>
                                 <option value="general" <?= $categoria === 'general' ? 'selected' : '' ?>>General</option>
                                 <option value="promocion" <?= $categoria === 'promocion' ? 'selected' : '' ?>>Promoción</option>
@@ -108,15 +108,14 @@ $stats =$ctrl->obtenerEstadisticas();
                                 <option value="importante" <?= $categoria === 'importante' ? 'selected' : '' ?>>Importante</option>
                             </select>
 
-                            <select name="estado" class="form-select form-select-sm ctm-inp" aria-label="Filtrar por estado" style="width:auto;">
+                            <select name="estado" class="form-select form-select-sm ctm-inp" aria-label="Filtrar por estado" style="width:auto;" onchange="this.form.submit()">
                                 <option value="">Todos los estados</option>
                                 <option value="publicada" <?= $estado === 'publicada' ? 'selected' : '' ?>>Publicadas</option>
                                 <option value="borrador" <?= $estado === 'borrador' ? 'selected' : '' ?>>Borradores</option>
                                 <option value="archivada" <?= $estado === 'archivada' ? 'selected' : '' ?>>Archivadas</option>
                             </select>
 
-                            <input type="text" name="busqueda" class="form-control form-control-sm ctm-inp" placeholder="Buscar..." aria-label="Buscar novedad por título" value="<?= htmlspecialchars($busqueda) ?>" style="max-width: 160px;">
-                            <button type="submit" class="btn btn-sm btn-outline-primary">Filtrar</button>
+                            <input type="text" name="busqueda" id="buscadorNovedad" class="form-control form-control-sm ctm-inp" placeholder="Buscar..." aria-label="Buscar novedad por título" value="<?= htmlspecialchars($busqueda) ?>" style="max-width: 160px;">
                         </form>
 
                         <a href="<?= url('index.php?pagina=novedades&seccion=crear') ?>" class="btn btn-primary text-nowrap w-40">
@@ -137,10 +136,10 @@ $stats =$ctrl->obtenerEstadisticas();
                             <th scope="col" class="text-center fw-bold">ACCIONES</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="novedadTableBody">
                         <?php if (empty($novedades)): ?>
                             <tr>
-                                <td colspan="6" class="text-center py-4 text-muted">No hay novedades registradas todavía.</td>
+                                <td colspan="6" class="text-center py-4 text-muted">Todavía no hay novedades cargadas.</td>
                             </tr>
                         <?php else: 
                             foreach ($novedades as $n): ?>
@@ -292,6 +291,17 @@ $stats =$ctrl->obtenerEstadisticas();
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+    const buscadorNovedad = document.getElementById("buscadorNovedad");
+    const novedadesBody = document.getElementById("novedadTableBody");
+    if (buscadorNovedad && novedadesBody) {
+        buscadorNovedad.addEventListener("input", function () {
+            const texto = this.value.toLowerCase().trim();
+            novedadesBody.querySelectorAll("tr.fila-tabla").forEach(function (fila) {
+                fila.style.display = !texto || fila.textContent.toLowerCase().includes(texto) ? "" : "none";
+            });
+        });
+    }
+
     // Evitar propagación en botones y enlaces de la fila
     document.querySelectorAll(".fila-tabla a, .fila-tabla button").forEach(function(el) {
         el.addEventListener("click", function(e) {

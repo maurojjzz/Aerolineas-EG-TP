@@ -95,7 +95,7 @@ $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
 
                     <div class="mb-3">
                         <label class="form-label fw-semibold" style="font-size:0.9rem;">Teléfono de Contacto</label>
-                        <input type="text" name="telefono" class="form-control" placeholder="Ej. +54 341 1234567"
+                        <input type="tel" name="telefono" class="form-control" pattern="[0-9+() -]{7,}" maxlength="25" placeholder="Ej. +54 341 1234567"
                                value="<?= htmlspecialchars($usuario['telefono'] ?? '') ?>">
                     </div>
 

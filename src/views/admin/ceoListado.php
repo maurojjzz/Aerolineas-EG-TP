@@ -178,12 +178,11 @@ function badgeEstadoCEO(string $estado): string {
                                 value="<?= htmlspecialchars($busqueda) ?>"
                                 style="max-width: 240px;"
                             >
-                            <button type="submit" class="btn btn-sm btn-outline-primary">Buscar</button>
                         </form>
                     </div>
                 </div>
 
-                <table class="table table-hover align-middle border-top mt-2 tabla-aerolineas">
+                <table class="table table-hover align-middle border-top mt-2 tabla-aerolineas tabla-ceos">
                     <caption class="visually-hidden">Listado de CEOs</caption>
                     <thead>
                         <tr>
@@ -379,6 +378,50 @@ function badgeEstadoCEO(string $estado): string {
                     </tbody>
                 </table>
 
+                <div class="admin-mobile-cards d-md-none">
+                    <?php if (empty($ceos)): ?>
+                        <div class="admin-mobile-empty">No hay CEOs para mostrar.</div>
+                    <?php else: ?>
+                        <?php foreach ($ceos as $c):
+                            $idCard = $c['idUsuario'] ?? $c['id'] ?? '';
+                            $nombreCard = trim(($c['nombre'] ?? '') . ' ' . ($c['apellido'] ?? ''));
+                            $fechaEstadoCard = $c['fecha_hora_autorizacion'] ?? null;
+                            $estadoCard = $fechaEstadoCard === null
+                                ? ((int)($c['activo'] ?? 0) === 1 ? 'Aprobado' : 'Pendiente')
+                                : ($fechaEstadoCard === FECHA_DENEGACION_CEO ? 'Denegado' : 'Aprobado');
+                            $aeroCard = $c['nombreAerolinea'] ?? '—';
+                            $fechaCard = !empty($c['fechaCreacion']) ? date('d/m/Y', strtotime($c['fechaCreacion'])) : '—';
+                            $pendienteCard = strtolower($estadoCard) === 'pendiente';
+                        ?>
+                            <article class="admin-mobile-card">
+                                <div class="admin-mobile-card__header">
+                                    <div class="admin-mobile-card__identity">
+                                        <span class="admin-mobile-avatar"><?= htmlspecialchars(strtoupper(substr($c['nombre'] ?? '', 0, 1) . substr($c['apellido'] ?? '', 0, 1))) ?></span>
+                                        <div>
+                                            <strong><?= htmlspecialchars($nombreCard) ?></strong>
+                                            <small><?= htmlspecialchars($c['email'] ?? '') ?></small>
+                                        </div>
+                                    </div>
+                                    <span class="badge <?= badgeEstadoCEO($estadoCard) ?>"><?= htmlspecialchars($estadoCard) ?></span>
+                                </div>
+                                <dl class="admin-mobile-card__data">
+                                    <div><dt>Documento</dt><dd><?= htmlspecialchars(($c['tipoDocumento'] ?? '') . ' ' . ($c['nroDocumento'] ?? '')) ?></dd></div>
+                                    <div><dt>Aerolínea</dt><dd><?= htmlspecialchars($aeroCard) ?></dd></div>
+                                    <div><dt>Registro</dt><dd><?= htmlspecialchars($fechaCard) ?></dd></div>
+                                </dl>
+                                <div class="admin-mobile-card__actions">
+                                    <?php if ($pendienteCard): ?>
+                                        <button type="button" class="btn btn-outline-success btn-sm btn-resolver-ceo" data-id="<?= htmlspecialchars((string)$idCard) ?>" data-nombre="<?= htmlspecialchars($nombreCard) ?>" data-accion="aprobar">Aprobar</button>
+                                        <button type="button" class="btn btn-outline-danger btn-sm btn-resolver-ceo" data-id="<?= htmlspecialchars((string)$idCard) ?>" data-nombre="<?= htmlspecialchars($nombreCard) ?>" data-accion="denegar">Denegar</button>
+                                    <?php else: ?>
+                                        <span class="text-muted small">Solicitud resuelta</span>
+                                    <?php endif; ?>
+                                </div>
+                            </article>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+
                 <!-- Paginación -->
                 <div class="border-top px-3 py-3">
                     <div class="d-flex flex-column flex-sm-row justify-content-center justify-content-sm-between align-items-center flex-wrap gap-3">
@@ -478,6 +521,17 @@ function badgeEstadoCEO(string $estado): string {
 <script src="<?= url('public/js/admin/actionLoading.js') ?>"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+            const buscadorCeo = document.querySelector('input[name="busqueda"]');
+            const ceosBody = document.querySelector("tbody");
+            if (buscadorCeo && ceosBody) {
+                buscadorCeo.addEventListener("input", function () {
+                    const texto = this.value.toLowerCase().trim();
+                    ceosBody.querySelectorAll("tr.fila-tabla").forEach(function (fila) {
+                        fila.style.display = !texto || fila.textContent.toLowerCase().includes(texto) ? "" : "none";
+                    });
+                });
+            }
+
         const tbody = document.getElementById("ceoTableBody");
 
         if (typeof bootstrap !== "undefined") {

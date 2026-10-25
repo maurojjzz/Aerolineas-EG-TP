@@ -180,8 +180,8 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
     <link rel="stylesheet" href="<?= url('public/css/layout/header.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/components/menuMobile.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/reservas.css') ?>">
-    <link rel="stylesheet" href="<?= url('public/css/layout/misReservas.css') ?>">
-    <link rel="stylesheet" href="<?= url('public/css/layout/historialCompras.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/layout/misReservas.css') ?>?v=<?= time() ?>">
+    <link rel="stylesheet" href="<?= url('public/css/layout/historialCompras.css') ?>?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
 </head>
@@ -365,11 +365,11 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
                             $destinoCiudad = $nombreCiudad($compra['destinoVuelo'] ?? '');
                         ?>
                             <tr onclick="abrirDetalleCompra(<?= $idReservaCompra ?>)" title="Ver detalle de la compra">
-                                <td>
+                                <td data-label="Compra">
                                     <p class="compra-codigo">#<?= str_pad((string)$idReservaCompra, 6, '0', STR_PAD_LEFT) ?></p>
                                     <p class="compra-fecha"><?= $fmtFecha($compra['fechaReserva'] ?? null, 'd/m/Y') ?></p>
                                 </td>
-                                <td>
+                                <td data-label="Ruta">
                                     <div class="ruta-compra">
                                         <div class="ruta-punto">
                                             <span class="ruta-codigo"><?= htmlspecialchars($compra['codigoOrigen'] ?? '—') ?></span>
@@ -382,7 +382,7 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
                                         </div>
                                     </div>
                                 </td>
-                                <td>
+                                <td data-label="Aerolínea">
                                     <div class="d-flex align-items-center gap-2">
                                         <?php if (!empty($compra['logoUrl']) && $compra['logoUrl'] !== '0'): ?>
                                             <img src="<?= htmlspecialchars($compra['logoUrl']) ?>" class="airline-logo" alt="">
@@ -399,7 +399,7 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
                                         </div>
                                     </div>
                                 </td>
-                                <td>
+                                <td data-label="Vuelo">
                                     <p class="m-0 fw-medium"><?= $fmtFecha($compra['fechaHoraSalidaVuelo'] ?? null, 'd/m/Y') ?></p>
                                     <p class="flight-time">
                                         <?= $fmtFecha($compra['fechaHoraSalidaVuelo'] ?? null, 'H:i') ?>
@@ -407,15 +407,15 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
                                         <?= $fmtFecha($compra['fechaHoraLlegadaVuelo'] ?? null, 'd/m/Y H:i') ?>
                                     </p>
                                 </td>
-                                <td>
+                                <td data-label="Pasajeros">
                                     <span class="passengers-count">
                                         <?= $cantPasajeros ?> pasajero<?= $cantPasajeros !== 1 ? 's' : '' ?>
                                     </span>
                                 </td>
-                                <td>
+                                <td data-label="Precio unitario">
                                     <span class="precio-unitario"><?= $fmtPesos($compra['precioVuelo'] ?? 0) ?></span>
                                 </td>
-                                <td>
+                                <td data-label="Promoción">
                                     <?php
                                         $descuentoMostrado = (float)($compra['descuento_efectivo'] ?? 0);
                                         if ($descuentoMostrado <= 0 && !empty($compra['promos_aplicadas'])) {
@@ -435,13 +435,13 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
                                         <span class="text-muted" style="font-size:0.75rem;">—</span>
                                     <?php endif; ?>
                                 </td>
-                                <td>
+                                <td data-label="Total">
                                     <span class="compra-total"><?= $fmtPesos($compra['precioTotal'] ?? 0) ?></span>
                                 </td>
-                                <td>
+                                <td data-label="Estado">
                                     <span class="badge-estado badge-conf">✓ Confirmada</span>
                                 </td>
-                                <td onclick="event.stopPropagation()">
+                                <td data-label="Acción" onclick="event.stopPropagation()">
                                     <button type="button"
                                             class="btn btn-outline-secondary btn-sm"
                                             title="Ver detalle de la compra"

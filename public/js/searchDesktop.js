@@ -98,6 +98,7 @@ if (inputSalida) {
         const text = this.value.trim();
         if (!text) {
             inputSalidaResult.style.display = "none";
+            this.setAttribute("aria-expanded", "false");
             inputSalidaLocation.textContent = "Ingrese salida";
             return;
         }
@@ -110,6 +111,7 @@ if (inputDestino) {
         const text = this.value.trim();
         if (!text) {
             inputDestinoResult.style.display = "none";
+            this.setAttribute("aria-expanded", "false");
             inputDestinoLocation.textContent = "Ingrese destino";
             return;
         }

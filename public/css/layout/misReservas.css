@@ -68,9 +68,235 @@
     padding: 14px 14px;
     font-size: 0.875rem;
     vertical-align: middle;
+    min-width: 0;
+    overflow: hidden;
 }
 .tabla-reservas tbody tr:last-child td {
     border-bottom: none;
+}
+
+@media (min-width: 768px) {
+    .tabla-reservas {
+        table-layout: fixed;
+        min-width: 0;
+        font-size: 0.78rem;
+    }
+
+    @media (min-width: 1200px) {
+        .tabla-reservas {
+            table-layout: fixed;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .tabla-reservas th:nth-child(1),
+        .tabla-reservas td:nth-child(1) { width: 8%; }
+        .tabla-reservas th:nth-child(2),
+        .tabla-reservas td:nth-child(2) { width: 18%; }
+        .tabla-reservas th:nth-child(3),
+        .tabla-reservas td:nth-child(3) { width: 13%; }
+        .tabla-reservas th:nth-child(4),
+        .tabla-reservas td:nth-child(4) { width: 11%; }
+        .tabla-reservas th:nth-child(5),
+        .tabla-reservas td:nth-child(5) { width: 15%; }
+        .tabla-reservas th:nth-child(6),
+        .tabla-reservas td:nth-child(6) { width: 8%; }
+        .tabla-reservas th:nth-child(7),
+        .tabla-reservas td:nth-child(7) { width: 8%; }
+        .tabla-reservas th:nth-child(8),
+        .tabla-reservas td:nth-child(8) { width: 8%; }
+        .tabla-reservas th:nth-child(9),
+        .tabla-reservas td:nth-child(9) { width: 11%; }
+
+        .tabla-reservas thead th,
+        .tabla-reservas tbody td {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
+
+        .tabla-reservas .ruta-mini {
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .tabla-reservas .ruta-mini .aeropuerto,
+        .tabla-reservas td:nth-child(3) span,
+        .tabla-reservas td:nth-child(5) p,
+        .tabla-reservas td:nth-child(6) span,
+        .tabla-reservas td:nth-child(7) span {
+            overflow-wrap: anywhere;
+        }
+
+        .tabla-reservas tbody td:last-child .d-flex {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.4rem !important;
+            width: 100%;
+        }
+
+        .tabla-reservas tbody td:last-child .btn,
+        .tabla-reservas tbody td:last-child form {
+            width: 100%;
+        }
+
+        .tabla-reservas tbody td:last-child .btn {
+            white-space: nowrap;
+            padding: 0.35rem 0.45rem;
+            font-size: 0.72rem;
+        }
+
+        .tabla-reservas tbody td:nth-child(8) .badge {
+            max-width: 100%;
+            white-space: normal;
+        }
+
+        .tabla-reservas tbody td:nth-child(9) > .d-flex {
+            flex-wrap: nowrap;
+        }
+    }
+
+    .tabla-reservas th:nth-child(1),
+    .tabla-reservas td:nth-child(1) { width: 8%; }
+    .tabla-reservas th:nth-child(2),
+    .tabla-reservas td:nth-child(2) { width: 24%; }
+    .tabla-reservas th:nth-child(3),
+    .tabla-reservas td:nth-child(3) { width: 18%; }
+    .tabla-reservas th:nth-child(4),
+    .tabla-reservas td:nth-child(4) { width: 12%; }
+    .tabla-reservas th:nth-child(5),
+    .tabla-reservas td:nth-child(5) { width: 14%; }
+    .tabla-reservas th:nth-child(6),
+    .tabla-reservas td:nth-child(6) { width: 8%; }
+    .tabla-reservas th:nth-child(7),
+    .tabla-reservas td:nth-child(7) { width: 8%; }
+    .tabla-reservas th:nth-child(8),
+    .tabla-reservas td:nth-child(8) { width: 8%; }
+    .tabla-reservas th:nth-child(9),
+    .tabla-reservas td:nth-child(9) { width: 4%; }
+
+    .tabla-reservas thead th,
+    .tabla-reservas tbody td {
+        padding-left: 0.45rem;
+        padding-right: 0.45rem;
+        overflow-wrap: anywhere;
+    }
+
+    .tabla-reservas tbody td:last-child .d-flex {
+        gap: 0.25rem !important;
+    }
+
+    .tabla-reservas tbody td:last-child .btn {
+        padding-left: 0.35rem;
+        padding-right: 0.35rem;
+        font-size: 0.72rem;
+        white-space: normal;
+    }
+
+    .tabla-reservas .ruta-mini {
+        gap: 3px;
+        min-width: 0;
+        max-width: 100%;
+        white-space: normal;
+    }
+
+    .tabla-reservas .ruta-mini > div {
+        min-width: 0;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+    }
+
+    .tabla-reservas tbody td > .d-flex {
+        min-width: 0;
+        max-width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .tabla-reservas tbody td > .d-flex > span {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .tabla-reservas .badge-estado {
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+}
+
+@media (max-width: 1199.98px) {
+    .table-responsive {
+        overflow-x: visible;
+    }
+
+    .tabla-reservas:not(.tabla-compras) {
+        display: block !important;
+        min-width: 0;
+        table-layout: auto;
+    }
+
+    .tabla-reservas:not(.tabla-compras) thead {
+        display: none !important;
+    }
+
+    .tabla-reservas:not(.tabla-compras) tbody,
+    .tabla-reservas:not(.tabla-compras) tr,
+    .tabla-reservas:not(.tabla-compras) td {
+        display: block !important;
+        width: 100%;
+    }
+
+    .tabla-reservas:not(.tabla-compras) tr {
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+        border: 1px solid #e3e8f0;
+        border-radius: 0.75rem;
+        background: #fff;
+        box-shadow: 0 0.2rem 0.7rem rgba(8, 33, 73, 0.06);
+    }
+
+    .tabla-reservas:not(.tabla-compras) td {
+        display: grid !important;
+        grid-template-columns: minmax(7.5rem, 38%) minmax(0, 1fr);
+        align-items: center;
+        gap: 0.5rem;
+        min-height: 2.5rem;
+        padding: 0.5rem 0;
+        border: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .tabla-reservas:not(.tabla-compras) td > *,
+    .tabla-reservas:not(.tabla-compras) td > * > * {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .tabla-reservas:not(.tabla-compras) td::before {
+        content: attr(data-label);
+        color: #6c757d;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .tabla-reservas:not(.tabla-compras) td:last-child {
+        display: block;
+        padding-top: 0.75rem;
+        border-top: 1px solid #e3e8f0;
+    }
+
+    .tabla-reservas:not(.tabla-compras) td:last-child::before {
+        display: none;
+    }
+
+    .tabla-reservas:not(.tabla-compras) td:last-child .d-flex {
+        justify-content: flex-end;
+    }
+
+    .tabla-reservas:not(.tabla-compras) .ruta-mini {
+        white-space: normal;
+    }
 }
 
 /* Badges estado */
@@ -175,4 +401,56 @@
     color: transparent;
     -webkit-text-stroke: 1.7px #082149;
     font-weight: 800;
+}
+
+@media (min-width: 1200px) {
+    .tabla-reservas {
+        table-layout: fixed;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .tabla-reservas th:nth-child(1),
+    .tabla-reservas td:nth-child(1) { width: 8%; }
+    .tabla-reservas th:nth-child(2),
+    .tabla-reservas td:nth-child(2) { width: 18%; }
+    .tabla-reservas th:nth-child(3),
+    .tabla-reservas td:nth-child(3) { width: 13%; }
+    .tabla-reservas th:nth-child(4),
+    .tabla-reservas td:nth-child(4) { width: 11%; }
+    .tabla-reservas th:nth-child(5),
+    .tabla-reservas td:nth-child(5) { width: 15%; }
+    .tabla-reservas th:nth-child(6),
+    .tabla-reservas td:nth-child(6) { width: 8%; }
+    .tabla-reservas th:nth-child(7),
+    .tabla-reservas td:nth-child(7) { width: 8%; }
+    .tabla-reservas th:nth-child(8),
+    .tabla-reservas td:nth-child(8) { width: 8%; }
+    .tabla-reservas th:nth-child(9),
+    .tabla-reservas td:nth-child(9) { width: 11%; }
+
+    .tabla-reservas thead th,
+    .tabla-reservas tbody td {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
+    .tabla-reservas tbody td:last-child .d-flex {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.4rem !important;
+        width: 100%;
+    }
+
+    .tabla-reservas tbody td:last-child .btn,
+    .tabla-reservas tbody td:last-child form {
+        width: 100%;
+    }
+
+    .tabla-reservas tbody td:last-child .btn {
+        white-space: nowrap;
+        padding: 0.35rem 0.45rem;
+        font-size: 0.72rem;
+    }
 }

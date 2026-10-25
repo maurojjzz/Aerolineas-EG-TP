@@ -19,6 +19,7 @@ $total      = count($promocionesTodas);
 $pendientes = count(array_filter($promocionesTodas, fn($p) => $p['estado'] === 'Pendiente'));
 $aprobadas  = count(array_filter($promocionesTodas, fn($p) => $p['estado'] === 'Aprobada'));
 $denegadas  = count(array_filter($promocionesTodas, fn($p) => $p['estado'] === 'Denegada'));
+$canceladas = count(array_filter($promocionesTodas, fn($p) => $p['estado'] === 'Cancelada'));
 $pctAprob   = $total > 0 ? round(($aprobadas / $total) * 100) : 0;
 
 // ---------- Paginación (misma lógica que aerolíneas) ----------
@@ -47,6 +48,7 @@ function badgeEstadoPromo(string $estado): string {
     return match ($estado) {
         'Aprobada' => 'text-bg-success',
         'Denegada' => 'text-bg-danger',
+        'Cancelada' => 'text-bg-secondary',
         default    => 'text-bg-warning',
     };
 }
@@ -67,8 +69,8 @@ function textoAlcancePromo(array $p): string {
 // Helper para badge de estado de vigencia (recibe array promo completo)
 function badgeVigenciaPromo(array $p): string {
     // Si está denegada, mostrar denegada
-    if ($p['estado'] === 'Denegada') {
-        return '<span class="badge text-bg-danger">Denegada</span>';
+    if (in_array($p['estado'], ['Denegada', 'Cancelada'], true)) {
+        return '<span class="badge ' . ($p['estado'] === 'Cancelada' ? 'text-bg-secondary' : 'text-bg-danger') . '">' . htmlspecialchars($p['estado']) . '</span>';
     }
     // Si está pendiente, mostrar pendiente
     if ($p['estado'] === 'Pendiente') {
@@ -98,7 +100,7 @@ function badgeVigenciaPromo(array $p): string {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    <link rel="stylesheet" href="<?= url('public/css/admin.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/admin.css') ?>?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/headerAdmin.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/components/tablaLista.css') ?>?v=<?= time() ?>">
     <style>
@@ -169,6 +171,7 @@ function badgeVigenciaPromo(array $p): string {
     <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
 </head>
 <body>
+<?php require __DIR__ . '/../layouts/skipLink.php'; ?>
 
 <div class="d-flex min-vh-100 row g-0 m-0 p-2 pe-2">
 
@@ -192,7 +195,7 @@ function badgeVigenciaPromo(array $p): string {
                     </ol>
                 </nav>
 
-                <div class="contForm col-12 d-flex flex-column p-2 admin-content h-100">
+                <div class="contForm col-12 d-flex flex-column p-2 admin-content">
                     <h1 class="m-0 p-0 fs-2 fw-bold">Gestión de Promociones</h1>
                     <p class="m-0 p-0 mb-1 subt">Administra y crea las promociones de tu aerolínea.</p>
 
@@ -202,7 +205,7 @@ function badgeVigenciaPromo(array $p): string {
                             <div class="bg-white shadow rounded-3 py-2 px-4">
                                 <div class="d-flex flex-row align-items-center justify-content-start gap-3">
                                     <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:55px;height:55px;background-color:#E3F0FE;">
-                                        <img src="<?= url('public/img/icons/placeholdersCards/etiqueta.png') ?>" class="img-fluid" alt="total" style="width:32px;height:32px;object-fit:contain;">
+                                        <img src="<?= url('public/img/icons/placeholdersCards/etiqueta.png') ?>" class="img-fluid" alt="Promociones totales" title="Promociones totales" style="width:32px;height:32px;object-fit:contain;">
                                     </div>
                                     <div class="d-flex flex-column justify-content-center p-0 m-0">
                                         <p class="fw-semibold m-0 p-0 text-muted" style="font-size:14px;">Promociones totales</p>
@@ -210,7 +213,7 @@ function badgeVigenciaPromo(array $p): string {
                                     </div>
                                 </div>
                                 <div class="d-flex flex-row justify-content-start p-0 m-0 gap-2 mt-1">
-                                    <img src="<?= url('public/img/icons/placeholdersCards/simbolo-igual.png') ?>" class="img-fluid" alt="igual" style="width:20px;height:20px;object-fit:contain;">
+                                    <img src="<?= url('public/img/icons/placeholdersCards/simbolo-igual.png') ?>" class="img-fluid" alt="Sin variación" title="Sin variación" style="width:20px;height:20px;object-fit:contain;">
                                     <p class="fw-normal m-0 p-0 text-muted" style="font-size:14px;"><?= $denegadas ?> denegada<?= $denegadas === 1 ? '' : 's' ?></p>
                                 </div>
                             </div>
@@ -220,7 +223,7 @@ function badgeVigenciaPromo(array $p): string {
                             <div class="bg-white shadow rounded-3 py-2 px-4">
                                 <div class="d-flex flex-row align-items-center justify-content-start gap-3">
                                     <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:55px;height:55px;background-color:#E3F0FE;">
-                                        <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>" class="img-fluid" alt="activas" style="width:32px;height:32px;object-fit:contain;">
+                                        <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>" class="img-fluid" alt="Promociones activas" title="Promociones activas" style="width:32px;height:32px;object-fit:contain;">
                                     </div>
                                     <div class="d-flex flex-column justify-content-center p-0 m-0">
                                         <p class="fw-semibold m-0 p-0 text-muted" style="font-size:14px;">Activas / Aprobadas</p>
@@ -228,7 +231,7 @@ function badgeVigenciaPromo(array $p): string {
                                     </div>
                                 </div>
                                 <div class="d-flex flex-row justify-content-start p-0 m-0 gap-2 mt-1">
-                                    <img src="<?= url('public/img/icons/placeholdersCards/' . ($aprobadas > 0 ? 'flecha-up.png' : 'simbolo-igual.png')) ?>" class="img-fluid" alt="tendencia" style="width:20px;height:20px;object-fit:contain;">
+                                    <img src="<?= url('public/img/icons/placeholdersCards/' . ($aprobadas > 0 ? 'flecha-up.png' : 'simbolo-igual.png')) ?>" class="img-fluid" alt="<?= $aprobadas > 0 ? 'Tendencia positiva' : 'Sin variación' ?>" title="<?= $aprobadas > 0 ? 'Tendencia positiva' : 'Sin variación' ?>" style="width:20px;height:20px;object-fit:contain;">
                                     <p class="fw-normal m-0 p-0 <?= $aprobadas > 0 ? 'text-success' : 'text-muted' ?>" style="font-size:14px;"><?= $pctAprob ?>% del total</p>
                                 </div>
                             </div>
@@ -238,7 +241,7 @@ function badgeVigenciaPromo(array $p): string {
                             <div class="bg-white shadow rounded-3 py-2 px-4">
                                 <div class="d-flex flex-row align-items-center justify-content-start gap-3">
                                     <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:55px;height:55px;background-color:#E3F0FE;">
-                                        <img src="<?= url('public/img/icons/placeholdersCards/ceo.png') ?>" class="img-fluid" alt="pendientes" style="width:32px;height:32px;object-fit:contain;">
+                                        <img src="<?= url('public/img/icons/placeholdersCards/ceo.png') ?>" class="img-fluid" alt="Promociones pendientes" title="Promociones pendientes" style="width:32px;height:32px;object-fit:contain;">
                                     </div>
                                     <div class="d-flex flex-column justify-content-center p-0 m-0">
                                         <p class="fw-semibold m-0 p-0 text-muted" style="font-size:14px;">Pendientes</p>
@@ -246,7 +249,7 @@ function badgeVigenciaPromo(array $p): string {
                                     </div>
                                 </div>
                                 <div class="d-flex flex-row justify-content-start p-0 m-0 gap-2 mt-1">
-                                    <img src="<?= url('public/img/icons/placeholdersCards/simbolo-igual.png') ?>" class="img-fluid" alt="igual" style="width:20px;height:20px;object-fit:contain;">
+                                    <img src="<?= url('public/img/icons/placeholdersCards/simbolo-igual.png') ?>" class="img-fluid" alt="Sin variación" title="Sin variación" style="width:20px;height:20px;object-fit:contain;">
                                     <p class="fw-normal m-0 p-0 text-muted" style="font-size:14px;">En espera de aprobación</p>
                                 </div>
                             </div>
@@ -255,7 +258,7 @@ function badgeVigenciaPromo(array $p): string {
 
                     <!-- Tabla -->
                     <div class="d-flex flex-column gap-2">
-                        <div class="table-responsive bg-white shadow rounded-3 pt-3 tablaContenedor">
+                        <div class="table-responsive bg-white shadow rounded-3 pt-3 tablaContenedor ceo-promociones-contenedor">
                             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center px-2 mb-3 gap-3 gap-sm-0">
                                 <h2 class="m-0 p-0 fs-4 fw-bold">Listado de Promociones</h2>
                                 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 flex-wrap">
@@ -267,8 +270,9 @@ function badgeVigenciaPromo(array $p): string {
                                             style="min-width: 220px;"
                                         >
                                             <option value="pendientes_aprobadas_vigentes" selected>Pendientes y Aprobadas vigentes</option>
+                                            <option value="pendientes">Solo pendientes de aprobación</option>
                                             <option value="todas">Todas</option>
-                                            <option value="canceladas">Canceladas (Denegadas)</option>
+                                            <option value="canceladas">Canceladas</option>
                                             <option value="en_vigencia">En vigencia (Aprobadas vigentes)</option>
                                             <option value="vencidas">Ya vencidas</option>
                                             <option value="denegadas">Denegadas</option>
@@ -289,7 +293,7 @@ function badgeVigenciaPromo(array $p): string {
                                 </div>
                             </div>
 
-                            <table class="table table-hover align-middle border-top mt-2 tabla-aerolineas">
+                            <table class="table table-hover align-middle border-top mt-2 ceo-tabla-promociones">
                                 <caption class="visually-hidden">Listado de promociones</caption>
                                 <thead>
                                     <tr>
@@ -307,7 +311,7 @@ function badgeVigenciaPromo(array $p): string {
                                     <?php if (empty($promociones)): ?>
                                         <tr>
                                             <td colspan="8" class="text-center py-4 text-muted">
-                                                No tenés promociones registradas todavía.
+                                                Todavía no hay promociones cargadas para tu aerolínea.
                                             </td>
                                         </tr>
                                     <?php else:
@@ -320,7 +324,10 @@ function badgeVigenciaPromo(array $p): string {
                                     <tr class="fila-tabla" 
                                         data-id="<?= htmlspecialchars((string)$idPromo) ?>" 
                                         data-estado="<?= htmlspecialchars($p['estado']) ?>"
-                                        data-vigencia="<?= htmlspecialchars($p['estado'] === 'Denegada' ? 'denegada' : ($p['estado'] === 'Pendiente' ? 'pendiente' : (new DateTime($p['fechaFin']) < new DateTime() ? 'vencida' : ((new DateTime())->diff(new DateTime($p['fechaFin']))->days <= 7 ? 'proxima' : 'vigente')))) ?>"
+                                        data-vigencia="<?= htmlspecialchars(in_array($p['estado'], ['Denegada', 'Cancelada'], true) ? strtolower($p['estado']) : ($p['estado'] === 'Pendiente' ? 'pendiente' : (new DateTime($p['fechaFin']) < new DateTime() ? 'vencida' : ((new DateTime())->diff(new DateTime($p['fechaFin']))->days <= 7 ? 'proxima' : 'vigente')))) ?>"
+                                        aria-controls="detalle-<?= htmlspecialchars((string)$idPromo) ?>"
+                                        aria-expanded="false" role="button" tabindex="0"
+                                        aria-label="Mostrar detalles de la promoción <?= htmlspecialchars($p['nombre']) ?>"
                                         style="cursor:pointer;">
                                         <td>
                                             <div class="d-flex align-items-center justify-content-center gap-2">
@@ -365,10 +372,7 @@ function badgeVigenciaPromo(array $p): string {
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#modalEditarPromocion"
                                                             data-id="<?= htmlspecialchars((string)$idPromo) ?>"
-                                                            data-bs-toggle="tooltip"
-                                                            data-bs-placement="top"
-                                                            data-bs-title="Editar"
-                                                            data-bs-trigger="hover"
+                                                            aria-label="Editar promoción"
                                                     >
                                                         <img
                                                             src="<?= url('public/img/icons/lapiz-editar.png') ?>"
@@ -380,17 +384,19 @@ function badgeVigenciaPromo(array $p): string {
                                                     <!-- Eliminar -->
                                                     <form method="POST"
                                                         action="<?= url('src/routes/promociones.php?accion=eliminar') ?>"
-                                                        onsubmit="return confirm('¿Seguro que querés eliminar esta promoción pendiente?');"
                                                         class="d-inline"
                                                         data-loading-form>
                                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
                                                         <input type="hidden" name="id" value="<?= htmlspecialchars((string)$idPromo) ?>">
-                                                        <button type="submit"
+                                                        <button type="button"
                                                                 class="p-0 bg-transparent border-0 btn-eliminar-promo"
-                                                                data-bs-toggle="tooltip"
-                                                                data-bs-placement="top"
-                                                                data-bs-title="Eliminar"
-                                                                data-bs-trigger="hover"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#modalConfirmarAccionPromo"
+                                                                data-promo-accion="eliminar"
+                                                                data-promo-id="<?= htmlspecialchars((string)$idPromo) ?>"
+                                                                data-promo-titulo="Eliminar promoción pendiente"
+                                                                data-promo-mensaje="¿Seguro que querés eliminar esta promoción pendiente? Esta acción no se puede deshacer."
+                                                                aria-label="Eliminar promoción"
                                                         >
                                                             <img
                                                                 src="<?= url('public/img/icons/trash.png') ?>"
@@ -403,23 +409,45 @@ function badgeVigenciaPromo(array $p): string {
                                                     <!-- Eliminar para denegadas -->
                                                     <form method="POST"
                                                         action="<?= url('src/routes/promociones.php?accion=eliminar') ?>"
-                                                        onsubmit="return confirm('¿Seguro que querés eliminar esta promoción denegada?');"
                                                         class="d-inline"
                                                         data-loading-form>
                                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
                                                         <input type="hidden" name="id" value="<?= htmlspecialchars((string)$idPromo) ?>">
-                                                        <button type="submit"
+                                                        <button type="button"
                                                                 class="p-0 bg-transparent border-0 btn-eliminar-promo"
-                                                                data-bs-toggle="tooltip"
-                                                                data-bs-placement="top"
-                                                                data-bs-title="Eliminar"
-                                                                data-bs-trigger="hover"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#modalConfirmarAccionPromo"
+                                                                data-promo-accion="eliminar"
+                                                                data-promo-id="<?= htmlspecialchars((string)$idPromo) ?>"
+                                                                data-promo-titulo="Eliminar promoción denegada"
+                                                                data-promo-mensaje="¿Seguro que querés eliminar esta promoción denegada? Esta acción no se puede deshacer."
+                                                                aria-label="Eliminar promoción"
                                                         >
                                                             <img
                                                                 src="<?= url('public/img/icons/trash.png') ?>"
                                                                 class="img-fluid btn-tabla"
                                                                 alt="icono eliminar promoción"
                                                             >
+                                                        </button>
+                                                    </form>
+                                                <?php elseif ($p['estado'] === 'Aprobada'): ?>
+                                                    <form method="POST"
+                                                        action="<?= url('src/routes/promociones.php?accion=cancelar') ?>"
+                                                        class="d-inline">
+                                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
+                                                        <input type="hidden" name="id" value="<?= htmlspecialchars((string)$idPromo) ?>">
+                                                        <button type="button"
+                                                                class="p-0 bg-transparent border-0 btn-cancelar-promo"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#modalConfirmarAccionPromo"
+                                                                data-promo-accion="cancelar"
+                                                                data-promo-id="<?= htmlspecialchars((string)$idPromo) ?>"
+                                                                data-promo-titulo="Cancelar promoción"
+                                                                data-promo-mensaje="¿Seguro que querés cancelar esta promoción aprobada? Dejará de aplicarse a nuevas reservas."
+                                                                data-loading-text="Cancelando..."
+                                                                aria-label="Cancelar promoción">
+                                                            <img src="<?= url('public/img/icons/trash.png') ?>"
+                                                                 class="img-fluid btn-tabla" alt="icono cancelar promoción">
                                                         </button>
                                                     </form>
                                                 <?php endif; ?>
@@ -482,6 +510,49 @@ function badgeVigenciaPromo(array $p): string {
                                     <?php endif; ?>
                                 </tbody>
                             </table>
+
+                            <div class="admin-mobile-cards ceo-mobile-cards d-md-none">
+                                <?php if (empty($promociones)): ?>
+                                    <div class="admin-mobile-empty">Todavía no hay promociones cargadas para tu aerolínea.</div>
+                                <?php else: ?>
+                                    <?php foreach ($promociones as $p):
+                                        $idCard = $p['idPromocion'] ?? $p['codigo'];
+                                        $inicioCard = date('d/m/Y', strtotime($p['fechaInicio']));
+                                        $finCard = date('d/m/Y', strtotime($p['fechaFin']));
+                                        $alcanceCard = textoAlcancePromo($p);
+                                    ?>
+                                        <article class="admin-mobile-card">
+                                            <div class="admin-mobile-card__header">
+                                                <div>
+                                                    <strong><?= htmlspecialchars($p['nombre']) ?></strong>
+                                                    <small>Código: <?= htmlspecialchars($p['codigo']) ?></small>
+                                                </div>
+                                                <span class="badge <?= badgeEstadoPromo($p['estado']) ?>"><?= htmlspecialchars($p['estado']) ?></span>
+                                            </div>
+                                            <dl class="admin-mobile-card__data">
+                                                <div><dt>Descuento</dt><dd class="text-success fw-bold"><?= (float)$p['descuentoPorcentaje'] ?>%</dd></div>
+                                                <div><dt>Alcance</dt><dd><?= htmlspecialchars($alcanceCard) ?></dd></div>
+                                                <div><dt>Vigencia</dt><dd><?= $inicioCard ?> - <?= $finCard ?></dd></div>
+                                                <div><dt>Estado</dt><dd><?= badgeVigenciaPromo($p) ?></dd></div>
+                                            </dl>
+                                            <div class="admin-mobile-card__actions">
+                                                <a class="btn btn-outline-primary btn-sm" href="<?= url('index.php?pagina=ceo&seccion=promocion-detalle&id=' . urlencode((string)$idCard)) ?>">Ver detalle</a>
+                                                <?php if ($p['estado'] === 'Pendiente'): ?>
+                                                    <button type="button" class="btn btn-outline-secondary btn-sm btn-editar-promo" data-bs-toggle="modal" data-bs-target="#modalEditarPromocion" data-id="<?= htmlspecialchars((string)$idCard) ?>">Editar</button>
+                                                <?php endif; ?>
+                                                <?php if (in_array($p['estado'], ['Pendiente', 'Denegada', 'Aprobada'], true)): ?>
+                                                    <button type="button" class="btn btn-outline-danger btn-sm <?= $p['estado'] === 'Aprobada' ? 'btn-cancelar-promo' : 'btn-eliminar-promo' ?>"
+                                                        data-bs-toggle="modal" data-bs-target="#modalConfirmarAccionPromo"
+                                                        data-promo-accion="<?= $p['estado'] === 'Aprobada' ? 'cancelar' : 'eliminar' ?>"
+                                                        data-promo-id="<?= htmlspecialchars((string)$idCard) ?>"
+                                                        data-promo-titulo="<?= $p['estado'] === 'Aprobada' ? 'Cancelar promoción' : 'Eliminar promoción' ?>"
+                                                        data-promo-mensaje="¿Seguro que querés realizar esta acción?"><?= $p['estado'] === 'Aprobada' ? 'Cancelar' : 'Eliminar' ?></button>
+                                                <?php endif; ?>
+                                            </div>
+                                        </article>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </div>
 
                             <!-- Paginación -->
                             <div class="border-top px-3 py-3">
@@ -701,8 +772,11 @@ function badgeVigenciaPromo(array $p): string {
                                     </div>
                                 </div>
                                 <div class="modal-footer border-0">
-                                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
-                                    <button type="submit" class="btn btn-primary btn-sm">Enviar a Aprobación</button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Volver</button>
+                                    <button type="submit" class="btn btn-primary btn-sm" id="btnEnviarPromocion">
+                                        <span class="btn-enviar-texto">Enviar a Aprobación</span>
+                                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -859,6 +933,28 @@ function badgeVigenciaPromo(array $p): string {
                     </div>
                 </div>
 
+                <div class="modal fade" id="modalConfirmarAccionPromo" tabindex="-1" aria-labelledby="modalConfirmarAccionPromoLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header border-0">
+                                <h2 class="modal-title fw-bold h5" id="modalConfirmarAccionPromoLabel">Confirmar acción</h2>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p id="modalConfirmarAccionPromoMensaje" class="text-muted m-0"></p>
+                            </div>
+                            <div class="modal-footer border-0">
+                                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                                <form method="POST" id="formConfirmarAccionPromo" data-loading-form>
+                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
+                                    <input type="hidden" name="id" id="modalConfirmarAccionPromoId">
+                                    <button type="submit" class="btn btn-danger btn-sm" id="modalConfirmarAccionPromoSubmit">Confirmar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
         </main>
     </div>
 </div>
@@ -870,6 +966,28 @@ function badgeVigenciaPromo(array $p): string {
 document.addEventListener("DOMContentLoaded", function () {
     const tbody = document.getElementById("promocionTableBody");
 
+    const modalConfirmar = document.getElementById("modalConfirmarAccionPromo");
+    if (modalConfirmar) {
+        const formConfirmar = document.getElementById("formConfirmarAccionPromo");
+        const tituloConfirmar = document.getElementById("modalConfirmarAccionPromoLabel");
+        const mensajeConfirmar = document.getElementById("modalConfirmarAccionPromoMensaje");
+        const idConfirmar = document.getElementById("modalConfirmarAccionPromoId");
+        const submitConfirmar = document.getElementById("modalConfirmarAccionPromoSubmit");
+
+        modalConfirmar.addEventListener("show.bs.modal", function (event) {
+            const boton = event.relatedTarget;
+            const accion = boton.dataset.promoAccion;
+            const esCancelacion = accion === "cancelar";
+            tituloConfirmar.textContent = boton.dataset.promoTitulo || "Confirmar acción";
+            mensajeConfirmar.textContent = boton.dataset.promoMensaje || "";
+            idConfirmar.value = boton.dataset.promoId || "";
+            formConfirmar.action = `src/routes/promociones.php?accion=${encodeURIComponent(accion)}`;
+            submitConfirmar.textContent = esCancelacion ? "Confirmar cancelación" : "Confirmar eliminación";
+            submitConfirmar.className = "btn btn-danger btn-sm";
+            submitConfirmar.dataset.loadingText = esCancelacion ? "Cancelando..." : "Eliminando...";
+        });
+    }
+
     // Tooltips (mismo comportamiento que en aerolíneas)
     if (typeof bootstrap !== "undefined") {
         document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
@@ -880,9 +998,18 @@ document.addEventListener("DOMContentLoaded", function () {
     // Expandir / colapsar el resumen al hacer click en la fila (el ojo navega al detalle completo)
     tbody.querySelectorAll("tr.fila-tabla").forEach(function (fila) {
         fila.addEventListener("click", function (e) {
-            if (e.target.closest(".btn-ver-promo")) return;
+            if (e.target.closest("a, button, form")) return;
             const detalle = document.getElementById("detalle-" + this.dataset.id);
-            if (detalle) detalle.classList.toggle("d-none");
+            if (detalle) {
+                const expandido = !detalle.classList.contains("d-none");
+                detalle.classList.toggle("d-none", expandido);
+                this.setAttribute("aria-expanded", expandido ? "false" : "true");
+            }
+        });
+        fila.addEventListener("keydown", function (e) {
+            if (e.key !== "Enter" && e.key !== " ") return;
+            e.preventDefault();
+            this.click();
         });
     });
 
@@ -1135,6 +1262,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Al enviar se validan todos los campos y se bloquea si hay errores
         formCrear.addEventListener("submit", function (e) {
+            if (formCrear.dataset.enviando === "true") {
+                e.preventDefault();
+                return;
+            }
             let primero = null;
             // Validar campos base
             camposBase.forEach(function (c) {
@@ -1155,12 +1286,22 @@ document.addEventListener("DOMContentLoaded", function () {
             if (primero) {
                 e.preventDefault();
                 primero.focus();
+                return;
+            }
+
+            formCrear.dataset.enviando = "true";
+            const botonEnviar = document.getElementById("btnEnviarPromocion");
+            if (botonEnviar) {
+                botonEnviar.disabled = true;
+                botonEnviar.querySelector(".btn-enviar-texto").textContent = "Enviando...";
+                botonEnviar.querySelector(".spinner-border").classList.remove("d-none");
             }
         });
 
         // Al cerrar el modal se limpia todo
         modalCrear.addEventListener("hidden.bs.modal", function () {
             formCrear.reset();
+            formCrear.dataset.enviando = "false";
             tocados.clear();
             // Resetear alcance a aerolinea
             activarAlcance('aerolinea');
@@ -1177,6 +1318,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (fb) fb.textContent = "";
                 }
             });
+            const botonEnviar = document.getElementById("btnEnviarPromocion");
+            if (botonEnviar) {
+                botonEnviar.disabled = false;
+                botonEnviar.querySelector(".btn-enviar-texto").textContent = "Enviar a Aprobación";
+                botonEnviar.querySelector(".spinner-border").classList.add("d-none");
+            }
             inpFin.min = "";
             inpInicio.max = "";
         });
@@ -1394,8 +1541,10 @@ document.addEventListener("DOMContentLoaded", function () {
     function aplicarFiltros() {
         const filtroTexto = inputBuscador ? inputBuscador.value.toLowerCase() : '';
         const filtroEstado = selectFiltro ? selectFiltro.value : 'pendientes_aprobadas_vigentes';
+        const filas = tbody.querySelectorAll("tr.fila-tabla");
+        let filasVisibles = 0;
 
-        tbody.querySelectorAll("tr.fila-tabla").forEach(function (fila) {
+        filas.forEach(function (fila) {
             const texto = fila.textContent.toLowerCase();
             const coincideTexto = !filtroTexto || texto.includes(filtroTexto);
 
@@ -1415,11 +1564,14 @@ document.addEventListener("DOMContentLoaded", function () {
                         coincideEstado = false;
                     }
                     break;
+                case 'pendientes':
+                    coincideEstado = estado === 'Pendiente';
+                    break;
                 case 'todas':
                     coincideEstado = true;
                     break;
                 case 'canceladas':
-                    coincideEstado = estado === 'Denegada';
+                    coincideEstado = estado === 'Denegada' || estado === 'Cancelada';
                     break;
                 case 'en_vigencia':
                     coincideEstado = estado === 'Aprobada' && vigencia !== 'vencida';
@@ -1436,11 +1588,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const coincide = coincideTexto && coincideEstado;
             fila.style.display = coincide ? "" : "none";
+            if (coincide) filasVisibles++;
             if (!coincide) {
                 const detalle = document.getElementById("detalle-" + fila.dataset.id);
                 if (detalle) detalle.classList.add("d-none");
             }
         });
+
+        const mensajeSinResultados = document.getElementById("mensajeSinResultadosPromos");
+        if (filas.length > 0 && filasVisibles === 0) {
+            if (!mensajeSinResultados) {
+                const filaVacia = document.createElement("tr");
+                filaVacia.id = "mensajeSinResultadosPromos";
+                filaVacia.innerHTML = '<td colspan="8" class="text-center py-4 text-muted">No hay promociones que coincidan con la búsqueda o los filtros seleccionados.</td>';
+                tbody.appendChild(filaVacia);
+            }
+        } else if (mensajeSinResultados) {
+            mensajeSinResultados.remove();
+        }
     }
 
     if (inputBuscador) {

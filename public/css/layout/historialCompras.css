@@ -66,7 +66,7 @@
 
 .historial-kpi-hint {
     margin: 0;
-    color: #8a94a6;
+    color: #5c636a;
     font-size: 0.72rem;
 }
 
@@ -127,12 +127,38 @@
 
 /* Tabla */
 .tabla-compras {
-    min-width: 1000px;
+    width: 100%;
+    table-layout: fixed;
+}
+
+@media (min-width: 768px) {
+    .tabla-compras th:nth-child(1),
+    .tabla-compras td:nth-child(1) { width: 8%; }
+    .tabla-compras th:nth-child(2),
+    .tabla-compras td:nth-child(2) { width: 20%; }
+    .tabla-compras th:nth-child(3),
+    .tabla-compras td:nth-child(3) { width: 16%; }
+    .tabla-compras th:nth-child(4),
+    .tabla-compras td:nth-child(4) { width: 11%; }
+    .tabla-compras th:nth-child(5),
+    .tabla-compras td:nth-child(5) { width: 8%; }
+    .tabla-compras th:nth-child(6),
+    .tabla-compras td:nth-child(6) { width: 10%; }
+    .tabla-compras th:nth-child(7),
+    .tabla-compras td:nth-child(7) { width: 6%; }
+    .tabla-compras th:nth-child(8),
+    .tabla-compras td:nth-child(8) { width: 10%; }
+    .tabla-compras th:nth-child(9),
+    .tabla-compras td:nth-child(9) { width: 8%; }
+    .tabla-compras th:nth-child(10),
+    .tabla-compras td:nth-child(10) { width: 8%; }
 }
 
 .tabla-compras tbody td {
     padding-top: 0.85rem;
     padding-bottom: 0.85rem;
+    min-width: 0;
+    overflow: hidden;
 }
 
 .compra-codigo {
@@ -152,12 +178,15 @@
     display: flex;
     align-items: center;
     gap: 0.55rem;
-    white-space: nowrap;
+    min-width: 0;
+    max-width: 100%;
+    white-space: normal;
 }
 
 .ruta-punto {
     display: flex;
     flex-direction: column;
+    min-width: 0;
     line-height: 1.15;
 }
 
@@ -169,7 +198,7 @@
 
 .ruta-ciudad {
     overflow: hidden;
-    max-width: 90px;
+    max-width: 100%;
     color: #6c757d;
     font-size: 0.72rem;
     text-overflow: ellipsis;
@@ -199,9 +228,19 @@
     font-weight: 700;
 }
 
+.tabla-compras td > .d-flex {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.tabla-compras td > .d-flex > .min-width-0 {
+    min-width: 0;
+    overflow: hidden;
+}
+
 .airline-name {
     overflow: hidden;
-    max-width: 150px;
+    max-width: 100%;
     margin: 0;
     font-size: 0.82rem;
     font-weight: 600;
@@ -229,6 +268,9 @@
 
 .passengers-count {
     font-size: 0.82rem;
+    display: block;
+    max-width: 100%;
+    overflow-wrap: anywhere;
 }
 
 .precio-unitario {
@@ -246,6 +288,109 @@
 
 .tabla-compras td:last-child .btn {
     white-space: nowrap;
+}
+
+@media (max-width: 767.98px) {
+    .tabla-compras {
+        display: block !important;
+        min-width: 0;
+        table-layout: auto;
+    }
+
+    .tabla-compras thead {
+        display: none !important;
+    }
+
+    .tabla-compras tbody,
+    .tabla-compras tr,
+    .tabla-compras td {
+        display: block !important;
+        width: 100%;
+    }
+
+    .tabla-compras tr {
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+        border: 1px solid #e3e8f0;
+        border-radius: 0.75rem;
+        background: #fff;
+        box-shadow: 0 0.2rem 0.7rem rgba(8, 33, 73, 0.06);
+    }
+
+    .tabla-compras td {
+        display: grid !important;
+        grid-template-columns: minmax(7.5rem, 38%) minmax(0, 1fr);
+        align-items: center;
+        gap: 0.5rem;
+        min-height: 2.5rem;
+        padding: 0.5rem 0;
+        border: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .tabla-compras td > *,
+    .tabla-compras td > * > * {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .tabla-compras td::before {
+        content: attr(data-label);
+        color: #6c757d;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .tabla-compras td > * {
+        min-width: 0;
+    }
+
+    .tabla-compras .ruta-compra {
+        white-space: normal;
+    }
+
+    .tabla-compras .airline-name {
+        max-width: 100%;
+        white-space: normal;
+    }
+
+    .tabla-compras td:last-child {
+        display: flex;
+        justify-content: flex-end;
+        padding-top: 0.75rem;
+        border-top: 1px solid #e3e8f0;
+    }
+
+    .tabla-compras td:last-child::before {
+        display: none;
+    }
+
+    .tabla-compras td:last-child .btn {
+        width: 100%;
+    }
+}
+
+@media (min-width: 768px) {
+    .tabla-compras .airline-logo,
+    .tabla-compras .airline-logo-fallback {
+        width: 24px;
+        height: 24px;
+    }
+
+    .tabla-compras .airline-name {
+        font-size: 0.74rem;
+    }
+
+    .tabla-compras .ruta-codigo {
+        font-size: 0.78rem;
+    }
+
+    .tabla-compras .flight-time {
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
 }
 
 /* Paginación */

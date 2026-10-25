@@ -47,6 +47,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
 
+            const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (character) => ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#039;"
+            }[character]));
             let htmlContent = `<li><div class="dropdown-header fw-bold text-dark border-bottom pb-2 px-2">Notificaciones y Pendientes</div></li>`;
 
             if (total === 0) {
@@ -59,12 +66,12 @@ document.addEventListener("DOMContentLoaded", function () {
                             <a class="dropdown-item rounded-2 py-2 border-bottom text-wrap d-flex flex-column gap-1" 
                                href="${URL_LISTADO_CEOS}"
                                data-tipo="ceo" 
-                               data-id="${ceo.id}">
+                               data-id="${Number(ceo.id) || 0}">
                                 <div class="d-flex align-items-center justify-content-between">
                                     <span class="badge text-bg-warning text-dark" style="font-size: 0.7rem;">Nuevo CEO</span>
                                     <small class="text-muted" style="font-size: 0.75rem;">${fecha}</small>
                                 </div>
-                                <span class="fw-semibold text-dark" style="font-size: 0.85rem;">${ceo.nombre} ${ceo.apellido}</span>
+                                <span class="fw-semibold text-dark" style="font-size: 0.85rem;">${escapeHtml(ceo.nombre)} ${escapeHtml(ceo.apellido)}</span>
                                 <span class="text-muted text-truncate" style="font-size: 0.75rem;">Requiere habilitación en el sistema.</span>
                             </a>
                         </li>`;
@@ -76,13 +83,13 @@ document.addEventListener("DOMContentLoaded", function () {
                             <a class="dropdown-item rounded-2 py-2 border-bottom text-wrap d-flex flex-column gap-1" 
                                href="${URL_LISTADO_PROMOCIONES}"
                                data-tipo="promocion" 
-                               data-id="${promo.id}">
+                               data-id="${Number(promo.id) || 0}">
                                 <div class="d-flex align-items-center justify-content-between">
                                     <span class="badge text-bg-info text-white" style="font-size: 0.7rem;">Promoción</span>
-                                    <span class="text-success fw-bold" style="font-size: 0.75rem;">${promo.codigo}</span>
+                                    <span class="text-success fw-bold" style="font-size: 0.75rem;">${escapeHtml(promo.codigo)}</span>
                                 </div>
-                                <span class="fw-semibold text-dark" style="font-size: 0.85rem;">${promo.nombre}</span>
-                                <span class="text-muted text-truncate" style="font-size: 0.75rem;">Aerolínea: ${promo.nombreAerolinea}</span>
+                                <span class="fw-semibold text-dark" style="font-size: 0.85rem;">${escapeHtml(promo.nombre)}</span>
+                                <span class="text-muted text-truncate" style="font-size: 0.75rem;">Aerolínea: ${escapeHtml(promo.nombreAerolinea)}</span>
                             </a>
                         </li>`;
                 });

@@ -15,13 +15,14 @@ $vistas = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Usuarios — Administración — Volaré</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="<?= url('public/css/admin.css') ?>">
+    <link rel="stylesheet" href="<?= url('public/css/admin.css') ?>?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/headerAdmin.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/components/tablaLista.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
 </head>
 <body>
+    <?php require __DIR__ . '/../layouts/skipLink.php'; ?>
     <div class="d-flex min-vh-100 row g-0 m-0 p-2 pe-2">
         <aside class="admin-sidebar text-white d-none d-md-block col-md-3 col-xxl-2 pe-1">
             <?php require __DIR__ . '/../layouts/sidebarAdmin.php'; ?>

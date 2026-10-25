@@ -67,6 +67,7 @@ iContrasena.addEventListener("blur", validarContrasena);
 const formLogin = document.querySelector("form[action*='accion=login']");
 
 if (formLogin) {
+    formLogin.setAttribute("novalidate", "");
     formLogin.addEventListener("submit", (e) => {
         const emailValido = validarEmail();
         const contrasenaValida = validarContrasena();

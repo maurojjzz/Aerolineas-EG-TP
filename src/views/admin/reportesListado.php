@@ -52,6 +52,10 @@ $porPaginaPermitidos = [10, 25, 50];
 $pag = max(1, (int)($_GET['pag'] ?? 1));
 $porPaginaRaw = (int)($_GET['porPagina'] ?? 10);
 $porPagina = in_array($porPaginaRaw, $porPaginaPermitidos, true) ? $porPaginaRaw : 10;
+$modoImpresion = ($_GET['imprimir'] ?? '') === '1';
+if ($modoImpresion) {
+    $porPagina = 5000;
+}
 
 $desde = repAdminFecha(trim($_GET['desde'] ?? ''));
 $hasta = repAdminFecha(trim($_GET['hasta'] ?? ''));
@@ -228,12 +232,46 @@ if ($tab === 'ventas') {
 $filtrosActivos = 0;
 if ($desde || $hasta) $filtrosActivos++;
 if ($busqueda !== '') $filtrosActivos++;
+
+function montoCompacto(float $monto): string {
+    $signo = $monto < 0 ? '-' : '';
+    $valor = abs($monto);
+    if ($valor >= 1000000) {
+        return $signo . number_format($valor / 1000000, 1, ',', '.') . 'M';
+    }
+    if ($valor >= 1000) {
+        return $signo . number_format($valor / 1000, 1, ',', '.') . 'K';
+    }
+    return $signo . number_format($valor, 0, ',', '.');
+}
 if ($tab !== 'usuarios' && $idAerolineaFiltro) $filtrosActivos++;
 if ($tab === 'usuarios' && $estadoUsuario !== '') $filtrosActivos++;
 if ($tab === 'usuarios' && $verificado !== '') $filtrosActivos++;
 
 $desdeFila = $total === 0 ? 0 : ($pag - 1) * $porPagina + 1;
 $hastaFila = min($pag * $porPagina, $total);
+
+$graficoReporte = [];
+foreach ($filas as $fila) {
+    if ($tab === 'ventas') {
+        $ruta = ($fila['codigoOrigen'] ?? '') . ' → ' . ($fila['codigoDestino'] ?? '');
+        $graficoReporte[$ruta] = ($graficoReporte[$ruta] ?? 0) + (int)$fila['cantPasajeros'];
+    } elseif ($tab === 'vuelos') {
+        $ruta = ($fila['codigoOrigen'] ?? '') . ' → ' . ($fila['codigoDestino'] ?? '');
+        $ocupacion = (int)($fila['asientosTotales'] ?? 0) > 0
+            ? round(((int)$fila['vendidos'] / (int)$fila['asientosTotales']) * 100)
+            : 0;
+        $graficoReporte[$ruta] = max($graficoReporte[$ruta] ?? 0, $ocupacion);
+    } else {
+        $graficoReporte['Activos'] = (int)$resumen['activos'];
+        $graficoReporte['Email verificado'] = (int)$resumen['verificados'];
+        $graficoReporte['Con compras'] = (int)$conCompras['conCompras'];
+    }
+}
+arsort($graficoReporte);
+$graficoReporte = array_slice($graficoReporte, 0, 5, true);
+$valoresGrafico = array_values($graficoReporte);
+$maxGrafico = $valoresGrafico ? max(1, ...$valoresGrafico) : 1;
 
 $tabs = [
     'ventas'   => 'Ventas',
@@ -244,7 +282,46 @@ $tabs = [
 
 <?php require __DIR__ . '/../components/alertToast.php'; ?>
 
+<style>
+    .reporte-portada, .reporte-grafico { display: none; }
+    .barra-fila { display: grid; grid-template-columns: 115px 1fr 80px; gap: 8px; align-items: center; margin: 7px 0; font-size: 10px; }
+    .barra-base { height: 10px; background: #e8edf3; border-radius: 6px; overflow: hidden; }
+    .barra-valor { height: 100%; background: #2878d7; border-radius: 6px; }
+    @media print {
+        @page { size: A4 landscape; margin: 14mm; }
+        body { background: #fff !important; color: #172033 !important; }
+        .admin-sidebar, .admin-header, .breadcrumbCont, #panelFiltrosReportes,
+        #btnImprimirReporte, [data-bs-toggle="collapse"], .pagination,
+        .reportes-navegacion, .reportes-titulo,
+        .tablaContenedor > div:first-child { display: none !important; }
+        .admin-main { width: 100% !important; margin: 0 !important; }
+        .admin-content { padding: 0 !important; }
+        .reporte-portada { display: flex; justify-content: space-between; align-items: flex-start;
+            border-bottom: 2px solid #123d72; margin-bottom: 12px; padding-bottom: 10px; }
+        .reporte-portada h1 { color: #123d72; font-size: 22px; margin: 0; }
+        .reporte-portada p { margin: 2px 0 0; font-size: 11px; color: #596579; }
+        .reporte-meta { text-align: right; font-size: 10px; color: #596579; }
+        .card, .tablaContenedor { box-shadow: none !important; border: 1px solid #dbe2ea !important; }
+        .table-responsive { overflow: visible !important; }
+        table { font-size: 10px; }
+        th { background: #eaf1f8 !important; color: #123d72 !important; }
+        tr { break-inside: avoid; }
+        .reporte-grafico { display: block; border: 1px solid #dbe2ea; padding: 10px 14px; margin: 0 0 12px; break-inside: avoid; }
+        .reporte-grafico h2 { color: #123d72; font-size: 13px; margin: 0 0 8px; }
+    }
+</style>
 <div>
+    <div class="reporte-portada">
+        <div>
+            <h1>Reporte de <?= $tab === 'ventas' ? 'ventas' : ($tab === 'vuelos' ? 'vuelos' : 'usuarios') ?></h1>
+            <p>Volaré · <?= $idAerolineaFiltro ? 'Aerolínea filtrada' : 'Todas las aerolíneas' ?></p>
+        </div>
+        <div class="reporte-meta">
+            <strong>Informe de gestión</strong><br>
+            Generado: <?= date('d/m/Y H:i') ?><br>
+            <?= $desde || $hasta ? 'Período: ' . ($desde ? date('d/m/Y', strtotime($desde)) : 'sin inicio') . ' a ' . ($hasta ? date('d/m/Y', strtotime($hasta)) : 'sin fin') : 'Período: todos los registros' ?>
+        </div>
+    </div>
     <nav class="breadcrumbCont" aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=inicio') ?>">Inicio</a></li>
@@ -254,11 +331,11 @@ $tabs = [
     </nav>
 
     <div class="contForm col-12 d-flex flex-column p-2 admin-content h-100">
-        <h1 class="m-0 p-0 fs-2 fw-bold">Reportes del sistema</h1>
+        <h1 class="m-0 p-0 fs-2 fw-bold reportes-titulo">Reportes del sistema</h1>
         <p class="m-0 p-0 mb-1 subt">Consultá las ventas confirmadas, los vuelos y los usuarios registrados.</p>
 
         <!-- Pestañas -->
-        <ul class="nav nav-tabs mt-3" style="border-bottom-color: #dee2e6;">
+        <ul class="nav nav-tabs mt-3 reportes-navegacion" style="border-bottom-color: #dee2e6;">
             <?php foreach ($tabs as $clave => $label): ?>
                 <li class="nav-item">
                     <a class="nav-link <?= $tab === $clave ? 'active' : '' ?>"
@@ -288,7 +365,7 @@ $tabs = [
                     : 0;
                 $cardsVentas = [
                     ['icon' => 'etiqueta.png', 'label' => 'Ventas confirmadas', 'valor' => number_format((int)$resumen['ventas'], 0, ',', '.')],
-                    ['icon' => 'ceo.png', 'label' => 'Ingresos totales', 'valor' => '$ ' . number_format((float)$resumen['ingresos'], 2, ',', '.')],
+                    ['icon' => 'ceo.png', 'label' => 'Ingresos totales', 'valor' => '$ ' . montoCompacto((float)$resumen['ingresos'])],
                     ['icon' => 'avion.png', 'label' => 'Pasajeros', 'valor' => number_format((int)$resumen['pasajeros'], 0, ',', '.')],
                     ['icon' => 'etiqueta.png', 'label' => 'Ticket promedio', 'valor' => '$ ' . number_format($ticketPromedio, 2, ',', '.')],
                 ];
@@ -298,7 +375,7 @@ $tabs = [
                 $cardsVentas = [
                     ['icon' => 'avion.png', 'label' => 'Vuelos', 'valor' => number_format((int)$resumen['vuelos'], 0, ',', '.')],
                     ['icon' => 'ceo.png', 'label' => 'Pasajeros confirmados', 'valor' => number_format((int)$resumen['pasajeros'], 0, ',', '.')],
-                    ['icon' => 'etiqueta.png', 'label' => 'Ingresos confirmados', 'valor' => '$ ' . number_format((float)$resumen['ingresos'], 2, ',', '.')],
+                    ['icon' => 'etiqueta.png', 'label' => 'Ingresos confirmados', 'valor' => '$ ' . montoCompacto((float)$resumen['ingresos'])],
                     ['icon' => 'avion.png', 'label' => 'Asientos disponibles', 'valor' => number_format((int)$disponibles['disponibles'], 0, ',', '.')],
                 ];
                 ?>
@@ -322,6 +399,7 @@ $tabs = [
                                 <img src="<?= url('public/img/icons/placeholdersCards/' . $card['icon']) ?>"
                                      class="img-fluid" alt="" style="width:32px;height:32px;object-fit:contain;">
                             </div>
+
                             <div class="d-flex flex-column justify-content-center">
                                 <p class="fw-semibold m-0 p-0 text-muted" style="font-size:14px;"><?= $card['label'] ?></p>
                                 <p class="fs-4 fw-bold text-dark m-0 p-0 text-nowrap"><?= $card['valor'] ?></p>
@@ -331,6 +409,17 @@ $tabs = [
                 </div>
             <?php endforeach; ?>
         </div>
+
+        <section class="reporte-grafico" aria-label="Resumen gráfico del reporte">
+            <h2>Indicador destacado</h2>
+            <?php foreach ($graficoReporte as $etiqueta => $valor): ?>
+                <div class="barra-fila">
+                    <span><?= htmlspecialchars($etiqueta) ?></span>
+                    <div class="barra-base"><div class="barra-valor" style="width: <?= round(($valor / $maxGrafico) * 100) ?>%;"></div></div>
+                    <strong><?= $valor ?><?= $tab === 'vuelos' ? '%' : '' ?></strong>
+                </div>
+            <?php endforeach; ?>
+        </section>
 
         <div class="d-flex flex-column gap-2">
             <div class="table-responsive bg-white shadow rounded-3 pt-3 tablaContenedor">
@@ -428,7 +517,7 @@ $tabs = [
                 </div>
 
                 <!-- Tabla según pestaña -->
-                <table class="table table-hover align-middle border-top mt-2">
+                <table class="table table-hover align-middle border-top mt-2 reporte-tabla reporte-<?= htmlspecialchars($tab) ?>">
                     <caption class="visually-hidden"><?= $tab === 'usuarios' ? 'Actividad de usuarios' : ($tab === 'vuelos' ? 'Rendimiento por ruta' : 'Ventas del período') ?></caption>
                     <?php if ($tab === 'ventas'): ?>
                         <thead>
@@ -445,7 +534,7 @@ $tabs = [
                         </thead>
                         <tbody>
                             <?php if (empty($filas)): ?>
-                                <tr><td colspan="8" class="text-center py-4 text-muted">No hay ventas confirmadas para los filtros seleccionados.</td></tr>
+                                <tr><td colspan="8" class="text-center py-4 text-muted">Todavía no hay ventas confirmadas que coincidan con los filtros seleccionados.</td></tr>
                             <?php else: foreach ($filas as $f): ?>
                                 <tr>
                                     <td class="text-center fw-medium"><?= (int)$f['idReserva'] ?></td>
@@ -488,7 +577,7 @@ $tabs = [
                         </thead>
                         <tbody>
                             <?php if (empty($filas)): ?>
-                                <tr><td colspan="10" class="text-center py-4 text-muted">No hay vuelos para los filtros seleccionados.</td></tr>
+                                <tr><td colspan="10" class="text-center py-4 text-muted">Todavía no hay vuelos que coincidan con los filtros seleccionados.</td></tr>
                             <?php else: foreach ($filas as $f):
                                 $totales = (int)$f['asientosTotales'];
                                 $vendidos = (int)$f['vendidos'];
@@ -521,7 +610,7 @@ $tabs = [
                                             <span style="font-size:0.8rem;"><?= $ocupacion ?>%</span>
                                         </div>
                                     </td>
-                                    <td class="text-end fw-semibold d-none d-sm-table-cell">$ <?= number_format((float)$f['ingresos'], 2, ',', '.') ?></td>
+                                    <td class="text-end fw-semibold d-none d-sm-table-cell">$ <?= montoCompacto((float)$f['ingresos']) ?></td>
                                 </tr>
                             <?php endforeach; endif; ?>
                         </tbody>
@@ -543,7 +632,7 @@ $tabs = [
                         </thead>
                         <tbody>
                             <?php if (empty($filas)): ?>
-                                <tr><td colspan="10" class="text-center py-4 text-muted">No hay usuarios para los filtros seleccionados.</td></tr>
+                                <tr><td colspan="10" class="text-center py-4 text-muted">Todavía no hay usuarios que coincidan con los filtros seleccionados.</td></tr>
                             <?php else: foreach ($filas as $f): ?>
                                 <tr>
                                     <td class="text-center fw-medium"><?= (int)$f['idUsuario'] ?></td>
@@ -571,7 +660,7 @@ $tabs = [
                                     <td class="text-center"><?= (int)$f['reservasTotales'] ?></td>
                                     <td class="text-center fw-medium"><?= (int)$f['compras'] ?></td>
                                     <td class="text-center d-none d-md-table-cell"><?= (int)$f['pasajeros'] ?></td>
-                                    <td class="text-end fw-semibold">$ <?= number_format((float)$f['gastado'], 2, ',', '.') ?></td>
+                                    <td class="text-end fw-semibold">$ <?= montoCompacto((float)$f['gastado']) ?></td>
                                 </tr>
                             <?php endforeach; endif; ?>
                         </tbody>

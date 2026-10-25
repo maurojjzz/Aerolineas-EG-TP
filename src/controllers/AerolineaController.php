@@ -79,7 +79,9 @@ class AerolineaController {
         $logoUrl = null; 
         $logoPublicId = null;
 
-        if (!$nombre || !$codigoIATA || !$codPais || !$email) {
+        if (!textoValido($nombre, 150) || !textoValido($codigoIATA, 3) ||
+            !textoValido($codPais, 3) || !textoValido($email, 254) ||
+            ($descripcion !== '' && !textoValido($descripcion, 2000, true))) {
             flash_set('error', 'Faltan campos obligatorios');
             redirect("index.php?pagina=aerolinea&seccion=alta");
         }
@@ -156,7 +158,9 @@ class AerolineaController {
         $descripcion = trim($_POST['descripcion']      ?? '');
         $activo = ($_POST['estadoAerolinea'] ?? '') === 'activa' ? 1 : 0;
 
-        if (!$nombre || !$codigoIATA || !$codPais || !$email) {
+        if (!textoValido($nombre, 150) || !textoValido($codigoIATA, 3) ||
+            !textoValido($codPais, 3) || !textoValido($email, 254) ||
+            ($descripcion !== '' && !textoValido($descripcion, 2000, true))) {
             flash_set('error', 'Faltan campos obligatorios.');
             redirect("index.php?pagina=aerolinea&seccion=editar&id=$id");
         }
@@ -217,11 +221,10 @@ class AerolineaController {
 
     public function listarAerolineas(): array {
         $query = "SELECT * FROM aerolinea";
-        $result = mysqli_query($this->conexion, $query);
-
-        if (!$result) {
-            return [];
-        }
+        $stmt = mysqli_prepare($this->conexion, $query);
+        if (!$stmt) return [];
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
 
         $aerolineas = [];
         while ($row = mysqli_fetch_assoc($result)) {
@@ -239,7 +242,7 @@ class AerolineaController {
             $aerolineas[] = $aerolinea;
         }
 
-        mysqli_free_result($result);
+        mysqli_stmt_close($stmt);
 
         return $aerolineas;
     }
@@ -252,14 +255,16 @@ class AerolineaController {
                     ON u.idAerolinea = a.idAerolinea AND u.rol = 'ceo' AND {$ceoAprobado}
                 ORDER BY a.nombreAerolinea;";
 
-        $result = mysqli_query($this->conexion, $query);
-        if (!$result) return [];
+        $stmt = mysqli_prepare($this->conexion, $query);
+        if (!$stmt) return [];
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
 
         $filas = [];
         while ($row = mysqli_fetch_assoc($result)) {
             $filas[] = $row;
         }
-        mysqli_free_result($result);
+        mysqli_stmt_close($stmt);
         return $filas;
     }
 
@@ -361,7 +366,10 @@ class AerolineaController {
                   FROM aerolinea
                   WHERE codPais IS NOT NULL AND codPais <> ''
                   ORDER BY codPais";
-        $resultado = mysqli_query($this->conexion, $query);
+        $stmt = mysqli_prepare($this->conexion, $query);
+        if (!$stmt) return [];
+        mysqli_stmt_execute($stmt);
+        $resultado = mysqli_stmt_get_result($stmt);
 
         if ($resultado) {
             while ($fila = mysqli_fetch_assoc($resultado)) {
@@ -369,6 +377,7 @@ class AerolineaController {
             }
         }
 
+        mysqli_stmt_close($stmt);
         return $paises;
     }
 
@@ -406,9 +415,9 @@ class AerolineaController {
         $queryCeos = "SELECT COUNT(*) as total FROM usuario u
                     WHERE u.rol = 'ceo' AND u.idAerolinea IS NOT NULL AND {$ceoAprobado}";
 
-        $esteMes   = (int) mysqli_fetch_assoc(mysqli_query($this->conexion, $queryEsteMes))['total'];
-        $mesPasado = (int) mysqli_fetch_assoc(mysqli_query($this->conexion, $queryMesPasado))['total'];
-        $ceos      = (int) mysqli_fetch_assoc(mysqli_query($this->conexion, $queryCeos))['total'];
+        $esteMes   = (int)$this->obtenerValorEscalar($queryEsteMes);
+        $mesPasado = (int)$this->obtenerValorEscalar($queryMesPasado);
+        $ceos      = (int)$this->obtenerValorEscalar($queryCeos);
 
         $diff = $esteMes - $mesPasado;
         return [

@@ -84,12 +84,12 @@
     letter-spacing: 0.5px;
 }
 
-.mobile-logout {
-    color: #ffe08a;
+.offcanvas .mobile-logout {
+    color: #dc3545 !important;
 }
 
-.mobile-logout:hover,
-.mobile-logout:focus {
-    color: #fff;
+.offcanvas .mobile-logout:hover,
+.offcanvas .mobile-logout:focus {
+    color: #b02a37 !important;
     background: rgba(255, 255, 255, 0.12);
 }

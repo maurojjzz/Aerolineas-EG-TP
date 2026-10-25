@@ -17,7 +17,7 @@ require_once __DIR__ . '/../components/navLinks.php';
 
             <!-- Columna 2: Navegación rápida -->
             <nav class="col-6 col-md-2" aria-labelledby="footerNavegacion">
-                <p class="h6 text-uppercase text-white fw-bold mb-3" id="footerNavegacion">Navegación</p>
+                <h2 class="h6 text-uppercase text-white fw-bold mb-3" id="footerNavegacion">Navegación</h2>
                 <ul class="list-unstyled text-small">
                     <?php if (!$isLoggedIn): ?>
                         <li class="mb-2"><a class="link-light text-decoration-none" href="<?= url('index.php?pagina=inicio') ?>">Inicio</a></li>
@@ -37,7 +37,7 @@ require_once __DIR__ . '/../components/navLinks.php';
 
             <!-- Columna 3: Soporte / Legales -->
             <nav class="col-6 col-md-3" aria-labelledby="footerSoporte">
-                <p class="h6 text-uppercase text-white fw-bold mb-3" id="footerSoporte">Soporte</p>
+                <h2 class="h6 text-uppercase text-white fw-bold mb-3" id="footerSoporte">Soporte</h2>
                 <ul class="list-unstyled text-small">
                     <li class="mb-2"><a class="link-light text-decoration-none" href="<?= url('index.php?pagina=ayuda') ?>">Centro de Ayuda</a></li>
                     <li class="mb-2"><a class="link-light text-decoration-none" href="<?= url('index.php?pagina=ayuda') ?>#faq">Preguntas Frecuentes</a></li>
@@ -49,7 +49,7 @@ require_once __DIR__ . '/../components/navLinks.php';
 
             <!-- Columna 4: Contacto físico y virtual -->
             <div class="col-12 col-md-3">
-                <p class="h6 text-uppercase text-white fw-bold mb-3" id="footerContacto">Contacto</p>
+                <h2 class="h6 text-uppercase text-white fw-bold mb-3" id="footerContacto">Contacto</h2>
                 <ul class="list-unstyled text-small" aria-labelledby="footerContacto">
                     <!-- Reemplazar por los datos reales de la institución -->
                     <li class="mb-2">

@@ -17,7 +17,6 @@ if (isset($link) && $link instanceof mysqli) {
 }
 
 ?>
-<a class="skip-link" href="#contenido">Saltar al contenido</a>
 <div id="anuncioGlobal" class="visually-hidden" role="status" aria-live="polite"></div>
 
 <div class="container-header d-flex align-items-center bg-light row border-bottom border-2 w-100 m-0 p-0 g-0">
@@ -33,6 +32,7 @@ if (isset($link) && $link instanceof mysqli) {
         data-bs-toggle="offcanvas"
         data-bs-target="#offcanvasAdmin"
         aria-controls="offcanvasAdmin"
+        aria-expanded="false"
         aria-label="Abrir menú de navegación"
     >
             <img src="<?= url('public/img/icons/menu-hamburguesa.png') ?>" alt="" class="logo-header-admin opacity-75">
@@ -196,3 +196,4 @@ if (isset($link) && $link instanceof mysqli) {
 </script>
 <script src="<?= url('public/js/admin/notificaciones.js') ?>"></script>
 <script src="<?= url('public/js/accesibilidad.js') ?>" defer></script>
+<script src="<?= url('public/js/admin/actionLoading.js') ?>"></script>
