@@ -52,7 +52,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
                     <div class="mt-5 pt-3 border-top text-center">
                         <a href="<?= url('index.php?pagina=inicio') ?>" class="btn btn-outline-primary px-4 fw-semibold">
-                            <i class="bi bi-arrow-left me-2"></i>Volver al Inicio
+                            <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Volver al Inicio
                         </a>
                     </div>
 

@@ -171,6 +171,7 @@ function badgeVigenciaPromo(array $p): string {
     <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
 </head>
 <body>
+<?php require __DIR__ . '/../layouts/skipLink.php'; ?>
 
 <div class="d-flex min-vh-100 row g-0 m-0 p-2 pe-2">
 
@@ -324,6 +325,9 @@ function badgeVigenciaPromo(array $p): string {
                                         data-id="<?= htmlspecialchars((string)$idPromo) ?>" 
                                         data-estado="<?= htmlspecialchars($p['estado']) ?>"
                                         data-vigencia="<?= htmlspecialchars(in_array($p['estado'], ['Denegada', 'Cancelada'], true) ? strtolower($p['estado']) : ($p['estado'] === 'Pendiente' ? 'pendiente' : (new DateTime($p['fechaFin']) < new DateTime() ? 'vencida' : ((new DateTime())->diff(new DateTime($p['fechaFin']))->days <= 7 ? 'proxima' : 'vigente')))) ?>"
+                                        aria-controls="detalle-<?= htmlspecialchars((string)$idPromo) ?>"
+                                        aria-expanded="false" role="button" tabindex="0"
+                                        aria-label="Mostrar detalles de la promoción <?= htmlspecialchars($p['nombre']) ?>"
                                         style="cursor:pointer;">
                                         <td>
                                             <div class="d-flex align-items-center justify-content-center gap-2">
@@ -368,10 +372,7 @@ function badgeVigenciaPromo(array $p): string {
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#modalEditarPromocion"
                                                             data-id="<?= htmlspecialchars((string)$idPromo) ?>"
-                                                            data-bs-toggle="tooltip"
-                                                            data-bs-placement="top"
-                                                            data-bs-title="Editar"
-                                                            data-bs-trigger="hover"
+                                                            aria-label="Editar promoción"
                                                     >
                                                         <img
                                                             src="<?= url('public/img/icons/lapiz-editar.png') ?>"
@@ -995,9 +996,18 @@ document.addEventListener("DOMContentLoaded", function () {
     // Expandir / colapsar el resumen al hacer click en la fila (el ojo navega al detalle completo)
     tbody.querySelectorAll("tr.fila-tabla").forEach(function (fila) {
         fila.addEventListener("click", function (e) {
-            if (e.target.closest(".btn-ver-promo")) return;
+            if (e.target.closest("a, button, form")) return;
             const detalle = document.getElementById("detalle-" + this.dataset.id);
-            if (detalle) detalle.classList.toggle("d-none");
+            if (detalle) {
+                const expandido = !detalle.classList.contains("d-none");
+                detalle.classList.toggle("d-none", expandido);
+                this.setAttribute("aria-expanded", expandido ? "false" : "true");
+            }
+        });
+        fila.addEventListener("keydown", function (e) {
+            if (e.key !== "Enter" && e.key !== " ") return;
+            e.preventDefault();
+            this.click();
         });
     });
 

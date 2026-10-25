@@ -10,9 +10,11 @@ function puedeEditarAerolinea(int $idAerolinea): bool {
     $user = usuarioActual();
     if (!$user) return false;
 
-    if ($user['rol'] === 'admin') return true;
+    $rol = $user['rol'] ?? null;
 
-    if ($user['rol'] === 'ceo') {
+    if ($rol === 'admin') return true;
+
+    if ($rol === 'ceo') {
         return isset($user['idAerolinea']) && (int)$user['idAerolinea'] === $idAerolinea;
     }
 

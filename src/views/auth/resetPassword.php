@@ -34,7 +34,7 @@ if (!$token) {
                   method="POST"
                   id="formReset"
                   class="formContainer rounded-3 shadow-lg p-4"
-                  novalidate>
+                  >
 
                 <input type="hidden" name="token" value="<?= htmlspecialchars($token) ?>">
 
@@ -43,14 +43,14 @@ if (!$token) {
 
                 <div class="form-group d-flex flex-column p-0 mb-1">
                     <label class="form-label-t" for="contrasena">Nueva contraseña:</label>
-                    <input type="password" name="contrasena" id="contrasena" class="form-control ctm-inp" placeholder="Mínimo 8 caracteres" autocomplete="new-password">
-                    <p id="infoPass" class="form-text-info text-danger m-0 mt-1" style="font-size: 0.82rem; min-height: 1.25rem;">&nbsp;</p>
+                    <input type="password" name="contrasena" id="contrasena" class="form-control ctm-inp" required minlength="8" placeholder="Mínimo 8 caracteres" autocomplete="new-password" aria-describedby="infoPass">
+                    <p id="infoPass" class="form-text-info text-danger m-0 mt-1" aria-live="polite" style="font-size: 0.82rem; min-height: 1.25rem;">&nbsp;</p>
                 </div>
 
                 <div class="form-group d-flex flex-column p-0 mb-1">
                     <label class="form-label-t" for="confirmar_contrasena">Confirmar contraseña:</label>
-                    <input type="password" name="confirmar_contrasena" id="confirmar_contrasena" class="form-control ctm-inp" placeholder="Repetí tu nueva contraseña" autocomplete="new-password">
-                    <p id="infoConfirm" class="form-text-info text-danger m-0 mt-1" style="font-size: 0.82rem; min-height: 1.25rem;">&nbsp;</p>
+                    <input type="password" name="confirmar_contrasena" id="confirmar_contrasena" class="form-control ctm-inp" required placeholder="Repetí tu nueva contraseña" autocomplete="new-password" aria-describedby="infoConfirm">
+                    <p id="infoConfirm" class="form-text-info text-danger m-0 mt-1" aria-live="polite" style="font-size: 0.82rem; min-height: 1.25rem;">&nbsp;</p>
                 </div>
 
                 <button type="submit" class="btn btnLogin py-2 w-100 mt-2">
@@ -73,6 +73,8 @@ if (!$token) {
 
         const infoPass = document.getElementById("infoPass");
         const infoConfirm = document.getElementById("infoConfirm");
+
+        form.setAttribute("novalidate", "");
 
         function validarPass() {
             const val = passInput.value;

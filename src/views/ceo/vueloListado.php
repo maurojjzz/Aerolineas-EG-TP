@@ -61,6 +61,7 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
             <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
     </head>
     <body>
+        <?php require __DIR__ . '/../layouts/skipLink.php'; ?>
         <div class="d-flex min-vh-100 row g-0 m-0 p-2 pe-2">
             
             <aside class="admin-sidebar text-white d-none d-md-block col-md-3 col-xxl-2 pe-1 ">
@@ -175,7 +176,11 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                                                 </td>
                                             </tr>
                                         <?php else: foreach ($vuelos as$v): ?>
-                                        <tr class="fila-tabla" data-id="<?= $v['idVuelo'] ?>" style="cursor:pointer;">
+                                        <tr class="fila-tabla" data-id="<?= $v['idVuelo'] ?>"
+                                            aria-controls="detalle-<?= $v['idVuelo'] ?>"
+                                            aria-expanded="false" role="button" tabindex="0"
+                                            aria-label="Mostrar detalles del vuelo <?= htmlspecialchars($v['origenVuelo'] . ' a ' . $v['destinoVuelo']) ?>"
+                                            style="cursor:pointer;">
                                             <td>
                                                 <div class="d-flex align-items-center gap-2">
                                                     <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>"
@@ -460,7 +465,17 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                     document.querySelectorAll(".fila-detalle").forEach(f => {
                         if (f !== detalle) f.classList.add("d-none");
                     });
-                    detalle.classList.toggle("d-none");
+                    const expandido = !detalle.classList.contains("d-none");
+                    detalle.classList.toggle("d-none", expandido);
+                    fila.setAttribute("aria-expanded", expandido ? "false" : "true");
+                });
+
+                tbody.addEventListener("keydown", function (e) {
+                    if (e.key !== "Enter" && e.key !== " ") return;
+                    const fila = e.target.closest(".fila-tabla");
+                    if (!fila) return;
+                    e.preventDefault();
+                    fila.click();
                 });
             }
 

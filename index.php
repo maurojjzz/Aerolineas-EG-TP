@@ -1,12 +1,4 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
-
 date_default_timezone_set('America/Argentina/Buenos_Aires');
 
 require_once __DIR__ . '/src/config/app.php';
@@ -80,18 +72,10 @@ switch ($pagina) {
         break;
 
     case 'cliente-novedades':
-        // if (!isset($_SESSION['usuario']) || (!in_array($_SESSION['usuario']['rol'], ['cliente', 'ceo']))) {
-        //     header('Location: ' . url('index.php?pagina=login'));
-        //     exit;
-        // }
         require __DIR__ . '/src/views/cliente/novedadListado.php';
         break;
 
     case 'cliente-novedad-detalle':
-        // if (!isset($_SESSION['usuario']) || (!in_array($_SESSION['usuario']['rol'], ['cliente', 'ceo']))) {
-        //     header('Location: ' . url('index.php?pagina=login'));
-        //     exit;
-        // }
         require __DIR__ . '/src/views/cliente/novedadDetalle.php';
         break;
 
@@ -134,6 +118,7 @@ switch ($pagina) {
         break;
 
     case 'perfil':
+        requireAuth();
         require __DIR__ . '/src/views/usuarioPerfil.php';
         break;
 

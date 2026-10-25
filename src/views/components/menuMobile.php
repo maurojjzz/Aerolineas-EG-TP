@@ -7,6 +7,7 @@ require_once __DIR__ . '/navLinks.php';
             data-bs-toggle="offcanvas"
             data-bs-target="#offcanvasNavbar"
             aria-controls="offcanvasNavbar"
+            aria-expanded="false"
             aria-label="Abrir menú de navegación">
         <span class="navbar-toggler-icon"></span>
     </button>
