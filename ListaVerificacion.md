@@ -1,9 +1,5 @@
 # Checklist de entrega de proyecto — Entornos Gráficos (UTN)
 
-Antes de entregar, revisá **cada punto** de esta lista. Si algo no se cumple, el proyecto no está listo para ser corregido.
-
-> Regla general: el corrector no conoce tu sistema, debes suponer que no va a leer tu código para entender cómo funciona y no va a instalar nada. Si algo no se puede probar en 5 minutos desde el navegador, no existe.
-
 ### Estados de esta revisión
 
 - `[x]` Verificado desde el código, la configuración o una comprobación local reproducible.
@@ -29,7 +25,7 @@ Antes de entregar, revisá **cada punto** de esta lista. Si algo no se cumple, e
 - [x] Mensajes de commit entendibles.
 - [x] Hay un `.gitignore` correcto: **no** están subidos `vendor/`, `node_modules/`, `.env`, ni archivos temporales.
 - [x] **No hay credenciales, claves de API ni contraseñas en el código.** Se verificaron archivos rastreados y no hay `.env`, claves o certificados privados; las credenciales se leen desde configuración externa.
-- [X] La rama principal es la que corresponde a lo entregado y está actualizada. 
+- [X] La rama principal es la que corresponde a lo entregado y está actualizada.
 
 ## 3. Se puede testear sin instrucciones
 
@@ -103,26 +99,6 @@ Antes de entregar, revisá **cada punto** de esta lista. Si algo no se cumple, e
 - [ ] Se lo hiciste probar a alguien ajeno al grupo y pudo usarlo sin ayuda.
 - [ ] La entrega incluye: URL de producción, URL del repositorio, usuarios de prueba e integrantes e Informe completo.
 - [ ] Entregado en tiempo y forma según lo pedido en la consigna.
-
-## Evidencia de verificaciones realizadas
-
-Estas comprobaciones se ejecutaron sobre la rama `checklist`:
-
-- `php -l` sobre los PHP de `src/`: **sin errores de sintaxis**.
-- `docker compose config --quiet`: **configuración válida**.
-- `.gitignore` y archivos rastreados: no se encontraron `.env`, `vendor/`, `node_modules/`, claves privadas ni certificados rastreados.
-- El dump de [`sql/aerolinea.sql`](sql/aerolinea.sql) contiene datos de prueba para usuarios, aerolíneas, vuelos, promociones, novedades y reservas.
-- La rama local `checklist` está sincronizada con `origin/checklist`.
-- Se eliminaron los `console.log` comentados de [`src/views/cliente/resultados.php`](src/views/cliente/resultados.php).
-- La comprobación HTTP contra `https://volare.site.je/` devolvió una respuesta vacía desde el entorno de revisión; por eso el despliegue, la disponibilidad y los recursos de producción siguen pendientes de verificar desde un navegador y una red externa.
-
-Para repetir las comprobaciones locales:
-
-```bash
-find src -type f -name '*.php' -print0 | xargs -0 -n1 php -l
-docker compose config --quiet
-git ls-files | grep -E '(^|/)(\.env|.*\.key|.*\.pem|node_modules|vendor)(/|$)'
-```
 
 ---
 ## Informe final
