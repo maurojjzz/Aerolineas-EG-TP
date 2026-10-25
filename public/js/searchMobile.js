@@ -101,6 +101,7 @@ if (input) {
         const text = this.value.trim();
         if (!text) {
             results.style.display = "none";
+            this.setAttribute("aria-expanded", "false");
             fromLocation.textContent = "Ingrese ciudad de salida";
             return;
         }
@@ -113,6 +114,7 @@ if (toInput) {
         const text = this.value.trim();
         if (!text) {
             toResults.style.display = "none";
+            this.setAttribute("aria-expanded", "false");
             toLocation.textContent = "Ingrese ciudad de destino";
             return;
         }

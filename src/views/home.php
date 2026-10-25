@@ -33,7 +33,7 @@
                 <div class="hero-content text-center mt-3 mt-sm-4 mt-md-5 user-select-none">
                     <h1 class="hero-etiqueta">Volaré</h1>
                     <p class="hero-titulo">DONDE CADA <span>VIAJE</span> COMIENZA</p>
-                    <p class="hero-bajada">Conectamos personas y destinos con una experiencia rapida, segura y confiable.</p>
+                    <p class="hero-bajada">Conectamos personas y destinos con una experiencia rápida, segura y confiable.</p>
                 </div>
 
                 <img src="<?= url('public/img/airplane.png') ?>" alt="" aria-hidden="true" class="hero-plane user-select-none">

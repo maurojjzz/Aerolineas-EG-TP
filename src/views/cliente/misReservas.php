@@ -74,7 +74,8 @@ $conteos = [
             ];
             foreach ($tabs as $key => $label):
             ?>
-            <a href="index.php?pagina=mis-reservas&tab=<?= $key ?>" class="tab-btn <?= $tabActiva === $key ? 'active' : '' ?>">
+            <a href="index.php?pagina=mis-reservas&tab=<?= $key ?>" class="tab-btn <?= $tabActiva === $key ? 'active' : '' ?>"
+               <?= $tabActiva === $key ? 'aria-current="page"' : '' ?>>
                 <?= $label ?>
                 <span class="tab-badge"><?= $conteos[$key] ?></span>
             </a>

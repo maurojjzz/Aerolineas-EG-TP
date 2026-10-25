@@ -47,7 +47,8 @@ $mostrarTabs  = $paginaActual === 'inicio' || $esCliente;
     </div>
 
     <!-- FORMULARIO MOBILE -->
-    <div id="mobilePanelVuelos" role="tabpanel" aria-labelledby="mobileTabVuelos" class="w-100">
+    <div id="mobilePanelVuelos" role="tabpanel" class="w-100"
+         <?= $mostrarTabs ? 'aria-labelledby="mobileTabVuelos"' : '' ?>>
     <form action="<?= url('index.php?pagina=buscar-vuelos') ?>" method="GET" id="formMobile" class="w-100">
         <input type="hidden" name="pagina" value="buscar-vuelos">
         <input type="hidden" name="tipo_viaje" id="mobileTipoViajeHidden" value="solo_ida">
