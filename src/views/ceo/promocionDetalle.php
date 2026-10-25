@@ -31,6 +31,7 @@ function badgeEstadoPromoCeoDetalle(string $estado): string {
     return match ($estado) {
         'Aprobada' => 'text-bg-success',
         'Denegada' => 'text-bg-danger',
+        'Cancelada' => 'text-bg-secondary',
         default    => 'text-bg-warning',
     };
 }
@@ -39,6 +40,7 @@ function badgeEstadoPromoCeoDetalle(string $estado): string {
 $avisoEstado = match ($estado) {
     'Aprobada' => ['alert-success', 'Esta promoción fue aprobada por el administrador.'],
     'Denegada' => ['alert-danger',  'Esta promoción fue denegada por el administrador.'],
+    'Cancelada' => ['alert-secondary', 'Esta promoción fue cancelada por el CEO y ya no se aplica a nuevas reservas.'],
     default    => ['alert-warning', 'Esta promoción está pendiente de revisión por el administrador.'],
 };
 ?>
@@ -101,6 +103,21 @@ $avisoEstado = match ($estado) {
                         <div class="d-flex align-items-center gap-3 flex-wrap">
                             <h1 class="fw-bold m-0 text-uppercase"><?= htmlspecialchars($promo['codigo'] ?? '') ?></h1>
                             <span class="badge <?= badgeEstadoPromoCeoDetalle($estado) ?> fs-6"><?= htmlspecialchars($estado) ?></span>
+                            <?php if ($estado === 'Aprobada'): ?>
+                                <form method="POST"
+                                      action="<?= url('src/routes/promociones.php?accion=cancelar') ?>"
+                                      data-loading-form
+                                      id="formAccionDetallePromo">
+                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
+                                    <input type="hidden" name="id" value="<?= (int)$idPromo ?>">
+                                    <button type="button"
+                                            class="btn btn-outline-danger btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalCancelarPromoDetalle">
+                                        Cancelar promoción
+                                    </button>
+                                </form>
+                            <?php endif; ?>
                         </div>
 
                         <p class="text-dark fw-semibold m-0 mt-1" style="font-size:1.1rem;">
@@ -155,6 +172,24 @@ $avisoEstado = match ($estado) {
                 </div>
             </div>
 
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalCancelarPromoDetalle" tabindex="-1" aria-labelledby="modalCancelarPromoDetalleLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h2 class="modal-title fw-bold h5" id="modalCancelarPromoDetalleLabel">Cancelar promoción</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted m-0">¿Seguro que querés cancelar esta promoción? Dejará de aplicarse a nuevas reservas.</p>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Volver</button>
+                <button type="submit" form="formAccionDetallePromo" class="btn btn-danger btn-sm" data-loading-text="Cancelando...">Confirmar cancelación</button>
+            </div>
         </div>
     </div>
 </div>

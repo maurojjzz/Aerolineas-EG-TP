@@ -21,7 +21,8 @@ class NovedadController {
         $estado     = $_POST['estado']     ?? 'publicada';
         $imagen     = $_POST['imagen']     ?? null;
 
-        if (!$titulo || !$contenido) {
+        if (!textoValido($titulo, 180) || !textoValido($contenido, 10000, true) ||
+            ($subtitulo !== null && !textoValido($subtitulo, 300, true))) {
             flash_set('error', 'El título y el contenido son obligatorios.');
             redirect('index.php?pagina=novedades&seccion=crear');
         }
@@ -61,7 +62,8 @@ class NovedadController {
         $estado    = $_POST['estado']    ?? 'publicada';
         $imagen    = $_POST['imagen']    ?? null;
 
-        if (!$titulo || !$contenido) {
+        if (!textoValido($titulo, 180) || !textoValido($contenido, 10000, true) ||
+            ($subtitulo !== null && !textoValido($subtitulo, 300, true))) {
             flash_set('error', 'El título y el contenido son obligatorios.');
             redirect("index.php?pagina=novedades&seccion=editar&id=$id");
         }

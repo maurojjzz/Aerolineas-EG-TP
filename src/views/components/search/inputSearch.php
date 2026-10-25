@@ -18,7 +18,7 @@
                 aria-autocomplete="list"
                 aria-expanded="false"
                 aria-controls="from-results"
-                required
+                <?= !estaLogueado() ? 'required' : '' ?>
             >
 
             <p id="from-location" class="flight-location">
@@ -51,7 +51,7 @@
                 aria-autocomplete="list"
                 aria-expanded="false"
                 aria-controls="to-results"
-                required
+                <?= !estaLogueado() ? 'required' : '' ?>
             >
 
             <p id="to-location" class="flight-location">

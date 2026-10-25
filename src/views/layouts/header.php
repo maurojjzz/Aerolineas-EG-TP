@@ -99,3 +99,4 @@ require_once __DIR__ . '/../components/navLinks.php';
 </script>
 <script src="<?= url('public/js/admin/notificaciones.js') ?>"></script>
 <script src="<?= url('public/js/accesibilidad.js') ?>" defer></script>
+<script src="<?= url('public/js/admin/actionLoading.js') ?>"></script>

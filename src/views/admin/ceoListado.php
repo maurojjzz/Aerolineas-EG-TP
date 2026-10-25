@@ -178,7 +178,6 @@ function badgeEstadoCEO(string $estado): string {
                                 value="<?= htmlspecialchars($busqueda) ?>"
                                 style="max-width: 240px;"
                             >
-                            <button type="submit" class="btn btn-sm btn-outline-primary">Buscar</button>
                         </form>
                     </div>
                 </div>
@@ -478,6 +477,17 @@ function badgeEstadoCEO(string $estado): string {
 <script src="<?= url('public/js/admin/actionLoading.js') ?>"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+            const buscadorCeo = document.querySelector('input[name="busqueda"]');
+            const ceosBody = document.querySelector("tbody");
+            if (buscadorCeo && ceosBody) {
+                buscadorCeo.addEventListener("input", function () {
+                    const texto = this.value.toLowerCase().trim();
+                    ceosBody.querySelectorAll("tr.fila-tabla").forEach(function (fila) {
+                        fila.style.display = !texto || fila.textContent.toLowerCase().includes(texto) ? "" : "none";
+                    });
+                });
+            }
+
         const tbody = document.getElementById("ceoTableBody");
 
         if (typeof bootstrap !== "undefined") {

@@ -37,7 +37,9 @@ class AerolineaController {
         $logoUrl = null; 
         $logoPublicId = null;
 
-        if (!$nombre || !$codigoIATA || !$codPais || !$email) {
+        if (!textoValido($nombre, 150) || !textoValido($codigoIATA, 3) ||
+            !textoValido($codPais, 3) || !textoValido($email, 254) ||
+            ($descripcion !== '' && !textoValido($descripcion, 2000, true))) {
             flash_set('error', 'Faltan campos obligatorios');
             redirect("index.php?pagina=aerolinea&seccion=alta");
         }
@@ -119,7 +121,9 @@ class AerolineaController {
         $descripcion = trim($_POST['descripcion']      ?? '');
         $activo = ($_POST['estadoAerolinea'] ?? '') === 'activa' ? 1 : 0;
 
-        if (!$nombre || !$codigoIATA || !$codPais || !$email) {
+        if (!textoValido($nombre, 150) || !textoValido($codigoIATA, 3) ||
+            !textoValido($codPais, 3) || !textoValido($email, 254) ||
+            ($descripcion !== '' && !textoValido($descripcion, 2000, true))) {
             flash_set('error', 'Faltan campos obligatorios.');
             redirect("index.php?pagina=aerolinea&seccion=editar&id=$id");
         }

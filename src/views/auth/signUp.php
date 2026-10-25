@@ -80,12 +80,11 @@
                         </div>
                     </div>
 
-                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-4 ">
-                        <div class="form-group d-flex flex-column p-0  w-100">
-                            <label class="form-label-t" id="labTelefono" for="telefono">Teléfono: <span class="text-danger" aria-hidden="true">*</span></label>
-                            <input type="tel" name="telefono" id="telefono" class="form-control ctm-inp" required autocomplete="tel" placeholder="Ingresá tu teléfono" aria-describedby="infoTelefono">
-                            <p id="infoTelefono" class="text-break text-center form-text-info text-danger fs-6" aria-live="polite"></p>
-                        </div>
+                    <div class="form-group d-flex flex-column p-0  w-100">
+                        <label class="form-label-t" id="labTelefono" for="telefono">Teléfono: <span class="text-danger" aria-hidden="true">*</span></label>
+                        <input type="tel" name="telefono" id="telefono" class="form-control ctm-inp" required pattern="[0-9+() -]{7,}" maxlength="25" autocomplete="tel" placeholder="Ingresá tu teléfono" aria-describedby="infoTelefono">
+                        <p id="infoTelefono" class="text-break text-center form-text-info text-danger fs-6" aria-live="polite"></p>
+                    </div>
                         
                         <div class="form-group d-flex flex-column w-100">
                             <label class="form-label-t" id="labFechaNacimiento" for="fecha_nacimiento">Fecha de nacimiento: <span class="text-danger" aria-hidden="true">*</span></label>
@@ -99,7 +98,7 @@
                         <div class="form-group d-flex flex-column p-0 w-100">
                             <label class="form-label-t" id="labContrasena" for="contrasena">Contraseña: <span class="text-danger" aria-hidden="true">*</span></label>
 
-                            <input type="password" name="contrasena" id="contrasena" class="form-control ctm-inp" required minlength="8" autocomplete="new-password" placeholder="Ingresá tu contraseña" aria-describedby="infoContrasena">
+                            <input type="password" name="contrasena" id="contrasena" class="form-control ctm-inp" required placeholder="Ingrese su contraseña">
 
                             <p id="infoContrasena" class="text-break text-center form-text-info text-danger fs-6" aria-live="polite"></p>
                         </div>

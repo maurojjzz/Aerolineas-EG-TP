@@ -70,7 +70,8 @@
                     <input type="text" id="from-desktop" name="origen" class="desktop-main-input"
                            placeholder="Ciudad" autocomplete="off" role="combobox"
                            aria-autocomplete="list" aria-expanded="false"
-                           aria-controls="from-results-desktop" required>
+                           aria-controls="from-results-desktop"
+                           <?= !estaLogueado() ? 'required' : '' ?>>
                     <p id="from-location-desktop">Ingrese salida</p>
                     <span class="desktop-arrow">⌄</span>
                     <div id="from-results-desktop" class="autocomplete-results" role="listbox"></div>
@@ -89,11 +90,11 @@
                         placeholder="Ciudad"
                         autocomplete="off"
                         name="destino"
-                        required
                         role="combobox"
                         aria-autocomplete="list"
                         aria-expanded="false"
                         aria-controls="to-results-desktop"
+                        <?= !estaLogueado() ? 'required' : '' ?>
                     >
                     <p id="to-location-desktop">Ingrese destino</p>
                     <span class="desktop-arrow">⌄</span>

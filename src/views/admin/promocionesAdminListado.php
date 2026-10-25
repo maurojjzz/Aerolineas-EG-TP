@@ -174,7 +174,7 @@ function badgeEstadoPromoAdmin(string $estado): string {
                         <?php if (empty($promociones)): ?>
                             <tr>
                                 <td colspan="7" class="text-center py-4 text-muted">
-                                    No hay promociones<?= $estadoFiltro !== '' ? ' con estado "' . htmlspecialchars($estadoFiltro) . '"' : ' cargadas todavía' ?>.
+                                    <?= $estadoFiltro !== '' ? 'No hay promociones con estado "' . htmlspecialchars($estadoFiltro) . '".' : 'Todavía no hay promociones cargadas.' ?>
                                 </td>
                             </tr>
                         <?php else:
@@ -494,8 +494,8 @@ function badgeEstadoPromoAdmin(string $estado): string {
         // Buscador en tiempo real
         const inputBuscador = document.getElementById("buscadorPromocion");
         if (inputBuscador) {
-            inputBuscador.addEventListener("keyup", function () {
-                const filtro = this.value.toLowerCase();
+            inputBuscador.addEventListener("input", function () {
+                const filtro = this.value.toLowerCase().trim();
                 tbody.querySelectorAll("tr.fila-tabla").forEach(function (fila) {
                     const coincide = fila.textContent.toLowerCase().includes(filtro);
                     fila.style.display = coincide ? "" : "none";

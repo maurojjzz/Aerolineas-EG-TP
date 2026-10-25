@@ -23,7 +23,7 @@ class PromocionController {
         }
 
         $nombre              = trim($_POST['nombre']              ?? '');
-        $descuentoPorcentaje = (float)($_POST['descuentoPorcentaje'] ?? 0);
+        $descuentoPorcentaje = filter_var(trim((string)($_POST['descuentoPorcentaje'] ?? '')), FILTER_VALIDATE_FLOAT);
         $fechaInicio         = trim($_POST['fechaInicio']         ?? '');
         $fechaFin            = trim($_POST['fechaFin']            ?? '');
         $descripcion         = trim($_POST['descripcion']         ?? '') ?: null;
@@ -54,7 +54,10 @@ class PromocionController {
             redirect('index.php?pagina=promociones');
         }
 
-        if (!$nombre || $descuentoPorcentaje <= 0 || !$fechaInicio || !$fechaFin) {
+        if (!textoValido($nombre, 150) || $descuentoPorcentaje === false || $descuentoPorcentaje <= 0 ||
+            !textoValido($fechaInicio, 10) || !textoValido($fechaFin, 10) ||
+            ($descripcion !== null && !textoValido($descripcion, 2000, true)) ||
+            ($condiciones !== null && !textoValido($condiciones, 2000, true))) {
             flash_set('error', 'Por favor completá todos los campos requeridos.');
             redirect('index.php?pagina=promociones');
         }
@@ -64,9 +67,13 @@ class PromocionController {
             redirect('index.php?pagina=promociones');
         }
 
+        if (!fechaValidaFormato($fechaInicio) || !fechaValidaFormato($fechaFin)) {
+            flash_set('error', 'Las fechas de la promoción no tienen un formato válido.');
+            redirect('index.php?pagina=promociones');
+        }
         $tsInicio = strtotime($fechaInicio);
         $tsFin    = strtotime($fechaFin);
-        if ($tsInicio === false || $tsFin === false || $tsFin < $tsInicio) {
+        if ($tsFin < $tsInicio) {
             flash_set('error', 'La fecha de fin no puede ser anterior a la fecha de inicio.');
             redirect('index.php?pagina=promociones');
         }
@@ -153,6 +160,44 @@ class PromocionController {
                 redirect('index.php?pagina=promociones');
             }
             mysqli_stmt_close($stmtR);
+        }
+
+        // Evitar duplicados accidentales por doble clic o reenvíos del
+        // formulario mientras la primera solicitud todavía se procesa.
+        $stmtDuplicado = mysqli_prepare($this->conexion,
+            "SELECT idPromocion
+             FROM promocion
+             WHERE idAerolinea = ?
+               AND idUsuarioCreador = ?
+               AND estado = 'Pendiente'
+               AND idVuelo <=> ?
+               AND codigoOrigen <=> ?
+               AND codigoDestino <=> ?
+               AND nombre = ?
+               AND descuentoPorcentaje = ?
+               AND fechaInicio = ?
+               AND fechaFin = ?
+             LIMIT 1");
+        mysqli_stmt_bind_param(
+            $stmtDuplicado,
+            'iiisssdss',
+            $idAerolinea,
+            $idUsuario,
+            $idVuelo,
+            $codigoOrigen,
+            $codigoDestino,
+            $nombre,
+            $descuentoPorcentaje,
+            $fechaInicio,
+            $fechaFin
+        );
+        mysqli_stmt_execute($stmtDuplicado);
+        $duplicado = mysqli_fetch_assoc(mysqli_stmt_get_result($stmtDuplicado));
+        mysqli_stmt_close($stmtDuplicado);
+
+        if ($duplicado) {
+            flash_set('error', 'Ya enviaste esta promoción y está pendiente de aprobación.');
+            redirect('index.php?pagina=ceo&seccion=promociones');
         }
 
         $codigo = 'PROM-' . strtoupper(substr(md5(uniqid()), 0, 4));
@@ -304,8 +349,9 @@ class PromocionController {
         return $filas;
     }
 
-    // ── Obtener TODAS las promos aplicables a un vuelo (para stacking) ───────────
-    // Retorna array ordenado por prioridad: 1=vuelo, 2=ruta, 3=aerolinea
+    // ── Obtener la promoción aplicable de mayor prioridad ─────────────────────
+    // reserva.idPromocion es una FK INT, por lo que cada reserva registra una
+    // sola promoción: 1=vuelo, 2=ruta, 3=aerolinea.
     public function obtenerPromosAplicables(int $idVuelo, int $idAerolinea, string $codigoOrigen, string $codigoDestino): array {
         $stmt = mysqli_prepare($this->conexion,
             "SELECT p.idPromocion, p.nombre, p.descuentoPorcentaje, p.acumulable, p.idVuelo, p.codigoOrigen, p.codigoDestino,
@@ -324,7 +370,8 @@ class PromocionController {
                    OR (p.idVuelo IS NULL AND p.codigoOrigen = ? AND p.codigoDestino = ?)
                    OR (p.idVuelo IS NULL AND p.codigoOrigen IS NULL AND p.codigoDestino IS NULL)
                )
-             ORDER BY prioridad ASC");
+             ORDER BY prioridad ASC, p.fechaCreacion DESC, p.idPromocion DESC
+             LIMIT 1");
         mysqli_stmt_bind_param($stmt, 'iiss', $idAerolinea, $idVuelo, $codigoOrigen, $codigoDestino);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
@@ -458,6 +505,41 @@ class PromocionController {
         redirect('index.php?pagina=promociones');
     }
 
+    // ── CEO: cancelar promo propia aprobada ────────────────────────────────
+    public function cancelarPromocion(): void {
+        $id          = (int)($_POST['id'] ?? 0);
+        $idAerolinea = (int)($_SESSION['usuario']['idAerolinea'] ?? 0);
+
+        if (!$id || !$idAerolinea) {
+            flash_set('error', 'Datos inválidos.');
+            redirect('index.php?pagina=promociones');
+        }
+
+        $stmt = mysqli_prepare($this->conexion,
+            "UPDATE promocion
+             SET estado = 'Cancelada'
+             WHERE idPromocion = ? AND idAerolinea = ? AND estado = 'Aprobada'");
+        mysqli_stmt_bind_param($stmt, 'ii', $id, $idAerolinea);
+
+        try {
+            mysqli_stmt_execute($stmt);
+            $afectadas = mysqli_stmt_affected_rows($stmt);
+            mysqli_stmt_close($stmt);
+
+            flash_set(
+                $afectadas > 0 ? 'success' : 'error',
+                $afectadas > 0
+                    ? 'Promoción cancelada correctamente.'
+                    : 'No se puede cancelar: la promoción no existe, no te pertenece o ya no está aprobada.'
+            );
+        } catch (mysqli_sql_exception $e) {
+            mysqli_stmt_close($stmt);
+            flash_set('error', 'Error al cancelar la promoción.');
+        }
+
+        redirect('index.php?pagina=promociones');
+    }
+
     // ── CEO: editar promo propia (solo si está Pendiente) ────────────────────────
     public function editarPromocion(): void {
         $id          = (int)($_POST['id']          ?? 0);
@@ -484,7 +566,7 @@ class PromocionController {
 
         // Mismos campos que crearPromocion
         $nombre              = trim($_POST['nombre']              ?? '');
-        $descuentoPorcentaje = (float)($_POST['descuentoPorcentaje'] ?? 0);
+        $descuentoPorcentaje = filter_var(trim((string)($_POST['descuentoPorcentaje'] ?? '')), FILTER_VALIDATE_FLOAT);
         $fechaInicio         = trim($_POST['fechaInicio']         ?? '');
         $fechaFin            = trim($_POST['fechaFin']            ?? '');
         $descripcion         = trim($_POST['descripcion']         ?? '') ?: null;
@@ -514,7 +596,10 @@ class PromocionController {
             redirect('index.php?pagina=promociones');
         }
 
-        if (!$nombre || $descuentoPorcentaje <= 0 || !$fechaInicio || !$fechaFin) {
+        if (!textoValido($nombre, 150) || $descuentoPorcentaje === false || $descuentoPorcentaje <= 0 ||
+            !textoValido($fechaInicio, 10) || !textoValido($fechaFin, 10) ||
+            ($descripcion !== null && !textoValido($descripcion, 2000, true)) ||
+            ($condiciones !== null && !textoValido($condiciones, 2000, true))) {
             flash_set('error', 'Por favor completá todos los campos requeridos.');
             redirect('index.php?pagina=promociones');
         }
@@ -524,9 +609,13 @@ class PromocionController {
             redirect('index.php?pagina=promociones');
         }
 
+        if (!fechaValidaFormato($fechaInicio) || !fechaValidaFormato($fechaFin)) {
+            flash_set('error', 'Las fechas de la promoción no tienen un formato válido.');
+            redirect('index.php?pagina=promociones');
+        }
         $tsInicio = strtotime($fechaInicio);
         $tsFin    = strtotime($fechaFin);
-        if ($tsInicio === false || $tsFin === false || $tsFin < $tsInicio) {
+        if ($tsFin < $tsInicio) {
             flash_set('error', 'La fecha de fin no puede ser anterior a la fecha de inicio.');
             redirect('index.php?pagina=promociones');
         }

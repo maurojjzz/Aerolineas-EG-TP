@@ -154,7 +154,7 @@ $esCeo = ($rolActual === 'ceo');
                         <label class="form-label-t" for="telefono">Teléfono:</label>
                         <input 
                             type="text" 
-                            name="telefono" 
+                            name="telefono" type="tel" pattern="[0-9+() -]{7,}" maxlength="25"
                             id="telefono" 
                             autocomplete="off" 
                             class="form-control ctm-inp" 

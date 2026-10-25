@@ -292,7 +292,8 @@ $fechaLlegada = date('d/m/Y', strtotime($reserva['fechaHoraLlegadaVuelo']));
                 <button class="btn btn-primary w-100 fw-bold py-3 mb-2"
                         style="font-size:1.05rem;border-radius:12px;"
                         onclick="procesarPago()"
-                        id="btnPagar">
+                        id="btnPagar"
+                        data-loading-text="Procesando pago...">
                     💳 Pagar $ <?= number_format($reserva['precioTotal'], 2, ',', '.') ?>
                 </button>
                 <a href="<?= url('index.php?pagina=mis-reservas') ?>"
@@ -522,9 +523,12 @@ function validarFormulario() {
 }
 
 function procesarPago() {
+    const btn = document.getElementById('btnPagar');
+    if (btn.dataset.procesando === '1') return;
+
     if (!validarFormulario()) return;
 
-    const btn = document.getElementById('btnPagar');
+    btn.dataset.procesando = '1';
     btn.disabled = true;
     btn.setAttribute('aria-busy', 'true');
     btn.innerHTML = `

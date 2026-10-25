@@ -66,6 +66,10 @@ $porPaginaPermitidos = [10, 25, 50];
 $pag = max(1, (int)($_GET['pag'] ?? 1));
 $porPaginaRaw = (int)($_GET['porPagina'] ?? 10);
 $porPagina = in_array($porPaginaRaw, $porPaginaPermitidos, true) ? $porPaginaRaw : 10;
+$modoImpresion = ($_GET['imprimir'] ?? '') === '1';
+if ($modoImpresion) {
+    $porPagina = 5000;
+}
 
 $desde = repCeoFecha(trim($_GET['desde'] ?? ''));
 $hasta = repCeoFecha(trim($_GET['hasta'] ?? ''));
@@ -164,6 +168,24 @@ if ($busqueda !== '') $filtrosActivos++;
 $desdeFila = $total === 0 ? 0 : ($pag - 1) * $porPagina + 1;
 $hastaFila = min($pag * $porPagina, $total);
 
+$graficoReporte = [];
+foreach ($filas as $fila) {
+    if ($tab === 'ventas') {
+        $ruta = ($fila['codigoOrigen'] ?? '') . ' → ' . ($fila['codigoDestino'] ?? '');
+        $graficoReporte[$ruta] = ($graficoReporte[$ruta] ?? 0) + (int)$fila['cantPasajeros'];
+    } else {
+        $ruta = ($fila['codigoOrigen'] ?? '') . ' → ' . ($fila['codigoDestino'] ?? '');
+        $ocupacion = (int)($fila['asientosTotales'] ?? 0) > 0
+            ? round(((int)$fila['vendidos'] / (int)$fila['asientosTotales']) * 100)
+            : 0;
+        $graficoReporte[$ruta] = max($graficoReporte[$ruta] ?? 0, $ocupacion);
+    }
+}
+arsort($graficoReporte);
+$graficoReporte = array_slice($graficoReporte, 0, 5, true);
+$valoresGrafico = array_values($graficoReporte);
+$maxGrafico = $valoresGrafico ? max(1, ...$valoresGrafico) : 1;
+
 $tabs = [
     'ventas'    => 'Ventas',
     'ocupacion' => 'Ocupación',
@@ -182,6 +204,34 @@ $tabs = [
     <link rel="stylesheet" href="<?= url('public/css/components/tablaLista.css') ?>?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
+    <style>
+        .reporte-portada, .reporte-grafico { display: none; }
+        .barra-fila { display: grid; grid-template-columns: 105px 1fr 80px; gap: 8px; align-items: center; margin: 7px 0; font-size: 10px; }
+        .barra-base { height: 10px; background: #e8edf3; border-radius: 6px; overflow: hidden; }
+        .barra-valor { height: 100%; background: #2878d7; border-radius: 6px; }
+        @media print {
+            @page { size: A4 landscape; margin: 14mm; }
+            body { background: #fff !important; color: #172033 !important; }
+            .admin-sidebar, .admin-header, nav[aria-label="breadcrumb"], #panelFiltrosReportes,
+            #btnImprimirReporte, [data-bs-toggle="collapse"], .pagination,
+            .reportes-navegacion, .reportes-titulo,
+            .tablaContenedor > div:first-child { display: none !important; }
+            .admin-main { width: 100% !important; margin: 0 !important; }
+            main.admin-content { padding: 0 !important; }
+            .reporte-portada { display: flex; justify-content: space-between; align-items: flex-start;
+                border-bottom: 2px solid #123d72; margin-bottom: 12px; padding-bottom: 10px; }
+            .reporte-portada h1 { color: #123d72; font-size: 22px; margin: 0; }
+            .reporte-portada p { margin: 2px 0 0; font-size: 11px; color: #596579; }
+            .reporte-meta { text-align: right; font-size: 10px; color: #596579; }
+            .card, .tablaContenedor { box-shadow: none !important; border: 1px solid #dbe2ea !important; }
+            .table-responsive { overflow: visible !important; }
+            table { font-size: 10px; }
+            th { background: #eaf1f8 !important; color: #123d72 !important; }
+            tr { break-inside: avoid; }
+            .reporte-grafico { display: block; border: 1px solid #dbe2ea; padding: 10px 14px; margin: 0 0 12px; break-inside: avoid; }
+            .reporte-grafico h2 { color: #123d72; font-size: 13px; margin: 0 0 8px; }
+        }
+    </style>
 </head>
 <body>
 <?php require __DIR__ . '/../layouts/skipLink.php'; ?>
@@ -201,6 +251,17 @@ $tabs = [
         <main id="contenido" tabindex="-1" class="container-fluid d-flex flex-column gap-3 p-2 admin-content">
 
             <?php require __DIR__ . '/../components/alertToast.php'; ?>
+            <div class="reporte-portada">
+                <div>
+                    <h1>Reporte de <?= $tab === 'ventas' ? 'ventas' : 'ocupación' ?></h1>
+                    <p><?= htmlspecialchars($aero['nombreAerolinea']) ?> · Información de mi aerolínea</p>
+                </div>
+                <div class="reporte-meta">
+                    <strong>Volaré</strong><br>
+                    Generado: <?= date('d/m/Y H:i') ?><br>
+                    <?= $desde || $hasta ? 'Período: ' . ($desde ? date('d/m/Y', strtotime($desde)) : 'sin inicio') . ' a ' . ($hasta ? date('d/m/Y', strtotime($hasta)) : 'sin fin') : 'Período: todos los registros' ?>
+                </div>
+            </div>
 
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
@@ -210,11 +271,11 @@ $tabs = [
             </nav>
 
             <div class="contForm col-12 d-flex flex-column p-2">
-                <h1 class="m-0 p-0 fs-2 fw-bold">Reportes de <?= htmlspecialchars($aero['nombreAerolinea']) ?></h1>
+                <h1 class="m-0 p-0 fs-2 fw-bold reportes-titulo">Reportes de <?= htmlspecialchars($aero['nombreAerolinea']) ?></h1>
                 <p class="m-0 p-0 mb-1 subt">Ventas confirmadas y ocupación de los vuelos de tu aerolínea.</p>
 
                 <!-- Pestañas -->
-                <ul class="nav nav-tabs mt-3" style="border-bottom-color: #dee2e6;">
+                <ul class="nav nav-tabs mt-3 reportes-navegacion" style="border-bottom-color: #dee2e6;">
                     <?php foreach ($tabs as $clave => $label): ?>
                         <li class="nav-item">
                             <a class="nav-link <?= $tab === $clave ? 'active' : '' ?>"
@@ -237,7 +298,7 @@ $tabs = [
                 </ul>
 
                 <!-- KPIs -->
-                <div class="row g-3 g-md-2 mt-2 mb-3 justify-content-center">
+                <div class="row g-3 g-md-2 mt-2 mb-3 justify-content-center reportes-resumen">
                     <?php if ($tab === 'ventas'): ?>
                         <?php
                         $ticketPromedio = (int)$resumen['ventas'] > 0
@@ -270,6 +331,7 @@ $tabs = [
                                         <img src="<?= url('public/img/icons/placeholdersCards/' . $card['icon']) ?>"
                                              class="img-fluid" alt="" style="width:32px;height:32px;object-fit:contain;">
                                     </div>
+
                                     <div class="d-flex flex-column justify-content-center">
                                         <p class="fw-semibold m-0 p-0 text-muted" style="font-size:14px;"><?= $card['label'] ?></p>
                                         <p class="fs-4 fw-bold text-dark m-0 p-0 text-nowrap"><?= $card['valor'] ?></p>
@@ -279,6 +341,19 @@ $tabs = [
                         </div>
                     <?php endforeach; ?>
                 </div>
+
+                <section class="reporte-grafico" aria-label="Resumen gráfico del reporte">
+                    <h2>Indicador destacado por ruta</h2>
+                    <?php if ($graficoReporte): foreach ($graficoReporte as $ruta => $valor): ?>
+                        <div class="barra-fila">
+                            <span><?= htmlspecialchars($ruta) ?></span>
+                            <div class="barra-base"><div class="barra-valor" style="width: <?= round(($valor / $maxGrafico) * 100) ?>%;"></div></div>
+                            <strong><?= $valor ?><?= $tab === 'ocupacion' ? '%' : ' pasajeros' ?></strong>
+                        </div>
+                    <?php endforeach; else: ?>
+                        <p>Sin datos suficientes para generar el indicador.</p>
+                    <?php endif; ?>
+                </section>
 
                 <div class="table-responsive bg-white shadow rounded-3 pt-3 tablaContenedor">
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center px-2 mb-3 gap-3 gap-sm-0">
@@ -357,7 +432,7 @@ $tabs = [
                             </thead>
                             <tbody>
                                 <?php if (empty($filas)): ?>
-                                    <tr><td colspan="7" class="text-center py-4 text-muted">No hay ventas confirmadas para los filtros seleccionados.</td></tr>
+                                    <tr><td colspan="7" class="text-center py-4 text-muted">Todavía no hay ventas confirmadas que coincidan con los filtros seleccionados.</td></tr>
                                 <?php else: foreach ($filas as $f): ?>
                                     <tr>
                                         <td class="text-center fw-medium"><?= (int)$f['idReserva'] ?></td>
@@ -393,7 +468,7 @@ $tabs = [
                             </thead>
                             <tbody>
                                 <?php if (empty($filas)): ?>
-                                    <tr><td colspan="9" class="text-center py-4 text-muted">No hay vuelos para los filtros seleccionados.</td></tr>
+                                    <tr><td colspan="9" class="text-center py-4 text-muted">Todavía no hay vuelos que coincidan con los filtros seleccionados.</td></tr>
                                 <?php else: foreach ($filas as $f):
                                     $totales = (int)$f['asientosTotales'];
                                     $vendidos = (int)$f['vendidos'];

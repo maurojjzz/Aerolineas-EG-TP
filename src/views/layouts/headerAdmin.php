@@ -196,3 +196,4 @@ if (isset($link) && $link instanceof mysqli) {
 </script>
 <script src="<?= url('public/js/admin/notificaciones.js') ?>"></script>
 <script src="<?= url('public/js/accesibilidad.js') ?>" defer></script>
+<script src="<?= url('public/js/admin/actionLoading.js') ?>"></script>

@@ -5,7 +5,17 @@
     const btnImprimir = document.getElementById("btnImprimirReporte");
     if (btnImprimir) {
         btnImprimir.addEventListener("click", function () {
-            window.print();
+            const url = new URL(window.location.href);
+            url.searchParams.set("imprimir", "1");
+            window.open(url.toString(), "_blank", "noopener,noreferrer");
+        });
+    }
+
+    if (new URLSearchParams(window.location.search).get("imprimir") === "1") {
+        window.addEventListener("load", function () {
+            window.setTimeout(function () {
+                window.print();
+            }, 250);
         });
     }
 

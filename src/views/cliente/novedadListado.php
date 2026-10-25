@@ -71,7 +71,7 @@ if (!in_array($tabActual, ['novedades', 'promociones'], true)) {
             <div class="row g-4">
                 <?php if (empty($novedades)): ?>
                     <div class="col-12 text-center">
-                        <div class="alert alert-info d-inline-block px-4">No hay novedades disponibles en este momento.</div>
+                        <div class="alert alert-info d-inline-block px-4">Todavía no hay novedades cargadas.</div>
                     </div>
                 <?php else: ?>
                     <?php foreach ($novedades as $n): ?>
@@ -105,7 +105,7 @@ if (!in_array($tabActual, ['novedades', 'promociones'], true)) {
             <div class="row g-4">
                 <?php if (empty($promociones)): ?>
                     <div class="col-12 text-center">
-                        <div class="alert alert-info d-inline-block px-4">No hay promociones activas en este momento.</div>
+                        <div class="alert alert-info d-inline-block px-4">Todavía no hay promociones activas cargadas.</div>
                     </div>
                 <?php else: ?>
                     <?php foreach ($promociones as $p): 

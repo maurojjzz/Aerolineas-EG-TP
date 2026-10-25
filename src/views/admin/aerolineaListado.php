@@ -142,7 +142,9 @@ if ($diff > 0) {
                             type="button"
                             id="btnFiltrosAerolinea"
                             class="btn btn-outline-primary text-nowrap"
-                            aria-expanded="false"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#panelFiltrosAerolinea"
+                            aria-expanded="<?= $filtrosActivos > 0 ? 'true' : 'false' ?>"
                             aria-controls="panelFiltrosAerolinea"
                         >
                             <i class="bi bi-funnel me-1"></i>
@@ -177,7 +179,6 @@ if ($diff > 0) {
                                 value="<?= htmlspecialchars($busqueda) ?>"
                                 style="max-width: 240px;"
                             >
-                            <button type="submit" class="btn btn-sm btn-outline-primary">Buscar</button>
                         </form>
 
                         <a href="<?= url('index.php?pagina=aerolinea&seccion=alta') ?>" class="btn btn-primary text-nowrap">
@@ -203,7 +204,7 @@ if ($diff > 0) {
                         <?php if (empty($aerolineas)): ?>
                             <tr>
                                 <td colspan="6" class="text-center py-4 text-muted">
-                                    No hay aerolíneas registradas todavía.
+                                    Todavía no hay aerolíneas cargadas.
                                 </td>
                             </tr>
                         <?php else: 
@@ -441,16 +442,8 @@ if ($diff > 0) {
     </div>
 
     <!-- Panel de filtros -->
-    <div id="backdropFiltrosAerolinea" class="filtros-aerolineas-backdrop d-none"></div>
-
-    <div
-        id="panelFiltrosAerolinea"
-        class="filtros-aerolineas-panel d-none"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Filtros de aerolíneas"
-    >
-        <form method="GET" action="index.php" class="bg-white border rounded-3 shadow p-3 m-0">
+    <div id="panelFiltrosAerolinea" class="collapse mt-2 <?= $filtrosActivos > 0 ? 'show' : '' ?>" aria-label="Filtros de aerolíneas">
+        <form method="GET" action="index.php" class="bg-white border rounded-3 p-3 m-0">
             <input type="hidden" name="pagina" value="aerolinea">
             <input type="hidden" name="seccion" value="listado">
             <input type="hidden" name="porPagina" value="<?= $porPagina ?>">
@@ -458,10 +451,7 @@ if ($diff > 0) {
                 <input type="hidden" name="busqueda" value="<?= htmlspecialchars($busqueda) ?>">
             <?php endif; ?>
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <p class="fw-semibold m-0">Filtros</p>
-                <button type="button" class="btn-close" data-cerrar-filtros aria-label="Cerrar"></button>
-            </div>
+            <p class="fw-semibold mb-3">Filtros de aerolíneas</p>
 
             <div class="mb-3">
                 <label for="filtroEstadoAerolinea" class="form-label fw-semibold mb-1" style="font-size:0.85rem;">Estado</label>
@@ -525,10 +515,26 @@ if ($diff > 0) {
 </div>
 
 <script src="<?= url('public/js/admin/aerolineaListado.js') ?>"></script>
-<script src="<?= url('public/js/admin/aerolineaFiltros.js') ?>"></script>
 <script src="<?= url('public/js/admin/actionLoading.js') ?>"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+    const panelFiltrosAerolinea = document.getElementById("panelFiltrosAerolinea");
+    const tablaAerolineas = document.querySelector(".tablaContenedor");
+    if (panelFiltrosAerolinea && tablaAerolineas && tablaAerolineas.parentElement) {
+        tablaAerolineas.parentElement.insertBefore(panelFiltrosAerolinea, tablaAerolineas);
+    }
+
+    const buscadorAerolinea = document.getElementById("buscadorAerolinea");
+    const aerolineasBody = document.getElementById("aerolineaTableBody");
+    if (buscadorAerolinea && aerolineasBody) {
+        buscadorAerolinea.addEventListener("input", function () {
+            const texto = this.value.toLowerCase().trim();
+            aerolineasBody.querySelectorAll("tr.fila-tabla").forEach(function (fila) {
+                fila.style.display = !texto || fila.textContent.toLowerCase().includes(texto) ? "" : "none";
+            });
+        });
+    }
+
     // 1. Detener la propagación en todos los enlaces y botones de acción de forma individual
     document.querySelectorAll(".fila-tabla a, .fila-tabla button").forEach(function(elemento) {
         elemento.addEventListener("click", function(e) {
