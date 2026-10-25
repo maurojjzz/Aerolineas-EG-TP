@@ -34,7 +34,8 @@ if (!$token) {
                   method="POST"
                   id="formReset"
                   class="formContainer rounded-3 shadow-lg p-4"
-                  novalidate>
+                  novalidate
+                  data-loading-form>
 
                 <input type="hidden" name="token" value="<?= htmlspecialchars($token) ?>">
 
@@ -65,6 +66,7 @@ if (!$token) {
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="<?= url('public/js/admin/actionLoading.js') ?>"></script>
     <script>
     document.addEventListener("DOMContentLoaded", function () {
         const form = document.getElementById("formReset");

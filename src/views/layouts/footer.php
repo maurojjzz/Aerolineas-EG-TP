@@ -82,3 +82,4 @@ require_once __DIR__ . '/../components/navLinks.php';
         </div>
     </div>
 </footer>
+<script src="<?= url('public/js/admin/actionLoading.js') ?>"></script>

@@ -66,7 +66,7 @@ $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
                 <!-- Formulario principal con novalidate -->
                 <div class="card shadow-sm border-0 rounded-4 p-4 bg-white">
                     <?php require __DIR__ . '/components/alertToast.php'; ?>
-                    <form action="<?= url('src/routes/usuarios.php?accion=editarPerfilPropio') ?>" method="POST" class="d-flex flex-column gap-3" id="formPerfil" novalidate>
+                    <form action="<?= url('src/routes/usuarios.php?accion=editarPerfilPropio') ?>" method="POST" class="d-flex flex-column gap-3" id="formPerfil" novalidate data-loading-form>
 <p class="small text-secondary mb-2">Los campos con <span class="text-danger" aria-hidden="true">*</span><span class="visually-hidden">asterisco</span> son obligatorios.</p>
                         
                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">

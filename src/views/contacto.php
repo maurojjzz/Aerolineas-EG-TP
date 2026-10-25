@@ -100,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                     <?php endif; ?>
 
-                    <form action="<?= url('index.php?pagina=contacto') ?>" method="POST" novalidate>
+                    <form action="<?= url('index.php?pagina=contacto') ?>" method="POST" novalidate data-loading-form>
                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
 
                         <p class="small text-secondary mb-3">

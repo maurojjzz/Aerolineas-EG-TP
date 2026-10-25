@@ -40,7 +40,7 @@
             </div>
 
             <div class="col-12 col-lg-8 d-flex flex-column align-items-center justify-content-center pt-5  ">
-                <form action="<?= url('src/routes/usuarios.php?accion=registrar-ceo') ?>" method="POST" id="formRegistroCEO" class="formContainer rounded-3 shadow-lg p-4  " >
+                <form action="<?= url('src/routes/usuarios.php?accion=registrar-ceo') ?>" method="POST" id="formRegistroCEO" class="formContainer rounded-3 shadow-lg p-4  " data-loading-form >
 <p class="small text-secondary mb-2">Los campos con <span class="text-danger" aria-hidden="true">*</span><span class="visually-hidden">asterisco</span> son obligatorios.</p>
                     <h1 class="fs-1 fw-semibold titleForm">Registrarme como CEO</h1>
                     <p class="text-muted text-break">Completa tus datos para solicitar el registro de tu aerolinea.</p>
@@ -164,6 +164,7 @@
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
         <script src="<?= url('public/js/admin/validacionRegistro.js') ?>"></script>
+        <script src="<?= url('public/js/admin/actionLoading.js') ?>"></script>
     </body>
 
 </html>

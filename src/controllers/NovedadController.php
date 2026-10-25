@@ -35,14 +35,14 @@ class NovedadController {
             redirect('index.php?pagina=novedades&seccion=crear');
         }
 
-        mysqli_stmt_bind_param($stmt, 'sssssss',
-            $titulo, $subtitulo, $contenido, $categoria, $prioridad, $estado, $imagen);
-
         try {
+            mysqli_stmt_bind_param($stmt, 'sssssss',
+                $titulo, $subtitulo, $contenido, $categoria, $prioridad, $estado, $imagen);
             mysqli_stmt_execute($stmt);
-        } catch (mysqli_sql_exception $e) {
+        } catch (Throwable $e) {
             mysqli_stmt_close($stmt);
-            flash_set('error', 'Error al crear la novedad.');
+            error_log('Error al crear la novedad: ' . $e->getMessage());
+            flash_set('error', 'No se pudo crear la novedad. Intentá de nuevo.');
             redirect('index.php?pagina=novedades&seccion=crear');
         }
 
@@ -59,11 +59,17 @@ class NovedadController {
         $categoria = $_POST['categoria'] ?? 'general';
         $prioridad = $_POST['prioridad'] ?? 'media';
         $estado    = $_POST['estado']    ?? 'publicada';
-        $imagen    = $_POST['imagen']    ?? null;
+        $imagen    = trim($_POST['imagen'] ?? '');
 
         if (!$titulo || !$contenido) {
             flash_set('error', 'El título y el contenido son obligatorios.');
             redirect("index.php?pagina=novedades&seccion=editar&id=$id");
+        }
+
+        // Si el formulario no envía imagen, conservamos la que ya tenía.
+        if ($imagen === '') {
+            $actual = $this->obtenerPorId($id);
+            $imagen = $actual['imagen'] ?? null;
         }
 
         $stmt = mysqli_prepare($this->conexion,
@@ -76,14 +82,14 @@ class NovedadController {
             redirect("index.php?pagina=novedades&seccion=editar&id=$id");
         }
 
-        mysqli_stmt_bind_param($stmt, 'sssssss i',
-            $titulo, $subtitulo, $contenido, $categoria, $prioridad, $estado, $imagen, $id);
-
         try {
+            mysqli_stmt_bind_param($stmt, 'sssssssi',
+                $titulo, $subtitulo, $contenido, $categoria, $prioridad, $estado, $imagen, $id);
             mysqli_stmt_execute($stmt);
-        } catch (mysqli_sql_exception $e) {
+        } catch (Throwable $e) {
             mysqli_stmt_close($stmt);
-            flash_set('error', 'Error al actualizar la novedad.');
+            error_log('Error al editar la novedad #' . $id . ': ' . $e->getMessage());
+            flash_set('error', 'No se pudo actualizar la novedad. Intentá de nuevo.');
             redirect("index.php?pagina=novedades&seccion=editar&id=$id");
         }
 

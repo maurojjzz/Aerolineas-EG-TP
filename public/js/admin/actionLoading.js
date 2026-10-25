@@ -1,6 +1,13 @@
 (function () {
     "use strict";
 
+    // El script puede cargarse desde el layout global y desde una vista puntual.
+    // Con este guard evitamos registrar dos veces los listeners.
+    if (window.__actionLoadingInit) {
+        return;
+    }
+    window.__actionLoadingInit = true;
+
     var lastActionTrigger = null;
     var originalContent = new WeakMap();
 
@@ -38,6 +45,26 @@
         if (region) {
             region.textContent = mensaje;
         }
+    }
+
+    function findSubmitButton(form) {
+        var explicito = form.querySelector("[data-loading-button]");
+        if (explicito) {
+            return explicito;
+        }
+
+        var boton = form.querySelector('button[type="submit"]') || form.querySelector("button");
+        if (boton) {
+            return boton;
+        }
+
+        // Hay formularios cuyo botón vive fuera del <form> y se asocia con
+        // el atributo form="idFormulario".
+        if (form.id) {
+            boton = document.querySelector('[type="submit"][form="' + form.id + '"]');
+        }
+
+        return boton || null;
     }
 
     function setSubmitButtonLoading(button) {
@@ -88,6 +115,11 @@
             return;
         }
 
+        // Otra validación ya canceló el envío: no mostramos el spinner.
+        if (event.defaultPrevented || form.hasAttribute("data-loading-skip")) {
+            return;
+        }
+
         if (form.dataset.submitting === "1") {
             event.preventDefault();
             return;
@@ -95,12 +127,7 @@
 
         form.dataset.submitting = "1";
 
-        var submitButton =
-            form.querySelector("[data-loading-button]") ||
-            form.querySelector('button[type="submit"]') ||
-            form.querySelector("button");
-
-        setSubmitButtonLoading(submitButton);
+        setSubmitButtonLoading(findSubmitButton(form));
         markTriggerAsLoading();
     });
 

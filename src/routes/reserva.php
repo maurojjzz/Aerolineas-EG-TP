@@ -40,6 +40,14 @@ switch ($accion) {
         $ctrl->irAPago();
         break;
 
+    case 'reenviar-comprobante':
+        $ctrl->reenviarComprobante(
+            (int)($_POST['idReserva'] ?? 0),
+            'index.php?pagina=mis-reservas',
+            (int)($_SESSION['usuario']['idUsuario'] ?? 0)
+        );
+        break;
+
     default:
         http_response_code(404);
         echo "Acción no encontrada";

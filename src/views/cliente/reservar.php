@@ -368,7 +368,7 @@ foreach ($tramos as $tramo) {
                 </div>
 
                 <!-- Form oculto -->
-                <form method="POST" action="<?= url('src/routes/reserva.php?accion=crear') ?>" id="formReserva">
+                <form method="POST" action="<?= url('src/routes/reserva.php?accion=crear') ?>" id="formReserva" data-loading-form>
                     <input type="hidden" name="csrf_token"    value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
                     <input type="hidden" name="idVuelo"       value="<?= $idVuelo ?>">
                     <?php if ($idVueloVuelta > 0): ?>

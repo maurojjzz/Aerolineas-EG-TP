@@ -24,7 +24,7 @@ $esEdicion = !empty($novedad);
         <p class="m-0 p-0 mb-3 subt"><?= $esEdicion ? 'Actualizá los datos de la novedad publicada.' : 'Creá un nuevo aviso o novedad para los usuarios/pasajeros.' ?></p>
 
         <form id="formNovedad" method="POST" action="<?= url('src/routes/novedades.php?accion=' . ($esEdicion ? 'editar' : 'crear')) ?>
-" novalidate class="row g-3">
+" novalidate class="row g-3" data-loading-form>
 <p class="small text-secondary mb-2">Los campos con <span class="text-danger" aria-hidden="true">*</span><span class="visually-hidden">asterisco</span> son obligatorios.</p>
             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
             <?php if ($esEdicion): ?>

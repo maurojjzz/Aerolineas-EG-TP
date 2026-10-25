@@ -13,6 +13,48 @@ class AerolineaController {
     }
 
     /**
+     * Valida y sube el logo a Cloudinary.
+     * Devuelve [null, null] cuando no se envió archivo.
+     *
+     * @return array{0: ?string, 1: ?string}
+     */
+    private function subirLogo(?array $archivo): array {
+        if (!$archivo || ($archivo['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
+            return [null, null];
+        }
+
+        if (($archivo['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
+            throw new RuntimeException('No se pudo recibir el archivo del logo. Intentá de nuevo.');
+        }
+
+        $tamano = (int)($archivo['size'] ?? 0);
+        if ($tamano <= 0) {
+            throw new RuntimeException('El archivo del logo está vacío.');
+        }
+
+        if ($tamano > 2 * 1024 * 1024) {
+            throw new RuntimeException('El logo no puede superar los 2 MB.');
+        }
+
+        $mimesPermitidos = ['image/png', 'image/jpeg', 'image/webp'];
+        $info = @getimagesize((string)($archivo['tmp_name'] ?? ''));
+        $mime = $info['mime'] ?? '';
+
+        if (!in_array($mime, $mimesPermitidos, true)) {
+            throw new RuntimeException('El logo debe ser una imagen PNG, JPG o WebP.');
+        }
+
+        $cloudinary = new CloudinaryController();
+        $resultado  = $cloudinary->subirFoto($archivo['tmp_name']);
+
+        if (empty($resultado['secure_url']) || empty($resultado['public_id'])) {
+            throw new RuntimeException('Cloudinary no devolvió los datos del logo.');
+        }
+
+        return [$resultado['secure_url'], $resultado['public_id']];
+    }
+
+    /**
      * Condición SQL para considerar a un CEO como aprobado.
      * Incluye CEOs activos legacy sin fecha y excluye pendientes/denegados.
      */
@@ -33,7 +75,7 @@ class AerolineaController {
         $codPais = trim($_POST['pais'] ?? null);
         $email = trim($_POST['email'] ?? null);
         $descripcion = trim($_POST['descripcion'] ?? null);
-        $activo = $_POST["estadoAerolinea"] === "activa"? 1: 0;
+        $activo = ($_POST['estadoAerolinea'] ?? '') === 'activa' ? 1 : 0;
         $logoUrl = null; 
         $logoPublicId = null;
 
@@ -42,17 +84,12 @@ class AerolineaController {
             redirect("index.php?pagina=aerolinea&seccion=alta");
         }
 
-        if(isset($_FILES['logo']) && $_FILES['logo']['error']=== UPLOAD_ERR_OK){
-            $cloudinaryController = new CloudinaryController();
-
-            try {
-                $resultado = $cloudinaryController->subirFoto($_FILES['logo']['tmp_name']);
-                $logoUrl = $resultado['secure_url'];
-                $logoPublicId = $resultado['public_id'];
-            } catch (Exception $e) {
-                flash_set('error', 'Error al subir la imagen: ' . $e->getMessage());
-                redirect("index.php?pagina=aerolinea&seccion=alta");
-            }
+        try {
+            [$logoUrl, $logoPublicId] = $this->subirLogo($_FILES['logo'] ?? null);
+        } catch (Throwable $e) {
+            error_log('Error al subir el logo de la aerolínea: ' . $e->getMessage());
+            flash_set('error', 'No se pudo subir el logo: ' . $e->getMessage());
+            redirect("index.php?pagina=aerolinea&seccion=alta");
         }
 
         $aerolinea  = new Aerolinea($nombre, $codigoIATA, $descripcion, $codPais, $email, $logoUrl, $activo, null, $logoPublicId);
@@ -77,7 +114,7 @@ class AerolineaController {
 
         mysqli_stmt_bind_param(
             $stmt,
-            "sssssisi",
+            "ssssssis",
             $nombreBD,
             $codigoBD,
             $descripcionBD,
@@ -128,16 +165,12 @@ class AerolineaController {
         $logoUrl      = null;
         $logoPublicId = null;
 
-        if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
-            $cloudinaryController = new CloudinaryController();
-            try {
-                $resultado    = $cloudinaryController->subirFoto($_FILES['logo']['tmp_name']);
-                $logoUrl      = $resultado['secure_url'];
-                $logoPublicId = $resultado['public_id'];
-            } catch (Exception $e) {
-                flash_set('error', 'Error al subir la imagen: ' . $e->getMessage());
-                redirect("index.php?pagina=aerolinea&seccion=editar&id=$id");
-            }
+        try {
+            [$logoUrl, $logoPublicId] = $this->subirLogo($_FILES['logo'] ?? null);
+        } catch (Throwable $e) {
+            error_log('Error al subir el logo de la aerolínea #' . $id . ': ' . $e->getMessage());
+            flash_set('error', 'No se pudo subir el logo: ' . $e->getMessage());
+            redirect("index.php?pagina=aerolinea&seccion=editar&id=$id");
         }
 
         if ($logoUrl) {
@@ -146,6 +179,10 @@ class AerolineaController {
                     SET nombreAerolinea=?, codigoIATA=?, codPais=?, email=?, descripcion=?, activo=?, logoUrl=?, logoPublicId=?
                     WHERE idAerolinea=?";
             $stmt = mysqli_prepare($this->conexion, $query);
+            if (!$stmt) {
+                flash_set('error', 'Error interno del servidor.');
+                redirect("index.php?pagina=aerolinea&seccion=editar&id=$id");
+            }
             mysqli_stmt_bind_param($stmt, 'sssssissi',
                 $nombre, $codigoIATA, $codPais, $email, $descripcion, $activo, $logoUrl, $logoPublicId, $id);
         } else {
@@ -154,6 +191,10 @@ class AerolineaController {
                     SET nombreAerolinea=?, codigoIATA=?, codPais=?, email=?, descripcion=?, activo=?
                     WHERE idAerolinea=?";
             $stmt = mysqli_prepare($this->conexion, $query);
+            if (!$stmt) {
+                flash_set('error', 'Error interno del servidor.');
+                redirect("index.php?pagina=aerolinea&seccion=editar&id=$id");
+            }
             mysqli_stmt_bind_param($stmt, 'sssssii',
                 $nombre, $codigoIATA, $codPais, $email, $descripcion, $activo, $id);
         }

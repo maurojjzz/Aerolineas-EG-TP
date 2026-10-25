@@ -279,7 +279,7 @@ $stats =$ctrl->obtenerEstadisticas();
                 </div>
                 <div class="modal-footer border-0">
                     <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
-                    <form method="POST" action="<?= url('src/routes/novedades.php?accion=eliminar') ?>">
+                    <form method="POST" action="<?= url('src/routes/novedades.php?accion=eliminar') ?>" data-loading-form>
                         <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                         <input type="hidden" name="idNovedad" id="modalEliminarId">
                         <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
