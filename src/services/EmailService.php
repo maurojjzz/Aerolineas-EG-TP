@@ -180,7 +180,7 @@ class EmailService {
                     : 'Si querés revisar los datos o volver a enviarla con cambios, podés hacerlo desde tu panel.',
                 $aprobada ? 'success' : 'danger'
             )
-            . self::boton('Ver mis promociones', urlAbsoluta('index.php?pagina=promociones'));
+            . self::boton('Ver mis promociones', urlAbsoluta('index.php?pagina=promociones&seccion=listado'));
 
         return self::enviar(
             $email,
