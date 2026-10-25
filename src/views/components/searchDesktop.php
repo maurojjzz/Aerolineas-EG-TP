@@ -66,7 +66,7 @@
 
                 <div class="desktop-field desktop-airport position-relative">
                     <label for="from-desktop">Salida</label>
-                    <input type="text" id="from-desktop" name="origen" class="desktop-main-input" placeholder="Ciudad" autocomplete="off" required>
+                    <input type="text" id="from-desktop" name="origen" class="desktop-main-input" placeholder="Ciudad" autocomplete="off" <?= !estaLogueado() ? 'required' : '' ?>>
                     <p id="from-location-desktop">Ingrese salida</p>
                     <span class="desktop-arrow">⌄</span>
                     <div id="from-results-desktop" class="autocomplete-results"></div>
@@ -85,7 +85,7 @@
                         placeholder="Ciudad"
                         autocomplete="off"
                         name="destino"
-                        required
+                        <?= !estaLogueado() ? 'required' : '' ?>
                     >
                     <p id="to-location-desktop">Ingrese destino</p>
                     <span class="desktop-arrow">⌄</span>

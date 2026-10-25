@@ -19,10 +19,10 @@ class ReservaController {
     public function crearReserva(): void {
         $idVuelo       = (int)($_POST['idVuelo'] ?? 0);
         $idVueloVuelta = (int)($_POST['idVueloVuelta'] ?? 0);
-        $cantPasajeros = (int)($_POST['cantPasajeros'] ?? 1);
+        $cantPasajeros = filter_var(trim((string)($_POST['cantPasajeros'] ?? '')), FILTER_VALIDATE_INT);
         $idUsuario     = (int)($_SESSION['usuario']['idUsuario'] ?? 0);
 
-        if (!$idVuelo || !$idUsuario || $cantPasajeros < 1) {
+        if (!$idVuelo || !$idUsuario || $cantPasajeros === false || $cantPasajeros < 1) {
             flash_set('error', 'Datos inválidos.');
             redirect('index.php?pagina=cliente');
         }
@@ -378,6 +378,43 @@ class ReservaController {
         }
         mysqli_stmt_close($stmt);
         return $filas;
+    }
+
+    public function obtenerVuelosConReservaActiva(int $idUsuario, array $idsVuelo): array {
+        if ($idUsuario <= 0 || empty($idsVuelo)) {
+            return [];
+        }
+
+        $idsVuelo = array_values(array_unique(array_filter(
+            array_map('intval', $idsVuelo),
+            static fn(int $id): bool => $id > 0
+        )));
+
+        if (empty($idsVuelo)) {
+            return [];
+        }
+
+        $marcadores = implode(',', array_fill(0, count($idsVuelo), '?'));
+        $tipos = 'i' . str_repeat('i', count($idsVuelo));
+        $parametros = array_merge([$idUsuario], $idsVuelo);
+
+        $stmt = mysqli_prepare($this->conexion,
+            "SELECT DISTINCT idVuelo
+             FROM reserva
+             WHERE idUsuario = ?
+               AND idVuelo IN ($marcadores)
+               AND estadoReserva != 'cancelada'");
+        mysqli_stmt_bind_param($stmt, $tipos, ...$parametros);
+        mysqli_stmt_execute($stmt);
+        $resultado = mysqli_stmt_get_result($stmt);
+
+        $vuelos = [];
+        while ($fila = mysqli_fetch_assoc($resultado)) {
+            $vuelos[] = (int)$fila['idVuelo'];
+        }
+
+        mysqli_stmt_close($stmt);
+        return $vuelos;
     }
 
     // Obtener reserva por id (para pantalla de reservar)

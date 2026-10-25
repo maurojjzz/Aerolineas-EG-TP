@@ -14,7 +14,7 @@
                 name="origen"
                 placeholder="Pais o Ciudad"
                 autocomplete="off"
-                required
+                <?= !estaLogueado() ? 'required' : '' ?>
             >
 
             <p id="from-location" class="flight-location">
@@ -43,7 +43,7 @@
                 name="destino"
                 placeholder="Pais o Ciudad"
                 autocomplete="off"
-                required
+                <?= !estaLogueado() ? 'required' : '' ?>
             >
 
             <p id="to-location" class="flight-location">

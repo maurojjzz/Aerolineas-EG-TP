@@ -1,6 +1,34 @@
 <?php
 
 date_default_timezone_set('America/Argentina/Buenos_Aires');
+
+function fechaValidaFormato(string $fecha): bool {
+    $date = DateTime::createFromFormat('!Y-m-d', $fecha);
+    return $date !== false && $date->format('Y-m-d') === $fecha;
+}
+
+function horaValidaFormato(string $hora): bool {
+    $time = DateTime::createFromFormat('!H:i', $hora);
+    return $time !== false && $time->format('H:i') === $hora;
+}
+
+function telefonoValidoFormato(string $telefono): bool {
+    $digitos = preg_replace('/\D/', '', $telefono);
+    return preg_match('/^[0-9+() -]+$/', $telefono) === 1
+        && $digitos !== null
+        && strlen($digitos) >= 7
+        && strlen($digitos) <= 15;
+}
+
+function textoValido(string $texto, int $maximo, bool $multilinea = false): bool {
+    $longitud = function_exists('mb_strlen') ? mb_strlen($texto, 'UTF-8') : strlen($texto);
+    if ($texto === '' || $longitud > $maximo) {
+        return false;
+    }
+
+    $control = $multilinea ? '/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/' : '/[\x00-\x1F\x7F]/';
+    return preg_match($control, $texto) !== 1;
+}
 ini_set('display_errors', '0');
 ini_set('display_startup_errors', '0');
 ini_set('log_errors', '1');

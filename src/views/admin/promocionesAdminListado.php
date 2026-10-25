@@ -494,8 +494,8 @@ function badgeEstadoPromoAdmin(string $estado): string {
         // Buscador en tiempo real
         const inputBuscador = document.getElementById("buscadorPromocion");
         if (inputBuscador) {
-            inputBuscador.addEventListener("keyup", function () {
-                const filtro = this.value.toLowerCase();
+            inputBuscador.addEventListener("input", function () {
+                const filtro = this.value.toLowerCase().trim();
                 tbody.querySelectorAll("tr.fila-tabla").forEach(function (fila) {
                     const coincide = fila.textContent.toLowerCase().includes(filtro);
                     fila.style.display = coincide ? "" : "none";

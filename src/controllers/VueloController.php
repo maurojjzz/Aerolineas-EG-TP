@@ -23,10 +23,13 @@ class VueloController {
         $horaSalida = trim($_POST['hora']     ?? '');
         $fechaLlegada = trim($_POST['fecha_llegada'] ?? '');
         $horaLlegada = trim($_POST['hora_llegada'] ?? '');
-        $asientosTot = (int)($_POST['asientos_totales'] ?? 0);
-        $precio = (float)($_POST['precio'] ?? 0);
+        $asientosTot = filter_var(trim((string)($_POST['asientos_totales'] ?? '')), FILTER_VALIDATE_INT);
+        $precio = filter_var(trim((string)($_POST['precio'] ?? '')), FILTER_VALIDATE_FLOAT);
 
-        if (!$origen || !$codigoOrigen || !$destino || !$codigoDestino || !$fechaSalida || !$horaSalida || !$fechaLlegada || !$horaLlegada || $asientosTot <= 0 || $precio <= 0 ||  strcasecmp($origen, $destino) === 0) {
+        if (!textoValido($origen, 150) || !textoValido($codigoOrigen, 3) || !textoValido($destino, 150) ||
+            !textoValido($codigoDestino, 3) || !fechaValidaFormato($fechaSalida) || !horaValidaFormato($horaSalida) ||
+            !fechaValidaFormato($fechaLlegada) || !horaValidaFormato($horaLlegada) || $asientosTot === false ||
+            $asientosTot <= 0 || $precio === false || $precio <= 0 || strcasecmp($origen, $destino) === 0) {
             flash_set('error', 'Faltan campos obligatorios o valores inválidos.');
             redirect("index.php?pagina=vuelo");
         }
@@ -103,10 +106,13 @@ class VueloController {
         $horaSalida = trim($_POST['hora']     ?? '');
         $fechaLlegada = trim($_POST['fecha_llegada'] ?? '');
         $horaLlegada = trim($_POST['hora_llegada'] ?? '');
-        $asientosTot = (int)($_POST['asientos_totales'] ?? 0);
-        $precio = (float)($_POST['precio'] ?? 0);
+        $asientosTot = filter_var(trim((string)($_POST['asientos_totales'] ?? '')), FILTER_VALIDATE_INT);
+        $precio = filter_var(trim((string)($_POST['precio'] ?? '')), FILTER_VALIDATE_FLOAT);
 
-        if (!$origen || !$codigoOrigen || !$destino || !$codigoDestino || !$fechaSalida || !$horaSalida || !$fechaLlegada || !$horaLlegada || $asientosTot <= 0 || $precio <= 0) {
+        if (!textoValido($origen, 150) || !textoValido($codigoOrigen, 3) || !textoValido($destino, 150) ||
+            !textoValido($codigoDestino, 3) || !fechaValidaFormato($fechaSalida) || !horaValidaFormato($horaSalida) ||
+            !fechaValidaFormato($fechaLlegada) || !horaValidaFormato($horaLlegada) || $asientosTot === false ||
+            $asientosTot <= 0 || $precio === false || $precio <= 0) {
             flash_set('error', 'Faltan campos obligatorios o valores inválidos.');
             redirect("index.php?pagina=vuelo&id=$idVuelo");
         }

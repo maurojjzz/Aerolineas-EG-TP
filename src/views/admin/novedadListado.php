@@ -115,8 +115,8 @@ $stats =$ctrl->obtenerEstadisticas();
                                 <option value="archivada" <?= $estado === 'archivada' ? 'selected' : '' ?>>Archivadas</option>
                             </select>
 
-                            <input type="text" name="busqueda" class="form-control form-control-sm ctm-inp" placeholder="Buscar..." aria-label="Buscar novedad por título" value="<?= htmlspecialchars($busqueda) ?>" style="max-width: 160px;">
-                            <button type="submit" class="btn btn-sm btn-outline-primary">Filtrar</button>
+                            <input type="text" name="busqueda" id="buscadorNovedad" class="form-control form-control-sm ctm-inp" placeholder="Buscar..." aria-label="Buscar novedad por título" value="<?= htmlspecialchars($busqueda) ?>" style="max-width: 160px;">
+                            <button type="submit" class="btn btn-sm btn-outline-primary">Aplicar filtros</button>
                         </form>
 
                         <a href="<?= url('index.php?pagina=novedades&seccion=crear') ?>" class="btn btn-primary text-nowrap w-40">
@@ -137,7 +137,7 @@ $stats =$ctrl->obtenerEstadisticas();
                             <th scope="col" class="text-center fw-bold">ACCIONES</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="novedadTableBody">
                         <?php if (empty($novedades)): ?>
                             <tr>
                                 <td colspan="6" class="text-center py-4 text-muted">Todavía no hay novedades cargadas.</td>
@@ -292,6 +292,17 @@ $stats =$ctrl->obtenerEstadisticas();
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+    const buscadorNovedad = document.getElementById("buscadorNovedad");
+    const novedadesBody = document.getElementById("novedadTableBody");
+    if (buscadorNovedad && novedadesBody) {
+        buscadorNovedad.addEventListener("input", function () {
+            const texto = this.value.toLowerCase().trim();
+            novedadesBody.querySelectorAll("tr.fila-tabla").forEach(function (fila) {
+                fila.style.display = !texto || fila.textContent.toLowerCase().includes(texto) ? "" : "none";
+            });
+        });
+    }
+
     // Evitar propagación en botones y enlaces de la fila
     document.querySelectorAll(".fila-tabla a, .fila-tabla button").forEach(function(el) {
         el.addEventListener("click", function(e) {

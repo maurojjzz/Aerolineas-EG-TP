@@ -169,7 +169,6 @@ if ($diff > 0) {
                                 value="<?= htmlspecialchars($busqueda) ?>"
                                 style="max-width: 240px;"
                             >
-                            <button type="submit" class="btn btn-sm btn-outline-primary text-nowrap">Buscar</button>
                         </form>
                     </div>
                 </div>
@@ -416,6 +415,17 @@ if ($diff > 0) {
 <script src="<?= url('public/js/admin/actionLoading.js') ?>"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+    const buscadorUsuario = document.getElementById("buscadorUsuario");
+    const usuariosBody = document.getElementById("usuarioTableBody");
+    if (buscadorUsuario && usuariosBody) {
+        buscadorUsuario.addEventListener("input", function () {
+            const texto = this.value.toLowerCase().trim();
+            usuariosBody.querySelectorAll("tr.fila-tabla").forEach(function (fila) {
+                fila.style.display = !texto || fila.textContent.toLowerCase().includes(texto) ? "" : "none";
+            });
+        });
+    }
+
     // Desplegar fila de detalle al hacer clic en la fila
     document.querySelectorAll(".fila-tabla").forEach(function(row) {
         row.addEventListener("click", function(e) {

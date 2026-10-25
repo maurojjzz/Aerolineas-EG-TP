@@ -63,18 +63,18 @@ Antes de entregar, revisá **cada punto** de esta lista. Si algo no se cumple, e
 
 - [X] Todos los textos visibles están en español: botones, títulos, menús, placeholders.
 - [X] Los mensajes de validación están en español ("El email es obligatorio", no "This field is required").
-- [ ] Las alertas y mensajes de error del framework están traducidos o interceptados.
-- [ ] Los mensajes de error de la base de datos nunca se muestran crudos al usuario.
-- [ ] Sin faltas de ortografía ni textos de prueba ("asdasd", "probando 123").
-- [ ] Fechas, números y moneda en formato local.
+- [X] Las alertas y mensajes de error del framework están traducidos o interceptados.
+- [X] Los mensajes de error de la base de datos nunca se muestran crudos al usuario.
+- [] Sin faltas de ortografía ni textos de prueba ("asdasd", "probando 123").
+- [X] Fechas, números y moneda en formato local.
 
 ## 7. Formularios y validaciones
 
-- [ ] Todos los campos obligatorios están validados **en el servidor** (no solo en el navegador).
-- [ ] Los errores se muestran al lado del campo que falla y no se pierde lo que el usuario ya cargó.
-- [ ] Emails, números y fechas se validan con su formato.
-- [ ] No se puede romper el sistema mandando datos vacíos, muy largos o con caracteres raros.
-- [ ] No se puede enviar el mismo formulario dos veces por doble clic.
+- [X] Todos los campos obligatorios están validados **en el servidor** (no solo en el navegador).
+- [X] Los errores se muestran al lado del campo que falla y no se pierde lo que el usuario ya cargó.
+- [X] Emails, números y fechas se validan con su formato.
+- [X] No se puede romper el sistema mandando datos vacíos, muy largos o con caracteres raros.
+- [X] No se puede enviar el mismo formulario dos veces por doble clic.
 
 ## 8. Seguridad mínima
 

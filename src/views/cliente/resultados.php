@@ -3,6 +3,7 @@ date_default_timezone_set('America/Argentina/Buenos_Aires');
 require_once __DIR__ . '/../../config/conexion.php';
 require_once __DIR__ . '/../../config/auth.php';
 require_once __DIR__ . '/../../controllers/VueloController.php';
+require_once __DIR__ . '/../../controllers/ReservaController.php';
 
 $ciudades = require __DIR__ . '/../../data/aeropuertos.php';
 
@@ -60,6 +61,10 @@ $paso = $esIdaVuelta && (($_GET['paso'] ?? '') === 'vuelta') ? 'vuelta' : 'ida';
 $idVueloIda = max(0, (int)($_GET['idVueloIda'] ?? 0));
 
 $errorFechaVuelta = '';
+$errorBusqueda = '';
+if (!estaLogueado() && ($origen === '' || $destino === '')) {
+    $errorBusqueda = 'Elegí un origen y un destino para buscar vuelos.';
+}
 if ($esIdaVuelta && $paso === 'vuelta') {
     if ($fechaVuelta === '') {
         $errorFechaVuelta = 'Elegí una fecha de vuelta para ver los vuelos disponibles.';
@@ -74,7 +79,7 @@ $fechaActual   = $paso === 'vuelta' ? $fechaVuelta : $fecha;
 
 $ctrl= new VueloController($link);
 
-if ($errorFechaVuelta === '') {
+if ($errorBusqueda === '' && $errorFechaVuelta === '') {
     $resultado = $ctrl->buscarVuelos($origenActual, $destinoActual, $fechaActual, $pasajeros, $pagina, $porPagina, $orden, $filtros);
 } else {
     $resultado = ['data' => [], 'total' => 0, 'totalPaginas' => 0];
@@ -87,6 +92,15 @@ $facetas = $errorFechaVuelta === ''
 $vuelos  = $resultado['data'];
 $total = $resultado['total'];
 $totalPaginas = $resultado['totalPaginas'];
+
+$vuelosConReservaActiva = [];
+if (estaLogueado() && rolActual() === 'cliente' && !empty($vuelos)) {
+    $reservaCtrl = new ReservaController($link);
+    $vuelosConReservaActiva = $reservaCtrl->obtenerVuelosConReservaActiva(
+        (int)($_SESSION['usuario']['idUsuario'] ?? 0),
+        array_column($vuelos, 'idVuelo')
+    );
+}
 
 $desde = $total === 0 ? 0 : ($pagina - 1) * $porPagina + 1;
 $hasta = min($pagina * $porPagina, $total);
@@ -392,7 +406,12 @@ $textoVacio = !$esIdaVuelta
                     </div>
                 <?php endif; ?>
 
-                <?php if ($errorFechaVuelta !== ''): ?>
+                <?php if ($errorBusqueda !== ''): ?>
+                    <div class="alert alert-warning rounded-4 shadow-sm p-4 text-center">
+                        <p class="fs-5 fw-semibold mb-2">Faltan datos para buscar</p>
+                        <p class="mb-0"><?= htmlspecialchars($errorBusqueda) ?></p>
+                    </div>
+                <?php elseif ($errorFechaVuelta !== ''): ?>
                     <div class="alert alert-warning rounded-4 shadow-sm p-4 text-center">
                         <p class="fs-5 fw-semibold mb-2">No pudimos buscar la vuelta</p>
                         <p class="mb-3"><?= htmlspecialchars($errorFechaVuelta) ?></p>
@@ -457,6 +476,7 @@ $textoVacio = !$esIdaVuelta
                         $horaSalida   = date('H:i',   strtotime($v['fechaHoraSalidaVuelo']));
                         $precioFmt    = '$ ' . number_format($v['precioVuelo'], 2, ',', '.');
                         $esVueloSeleccionado = $esIdaVuelta && $paso === 'ida' && $idVueloIda === (int)$v['idVuelo'];
+                        $tieneReservaActiva = in_array((int)$v['idVuelo'], $vuelosConReservaActiva, true);
                         $textoBoton   = $esIdaVuelta
                             ? ($paso === 'ida' ? 'Seleccionar ida' : 'Seleccionar vuelta')
                             : 'Seleccionar';
@@ -520,6 +540,12 @@ $textoVacio = !$esIdaVuelta
 
                                 <!-- Precio y botón -->
                                 <div class="col-12 col-sm-6 col-md-3 text-center text-sm-end">
+                                    <?php if ($tieneReservaActiva): ?>
+                                        <div class="alert alert-warning py-2 px-3 mb-2 small text-center" role="status">
+                                            <i class="bi bi-check-circle me-1" aria-hidden="true"></i>
+                                            Ya tenés una reserva activa para este vuelo.
+                                        </div>
+                                    <?php endif; ?>
                                     <?php if (!empty($v['promo_descuento_total']) && $v['promo_descuento_total'] > 0): ?>
                                         <!-- Badge de descuento -->
                                         <div class="mb-1">
@@ -545,7 +571,12 @@ $textoVacio = !$esIdaVuelta
                                         <p class="precio-principal m-0"><?= $precioFmt ?></p>
                                         <p class="text-muted m-0" style="font-size:0.75rem;">Por pasajero</p>
                                     <?php endif; ?>
-                                    <?php if (estaLogueado() && rolActual() === 'cliente'): ?>
+                                    <?php if ($tieneReservaActiva): ?>
+                                        <a href="<?= url('index.php?pagina=mis-reservas') ?>"
+                                           class="btn btn-outline-secondary btn-sm mt-2 px-4">
+                                            Ver mis reservas
+                                        </a>
+                                    <?php elseif (estaLogueado() && rolActual() === 'cliente'): ?>
                                         <a href="<?= urlSeleccionarVuelo($v, $paso, $esIdaVuelta, $idVueloIda, $pasajeros) ?>"
                                         class="btn btn-primary btn-sm mt-2 px-4">
                                             <?= $textoBoton ?>

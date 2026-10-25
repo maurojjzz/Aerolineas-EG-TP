@@ -38,8 +38,20 @@ class UsuarioController {
             $idAerolinea = (int)($_POST['aerolinea'] ?? null);
         }
 
-        if (!$nombre || !$apellido || !$tipoDocumento || !$nroDocumento || !$email || !$telefono || !$fechaNacimiento || !$contrasena) {
+        if (!textoValido($nombre, 100) || !textoValido($apellido, 100) || !textoValido($tipoDocumento, 20) ||
+            !textoValido($nroDocumento, 30) || !textoValido($email, 254) || !textoValido($telefono, 25) ||
+            !textoValido($fechaNacimiento, 10) || !textoValido($contrasena, 255)) {
             flash_set('error', 'Faltan campos obligatorios');
+            redirect("index.php?pagina=$paginaDestino");
+        }
+
+        if (!in_array($rol, ['cliente', 'ceo'], true)) {
+            flash_set('error', 'El rol seleccionado no es válido.');
+            redirect("index.php?pagina=$paginaDestino");
+        }
+
+        if ($rol === 'ceo' && $idAerolinea <= 0) {
+            flash_set('error', 'Debés seleccionar una aerolínea.');
             redirect("index.php?pagina=$paginaDestino");
         }
 
@@ -63,7 +75,16 @@ class UsuarioController {
             redirect("index.php?pagina=$paginaDestino");
         }
 
-        $fechaNac = new DateTime($fechaNacimiento);
+        if (!telefonoValidoFormato($telefono)) {
+            flash_set('error', 'El teléfono no tiene un formato válido.');
+            redirect("index.php?pagina=$paginaDestino");
+        }
+
+        if (!fechaValidaFormato($fechaNacimiento)) {
+            flash_set('error', 'La fecha de nacimiento no es válida.');
+            redirect("index.php?pagina=$paginaDestino");
+        }
+        $fechaNac = DateTime::createFromFormat('!Y-m-d', $fechaNacimiento);
         $hoy = new DateTime();
         if ($hoy->diff($fechaNac)->y < 18) {
             flash_set('error', 'Debe ser mayor de 18 años');
@@ -366,13 +387,30 @@ class UsuarioController {
         }
 
         // 3. Validaciones de requeridos y email
-        if (empty($nombre) || empty($apellido) || empty($nroDocumento) || empty($email)) {
+        if (!textoValido($nombre, 100) || !textoValido($apellido, 100) || !textoValido($tipoDocumento, 20) ||
+            !textoValido($nroDocumento, 30) || !textoValido($email, 254) || !textoValido($telefono, 25) ||
+            !textoValido($rol, 20)) {
             flash_set('error', 'Por favor completá todos los campos obligatorios.');
+            redirect('index.php?pagina=usuario&seccion=editar&id=' . $id);
+        }
+
+        if (!in_array($tipoDocumento, ['DNI', 'pasaporte', 'lc', 'le'], true)) {
+            flash_set('error', 'El tipo de documento seleccionado no es válido.');
+            redirect('index.php?pagina=usuario&seccion=editar&id=' . $id);
+        }
+
+        if (!in_array($rol, ['cliente', 'ceo'], true)) {
+            flash_set('error', 'El rol seleccionado no es válido.');
             redirect('index.php?pagina=usuario&seccion=editar&id=' . $id);
         }
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             flash_set('error', 'El correo electrónico no es válido.');
+            redirect('index.php?pagina=usuario&seccion=editar&id=' . $id);
+        }
+
+        if (!telefonoValidoFormato($telefono)) {
+            flash_set('error', 'El teléfono no tiene un formato válido.');
             redirect('index.php?pagina=usuario&seccion=editar&id=' . $id);
         }
 
@@ -939,6 +977,24 @@ class UsuarioController {
         
         $passActual = $_POST['passwordActual'] ?? null;
         $passNueva  = $_POST['passwordNueva'] ?? null;
+
+        if (!textoValido($nombre, 100) || !textoValido($apellido, 100) || !textoValido($tipoDocumento, 20) ||
+            !textoValido($nroDocumento, 30) || !textoValido($email, 254) || !textoValido($telefono, 25)) {
+            flash_set('error', 'Por favor completá todos los campos obligatorios.');
+            redirect('index.php?pagina=perfil');
+        }
+        if (!in_array($tipoDocumento, ['DNI', 'pasaporte', 'lc', 'le'], true)) {
+            flash_set('error', 'El tipo de documento seleccionado no es válido.');
+            redirect('index.php?pagina=perfil');
+        }
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            flash_set('error', 'El correo electrónico no es válido.');
+            redirect('index.php?pagina=perfil');
+        }
+        if (!telefonoValidoFormato($telefono)) {
+            flash_set('error', 'El teléfono no tiene un formato válido.');
+            redirect('index.php?pagina=perfil');
+        }
 
         // Si quiere cambiar la contraseña, validamos la actual
         if (!empty($passNueva)) {

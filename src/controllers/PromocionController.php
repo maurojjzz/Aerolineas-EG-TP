@@ -23,7 +23,7 @@ class PromocionController {
         }
 
         $nombre              = trim($_POST['nombre']              ?? '');
-        $descuentoPorcentaje = (float)($_POST['descuentoPorcentaje'] ?? 0);
+        $descuentoPorcentaje = filter_var(trim((string)($_POST['descuentoPorcentaje'] ?? '')), FILTER_VALIDATE_FLOAT);
         $fechaInicio         = trim($_POST['fechaInicio']         ?? '');
         $fechaFin            = trim($_POST['fechaFin']            ?? '');
         $descripcion         = trim($_POST['descripcion']         ?? '') ?: null;
@@ -54,7 +54,10 @@ class PromocionController {
             redirect('index.php?pagina=promociones');
         }
 
-        if (!$nombre || $descuentoPorcentaje <= 0 || !$fechaInicio || !$fechaFin) {
+        if (!textoValido($nombre, 150) || $descuentoPorcentaje === false || $descuentoPorcentaje <= 0 ||
+            !textoValido($fechaInicio, 10) || !textoValido($fechaFin, 10) ||
+            ($descripcion !== null && !textoValido($descripcion, 2000, true)) ||
+            ($condiciones !== null && !textoValido($condiciones, 2000, true))) {
             flash_set('error', 'Por favor completá todos los campos requeridos.');
             redirect('index.php?pagina=promociones');
         }
@@ -64,9 +67,13 @@ class PromocionController {
             redirect('index.php?pagina=promociones');
         }
 
+        if (!fechaValidaFormato($fechaInicio) || !fechaValidaFormato($fechaFin)) {
+            flash_set('error', 'Las fechas de la promoción no tienen un formato válido.');
+            redirect('index.php?pagina=promociones');
+        }
         $tsInicio = strtotime($fechaInicio);
         $tsFin    = strtotime($fechaFin);
-        if ($tsInicio === false || $tsFin === false || $tsFin < $tsInicio) {
+        if ($tsFin < $tsInicio) {
             flash_set('error', 'La fecha de fin no puede ser anterior a la fecha de inicio.');
             redirect('index.php?pagina=promociones');
         }
@@ -559,7 +566,7 @@ class PromocionController {
 
         // Mismos campos que crearPromocion
         $nombre              = trim($_POST['nombre']              ?? '');
-        $descuentoPorcentaje = (float)($_POST['descuentoPorcentaje'] ?? 0);
+        $descuentoPorcentaje = filter_var(trim((string)($_POST['descuentoPorcentaje'] ?? '')), FILTER_VALIDATE_FLOAT);
         $fechaInicio         = trim($_POST['fechaInicio']         ?? '');
         $fechaFin            = trim($_POST['fechaFin']            ?? '');
         $descripcion         = trim($_POST['descripcion']         ?? '') ?: null;
@@ -589,7 +596,10 @@ class PromocionController {
             redirect('index.php?pagina=promociones');
         }
 
-        if (!$nombre || $descuentoPorcentaje <= 0 || !$fechaInicio || !$fechaFin) {
+        if (!textoValido($nombre, 150) || $descuentoPorcentaje === false || $descuentoPorcentaje <= 0 ||
+            !textoValido($fechaInicio, 10) || !textoValido($fechaFin, 10) ||
+            ($descripcion !== null && !textoValido($descripcion, 2000, true)) ||
+            ($condiciones !== null && !textoValido($condiciones, 2000, true))) {
             flash_set('error', 'Por favor completá todos los campos requeridos.');
             redirect('index.php?pagina=promociones');
         }
@@ -599,9 +609,13 @@ class PromocionController {
             redirect('index.php?pagina=promociones');
         }
 
+        if (!fechaValidaFormato($fechaInicio) || !fechaValidaFormato($fechaFin)) {
+            flash_set('error', 'Las fechas de la promoción no tienen un formato válido.');
+            redirect('index.php?pagina=promociones');
+        }
         $tsInicio = strtotime($fechaInicio);
         $tsFin    = strtotime($fechaFin);
-        if ($tsInicio === false || $tsFin === false || $tsFin < $tsInicio) {
+        if ($tsFin < $tsInicio) {
             flash_set('error', 'La fecha de fin no puede ser anterior a la fecha de inicio.');
             redirect('index.php?pagina=promociones');
         }

@@ -92,7 +92,7 @@
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-4 ">
                         <div class="form-group d-flex flex-column p-0  w-100">
                             <label class="form-label-t" id="labTelefono" for="telefono">Telefono: <span class="text-danger" aria-hidden="true">*</span></label>
-                            <input type="tel" name="telefono" id="telefono" class="form-control ctm-inp" required placeholder="Ingrese su telefono">
+                            <input type="tel" name="telefono" id="telefono" class="form-control ctm-inp" required pattern="[0-9+() -]{7,}" maxlength="25" placeholder="Ingrese su telefono">
                             <p id="infoTelefono" class=" text-break text-center form-text-info text-danger fs-6"></p>
                         </div>
                         
@@ -130,7 +130,7 @@
                         <div class="form-group d-flex flex-column p-0  w-100 ">
                             <label class="form-label-t" id="labAerolinea" for="aerolinea">Aerolinea solicitada:</label>
                             <div class="input-group">
-                                <select class="form-select w-100" name="aerolinea" id="aerolinea">
+                                <select class="form-select w-100" name="aerolinea" id="aerolinea" required>
                                     <option value="" disabled selected>Seleccione su aerolinea</option>
                                     <?php foreach($aerolineas as $aero): 
                                         if($aero->getActivo() == 1): ?>
