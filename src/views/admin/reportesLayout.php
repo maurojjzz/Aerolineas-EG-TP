@@ -22,6 +22,34 @@ $vistas = [
         <link rel="stylesheet" href="<?= url('public/css/components/tablaLista.css') ?>?v=<?= time() ?>">
         <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
             <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
+        <style>
+            .reporte-portada, .reporte-grafico { display: none; }
+            .barra-fila { display: grid; grid-template-columns: 115px 1fr 80px; gap: 8px; align-items: center; margin: 7px 0; font-size: 10px; }
+            .barra-base { height: 10px; background: #e8edf3; border-radius: 6px; overflow: hidden; }
+            .barra-valor { height: 100%; background: #2878d7; border-radius: 6px; }
+            @media print {
+                @page { size: A4 landscape; margin: 14mm; }
+                body { background: #fff !important; color: #172033 !important; }
+                .admin-sidebar, .admin-header, .breadcrumbCont, #panelFiltrosReportes,
+                #btnImprimirReporte, [data-bs-toggle="collapse"], .pagination,
+                .reportes-navegacion, .reportes-titulo,
+                .tablaContenedor > div:first-child { display: none !important; }
+                .admin-main { width: 100% !important; margin: 0 !important; }
+                .admin-content { padding: 0 !important; }
+                .reporte-portada { display: flex; justify-content: space-between; align-items: flex-start;
+                    border-bottom: 2px solid #123d72; margin-bottom: 12px; padding-bottom: 10px; }
+                .reporte-portada h1 { color: #123d72; font-size: 22px; margin: 0; }
+                .reporte-portada p { margin: 2px 0 0; font-size: 11px; color: #596579; }
+                .reporte-meta { text-align: right; font-size: 10px; color: #596579; }
+                .card, .tablaContenedor { box-shadow: none !important; border: 1px solid #dbe2ea !important; }
+                .table-responsive { overflow: visible !important; }
+                table { font-size: 10px; }
+                th { background: #eaf1f8 !important; color: #123d72 !important; }
+                tr { break-inside: avoid; }
+                .reporte-grafico { display: block; border: 1px solid #dbe2ea; padding: 10px 14px; margin: 0 0 12px; break-inside: avoid; }
+                .reporte-grafico h2 { color: #123d72; font-size: 13px; margin: 0 0 8px; }
+            }
+        </style>
     </head>
     <body>
         <?php require __DIR__ . '/../layouts/skipLink.php'; ?>
