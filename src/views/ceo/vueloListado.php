@@ -299,7 +299,7 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                                     </tbody>
                                 </table>
 
-                                <div class="admin-mobile-cards ceo-mobile-cards d-md-none">
+                                <div class="admin-mobile-cards ceo-mobile-cards">
                                     <?php if (empty($vuelos)): ?>
                                         <div class="admin-mobile-empty">Todavía no hay vuelos cargados para tu aerolínea.</div>
                                     <?php else: ?>

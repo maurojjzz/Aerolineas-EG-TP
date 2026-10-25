@@ -194,7 +194,7 @@ function badgeVigenciaPromo(array $p): string {
                     </ol>
                 </nav>
 
-                <div class="contForm col-12 d-flex flex-column p-2 admin-content h-100">
+                <div class="contForm col-12 d-flex flex-column p-2 admin-content">
                     <h1 class="m-0 p-0 fs-2 fw-bold">Gestión de Promociones</h1>
                     <p class="m-0 p-0 mb-1 subt">Administra y crea las promociones de tu aerolínea.</p>
 
@@ -204,7 +204,7 @@ function badgeVigenciaPromo(array $p): string {
                             <div class="bg-white shadow rounded-3 py-2 px-4">
                                 <div class="d-flex flex-row align-items-center justify-content-start gap-3">
                                     <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:55px;height:55px;background-color:#E3F0FE;">
-                                        <img src="<?= url('public/img/icons/placeholdersCards/etiqueta.png') ?>" class="img-fluid" alt="total" style="width:32px;height:32px;object-fit:contain;">
+                                        <img src="<?= url('public/img/icons/placeholdersCards/etiqueta.png') ?>" class="img-fluid" alt="Promociones totales" title="Promociones totales" style="width:32px;height:32px;object-fit:contain;">
                                     </div>
                                     <div class="d-flex flex-column justify-content-center p-0 m-0">
                                         <p class="fw-semibold m-0 p-0 text-muted" style="font-size:14px;">Promociones totales</p>
@@ -212,7 +212,7 @@ function badgeVigenciaPromo(array $p): string {
                                     </div>
                                 </div>
                                 <div class="d-flex flex-row justify-content-start p-0 m-0 gap-2 mt-1">
-                                    <img src="<?= url('public/img/icons/placeholdersCards/simbolo-igual.png') ?>" class="img-fluid" alt="igual" style="width:20px;height:20px;object-fit:contain;">
+                                    <img src="<?= url('public/img/icons/placeholdersCards/simbolo-igual.png') ?>" class="img-fluid" alt="Sin variación" title="Sin variación" style="width:20px;height:20px;object-fit:contain;">
                                     <p class="fw-normal m-0 p-0 text-muted" style="font-size:14px;"><?= $denegadas ?> denegada<?= $denegadas === 1 ? '' : 's' ?></p>
                                 </div>
                             </div>
@@ -222,7 +222,7 @@ function badgeVigenciaPromo(array $p): string {
                             <div class="bg-white shadow rounded-3 py-2 px-4">
                                 <div class="d-flex flex-row align-items-center justify-content-start gap-3">
                                     <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:55px;height:55px;background-color:#E3F0FE;">
-                                        <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>" class="img-fluid" alt="activas" style="width:32px;height:32px;object-fit:contain;">
+                                        <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>" class="img-fluid" alt="Promociones activas" title="Promociones activas" style="width:32px;height:32px;object-fit:contain;">
                                     </div>
                                     <div class="d-flex flex-column justify-content-center p-0 m-0">
                                         <p class="fw-semibold m-0 p-0 text-muted" style="font-size:14px;">Activas / Aprobadas</p>
@@ -230,7 +230,7 @@ function badgeVigenciaPromo(array $p): string {
                                     </div>
                                 </div>
                                 <div class="d-flex flex-row justify-content-start p-0 m-0 gap-2 mt-1">
-                                    <img src="<?= url('public/img/icons/placeholdersCards/' . ($aprobadas > 0 ? 'flecha-up.png' : 'simbolo-igual.png')) ?>" class="img-fluid" alt="tendencia" style="width:20px;height:20px;object-fit:contain;">
+                                    <img src="<?= url('public/img/icons/placeholdersCards/' . ($aprobadas > 0 ? 'flecha-up.png' : 'simbolo-igual.png')) ?>" class="img-fluid" alt="<?= $aprobadas > 0 ? 'Tendencia positiva' : 'Sin variación' ?>" title="<?= $aprobadas > 0 ? 'Tendencia positiva' : 'Sin variación' ?>" style="width:20px;height:20px;object-fit:contain;">
                                     <p class="fw-normal m-0 p-0 <?= $aprobadas > 0 ? 'text-success' : 'text-muted' ?>" style="font-size:14px;"><?= $pctAprob ?>% del total</p>
                                 </div>
                             </div>
@@ -240,7 +240,7 @@ function badgeVigenciaPromo(array $p): string {
                             <div class="bg-white shadow rounded-3 py-2 px-4">
                                 <div class="d-flex flex-row align-items-center justify-content-start gap-3">
                                     <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:55px;height:55px;background-color:#E3F0FE;">
-                                        <img src="<?= url('public/img/icons/placeholdersCards/ceo.png') ?>" class="img-fluid" alt="pendientes" style="width:32px;height:32px;object-fit:contain;">
+                                        <img src="<?= url('public/img/icons/placeholdersCards/ceo.png') ?>" class="img-fluid" alt="Promociones pendientes" title="Promociones pendientes" style="width:32px;height:32px;object-fit:contain;">
                                     </div>
                                     <div class="d-flex flex-column justify-content-center p-0 m-0">
                                         <p class="fw-semibold m-0 p-0 text-muted" style="font-size:14px;">Pendientes</p>
@@ -248,7 +248,7 @@ function badgeVigenciaPromo(array $p): string {
                                     </div>
                                 </div>
                                 <div class="d-flex flex-row justify-content-start p-0 m-0 gap-2 mt-1">
-                                    <img src="<?= url('public/img/icons/placeholdersCards/simbolo-igual.png') ?>" class="img-fluid" alt="igual" style="width:20px;height:20px;object-fit:contain;">
+                                    <img src="<?= url('public/img/icons/placeholdersCards/simbolo-igual.png') ?>" class="img-fluid" alt="Sin variación" title="Sin variación" style="width:20px;height:20px;object-fit:contain;">
                                     <p class="fw-normal m-0 p-0 text-muted" style="font-size:14px;">En espera de aprobación</p>
                                 </div>
                             </div>
@@ -257,7 +257,7 @@ function badgeVigenciaPromo(array $p): string {
 
                     <!-- Tabla -->
                     <div class="d-flex flex-column gap-2">
-                        <div class="table-responsive bg-white shadow rounded-3 pt-3 tablaContenedor">
+                        <div class="table-responsive bg-white shadow rounded-3 pt-3 tablaContenedor ceo-promociones-contenedor">
                             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center px-2 mb-3 gap-3 gap-sm-0">
                                 <h2 class="m-0 p-0 fs-4 fw-bold">Listado de Promociones</h2>
                                 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 flex-wrap">
@@ -292,7 +292,7 @@ function badgeVigenciaPromo(array $p): string {
                                 </div>
                             </div>
 
-                            <table class="table table-hover align-middle border-top mt-2 tabla-aerolineas ceo-tabla-promociones">
+                            <table class="table table-hover align-middle border-top mt-2 ceo-tabla-promociones">
                                 <caption class="visually-hidden">Listado de promociones</caption>
                                 <thead>
                                     <tr>

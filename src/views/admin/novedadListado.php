@@ -100,7 +100,7 @@ $stats =$ctrl->obtenerEstadisticas();
                             <input type="hidden" name="pagina" value="novedades">
                             <input type="hidden" name="seccion" value="listado">
                             
-                            <select name="categoria" class="form-select form-select-sm ctm-inp" aria-label="Filtrar por categoría" style="width:auto;">
+                            <select name="categoria" class="form-select form-select-sm ctm-inp" aria-label="Filtrar por categoría" style="width:auto;" onchange="this.form.submit()">
                                 <option value="">Todas las categorías</option>
                                 <option value="general" <?= $categoria === 'general' ? 'selected' : '' ?>>General</option>
                                 <option value="promocion" <?= $categoria === 'promocion' ? 'selected' : '' ?>>Promoción</option>
@@ -108,7 +108,7 @@ $stats =$ctrl->obtenerEstadisticas();
                                 <option value="importante" <?= $categoria === 'importante' ? 'selected' : '' ?>>Importante</option>
                             </select>
 
-                            <select name="estado" class="form-select form-select-sm ctm-inp" aria-label="Filtrar por estado" style="width:auto;">
+                            <select name="estado" class="form-select form-select-sm ctm-inp" aria-label="Filtrar por estado" style="width:auto;" onchange="this.form.submit()">
                                 <option value="">Todos los estados</option>
                                 <option value="publicada" <?= $estado === 'publicada' ? 'selected' : '' ?>>Publicadas</option>
                                 <option value="borrador" <?= $estado === 'borrador' ? 'selected' : '' ?>>Borradores</option>
@@ -116,7 +116,6 @@ $stats =$ctrl->obtenerEstadisticas();
                             </select>
 
                             <input type="text" name="busqueda" id="buscadorNovedad" class="form-control form-control-sm ctm-inp" placeholder="Buscar..." aria-label="Buscar novedad por título" value="<?= htmlspecialchars($busqueda) ?>" style="max-width: 160px;">
-                            <button type="submit" class="btn btn-sm btn-outline-primary">Aplicar filtros</button>
                         </form>
 
                         <a href="<?= url('index.php?pagina=novedades&seccion=crear') ?>" class="btn btn-primary text-nowrap w-40">

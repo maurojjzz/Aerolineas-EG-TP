@@ -190,6 +190,18 @@ $tabs = [
     'ventas'    => 'Ventas',
     'ocupacion' => 'Ocupación',
 ];
+
+function montoCompacto(float $monto): string {
+    $signo = $monto < 0 ? '-' : '';
+    $valor = abs($monto);
+    if ($valor >= 1000000) {
+        return $signo . number_format($valor / 1000000, 1, ',', '.') . 'M';
+    }
+    if ($valor >= 1000) {
+        return $signo . number_format($valor / 1000, 1, ',', '.') . 'K';
+    }
+    return $signo . number_format($valor, 0, ',', '.');
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -304,7 +316,7 @@ $tabs = [
                             : 0;
                         $cards = [
                             ['icon' => 'etiqueta.png', 'label' => 'Ventas confirmadas', 'valor' => number_format((int)$resumen['ventas'], 0, ',', '.')],
-                            ['icon' => 'ceo.png', 'label' => 'Ingresos', 'valor' => '$ ' . number_format((float)$resumen['ingresos'], 2, ',', '.')],
+                            ['icon' => 'ceo.png', 'label' => 'Ingresos', 'valor' => '$ ' . montoCompacto((float)$resumen['ingresos'])],
                             ['icon' => 'avion.png', 'label' => 'Pasajeros', 'valor' => number_format((int)$resumen['pasajeros'], 0, ',', '.')],
                             ['icon' => 'ceo.png', 'label' => 'Ticket promedio', 'valor' => '$ ' . number_format($ticketPromedio, 2, ',', '.')],
                         ];
@@ -314,7 +326,7 @@ $tabs = [
                         $cards = [
                             ['icon' => 'avion.png', 'label' => 'Vuelos', 'valor' => number_format((int)$resumen['vuelos'], 0, ',', '.')],
                             ['icon' => 'ceo.png', 'label' => 'Pasajeros confirmados', 'valor' => number_format((int)$resumen['pasajeros'], 0, ',', '.')],
-                            ['icon' => 'etiqueta.png', 'label' => 'Ingresos', 'valor' => '$ ' . number_format((float)$resumen['ingresos'], 2, ',', '.')],
+                            ['icon' => 'etiqueta.png', 'label' => 'Ingresos', 'valor' => '$ ' . montoCompacto((float)$resumen['ingresos'])],
                             ['icon' => 'avion.png', 'label' => 'Asientos disponibles', 'valor' => number_format((int)$disponibles['disponibles'], 0, ',', '.')],
                         ];
                         ?>
@@ -495,7 +507,7 @@ $tabs = [
                                                 <span style="font-size:0.8rem;"><?= $ocupacion ?>%</span>
                                             </div>
                                         </td>
-                                        <td class="text-end fw-semibold d-none d-sm-table-cell">$ <?= number_format((float)$f['ingresos'], 2, ',', '.') ?></td>
+                                        <td class="text-end fw-semibold d-none d-sm-table-cell">$ <?= montoCompacto((float)$f['ingresos']) ?></td>
                                     </tr>
                                 <?php endforeach; endif; ?>
                             </tbody>

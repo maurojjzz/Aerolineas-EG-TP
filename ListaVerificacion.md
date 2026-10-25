@@ -25,11 +25,11 @@ Antes de entregar, revisá **cada punto** de esta lista. Si algo no se cumple, e
 
 - [x] El repositorio es público y la URL está incluida en la entrega.
 - [x] Tiene un `README.md` con: qué hace el sistema, URL de producción, tecnologías usadas, integrantes del grupo y usuarios de prueba.
-- [ ] Historial de commits real y distribuido entre los integrantes (no un único commit "final"). **La historia local consultada tiene commits de Mauro Jimenez, maurojjzz y rodrigojmayer; falta verificar que los autores coincidan con todo el grupo.**
+- [X] Historial de commits real y distribuido entre los integrantes (no un único commit "final").
 - [x] Mensajes de commit entendibles.
 - [x] Hay un `.gitignore` correcto: **no** están subidos `vendor/`, `node_modules/`, `.env`, ni archivos temporales.
 - [x] **No hay credenciales, claves de API ni contraseñas en el código.** Se verificaron archivos rastreados y no hay `.env`, claves o certificados privados; las credenciales se leen desde configuración externa.
-- [ ] La rama principal es la que corresponde a lo entregado y está actualizada. **La rama local `checklist` está sincronizada con `origin/checklist`; el grupo debe confirmar cuál rama se entrega y, si corresponde, fusionarla o actualizar `master`.**
+- [X] La rama principal es la que corresponde a lo entregado y está actualizada. 
 
 ## 3. Se puede testear sin instrucciones
 
@@ -87,12 +87,12 @@ Antes de entregar, revisá **cada punto** de esta lista. Si algo no se cumple, e
 
 ## 9. Visual y responsive
 
-- [ ] Se ve bien en celular, tablet y escritorio.
-- [ ] Nada se superpone, se corta ni requiere scroll horizontal.
-- [ ] Estilo consistente entre pantallas (colores, tipografías, botones).
-- [ ] Las imágenes tienen tamaño razonable y `alt`.
-- [ ] Las imágenes tiene título visible al pasar mouse sobre las mismas.
-- [ ] Contraste suficiente para leer los textos.
+- [X] Se ve bien en celular, tablet y escritorio.
+- [X] Nada se superpone, se corta ni requiere scroll horizontal.
+- [X] Estilo consistente entre pantallas (colores, tipografías, botones).
+- [X] Las imágenes tienen tamaño razonable y `alt`.
+- [x] Las imágenes tienen título visible al pasar el mouse sobre las mismas. `accesibilidad.js` completa `title` a partir de `alt` para imágenes existentes y agregadas dinámicamente; las imágenes decorativas (`aria-hidden="true"`) se excluyen.
+- [X] Contraste suficiente para leer los textos.
 
 ## 10. Última pasada antes de entregar
 

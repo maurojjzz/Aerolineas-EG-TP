@@ -207,6 +207,80 @@ ul .nav-item .nav-link:hover {
         overflow-x: hidden;
     }
 
+    @media (min-width: 768px) and (max-width: 1199.98px) {
+        .admin-main .reporte-tabla {
+            table-layout: auto !important;
+            min-width: 0 !important;
+            width: 100% !important;
+        }
+
+        .admin-main .reporte-tabla th,
+        .admin-main .reporte-tabla td {
+            min-width: 0;
+            overflow-wrap: normal;
+            word-break: normal;
+        }
+
+        .admin-main .reporte-tabla th:last-child,
+        .admin-main .reporte-tabla td:last-child {
+            min-width: 7.5rem;
+            white-space: nowrap;
+        }
+
+        .admin-main .reporte-tabla td:nth-child(2),
+        .admin-main .reporte-tabla td:nth-child(4),
+        .admin-main .reporte-tabla td:nth-child(5) {
+            overflow-wrap: anywhere;
+        }
+
+        .admin-main .tabla-resumen-vuelos,
+        .admin-main .tabla-resumen-recaudacion {
+            table-layout: auto !important;
+            width: 100%;
+        }
+
+        .admin-main .tabla-resumen-vuelos th,
+        .admin-main .tabla-resumen-vuelos td,
+        .admin-main .tabla-resumen-recaudacion th,
+        .admin-main .tabla-resumen-recaudacion td {
+            min-width: 0;
+            padding-left: 0.35rem;
+            padding-right: 0.35rem;
+            word-break: normal;
+        }
+
+        .admin-main .tabla-resumen-vuelos th:nth-child(1),
+        .admin-main .tabla-resumen-vuelos td:nth-child(1) {
+            width: 62%;
+        }
+
+        .admin-main .tabla-resumen-vuelos th:nth-child(2),
+        .admin-main .tabla-resumen-vuelos td:nth-child(2),
+        .admin-main .tabla-resumen-vuelos th:nth-child(3),
+        .admin-main .tabla-resumen-vuelos td:nth-child(3) {
+            width: 19%;
+            white-space: nowrap;
+        }
+
+        .admin-main .tabla-resumen-recaudacion th:first-child,
+        .admin-main .tabla-resumen-recaudacion td:first-child {
+            width: 58%;
+        }
+
+        .admin-main .tabla-resumen-recaudacion th:last-child,
+        .admin-main .tabla-resumen-recaudacion td:last-child {
+            width: 42%;
+            min-width: 8rem;
+            white-space: nowrap;
+        }
+
+        .admin-main .tabla-resumen-recaudacion td:first-child .d-flex {
+            min-width: 0;
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+    }
+
     .admin-main .table {
         table-layout: fixed;
         width: 100%;
@@ -254,6 +328,26 @@ ul .nav-item .nav-link:hover {
 @media (max-width: 767.98px) {
     .admin-main .table-responsive {
         overflow-x: visible;
+    }
+
+    @media (min-width: 768px) and (max-width: 1199.98px) {
+        .admin-main .ceo-tabla-vuelos {
+            display: none !important;
+        }
+
+        .admin-main .ceo-mobile-cards {
+            display: block !important;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .admin-main .ceo-mobile-cards .admin-mobile-card__header strong {
+            font-size: 0.95rem;
+        }
+
+        .admin-main .ceo-mobile-cards .admin-mobile-card__actions .btn {
+            min-width: 8rem;
+        }
     }
 
     .admin-main .tabla-vuelos,
@@ -667,6 +761,45 @@ ul .nav-item .nav-link:hover {
 .subt {
     font-size: 1rem;
     letter-spacing: 0.4px;
+}
+
+@media (min-width: 768px) {
+    .admin-main .ceo-promociones-contenedor {
+        height: auto;
+        min-height: 0;
+        flex: 0 0 auto;
+        overflow-x: hidden;
+    }
+
+    .admin-main .ceo-tabla-promociones {
+        table-layout: fixed;
+        width: 100%;
+        min-width: 0;
+        margin-top: 0.5rem !important;
+    }
+
+    .admin-main .ceo-tabla-promociones th:nth-child(1),
+    .admin-main .ceo-tabla-promociones td:nth-child(1) { width: 14%; }
+    .admin-main .ceo-tabla-promociones th:nth-child(2),
+    .admin-main .ceo-tabla-promociones td:nth-child(2) { width: 16%; }
+    .admin-main .ceo-tabla-promociones th:nth-child(3),
+    .admin-main .ceo-tabla-promociones td:nth-child(3) { width: 10%; }
+    .admin-main .ceo-tabla-promociones th:nth-child(4),
+    .admin-main .ceo-tabla-promociones td:nth-child(4) { width: 17%; }
+    .admin-main .ceo-tabla-promociones th:nth-child(5),
+    .admin-main .ceo-tabla-promociones td:nth-child(5) { width: 17%; }
+    .admin-main .ceo-tabla-promociones th:nth-child(6),
+    .admin-main .ceo-tabla-promociones td:nth-child(6) { width: 12%; }
+    .admin-main .ceo-tabla-promociones th:nth-child(7),
+    .admin-main .ceo-tabla-promociones td:nth-child(7) { width: 9%; }
+    .admin-main .ceo-tabla-promociones th:nth-child(8),
+    .admin-main .ceo-tabla-promociones td:nth-child(8) { width: 10%; }
+
+    .admin-main .ceo-tabla-promociones th,
+    .admin-main .ceo-tabla-promociones td {
+        overflow-wrap: anywhere;
+        vertical-align: middle;
+    }
 }
 .form-label-t {
     font-size: 0.9rem;

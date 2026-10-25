@@ -217,7 +217,7 @@ $cards = [
                                     </div>
                                 </div>
                                 <div class="px-3 py-2">
-                                    <table class="table table-sm table-hover align-middle mb-0" style="font-size:0.82rem;">
+                                    <table class="table table-sm table-hover align-middle mb-0 tabla-resumen-vuelos" style="font-size:0.82rem;">
                                         <caption class="visually-hidden">Vuelos más vendidos</caption>
                                         <thead>
                                             <tr class="text-muted">
@@ -294,7 +294,7 @@ $cards = [
                                     </div>
                                 </div>
                                 <div class="px-3 py-2">
-                                    <table class="table table-sm table-hover align-middle mb-0" style="font-size:0.82rem;">
+                                    <table class="table table-sm table-hover align-middle mb-0 tabla-resumen-recaudacion" style="font-size:0.82rem;">
                                         <caption class="visually-hidden">Tramos más recaudados</caption>
                                         <thead>
                                             <tr class="text-muted">

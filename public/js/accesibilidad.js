@@ -49,9 +49,40 @@
         });
     }
 
+    function titularImagen(imagen) {
+        if (!imagen || imagen.getAttribute("aria-hidden") === "true") return;
+        var alt = imagen.getAttribute("alt");
+        if (imagen.hasAttribute("title")) return;
+
+        var texto = alt && alt.trim();
+        if (!texto) {
+            var contenedor = imagen.closest("[aria-label], [title]");
+            texto = contenedor?.getAttribute("aria-label") || contenedor?.getAttribute("title");
+        }
+        if (texto) {
+            imagen.setAttribute("title", texto.trim());
+        }
+    }
+
+    function titularImagenes() {
+        document.querySelectorAll("img").forEach(titularImagen);
+        var observador = new MutationObserver(function (mutaciones) {
+            mutaciones.forEach(function (mutacion) {
+                mutacion.addedNodes.forEach(function (nodo) {
+                    if (nodo.nodeType !== Node.ELEMENT_NODE) return;
+                    if (nodo.tagName === "IMG") titularImagen(nodo);
+                    var imagenes = nodo.querySelectorAll("img");
+                    imagenes.forEach(titularImagen);
+                });
+            });
+        });
+        observador.observe(document.body, { childList: true, subtree: true });
+    }
+
     function iniciar() {
         observarCampos();
         enfocarPrimerError();
+        titularImagenes();
     }
 
     if (document.readyState === "loading") {
