@@ -398,7 +398,7 @@ function badgeEstadoCEO(string $estado): string {
                                     <div class="admin-mobile-card__identity">
                                         <span class="admin-mobile-avatar"><?= htmlspecialchars(strtoupper(substr($c['nombre'] ?? '', 0, 1) . substr($c['apellido'] ?? '', 0, 1))) ?></span>
                                         <div>
-                                            <strong><?= htmlspecialchars($nombreCard) ?></strong>
+                                            <h3 class="h6 m-0"><?= htmlspecialchars($nombreCard) ?></h3>
                                             <small><?= htmlspecialchars($c['email'] ?? '') ?></small>
                                         </div>
                                     </div>
@@ -497,7 +497,7 @@ function badgeEstadoCEO(string $estado): string {
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header border-0">
-                    <h2 class="modal-title fw-bold h5" id="modalResolverTitulo"></h2>
+                    <h2 class="modal-title fw-bold h5" id="modalResolverTitulo">Confirmar resolución de solicitud</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
