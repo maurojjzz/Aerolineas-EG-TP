@@ -170,7 +170,7 @@ if (logoInput && cuadroFoto) {
                         <img
                             src="../../../public/img/icons/redo.png"
                             class="img-fluid btn-mini"
-                            alt=""
+                            alt="Icono de recambio"
                         >
                     </button>
 
@@ -187,7 +187,7 @@ if (logoInput && cuadroFoto) {
                         <img
                             src="../../../public/img/icons/trash.png"
                             class= "img-fluid btn-mini"
-                            alt=""
+                            alt="Icono de eliminar"
                         >
                     </button>
                 </div>

@@ -397,7 +397,7 @@ $tabs = [
                             <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
                                  style="width:55px;height:55px;background-color:#E3F0FE;">
                                 <img src="<?= url('public/img/icons/placeholdersCards/' . $card['icon']) ?>"
-                                     class="img-fluid" alt="" style="width:32px;height:32px;object-fit:contain;">
+                                     class="img-fluid" alt="Icono de <?= htmlspecialchars($card['label']) ?>" style="width:32px;height:32px;object-fit:contain;">
                             </div>
 
                             <div class="d-flex flex-column justify-content-center">

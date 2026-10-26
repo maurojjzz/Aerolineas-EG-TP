@@ -33,7 +33,7 @@ $usuario = usuarioActual();
 
     <div class="offcanvas-body d-flex flex-column">
         <div class="mobile-user-box mb-3">
-            <img src="<?= url('public/img/icons/usuario.png') ?>" alt="" class="icono_perfil-mobile">
+            <img src="<?= url('public/img/icons/usuario.png') ?>" alt="Icono de usuario" class="icono_perfil-mobile">
             <div class="min-width-0">
                 <p class="mobile-user-name text-truncate">
                     <?= htmlspecialchars(($usuario['nombre'] ?? '') . ' ' . ($usuario['apellido'] ?? '')) ?>

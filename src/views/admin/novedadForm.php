@@ -65,8 +65,9 @@ $esEdicion = !empty($novedad);
                                 <button type="button"
                                         class="card h-100 w-100 border preset-img-card p-0 text-center <?= $isSelected ? 'border-primary bg-light' : '' ?>"
                                         aria-pressed="<?= $isSelected ? 'true' : 'false' ?>"
-                                        onclick="seleccionarPreset('<?= $rutaImagen ?>', this)">
-                                    <img src="<?= $rutaImagen ?>" class="card-img-top rounded-top" alt="" style="height: 70px; object-fit: cover;">
+                                        onclick="seleccionarPreset('<?= $rutaImagen ?>', this)"
+                                        tabindex="0">
+                                    <img src="<?= $rutaImagen ?>" class="card-img-top rounded-top" alt="Imagen predefinida <?= $i ?>" style="height: 70px; object-fit: cover;">
                                     <span class="card-body p-1 text-center d-block">
                                         <small class="text-muted" style="font-size: 0.75rem;">Imagen <?= $i ?></small>
                                     </span>

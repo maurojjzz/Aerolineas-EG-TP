@@ -177,6 +177,10 @@ switch ($pagina) {
         require __DIR__ . '/src/views/mapaDelSitio.php';
         break;
 
+    case 'glosario':
+        require __DIR__ . '/src/views/glosario.php';
+        break;
+
     default:
         http_response_code(404);
         require __DIR__ . '/src/views/error404.php';

@@ -24,7 +24,8 @@ require_once __DIR__ . '/../components/adminNavLinks.php';
                 <?= $navLink['activo'] ? 'aria-current="page"' : '' ?>
             >
                 <img src="<?= url('public/img/icons/' . $navLink['icon']) ?>"
-                    alt=""
+                    alt="Icono de <?= htmlspecialchars($navLink['label']) ?>"
+                    title="<?= htmlspecialchars($navLink['label']) ?>"
                     class="iconos-sidebar">
                 <span><?= htmlspecialchars($navLink['label']) ?></span>
             </a>
@@ -38,7 +39,7 @@ require_once __DIR__ . '/../components/adminNavLinks.php';
                 data-bs-title="Cerrar Sesión"
                 data-bs-trigger="hover"
             >
-                <img src="<?= url('public/img/icons/cerrar-sesion.png') ?>" alt="" class="iconos-sidebar">
+                <img src="<?= url('public/img/icons/cerrar-sesion.png') ?>" alt="Icono de salida" title="Cerrar sesión" class="iconos-sidebar">
                 <span>Cerrar Sesión</span>
             </a>
         </li>

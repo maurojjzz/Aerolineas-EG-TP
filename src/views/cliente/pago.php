@@ -191,13 +191,13 @@ $fechaLlegada = date('d/m/Y', strtotime($reserva['fechaHoraLlegadaVuelo']));
                 <!-- Método de pago -->
                 <h2 class="h5 fw-bold mb-3">Método de pago</h2>
                 <div class="d-flex gap-2 flex-wrap mb-4" role="group" aria-label="Método de pago">
-                    <button class="metodo-btn selected" aria-pressed="true" onclick="seleccionarMetodo(this,'tarjeta')" type="button">
+                    <button class="metodo-btn selected" aria-pressed="true" onclick="seleccionarMetodo(this,'tarjeta')" type="button" tabindex="0">
                         💳 Tarjeta de crédito
                     </button>
-                    <button class="metodo-btn" aria-pressed="false" onclick="seleccionarMetodo(this,'debito')" type="button">
+                    <button class="metodo-btn" aria-pressed="false" onclick="seleccionarMetodo(this,'debito')" type="button" tabindex="0">
                         🏦 Tarjeta de débito
                     </button>
-                    <button class="metodo-btn" aria-pressed="false" onclick="seleccionarMetodo(this,'transferencia')" type="button">
+                    <button class="metodo-btn" aria-pressed="false" onclick="seleccionarMetodo(this,'transferencia')" type="button" tabindex="0">
                         📲 Transferencia
                     </button>
                 </div>
@@ -293,7 +293,8 @@ $fechaLlegada = date('d/m/Y', strtotime($reserva['fechaHoraLlegadaVuelo']));
                         style="font-size:1.05rem;border-radius:12px;"
                         onclick="procesarPago()"
                         id="btnPagar"
-                        data-loading-text="Procesando pago...">
+                        data-loading-text="Procesando pago..."
+                        tabindex="0">
                     💳 Pagar $ <?= number_format($reserva['precioTotal'], 2, ',', '.') ?>
                 </button>
                 <a href="<?= url('index.php?pagina=mis-reservas') ?>"
@@ -314,7 +315,7 @@ $fechaLlegada = date('d/m/Y', strtotime($reserva['fechaHoraLlegadaVuelo']));
                 <div class="d-flex align-items-center gap-2 mb-3">
                     <?php if (!empty($reserva['logoUrl']) && $reserva['logoUrl'] !== '0'): ?>
                         <img src="<?= htmlspecialchars($reserva['logoUrl']) ?>"
-                             style="width:36px;height:36px;object-fit:contain;" alt="">
+                             style="width:36px;height:36px;object-fit:contain;" alt="Logo de <?= htmlspecialchars($reserva['nombreAerolinea']) ?>">
                     <?php else: ?>
                         <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center"
                              style="width:36px;height:36px;">

@@ -184,14 +184,14 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                                             <td>
                                                 <div class="d-flex align-items-center gap-2">
                                                     <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>"
-                                                        style="width:16px;height:16px;object-fit:contain;opacity:0.5;" alt="">
+                                                        style="width:16px;height:16px;object-fit:contain;opacity:0.5;" alt="Icono de avión">
                                                     <span class="fw-medium"><?= htmlspecialchars($v['origenVuelo']) ?></span>
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="d-flex align-items-center gap-2">
                                                     <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>"
-                                                        style="width:16px;height:16px;object-fit:contain;opacity:0.5;" alt="">
+                                                        style="width:16px;height:16px;object-fit:contain;opacity:0.5;" alt="Icono de avión">
                                                     <span class="fw-medium"><?= htmlspecialchars($v['destinoVuelo']) ?></span>
                                                 </div>
                                             </td>
