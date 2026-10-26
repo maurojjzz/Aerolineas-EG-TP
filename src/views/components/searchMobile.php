@@ -13,7 +13,7 @@ $mostrarTabs  = $paginaActual === 'inicio' || $esCliente;
                 <div class="d-flex w-100 flex-row justify-content-start align-items-center gap-3 py-2 px-2">
                     <img class="img-fluid d-none d-sm-block"
                         src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>"
-                        alt=""
+                        alt="Icono de avión"
                         style="width: 42px; height: 42px;">
                     <div class="d-flex flex-column justify-content-center align-items-start ms-2">
                         <span class="fw-semibold fs-5 p-0 m-0" style="color:#137AFF;">Buscar vuelos</span>
@@ -27,19 +27,19 @@ $mostrarTabs  = $paginaActual === 'inicio' || $esCliente;
             <div class="options-line d-flex align-items-center" role="tablist" aria-label="Qué querés buscar">
                 <button type="button" role="tab" aria-selected="true" aria-controls="mobilePanelVuelos"
                         id="mobileTabVuelos" class="active col option-line-item d-flex flex-column align-items-center pt-3 border-0 bg-transparent" data-option="vuelos">
-                    <img src="<?= url('public/img/icons/avion.png') ?>" alt="" class="iconos-search">
+                    <img src="<?= url('public/img/icons/avion.png') ?>" alt="Icono de avión" class="iconos-search">
                     <span>Vuelos</span>
                 </button>
 
                 <button type="button" role="tab" aria-selected="false" aria-controls="mobilePanelPromociones"
                         id="mobileTabPromociones" class="col option-line-item d-flex flex-column align-items-center pt-3 border-0 bg-transparent" data-option="promociones">
-                    <img src="<?= url('public/img/icons/promocion.png') ?>" alt="" class="iconos-search">
+                    <img src="<?= url('public/img/icons/promocion.png') ?>" alt="Icono de promoción" class="iconos-search">
                     <span>Promociones</span>
                 </button>
 
                 <button type="button" role="tab" aria-selected="false" aria-controls="mobilePanelNovedades"
                         id="mobileTabNovedades" class="col option-line-item d-flex flex-column align-items-center pt-3 border-0 bg-transparent" data-option="novedades">
-                    <img src="<?= url('public/img/icons/novedades.png') ?>" alt="" class="iconos-search">
+                    <img src="<?= url('public/img/icons/novedades.png') ?>" alt="Icono de novedades" class="iconos-search">
                     <span>Novedades</span>
                 </button>
             </div>
@@ -79,7 +79,7 @@ $mostrarTabs  = $paginaActual === 'inicio' || $esCliente;
                 <div class="inputPasajeros d-flex align-items-center  w-100 mt-3 p-2 rounded-3 shadow-sm position-relative" >
 
                     <label for="passengers" class="cal-label-pas position-absolute">Pasajeros</label>
-                    <img src="<?= url('public/img/icons/pasajeroicon.png') ?>" alt="" class="btn-icon-vuelos">
+                    <img src="<?= url('public/img/icons/pasajeroicon.png') ?>" alt="Icono de pasajero" class="btn-icon-vuelos">
 
                     <select name="pasajeros" class="form-select selectPasenger" id="passengers">
                         <option selected value="1">1 Pasajero</option>
@@ -98,7 +98,7 @@ $mostrarTabs  = $paginaActual === 'inicio' || $esCliente;
                         id="search-button"
                         aria-label="Buscar vuelos"
                     >
-                        <img src="<?= url('public/img/icons/lupa.png') ?>" alt="" class="autocomplete-icon">
+                        <img src="<?= url('public/img/icons/lupa.png') ?>" alt="Icono de búsqueda" class="autocomplete-icon">
                         <span class="d-lg-none d-xl-block">Buscar Vuelos</span>
                     </button>   
                 </div>

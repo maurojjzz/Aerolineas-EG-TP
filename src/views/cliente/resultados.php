@@ -322,7 +322,7 @@ $textoVacio = !$esIdaVuelta
                     <img
                         class="img-fluid filtro-toggle-icon"
                         src="<?= url('public/img/icons/filtrar.png') ?>"
-                        alt=""
+                        alt="Icono de filtro"
                         style="width:22px;height:22px;"
                     >
                 </button>
@@ -485,7 +485,7 @@ $textoVacio = !$esIdaVuelta
                                 <!-- Aerolínea -->
                                 <div class="col-12 col-md-2 d-flex align-items-center gap-2 ">
                                     <?php if ($v['logoUrl'] && $v['logoUrl'] !== '0'): ?>
-                                        <img src="<?= htmlspecialchars($v['logoUrl']) ?>" alt="" style="width:60px;height:60px;object-fit:contain;">
+                                        <img src="<?= htmlspecialchars($v['logoUrl']) ?>" alt="Logo de <?= htmlspecialchars($v['nombreAerolinea']) ?>" style="width:60px;height:60px;object-fit:contain;">
                                     <?php else: ?>
                                         <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center"
                                             style="width:60px;height:60px;">

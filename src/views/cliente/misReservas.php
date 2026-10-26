@@ -142,14 +142,19 @@ $conteos = [
                     // Serializar datos para el modal (sin JSON complejo en el atributo)
                     $dataId = $r['idReserva'];
                 ?>
-                <tr onclick="abrirDetalle(<?= $dataId ?>)" title="Ver detalle">
+                <tr>
                     <td data-label="Código">
-                        <p class="fw-bold m-0" style="font-size:0.9rem;">
-                            #<?= str_pad($r['idReserva'], 6, '0', STR_PAD_LEFT) ?>
-                        </p>
-                        <p class="text-muted m-0" style="font-size:0.72rem;">
-                            <?= date('d/m/Y', strtotime($r['fechaReserva'])) ?>
-                        </p>
+                        <button type="button" 
+                                class="btn btn-link p-0 m-0 text-start w-100"
+                                onclick="abrirDetalle(<?= $dataId ?>)"
+                                aria-label="Ver detalle de reserva #<?= str_pad($r['idReserva'], 6, '0', STR_PAD_LEFT) ?>">
+                            <p class="fw-bold m-0" style="font-size:0.9rem;">
+                                #<?= str_pad($r['idReserva'], 6, '0', STR_PAD_LEFT) ?>
+                            </p>
+                            <p class="text-muted m-0" style="font-size:0.72rem;">
+                                <?= date('d/m/Y', strtotime($r['fechaReserva'])) ?>
+                            </p>
+                        </button>
                     </td>
                     <td data-label="Ruta">
                         <div class="ruta-mini">
@@ -166,7 +171,7 @@ $conteos = [
                         <div class="d-flex align-items-center gap-2">
                             <?php if (!empty($r['logoUrl']) && $r['logoUrl'] !== '0'): ?>
                                 <img src="<?= htmlspecialchars($r['logoUrl']) ?>"
-                                     style="width:28px;height:28px;object-fit:contain;" alt="">
+                                     style="width:28px;height:28px;object-fit:contain;" alt="Logo de <?= htmlspecialchars($r['nombreAerolinea']) ?>">
                             <?php endif; ?>
                             <span style="font-size:0.82rem;"><?= htmlspecialchars($r['nombreAerolinea']) ?></span>
                         </div>
@@ -177,7 +182,7 @@ $conteos = [
                             <?= date('H:i', strtotime($r['fechaHoraSalidaVuelo'])) ?>
                         </p>
                     </td>
-                    <td data-label="Estado" onclick="event.stopPropagation()">
+                    <td data-label="Estado">
                         <span class="badge-estado <?= $badgeClass ?>"><?= $badgeLabel ?></span>
                         <?php if ($r['estadoReserva'] === 'pendiente de pago'): ?>
                             <p class="m-0 mt-1" style="font-size:0.7rem;color:#856404;">
@@ -219,7 +224,7 @@ $conteos = [
                             $ <?= number_format($r['precioTotal'], 2, ',', '.') ?>
                         </span>
                     </td>
-                    <td data-label="Acciones" onclick="event.stopPropagation()">
+                    <td data-label="Acciones">
                         <div class="d-flex gap-1 flex-wrap align-items-center">
                             <!-- Ver detalle -->
                             <button type="button" class="btn btn-outline-secondary btn-sm"
@@ -325,8 +330,8 @@ function abrirDetalle(idReserva) {
     const padId = (id) => '#' + String(id).padStart(6, '0');
 
     const logo = r.logoUrl && r.logoUrl !== '0'
-        ? `<img src="${r.logoUrl}" style="width:36px;height:36px;object-fit:contain;" alt="">`
-        : `<div style="width:36px;height:36px;border-radius:50%;background:#0d6efd;display:flex;align-items:center;justify-content:center;">
+        ? `<img src="${r.logoUrl}" style="width:36px;height:36px;object-fit:contain;" alt="Logo de ${r.nombreAerolinea}">`
+        : `<div style="width:36px;height:36px;border-radius:50%;background:#0d6efd;display:flex;align-items:center;justify-content-center;">
                <span style="color:white;font-size:0.65rem;font-weight:700;">${r.codigoIATA.substring(0,2)}</span>
            </div>`;
 

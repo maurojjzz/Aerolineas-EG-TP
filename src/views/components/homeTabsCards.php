@@ -102,7 +102,7 @@ $homeTabsVariantes  = ['a', 'b', 'c'];
                        aria-label="Leer la novedad: <?= htmlspecialchars($homeTabsNovedad['titulo'] ?? 'Novedad') ?>">
                         <?php if ($homeTabsImagen !== ''): ?>
                             <img src="<?= htmlspecialchars($homeTabsImagen) ?>"
-                                 alt=""
+                                 alt="Imagen de <?= htmlspecialchars($homeTabsNovedad['titulo'] ?? 'Novedad') ?>"
                                  class="home-card-img" loading="lazy">
                         <?php else: ?>
                             <div class="home-card-img home-card-img--placeholder">
