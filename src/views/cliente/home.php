@@ -107,7 +107,7 @@ $badgeReserva = static function (string $estado): array {
                 <div class="col-12 col-lg-8">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div class="d-flex align-items-center gap-2">
-                            <img src="<?= url('public/img/icons/reserva.png') ?>" style="width:30px;height:30px;object-fit:contain;" alt="">
+                            <img src="<?= url('public/img/icons/reserva.png') ?>" style="width:30px;height:30px;object-fit:contain;" alt="Icono de reserva">
                             <h2 class="fw-bold m-0 fs-5">Mis próximas reservas</h2>
                         </div>
                         <a href="<?= url('index.php?pagina=mis-reservas') ?>" class="badge bg-primary bg-opacity-10 text-primary fw-semibold text-decoration-none px-3 py-2 rounded-pill shadow-sm" style="font-size: 0.875rem; transition: all 0.2s;" onmouseover="this.className='badge bg-primary text-white fw-semibold text-decoration-none px-3 py-2 rounded-pill shadow-sm'" onmouseout="this.className='badge bg-primary bg-opacity-10 text-primary fw-semibold text-decoration-none px-3 py-2 rounded-pill shadow-sm'">
@@ -191,7 +191,7 @@ $badgeReserva = static function (string $estado): array {
                                class="bg-white rounded-3 border p-3 d-flex gap-3 align-items-start text-decoration-none text-reset">
                                 <span class="visually-hidden">Ver novedad:</span>
                                 <?php if (!empty($nov['imagen'])): ?>
-                                    <img src="<?= htmlspecialchars($nov['imagen']) ?>" alt="" class="rounded-2 flex-shrink-0" style="width:70px;height:70px;object-fit:cover;">
+                                    <img src="<?= htmlspecialchars($nov['imagen']) ?>" alt="Imagen de <?= htmlspecialchars($nov['titulo']) ?>" class="rounded-2 flex-shrink-0" style="width:70px;height:70px;object-fit:cover;">
                                 <?php else: ?>
                                     <div class="rounded-2 bg-light d-flex align-items-center justify-content-center text-primary flex-shrink-0" style="width:70px;height:70px;">
                                         <i class="bi bi-megaphone fs-4"></i>

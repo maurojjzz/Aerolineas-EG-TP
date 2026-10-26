@@ -21,7 +21,7 @@ if (isset($link) && $link instanceof mysqli) {
 
 <div class="container-header d-flex align-items-center bg-light row border-bottom border-2 w-100 m-0 p-0 g-0">
     <button type="button" class=" col-1 btn ctm-btn-header d-none d-md-block" id="sidebarToggleHamburguesa" aria-label="Mostrar u ocultar el menú lateral" aria-controls="sidebarAdmin" aria-expanded="true">
-        <img src="<?= url('public/img/icons/menu-hamburguesa.png') ?>" alt="" class="logo-header-admin opacity-75">
+        <img src="<?= url('public/img/icons/menu-hamburguesa.png') ?>" alt="Icono de menú" class="logo-header-admin opacity-75">
     </button>
 
     <!-- menu hamburguesa para mobile -->
@@ -35,7 +35,7 @@ if (isset($link) && $link instanceof mysqli) {
         aria-expanded="false"
         aria-label="Abrir menú de navegación"
     >
-            <img src="<?= url('public/img/icons/menu-hamburguesa.png') ?>" alt="" class="logo-header-admin opacity-75">
+            <img src="<?= url('public/img/icons/menu-hamburguesa.png') ?>" alt="Icono de menú" class="logo-header-admin opacity-75">
     </button>
 
     <p class="col-6 col-sm m-0 p-0 h5">
@@ -60,7 +60,7 @@ if (isset($link) && $link instanceof mysqli) {
                         aria-haspopup="true"
                         aria-label="Notificaciones y pendientes<?= $totalNotif > 0 ? ': ' . $totalNotif . ' sin leer' : '' ?>"
                         style="width: 40px; height: 40px;">
-                    <img src="<?= url('public/img/icons/bell.png') ?>" alt="" class="bell-noti opacity-75" style="width: 22px; height: 22px;">
+                    <img src="<?= url('public/img/icons/bell.png') ?>" alt="Icono de campana" class="bell-noti opacity-75" style="width: 22px; height: 22px;">
                     <?php if ($totalNotif > 0): ?>
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem;">
                             <?= $totalNotif ?>

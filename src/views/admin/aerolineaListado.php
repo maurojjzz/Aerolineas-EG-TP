@@ -297,7 +297,6 @@ if ($diff > 0) {
                                         data-bs-title="Ver Aerolínea"
                                         data-bs-trigger="hover"
                                         data-id="<?= $aero['idAerolinea'] ?>"
-                                        onclick=""
                                     >
                                         <img
                                             src="<?= url('public/img/icons/readTabla.png') ?>"

@@ -204,7 +204,7 @@ if ($modoEditar) {
 
                         <div class="d-flex flex-column border border-2 border-danger-subtle w-100 rounded-3 shadow d-none" id="erroresBox" role="alert" aria-live="assertive">
                             <div class="tituloBoxErrores bg-danger-subtle border-bottom d-flex flex-column align-items-center justify-content-center">
-                                <img src="<?= url('public/img/icons/alerta.png') ?>" alt="" class="img-fluid my-2" style="width:28px;height:28px;">
+                                <img src="<?= url('public/img/icons/alerta.png') ?>" alt="Icono de alerta" class="img-fluid my-2" style="width:28px;height:28px;">
                                 <h2 class="h5 text-danger">Validación del Formulario</h2>
                                 <p id="cantidadErrores">Errores pendientes: 0</p>
                             </div>
@@ -215,7 +215,7 @@ if ($modoEditar) {
 
                         <div class="d-flex flex-column border border-2 border-primary-subtle w-100 rounded-3 shadow" id="recomendacionesBox">
                             <div class="tituloBoxErrores bg-primary-subtle border-bottom d-flex flex-column align-items-center justify-content-center">
-                                <img src="<?= url('public/img/icons/luz.png') ?>" alt="" class="img-fluid my-2" style="width:28px;height:28px;">
+                                <img src="<?= url('public/img/icons/luz.png') ?>" alt="Icono de recomendación" class="img-fluid my-2" style="width:28px;height:28px;">
                                 <h2 class="h5 text-primary">Recomendaciones</h2>
                                 <p class="text-break text-center px-2">Tené en cuenta estos puntos antes de crear el vuelo</p>
                             </div>
