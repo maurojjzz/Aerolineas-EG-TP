@@ -27,7 +27,7 @@ Antes de entregar, revisá **cada punto** de esta lista. Si algo no se cumple, e
 
 ## 3. Se puede testear sin instrucciones
 
-- [ ] Existe al menos un usuario de prueba con su contraseña documentado en el README y en el informe.
+- [x] Existe al menos un usuario de prueba con su contraseña documentado en el README y en el informe.
 - [x] Si hay roles (admin, usuario, etc.), hay un usuario de prueba por cada rol lo cual debe contar en el informe en la sección de Puesta en Funcionamiento.
 - [x] Hay datos de prueba cargados: el sistema no debe abrirse vacío.
 - [x] El registro de un usuario nuevo funciona de punta a punta.
@@ -151,24 +151,24 @@ Antes de entregar, revisá **cada punto** de esta lista. Si algo no se cumple, e
 
 ## 19. Check List 
 
-- [ ] Realizó los check list de Usabilidad y fundamentó los items que no se cumplen o no aplican.
-- [ ] Realizó los check list de Accesibilidad y fundamentó los items que no se cumplen o no aplican.
-- [ ] Realizó los check list de Rapidez de Acceso y fundamentó los items que no se cumplen o no aplican.
-- [ ] Realizó los check list de Perceptibilidad y fundamentó los items que no se cumplen o no aplican.
-- [ ] Realizó los check list de Operabilidad y fundamentó los items que no se cumplen o no aplican.
-- [ ] Realizó los check list de Comprensibilidad y fundamentó los items que no se cumplen o no aplican.
-- [ ] Realizó los check list de Robustez y fundamentó los items que no se cumplen o no aplican.
+- [x] Realizó los check list de Usabilidad y fundamentó los items que no se cumplen o no aplican.
+- [x] Realizó los check list de Accesibilidad y fundamentó los items que no se cumplen o no aplican.
+- [x] Realizó los check list de Rapidez de Acceso y fundamentó los items que no se cumplen o no aplican.
+- [x] Realizó los check list de Perceptibilidad y fundamentó los items que no se cumplen o no aplican.
+- [x] Realizó los check list de Operabilidad y fundamentó los items que no se cumplen o no aplican.
+- [x] Realizó los check list de Comprensibilidad y fundamentó los items que no se cumplen o no aplican.
+- [x] Realizó los check list de Robustez y fundamentó los items que no se cumplen o no aplican.
 
 ## 20. Test de Validación de Estándares
 
-- [ ] Realizó los test de validación de HTML.
+- [x] Realizó los test de validación de HTML.
 - [x] Realizó los test de validación de CSS.
 - [x] Realizó los test de validación de ACCESIBLIDAD.
-- [ ] Pegó reportes de cada uno de los test de validación en el informe
-- [ ] Explicó lo mostrado en los reportes.
-- [ ] Realizó los cambios sugeridos por los test de validación.
-- [ ] Fundamentó los cambios realizados según lo solicitado por los test de validación.
-- [ ] En caso de haber tenido que realizar modificaciones, volvió a pasar los test, y pegó cada reporte.
+- [x] Pegó reportes de cada uno de los test de validación en el informe
+- [x] Explicó lo mostrado en los reportes.
+- [x] Realizó los cambios sugeridos por los test de validación.
+- [x] Fundamentó los cambios realizados según lo solicitado por los test de validación.
+- [x] En caso de haber tenido que realizar modificaciones, volvió a pasar los test, y pegó cada reporte.
 
 --
 ## 21. Uso de herramientas de IA
@@ -188,10 +188,10 @@ explicar, no deben entregarlo.
 
 El informe debe incluir una sección "Uso de herramientas de IA" (media carilla alcanza no debe ser extenso) con:
 
-- [ ] *Qué herramientas usaron* (nombre y versión aproximada).
-- [ ] *Para qué las usaron*: código, redacción del informe, diagramas, estimaciones,
+- [x] *Qué herramientas usaron* (nombre y versión aproximada).
+- [x] *Para qué las usaron*: código, redacción del informe, diagramas, estimaciones,
       debugging, traducción, etc.
-- [ ] *Qué verificaron y cómo*: para el código y los datos generados, qué chequearon
+- [x] *Qué verificaron y cómo*: para el código y los datos generados, qué chequearon
       a mano, qué corrigieron y por qué.
 
 Si el grupo no utilizó ninguna herramienta de IA, también debe declararlo.
