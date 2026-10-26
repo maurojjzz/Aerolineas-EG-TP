@@ -10,7 +10,7 @@
         <?php if ($esCliente): ?>
             <div class="desktop-search-header">
                 <div class="d-flex w-100 flex-row justify-content-start align-items-center gap-3">
-                    <img class="img-fluid ms-3" src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>" alt="" style="width: 42px; height: 42px;">
+                    <img class="img-fluid ms-3" src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>" alt="Icono de avión" title="Buscar vuelos" style="width: 42px; height: 42px;">
                     <div class="d-flex flex-column justify-content-center align-items-start ms-2">
                         <span class="fw-semibold fs-5 p-0 m-0" style="color:#137AFF;">Buscar vuelos</span>
                         <span class="text-muted fs-6">Encuentra las mejores opciones para tu próximo viaje</span>
@@ -23,19 +23,19 @@
             <div class="desktop-search-tabs d-flex align-items-center" role="tablist" aria-label="Qué querés buscar">
                 <button type="button" role="tab" aria-selected="true" aria-controls="desktopPanelVuelos"
                         id="desktopTabVuelos" class="desktop-tab active d-flex align-items-center gap-2" data-tab="vuelos">
-                    <img src="<?= url('public/img/icons/avion.png') ?>" alt="">
+                    <img src="<?= url('public/img/icons/avion.png') ?>" alt="Icono de avión" title="Vuelos disponibles">
                     <span>Vuelos</span>
                 </button>
 
                 <button type="button" role="tab" aria-selected="false" aria-controls="desktopPanelPromociones"
                         id="desktopTabPromociones" class="desktop-tab" data-tab="promociones">
-                    <img src="<?= url('public/img/icons/promocion.png') ?>" alt="">
+                    <img src="<?= url('public/img/icons/promocion.png') ?>" alt="Icono de etiqueta de descuento" title="Ver promociones">
                     <span>Promociones</span>
                 </button>
 
                 <button type="button" role="tab" aria-selected="false" aria-controls="desktopPanelNovedades"
                         id="desktopTabNovedades" class="desktop-tab" data-tab="novedades">
-                    <img src="<?= url('public/img/icons/novedades.png') ?>" alt="">
+                    <img src="<?= url('public/img/icons/novedades.png') ?>" alt="Icono de megáfono" title="Ver novedades">
                     <span>Novedades</span>
                 </button>
             </div>
@@ -131,7 +131,7 @@
                 </div>
 
                 <button type="submit" class="btn desktop-search-btn ms-auto gap-2">
-                    <img src="<?= url('public/img/icons/lupa.png') ?>" alt="" class="autocomplete-icon">
+                    <img src="<?= url('public/img/icons/lupa.png') ?>" alt="Icono de lupa" title="Realizar búsqueda" class="autocomplete-icon">
                     Buscar Vuelos
                 </button>
             </form>

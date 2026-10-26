@@ -176,22 +176,22 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                                                 </td>
                                             </tr>
                                         <?php else: foreach ($vuelos as$v): ?>
-                                        <tr class="fila-tabla" data-id="<?= $v['idVuelo'] ?>"
-                                            aria-controls="detalle-<?= $v['idVuelo'] ?>"
-                                            aria-expanded="false" role="button" tabindex="0"
-                                            aria-label="Mostrar detalles del vuelo <?= htmlspecialchars($v['origenVuelo'] . ' a ' . $v['destinoVuelo']) ?>"
-                                            style="cursor:pointer;">
+                                        <tr class="fila-tabla" data-id="<?= $v['idVuelo'] ?>">
                                             <td>
-                                                <div class="d-flex align-items-center gap-2">
+                                                <button type="button"
+                                                        class="btn-detalle-vuelo d-flex align-items-center gap-2 w-100 p-0 border-0 bg-transparent text-start"
+                                                        aria-controls="detalle-<?= $v['idVuelo'] ?>"
+                                                        aria-expanded="false"
+                                                        aria-label="Mostrar detalles del vuelo <?= htmlspecialchars($v['origenVuelo'] . ' a ' . $v['destinoVuelo']) ?>">
                                                     <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>"
-                                                        style="width:16px;height:16px;object-fit:contain;opacity:0.5;" alt="">
+                                                        style="width:16px;height:16px;object-fit:contain;opacity:0.5;" alt="Icono de avión">
                                                     <span class="fw-medium"><?= htmlspecialchars($v['origenVuelo']) ?></span>
-                                                </div>
+                                                </button>
                                             </td>
                                             <td>
                                                 <div class="d-flex align-items-center gap-2">
                                                     <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>"
-                                                        style="width:16px;height:16px;object-fit:contain;opacity:0.5;" alt="">
+                                                        style="width:16px;height:16px;object-fit:contain;opacity:0.5;" alt="Icono de avión">
                                                     <span class="fw-medium"><?= htmlspecialchars($v['destinoVuelo']) ?></span>
                                                 </div>
                                             </td>
@@ -314,7 +314,7 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                                             <article class="admin-mobile-card">
                                                 <div class="admin-mobile-card__header">
                                                     <div>
-                                                        <strong><?= htmlspecialchars($v['origenVuelo']) ?> → <?= htmlspecialchars($v['destinoVuelo']) ?></strong>
+                                                        <h3 class="h6 m-0"><?= htmlspecialchars($v['origenVuelo']) ?> → <?= htmlspecialchars($v['destinoVuelo']) ?></h3>
                                                         <small>Salida: <?= date('d/m/Y H:i', strtotime($v['fechaHoraSalidaVuelo'])) ?></small>
                                                     </div>
                                                     <span class="badge text-bg-light">$<?= number_format($v['precioVuelo'], 2, ',', '.') ?></span>
@@ -454,13 +454,10 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
             const tbody = document.getElementById("vueloTableBody");
             if (tbody) {
                 tbody.addEventListener("click", function (e) {
-                    if (e.target.closest(".btn-eliminar-vuelo")) return;
-                    if (e.target.closest("a")) return;
+                    const botonDetalle = e.target.closest(".btn-detalle-vuelo");
+                    if (!botonDetalle) return;
 
-                    const fila = e.target.closest(".fila-tabla");
-                    if (!fila) return;
-
-                    const id = fila.dataset.id;
+                    const id = botonDetalle.closest(".fila-tabla").dataset.id;
                     const detalle = document.getElementById("detalle-" + id);
                     if (!detalle) return;
 
@@ -469,15 +466,10 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                     });
                     const expandido = !detalle.classList.contains("d-none");
                     detalle.classList.toggle("d-none", expandido);
-                    fila.setAttribute("aria-expanded", expandido ? "false" : "true");
-                });
-
-                tbody.addEventListener("keydown", function (e) {
-                    if (e.key !== "Enter" && e.key !== " ") return;
-                    const fila = e.target.closest(".fila-tabla");
-                    if (!fila) return;
-                    e.preventDefault();
-                    fila.click();
+                    document.querySelectorAll(".btn-detalle-vuelo").forEach(boton => {
+                        if (boton !== botonDetalle) boton.setAttribute("aria-expanded", "false");
+                    });
+                    botonDetalle.setAttribute("aria-expanded", expandido ? "false" : "true");
                 });
             }
 

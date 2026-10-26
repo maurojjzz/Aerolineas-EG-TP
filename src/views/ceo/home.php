@@ -191,7 +191,7 @@ $cards = [
                                         <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
                                             style="width:55px;height:55px;background-color:#E3F0FE;">
                                             <img src="<?= url('public/img/icons/placeholdersCards/' . $card['icono']) ?>"
-                                                class="img-fluid" style="width:32px;height:32px;object-fit:contain;" alt="">
+                                                class="img-fluid" style="width:32px;height:32px;object-fit:contain;" alt="Icono de <?= htmlspecialchars($card['titulo']) ?>">
                                         </div>
                                         <div class="d-flex flex-column justify-content-center p-0 m-0">
                                             <p class="fw-semibold m-0 p-0 text-muted" style="font-size:14px;"><?= htmlspecialchars($card['titulo']) ?></p>
@@ -200,7 +200,7 @@ $cards = [
                                     </div>
                                     <div class="d-flex flex-row justify-content-start p-0 m-0 gap-2 mt-1">
                                         <img src="<?= url('public/img/icons/placeholdersCards/' . $card['tendencia'][0]) ?>"
-                                            class="img-fluid" style="width:20px;height:20px;object-fit:contain;" alt="">
+                                            class="img-fluid" style="width:20px;height:20px;object-fit:contain;" alt="Icono de tendencia">
                                         <p class="fw-normal m-0 p-0 <?= $card['tendencia'][2] ?>" style="font-size:14px;"><?= htmlspecialchars($card['tendencia'][1]) ?></p>
                                     </div>
                                 </div>
@@ -214,7 +214,7 @@ $cards = [
                             <div class="bg-white border rounded-3 h-100">
                                 <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
                                     <div class="d-flex align-items-center gap-2">
-                                        <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>" style="width:18px;height:18px;object-fit:contain;" alt="">
+                                        <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>" style="width:18px;height:18px;object-fit:contain;" alt="Icono de avión">
                                         <span class="fw-semibold" style="font-size:0.9rem;">Vuelos más vendidos</span>
                                     </div>
                                 </div>
@@ -240,7 +240,7 @@ $cards = [
                                                     <tr>
                                                         <td class="ps-0 border-0">
                                                             <div class="d-flex align-items-center gap-2">
-                                                                <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>" style="width:14px;height:14px;object-fit:contain;opacity:0.4;" alt="">
+                                                                <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>" style="width:14px;height:14px;object-fit:contain;opacity:0.4;" alt="Icono de avión">
                                                                 <?= htmlspecialchars($v['ruta']) ?>
                                                             </div>
                                                         </td>
@@ -260,7 +260,7 @@ $cards = [
                             <div class="bg-white border rounded-3 h-100">
                                 <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
                                     <div class="d-flex align-items-center gap-2">
-                                        <img src="<?= url('public/img/icons/placeholdersCards/etiqueta.png') ?>" style="width:18px;height:18px;object-fit:contain;" alt="">
+                                        <img src="<?= url('public/img/icons/placeholdersCards/etiqueta.png') ?>" style="width:18px;height:18px;object-fit:contain;" alt="Icono de etiqueta">
                                         <span class="fw-semibold" style="font-size:0.9rem;">Promociones activas</span>
                                     </div>
                                 </div>
@@ -291,7 +291,7 @@ $cards = [
                             <div class="bg-white border rounded-3 h-100">
                                 <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
                                     <div class="d-flex align-items-center gap-2">
-                                        <img src="<?= url('public/img/icons/placeholdersCards/ceo.png') ?>" style="width:18px;height:18px;object-fit:contain;" alt="">
+                                        <img src="<?= url('public/img/icons/placeholdersCards/ceo.png') ?>" style="width:18px;height:18px;object-fit:contain;" alt="Icono de CEO">
                                         <span class="fw-semibold" style="font-size:0.9rem;">Tramos más recaudados</span>
                                     </div>
                                 </div>
@@ -316,7 +316,7 @@ $cards = [
                                                     <tr>
                                                         <td class="ps-0 border-0">
                                                             <div class="d-flex align-items-center gap-2">
-                                                                <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>" style="width:14px;height:14px;object-fit:contain;opacity:0.4;" alt="">
+                                                                <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>" style="width:14px;height:14px;object-fit:contain;opacity:0.4;" alt="Icono de avión">
                                                                 <?= htmlspecialchars($t['ruta']) ?>
                                                             </div>
                                                         </td>

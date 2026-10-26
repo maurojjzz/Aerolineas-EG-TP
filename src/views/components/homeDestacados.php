@@ -65,7 +65,7 @@ $homeDestVariantes = ['a', 'b', 'c'];
                                         <span class="home-promo-airline">
                                             <?php if ($homeDestLogo !== ''): ?>
                                                 <img src="<?= htmlspecialchars($homeDestLogo) ?>"
-                                                     alt=""
+                                                     alt="Logo de <?= htmlspecialchars($homeDestPromo['nombreAerolinea'] ?? 'la aerolínea') ?>"
                                                      class="home-promo-logo" loading="lazy">
                                             <?php else: ?>
                                                 <span class="home-promo-iata"><?= htmlspecialchars($homeDestIata !== '' ? $homeDestIata : 'VOL') ?></span>
@@ -157,7 +157,7 @@ $homeDestVariantes = ['a', 'b', 'c'];
                                 <span class="home-novedad-thumb">
                                     <?php if ($homeDestImagen !== ''): ?>
                                         <img src="<?= htmlspecialchars($homeDestImagen) ?>"
-                                             alt=""
+                                             alt="Imagen de <?= htmlspecialchars($homeDestNovedad['titulo'] ?? 'Novedad') ?>"
                                              loading="lazy">
                                     <?php else: ?>
                                         <i class="bi <?= htmlspecialchars($homeDestIcono) ?>" aria-hidden="true"></i>

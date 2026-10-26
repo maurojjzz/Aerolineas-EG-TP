@@ -21,7 +21,8 @@ $vistas = [
         <link rel="stylesheet" href="<?= url('public/css/layout/headerAdmin.css') ?>">
         <link rel="stylesheet" href="<?= url('public/css/components/tablaLista.css') ?>?v=<?= time() ?>">
         <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
-            <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
+        <link rel="stylesheet" href="<?= url('public/css/accesibilidad.css') ?>">
+        <link rel="stylesheet" href="<?= url('public/css/layout/reportes.css') ?>">
     </head>
     <body>
         <?php require __DIR__ . '/../layouts/skipLink.php'; ?>

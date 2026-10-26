@@ -306,7 +306,7 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
                             <div class="bg-white border rounded-3 h-100">
                                 <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
                                     <div class="d-flex align-items-center gap-2">
-                                        <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>" style="width:18px;height:18px;object-fit:contain;" alt="">
+                                        <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>" style="width:18px;height:18px;object-fit:contain;" alt="Icono de avión">
                                         <span class="fw-semibold" style="font-size:0.9rem;">Vuelos más vendidos</span>
                                     </div>
                                     <a href="<?= adminAeroUrlDetalle($id, 'vuelos') ?>"
@@ -336,7 +336,7 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
                                                     <tr>
                                                         <td class="ps-0 border-0">
                                                             <div class="d-flex align-items-center gap-2">
-                                                                <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>" style="width:14px;height:14px;object-fit:contain;opacity:0.4;" alt="">
+                                                                <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>" style="width:14px;height:14px;object-fit:contain;opacity:0.4;" alt="Icono de avión">
                                                                 <?= htmlspecialchars($v['ruta']) ?>
                                                             </div>
                                                         </td>
@@ -356,7 +356,7 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
                             <div class="bg-white border rounded-3 h-100">
                                 <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
                                     <div class="d-flex align-items-center gap-2">
-                                        <img src="<?= url('public/img/icons/placeholdersCards/etiqueta.png') ?>" style="width:18px;height:18px;object-fit:contain;" alt="">
+                                        <img src="<?= url('public/img/icons/placeholdersCards/etiqueta.png') ?>" style="width:18px;height:18px;object-fit:contain;" alt="Icono de etiqueta">
                                         <span class="fw-semibold" style="font-size:0.9rem;">Promociones activas</span>
                                     </div>
                                     <a href="<?= adminAeroUrlDetalle($id, 'promociones') ?>"
@@ -391,7 +391,7 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
                             <div class="bg-white border rounded-3 h-100">
                                 <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
                                     <div class="d-flex align-items-center gap-2">
-                                        <img src="<?= url('public/img/icons/placeholdersCards/ceo.png') ?>" style="width:18px;height:18px;object-fit:contain;" alt="">
+                                        <img src="<?= url('public/img/icons/placeholdersCards/ceo.png') ?>" style="width:18px;height:18px;object-fit:contain;" alt="Icono de CEO">
                                         <span class="fw-semibold" style="font-size:0.9rem;">Tramos más recaudados</span>
                                     </div>
                                 </div>
@@ -416,7 +416,7 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
                                                     <tr>
                                                         <td class="ps-0 border-0">
                                                             <div class="d-flex align-items-center gap-2">
-                                                                <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>" style="width:14px;height:14px;object-fit:contain;opacity:0.4;" alt="">
+                                                                <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>" style="width:14px;height:14px;object-fit:contain;opacity:0.4;" alt="Icono de avión">
                                                                 <?= htmlspecialchars($t['ruta']) ?>
                                                             </div>
                                                         </td>
@@ -494,14 +494,14 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
                                             <td>
                                                 <div class="d-flex align-items-center gap-2">
                                                     <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>"
-                                                         style="width:16px;height:16px;object-fit:contain;opacity:0.5;" alt="">
+                                                         style="width:16px;height:16px;object-fit:contain;opacity:0.5;" alt="Icono de avión">
                                                     <span class="fw-medium"><?= htmlspecialchars($v['origenVuelo']) ?></span>
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="d-flex align-items-center gap-2">
                                                     <img src="<?= url('public/img/icons/placeholdersCards/avion.png') ?>"
-                                                         style="width:16px;height:16px;object-fit:contain;opacity:0.5;" alt="">
+                                                         style="width:16px;height:16px;object-fit:contain;opacity:0.5;" alt="Icono de avión">
                                                     <span class="fw-medium"><?= htmlspecialchars($v['destinoVuelo']) ?></span>
                                                 </div>
                                             </td>

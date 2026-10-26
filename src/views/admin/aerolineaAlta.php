@@ -181,12 +181,12 @@ $paises = require __DIR__ . '/../../data/paises.php';
                                                 data-bs-trigger="hover"
                                                 aria-label="Cambiar logotipo"
                                             >
-                                                <img src="<?= url('public/img/icons/redo.png') ?>" class="img-fluid btn-mini" alt="">
+                                                <img src="<?= url('public/img/icons/redo.png') ?>" class="img-fluid btn-mini" alt="Icono de recambio">
                                             </button>
                                         </div>
                                     </div>
                                 <?php else: ?>
-                                    <img src="<?= url('public/img/icons/subir.png') ?>" alt="" class="upload-foto">
+                                    <img src="<?= url('public/img/icons/subir.png') ?>" alt="Icono de subir archivo" class="upload-foto">
                                     <div class="d-flex flex-column justify-content-center m-0 p-0 tetxt">
                                         <p class="firstLogoText p-0 m-0">Añada un logo a su aerolinea</p>
                                         <p class="sndLogoText p-0 m-0">haz click para seleccionar</p>
@@ -231,7 +231,7 @@ $paises = require __DIR__ . '/../../data/paises.php';
 
                 <div class="d-flex flex-column border border-2 border-danger-subtle w-100 rounded-3 shadow d-none" id="erroresBox" role="alert" aria-live="assertive">
                     <div class="tituloBoxErrores bg-danger-subtle border-bottom d-flex flex-column align-items-center justify-content-center ">
-                        <img src="<?= url('public/img/icons/alerta.png') ?>" alt="" class="img-fluid my-2" style="width: 28px; height: 28px;">
+                        <img src="<?= url('public/img/icons/alerta.png') ?>" alt="Icono de alerta" class="img-fluid my-2" style="width: 28px; height: 28px;">
                         <h2 class="h5 text-danger">Validación del Formulario</h2>
                         <p id="cantidadErrores">Errores pendientes: 2</p>
                     </div>
@@ -243,7 +243,7 @@ $paises = require __DIR__ . '/../../data/paises.php';
                 
                 <div class="d-flex flex-column border border-2 border-primary-subtle w-100 rounded-3 shadow " id="recomendacionesBox">
                     <div class="tituloBoxErrores bg-primary-subtle border-bottom d-flex flex-column align-items-center justify-content-center ">
-                        <img src="<?= url('public/img/icons/luz.png') ?>" alt="" class="img-fluid my-2" style="width: 28px; height: 28px;">
+                        <img src="<?= url('public/img/icons/luz.png') ?>" alt="Icono de recomendación" class="img-fluid my-2" style="width: 28px; height: 28px;">
                         <h2 class="h5 text-primary">Recomendaciones</h2>
                         <p class="text-break text-center px-2">Tené en cuenta estos puntos antes de crear la aerolinea</p>
                     </div>

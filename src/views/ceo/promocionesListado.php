@@ -325,17 +325,18 @@ function badgeVigenciaPromo(array $p): string {
                                         data-id="<?= htmlspecialchars((string)$idPromo) ?>" 
                                         data-estado="<?= htmlspecialchars($p['estado']) ?>"
                                         data-vigencia="<?= htmlspecialchars(in_array($p['estado'], ['Denegada', 'Cancelada'], true) ? strtolower($p['estado']) : ($p['estado'] === 'Pendiente' ? 'pendiente' : (new DateTime($p['fechaFin']) < new DateTime() ? 'vencida' : ((new DateTime())->diff(new DateTime($p['fechaFin']))->days <= 7 ? 'proxima' : 'vigente')))) ?>"
-                                        aria-controls="detalle-<?= htmlspecialchars((string)$idPromo) ?>"
-                                        aria-expanded="false" role="button" tabindex="0"
-                                        aria-label="Mostrar detalles de la promoción <?= htmlspecialchars($p['nombre']) ?>"
-                                        style="cursor:pointer;">
+                                        >
                                         <td>
-                                            <div class="d-flex align-items-center justify-content-center gap-2">
-                                                <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center" style="width:30px; height:30px; flex-shrink:0;">
+                                            <button type="button"
+                                                    class="btn-detalle-promo d-flex align-items-center justify-content-center gap-2 w-100 p-0 border-0 bg-transparent"
+                                                    aria-controls="detalle-<?= htmlspecialchars((string)$idPromo) ?>"
+                                                    aria-expanded="false"
+                                                    aria-label="Mostrar detalles de la promoción <?= htmlspecialchars($p['nombre']) ?>">
+                                                <span class="rounded-circle bg-primary d-flex align-items-center justify-content-center" style="width:30px; height:30px; flex-shrink:0;">
                                                     <span class="text-white fw-bold text-uppercase" style="font-size:0.6rem;"><?= htmlspecialchars(substr($p['codigo'], 0, 2)) ?></span>
-                                                </div>
+                                                </span>
                                                 <span class="text-uppercase fw-medium"><?= htmlspecialchars($p['codigo']) ?></span>
-                                            </div>
+                                            </button>
                                         </td>
                                         <td><?= htmlspecialchars($p['nombre']) ?></td>
                                         <td class="text-center fw-bold text-success"><?= (float)$p['descuentoPorcentaje'] ?>%</td>
@@ -457,7 +458,7 @@ function badgeVigenciaPromo(array $p): string {
                                     </tr>
 
                                     <tr class="fila-detalle d-none" id="detalle-<?= htmlspecialchars((string)$idPromo) ?>">
-                                        <td colspan="7" class="p-0">
+                                        <td colspan="8" class="p-0">
                                             <div class="detalle-aerolinea px-4 py-3">
                                                 <div class="row g-3 align-items-start">
 
@@ -525,7 +526,7 @@ function badgeVigenciaPromo(array $p): string {
                                         <article class="admin-mobile-card">
                                             <div class="admin-mobile-card__header">
                                                 <div>
-                                                    <strong><?= htmlspecialchars($p['nombre']) ?></strong>
+                                                    <h3 class="h6 m-0"><?= htmlspecialchars($p['nombre']) ?></h3>
                                                     <small>Código: <?= htmlspecialchars($p['codigo']) ?></small>
                                                 </div>
                                                 <span class="badge <?= badgeEstadoPromo($p['estado']) ?>"><?= htmlspecialchars($p['estado']) ?></span>
@@ -934,7 +935,7 @@ function badgeVigenciaPromo(array $p): string {
                     </div>
                 </div>
 
-                <div class="modal fade" id="modalConfirmarAccionPromo" tabindex="-1" aria-labelledby="modalConfirmarAccionPromoLabel" aria-hidden="true">
+                <div class="modal fade" id="modalConfirmarAccionPromo" role="dialog" tabindex="-1" aria-labelledby="modalConfirmarAccionPromoLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header border-0">
@@ -996,21 +997,21 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Expandir / colapsar el resumen al hacer click en la fila (el ojo navega al detalle completo)
-    tbody.querySelectorAll("tr.fila-tabla").forEach(function (fila) {
-        fila.addEventListener("click", function (e) {
-            if (e.target.closest("a, button, form")) return;
-            const detalle = document.getElementById("detalle-" + this.dataset.id);
+    // Expandir / colapsar el resumen desde el botón dedicado
+    tbody.querySelectorAll(".btn-detalle-promo").forEach(function (botonDetalle) {
+        botonDetalle.addEventListener("click", function () {
+            const detalle = document.getElementById("detalle-" + this.closest(".fila-tabla").dataset.id);
             if (detalle) {
+                document.querySelectorAll(".fila-detalle").forEach(function (filaDetalle) {
+                    if (filaDetalle !== detalle) filaDetalle.classList.add("d-none");
+                });
+                document.querySelectorAll(".btn-detalle-promo").forEach(function (boton) {
+                    if (boton !== botonDetalle) boton.setAttribute("aria-expanded", "false");
+                });
                 const expandido = !detalle.classList.contains("d-none");
                 detalle.classList.toggle("d-none", expandido);
-                this.setAttribute("aria-expanded", expandido ? "false" : "true");
+                botonDetalle.setAttribute("aria-expanded", expandido ? "false" : "true");
             }
-        });
-        fila.addEventListener("keydown", function (e) {
-            if (e.key !== "Enter" && e.key !== " ") return;
-            e.preventDefault();
-            this.click();
         });
     });
 
