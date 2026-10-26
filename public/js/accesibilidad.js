@@ -50,6 +50,8 @@
     }
 
     function titularImagen(imagen) {
+        return;
+        // FUNCION DESESTIMADA PORQUE TRAE REDUNDANCIA CON IMAGENES INYECTANDOLES EL ATRIBUTO TITLE CUANDO YA TIENEN ALT
         if (!imagen || imagen.getAttribute("aria-hidden") === "true") return;
         var alt = imagen.getAttribute("alt");
         if (imagen.hasAttribute("title")) return;
