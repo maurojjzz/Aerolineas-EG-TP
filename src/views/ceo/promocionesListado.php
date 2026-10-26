@@ -357,11 +357,12 @@ function badgeVigenciaPromo(array $p): string {
                                                     data-bs-placement="top"
                                                     data-bs-title="Ver detalle"
                                                     data-bs-trigger="hover"
+                                                    aria-label="Ver promoción"
                                                 >
                                                     <img
                                                         src="<?= url('public/img/icons/readTabla.png') ?>"
                                                         class="img-fluid btn-tabla"
-                                                        alt="icono ver promoción"
+                                                        alt=""
                                                     >
                                                 </a>
 
@@ -377,7 +378,7 @@ function badgeVigenciaPromo(array $p): string {
                                                         <img
                                                             src="<?= url('public/img/icons/lapiz-editar.png') ?>"
                                                             class="img-fluid btn-tabla"
-                                                            alt="icono editar promoción"
+                                                            alt=""
                                                         >
                                                     </button>
 

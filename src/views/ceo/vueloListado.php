@@ -216,17 +216,19 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                                                 <div class="d-flex justify-content-center align-items-center gap-2">
                                                     <a href="<?= url('index.php?pagina=vuelo&id=' . $v['idVuelo']) ?>"
                                                     class="p-0 bg-transparent border-0"
-                                                    title="Editar vuelo">
+                                                    title="Editar vuelo"
+                                                    aria-label="Editar el vuelo">
                                                         <img src="<?= url('public/img/icons/lapiz-editar.png') ?>"
-                                                            class="img-fluid btn-tabla" alt="editar">
+                                                            class="img-fluid btn-tabla" alt="">
                                                     </a>
                                                     <button type="button"
                                                             class="p-0 bg-transparent border-0 btn-eliminar-vuelo"
                                                             data-id="<?= $v['idVuelo'] ?>"
                                                             data-ruta="<?= htmlspecialchars($v['origenVuelo'] . ' → ' .$v['destinoVuelo']) ?>"
-                                                            title="Eliminar vuelo">
+                                                            title="Eliminar vuelo"
+                                                            aria-label="Eliminar vuelo">
                                                         <img src="<?= url('public/img/icons/trash.png') ?>"
-                                                            class="img-fluid btn-tabla" alt="eliminar">
+                                                            class="img-fluid btn-tabla" alt="">
                                                     </button>
                                                 </div>
                                             </td>
