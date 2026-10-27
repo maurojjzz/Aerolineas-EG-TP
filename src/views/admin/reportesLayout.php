@@ -7,6 +7,12 @@ $seccion = $_GET['seccion'] ?? 'listado';
 $vistas = [
     'listado' => __DIR__ . '/reportesListado.php',
 ];
+
+// El informe imprimible es un documento propio, sin la interfaz de administración.
+if (($_GET['imprimir'] ?? '') === '1' && $seccion === 'listado') {
+    require $vistas['listado'];
+    return;
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">

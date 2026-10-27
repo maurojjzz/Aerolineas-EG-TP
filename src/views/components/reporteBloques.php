@@ -30,6 +30,15 @@ if (!function_exists('repResumen')) {
         return ($meses[(int)$mes - 1] ?? $mes) . ' ' . $anio;
     }
 
+    /** Compara los dos últimos meses (vienen ordenados del más reciente al más viejo). */
+    function repTendenciaMensual(array $meses, string $campo, string $que): ?string {
+        if (count($meses) < 2 || (float)$meses[1][$campo] <= 0) return null;
+        $variacion = ((float)$meses[0][$campo] - (float)$meses[1][$campo]) / (float)$meses[1][$campo] * 100;
+        $verbo = $variacion >= 0 ? 'subieron' : 'bajaron';
+        return 'En ' . repMes($meses[0]['mes']) . ' ' . $que . ' ' . $verbo . ' un '
+            . number_format(abs($variacion), 1, ',', '.') . '% respecto de ' . repMes($meses[1]['mes']) . '.';
+    }
+
     /** Celda con barra proporcional: ['barra' => 0..100, 'texto' => '45%'] */
     function repBarra(float $porcentaje, string $texto): array {
         return ['barra' => max(0, min(100, $porcentaje)), 'texto' => $texto];
