@@ -149,7 +149,9 @@ function badgeEstadoCEO(string $estado): string {
                     <h2 class="m-0 p-0 fs-4 fw-bold">Listado de CEOs</h2>
 
                     <div class="d-flex flex-column flex-sm-row gap-3 align-items-center">
+                        <label for="filtroEstadoCeo" class="visually-hidden">Filtrar por estado</label>
                         <select
+                            id="filtroEstadoCeo"
                             class="form-select ctm-inp"
                             style="max-width: 190px; cursor:pointer;"
                             aria-label="Filtrar por estado"
@@ -169,9 +171,11 @@ function badgeEstadoCEO(string $estado): string {
                             <?php if ($estadoFiltro !== ''): ?>
                                 <input type="hidden" name="estado" value="<?= htmlspecialchars($estadoFiltro) ?>">
                             <?php endif; ?>
+                            <label for="buscadorCeo" class="visually-hidden">Buscar CEO por nombre, email o aerolínea</label>
                             <input
                                 type="text"
                                 name="busqueda"
+                                id="buscadorCeo"
                                 class="form-control ctm-inp"
                                 placeholder="Buscar..."
                                 aria-label="Buscar CEO por nombre, email o aerolínea"
@@ -273,6 +277,7 @@ function badgeEstadoCEO(string $estado): string {
                                             data-id="<?= $id ?>"
                                             data-nombre="<?= htmlspecialchars($nombreCompleto) ?>"
                                             data-accion="aprobar"
+                                            aria-label="Aprobar a <?= htmlspecialchars($nombreCompleto) ?>"
                                             data-bs-toggle="tooltip" data-bs-title="Aprobar" data-bs-trigger="hover">✓</button>
 
                                         <button type="button"
@@ -280,6 +285,7 @@ function badgeEstadoCEO(string $estado): string {
                                             data-id="<?= $id ?>"
                                             data-nombre="<?= htmlspecialchars($nombreCompleto) ?>"
                                             data-accion="denegar"
+                                            aria-label="Denegar a <?= htmlspecialchars($nombreCompleto) ?>"
                                             data-bs-toggle="tooltip" data-bs-title="Denegar" data-bs-trigger="hover">✕</button>
                                     <?php else: ?>
                                         <span class="text-muted" style="font-size:0.8rem;">Resuelto</span>
@@ -355,13 +361,13 @@ function badgeEstadoCEO(string $estado): string {
                                                     class="btn btn-outline-success btn-sm btn-resolver-ceo"
                                                     data-id="<?= $id ?>"
                                                     data-nombre="<?= htmlspecialchars($nombreCompleto) ?>"
-                                                    data-accion="aprobar">Aprobar CEO</button>
+                                                    data-accion="aprobar">Aprobar CEO<span class="visually-hidden"> <?= htmlspecialchars($nombreCompleto) ?></span></button>
 
                                                 <button type="button"
                                                     class="btn btn-outline-danger btn-sm btn-resolver-ceo"
                                                     data-id="<?= $id ?>"
                                                     data-nombre="<?= htmlspecialchars($nombreCompleto) ?>"
-                                                    data-accion="denegar">Denegar CEO</button>
+                                                    data-accion="denegar">Denegar CEO<span class="visually-hidden"> <?= htmlspecialchars($nombreCompleto) ?></span></button>
                                             <?php else: ?>
                                                 <div class="alert alert-light border text-center m-0 p-2" style="font-size:0.8rem;">
                                                     El CEO ya fue notificado de la decisión.
@@ -411,8 +417,8 @@ function badgeEstadoCEO(string $estado): string {
                                 </dl>
                                 <div class="admin-mobile-card__actions">
                                     <?php if ($pendienteCard): ?>
-                                        <button type="button" class="btn btn-outline-success btn-sm btn-resolver-ceo" data-id="<?= htmlspecialchars((string)$idCard) ?>" data-nombre="<?= htmlspecialchars($nombreCard) ?>" data-accion="aprobar">Aprobar</button>
-                                        <button type="button" class="btn btn-outline-danger btn-sm btn-resolver-ceo" data-id="<?= htmlspecialchars((string)$idCard) ?>" data-nombre="<?= htmlspecialchars($nombreCard) ?>" data-accion="denegar">Denegar</button>
+                                        <button type="button" class="btn btn-outline-success btn-sm btn-resolver-ceo" data-id="<?= htmlspecialchars((string)$idCard) ?>" data-nombre="<?= htmlspecialchars($nombreCard) ?>" data-accion="aprobar">Aprobar<span class="visually-hidden"> a <?= htmlspecialchars($nombreCard) ?></span></button>
+                                        <button type="button" class="btn btn-outline-danger btn-sm btn-resolver-ceo" data-id="<?= htmlspecialchars((string)$idCard) ?>" data-nombre="<?= htmlspecialchars($nombreCard) ?>" data-accion="denegar">Denegar<span class="visually-hidden"> a <?= htmlspecialchars($nombreCard) ?></span></button>
                                     <?php else: ?>
                                         <span class="text-muted small">Solicitud resuelta</span>
                                     <?php endif; ?>
@@ -473,8 +479,9 @@ function badgeEstadoCEO(string $estado): string {
                         </nav>
 
                         <div class="d-flex align-items-center gap-2">
-                            <span class="text-muted" style="font-size:0.8rem;">Por página:</span>
+                            <label for="porPaginaCeo" class="text-muted" style="font-size:0.8rem;">Por página:</label>
                             <select
+                                id="porPaginaCeo"
                                 class="form-select form-select-sm border-0 bg-light rounded-2"
                                 style="width:auto; font-size:0.8rem; cursor:pointer;"
                                 onchange="window.location.href=this.value"
