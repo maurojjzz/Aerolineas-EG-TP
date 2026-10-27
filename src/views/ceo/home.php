@@ -200,7 +200,7 @@ $cards = [
                                     </div>
                                     <div class="d-flex flex-row justify-content-start p-0 m-0 gap-2 mt-1">
                                         <img src="<?= url('public/img/icons/placeholdersCards/' . $card['tendencia'][0]) ?>"
-                                            class="img-fluid" style="width:20px;height:20px;object-fit:contain;" alt="Icono de tendencia">
+                                            class="img-fluid" style="width:20px;height:20px;object-fit:contain;" alt="<?= ['flecha-up.png' => 'En aumento', 'flecha-down.png' => 'En baja'][$card['tendencia'][0]] ?? 'Sin variación' ?>">
                                         <p class="fw-normal m-0 p-0 <?= $card['tendencia'][2] ?>" style="font-size:14px;"><?= htmlspecialchars($card['tendencia'][1]) ?></p>
                                     </div>
                                 </div>
