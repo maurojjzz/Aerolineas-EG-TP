@@ -44,9 +44,9 @@
                     
                     <div class="form-group d-flex flex-column ">
                         <label class="form-label-t" id="labContrasena" for="contrasena">Contraseña: <span class="text-danger" aria-hidden="true">*</span></label>
-                        <div class="position-relative">
-                            <input type="password" name="contrasena" id="contrasena" class="form-control ctm-inp pe-5" required autocomplete="current-password" placeholder="********" aria-describedby="infoContrasena">
-                            <button type="button" class="btn-ver-contrasena" id="btnVerContrasena" aria-label="Mostrar contraseña" aria-pressed="false" aria-controls="contrasena">
+                        <div class="input-group has-validation">
+                            <input type="password" name="contrasena" id="contrasena" class="form-control ctm-inp" required autocomplete="current-password" placeholder="********" aria-describedby="infoContrasena">
+                            <button class="btn btn-outline-secondary" type="button" id="btnVerContrasena" aria-label="Mostrar contraseña" aria-pressed="false" aria-controls="contrasena">
                                 <i class="bi bi-eye" aria-hidden="true"></i>
                             </button>
                         </div>
