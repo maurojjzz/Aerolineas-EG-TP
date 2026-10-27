@@ -405,13 +405,13 @@ $tabs = [
                                 data-bs-toggle="collapse" data-bs-target="#panelFiltrosReportes"
                                 aria-expanded="<?= $filtrosActivos > 0 ? 'true' : 'false' ?>"
                                 aria-controls="panelFiltrosReportes">
-                            <i class="bi bi-funnel me-1"></i> Filtros
+                            <i class="bi bi-funnel me-1" aria-hidden="true"></i> Filtros
                             <?php if ($filtrosActivos > 0): ?>
                                 <span class="badge text-bg-primary ms-1"><?= $filtrosActivos ?></span>
                             <?php endif; ?>
                         </button>
                         <button type="button" class="btn btn-outline-secondary text-nowrap" id="btnImprimirReporte">
-                            <i class="bi bi-printer me-1"></i> Imprimir
+                            <i class="bi bi-printer me-1" aria-hidden="true"></i> Imprimir
                         </button>
                     </div>
                 </div>
@@ -690,8 +690,8 @@ $tabs = [
                         </nav>
 
                         <div class="d-flex align-items-center gap-2">
-                            <span class="text-muted" style="font-size:0.8rem;">Por página:</span>
-                            <select class="form-select form-select-sm border-0 bg-light rounded-2"
+                            <label for="porPaginaReportes" class="text-muted" style="font-size:0.8rem;">Por página:</label>
+                            <select id="porPaginaReportes" class="form-select form-select-sm border-0 bg-light rounded-2"
                                     style="width:auto; font-size:0.8rem; cursor:pointer;"
                                     onchange="window.location.href=this.value" aria-label="Resultados por página">
                                 <?php foreach ($porPaginaPermitidos as $op): ?>
