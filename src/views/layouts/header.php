@@ -60,7 +60,7 @@ require_once __DIR__ . '/../components/navLinks.php';
                             aria-expanded="false"
                             aria-haspopup="true"
                             aria-label="Abrir menú de usuario">
-                        <img src="<?= url('public/img/icons/usuario.png') ?>" alt="" class="icono_perfil">
+                        <img src="<?= url('public/img/icons/usuario.png') ?>" alt="Icono de usuario" class="icono_perfil">
                         <span class="d-none d-md-inline"><?= htmlspecialchars($usuario['nombre'] ?? 'Mi Cuenta') ?></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="dropdownUsuario">
@@ -83,7 +83,7 @@ require_once __DIR__ . '/../components/navLinks.php';
             <?php else: ?>
                 <!-- ESTADO NO LOGUEADO -->
                 <a href="<?= htmlspecialchars($urlLogin) ?>" class="btn btn-custom align-items-center gap-2" aria-label="Ingresar a mi cuenta">
-                    <img src="<?= url('public/img/icons/usuario.png') ?>" alt="" class="icono_perfil">
+                    <img src="<?= url('public/img/icons/usuario.png') ?>" alt="Icono de usuario" class="icono_perfil">
                     <span class="d-none d-md-inline">Ingresar</span>
                 </a>
             <?php endif; ?>

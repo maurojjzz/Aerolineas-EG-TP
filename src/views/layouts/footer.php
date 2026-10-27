@@ -42,6 +42,7 @@ require_once __DIR__ . '/../components/navLinks.php';
                     <li class="mb-2"><a class="link-light text-decoration-none" href="<?= url('index.php?pagina=ayuda') ?>">Centro de Ayuda</a></li>
                     <li class="mb-2"><a class="link-light text-decoration-none" href="<?= url('index.php?pagina=ayuda') ?>#faq">Preguntas Frecuentes</a></li>
                     <li class="mb-2"><a class="link-light text-decoration-none" href="<?= url('index.php?pagina=contacto') ?>">Contacto</a></li>
+                    <li class="mb-2"><a class="link-light text-decoration-none" href="<?= url('index.php?pagina=glosario') ?>">Glosario</a></li>
                     <li class="mb-2"><a class="link-light text-decoration-none" href="<?= url('index.php?pagina=terminos') ?>">Términos y Condiciones</a></li>
                     <li class="mb-2"><a class="link-light text-decoration-none" href="<?= url('index.php?pagina=privacidad') ?>">Políticas de Privacidad</a></li>
                 </ul>

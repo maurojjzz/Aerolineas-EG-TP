@@ -14,7 +14,7 @@ $compras = array_values(array_filter(
 ));
 
 $fmtPesos = static function ($valor): string {
-    return '$ ' . number_format((float)$valor, 2, ',', '.');
+    return '$ ' . number_format((float)$valor, 0, ',', '.');
 };
 
 $fmtFecha = static function (?string $fecha, string $formato = 'd/m/Y H:i'): string {
@@ -364,10 +364,15 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
                             $origenCiudad = $nombreCiudad($compra['origenVuelo'] ?? '');
                             $destinoCiudad = $nombreCiudad($compra['destinoVuelo'] ?? '');
                         ?>
-                            <tr onclick="abrirDetalleCompra(<?= $idReservaCompra ?>)" title="Ver detalle de la compra">
+                            <tr>
                                 <td data-label="Compra">
-                                    <p class="compra-codigo">#<?= str_pad((string)$idReservaCompra, 6, '0', STR_PAD_LEFT) ?></p>
-                                    <p class="compra-fecha"><?= $fmtFecha($compra['fechaReserva'] ?? null, 'd/m/Y') ?></p>
+                                    <button type="button"
+                                            class="btn btn-link p-0 m-0 text-start w-100"
+                                            onclick="abrirDetalleCompra(<?= $idReservaCompra ?>)"
+                                            aria-label="Ver detalle de la compra #<?= str_pad((string)$idReservaCompra, 6, '0', STR_PAD_LEFT) ?>">
+                                        <p class="compra-codigo m-0">#<?= str_pad((string)$idReservaCompra, 6, '0', STR_PAD_LEFT) ?></p>
+                                        <p class="compra-fecha m-0"><?= $fmtFecha($compra['fechaReserva'] ?? null, 'd/m/Y') ?></p>
+                                    </button>
                                 </td>
                                 <td data-label="Ruta">
                                     <div class="ruta-compra">
@@ -385,7 +390,7 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
                                 <td data-label="Aerolínea">
                                     <div class="d-flex align-items-center gap-2">
                                         <?php if (!empty($compra['logoUrl']) && $compra['logoUrl'] !== '0'): ?>
-                                            <img src="<?= htmlspecialchars($compra['logoUrl']) ?>" class="airline-logo" alt="">
+                                            <img src="<?= htmlspecialchars($compra['logoUrl']) ?>" class="airline-logo" alt="Logo de <?= htmlspecialchars($compra['nombreAerolinea']) ?>">
                                         <?php else: ?>
                                             <span class="airline-logo-fallback">
                                                 <?= htmlspecialchars(substr((string)($compra['codigoIATA'] ?? '--'), 0, 2)) ?>
@@ -423,7 +428,7 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
                                         }
                                     ?>
                                     <?php if ($descuentoMostrado > 0): ?>
-                                        <div class="d-flex flex-wrap gap-1">
+                                        <div class="d-flex flex-wrap gap-1 promocion-container">
                                             <span class="badge bg-success" style="font-size:0.65rem;">🎉 -<?= number_format($descuentoMostrado, 2, ',', '.') ?>%</span>
                                             <?php foreach ($compra['promos_aplicadas'] as $idx => $p): ?>
                                                 <span class="badge bg-light text-dark border" style="font-size:0.6rem;" title="<?= htmlspecialchars($p['nombre']) ?>">
@@ -441,7 +446,7 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
                                 <td data-label="Estado">
                                     <span class="badge-estado badge-conf">✓ Confirmada</span>
                                 </td>
-                                <td data-label="Acción" onclick="event.stopPropagation()">
+                                <td data-label="Acción">
                                     <button type="button"
                                             class="btn btn-outline-secondary btn-sm"
                                             title="Ver detalle de la compra"
@@ -552,7 +557,7 @@ function abrirDetalleCompra(idCompra) {
 
     const cantidadPasajeros = Number(compra.cantPasajeros || 0);
     const logo = compra.logoUrl && compra.logoUrl !== '0'
-        ? `<img src="${escapeHtml(compra.logoUrl)}" class="detalle-airline-logo" alt="">`
+        ? `<img src="${escapeHtml(compra.logoUrl)}" class="detalle-airline-logo" alt="Logo de ${escapeHtml(compra.nombreAerolinea)}">`
         : `<span class="detalle-airline-fallback">${escapeHtml(String(compra.codigoIATA || '--').substring(0, 2))}</span>`;
 
     document.getElementById('modalDetalleCompraContenido').innerHTML = `
