@@ -15,7 +15,7 @@
 
     <div class="inputCalendar inputCalendar-bloqueado d-flex align-items-center  mt-3 p-2 rounded-3 shadow-sm position-relative" id="calendar-vuelta">
 
-        <label for="fecha-vuelta" class="cal-label position-absolute ">Fecha vuelta</label>
+        <label for="fecha-vuelta" class="cal-label position-absolute ">Fecha vuelta (opcional)</label>
 
         <input 
             type="date"  

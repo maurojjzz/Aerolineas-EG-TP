@@ -63,10 +63,11 @@ $idVueloIda = max(0, (int)($_GET['idVueloIda'] ?? 0));
 $errorFechaVuelta = '';
 $errorBusqueda = '';
 if ($esIdaVuelta && $paso === 'vuelta') {
-    if ($fechaVuelta === '') {
-        $errorFechaVuelta = 'Elegí una fecha de vuelta para ver los vuelos disponibles.';
-    } elseif ($fecha !== '' && $fechaVuelta < $fecha) {
+    if ($fechaVuelta !== '' && $fecha !== '' && $fechaVuelta < $fecha) {
         $errorFechaVuelta = 'La fecha de vuelta no puede ser anterior a la fecha de ida.';
+    } elseif ($fechaVuelta === '' && $fecha !== '') {
+        // Sin fecha de vuelta: se muestran todos los vuelos desde la fecha de ida.
+        $filtros['fechaDesde'] = $fecha;
     }
 }
 
@@ -83,7 +84,7 @@ if ($errorBusqueda === '' && $errorFechaVuelta === '') {
 }
 
 $facetas = $errorFechaVuelta === ''
-    ? $ctrl->obtenerFacetasVuelos($origenActual, $destinoActual, $fechaActual, $pasajeros)
+    ? $ctrl->obtenerFacetasVuelos($origenActual, $destinoActual, $fechaActual, $pasajeros, $filtros)
     : ['aerolineas' => [], 'precioMin' => 0, 'precioMax' => 0, 'total' => 0];
 
 $vuelos  = $resultado['data'];
@@ -275,17 +276,70 @@ $textoVacio = !$esIdaVuelta
             <div class="d-flex flex-column flex-sm-row justify-content-center justify-content-md-end align-items-center gap-4 ">
                 <span class="fw-semibold text-dark">
                     <?= $esIdaVuelta ? ($paso === 'vuelta' ? 'Vuelta: ' : 'Ida: ') : '' ?>
-                    <?= $fechaActual ? htmlspecialchars($fechaActual) : 'Sin fecha especifica' ?>
+                    <?= $fechaActual ? htmlspecialchars($fechaActual) : (!empty($filtros['fechaDesde']) ? 'Desde ' . htmlspecialchars($filtros['fechaDesde']) : 'Sin fecha específica') ?>
                 </span> 
 
                 <span class="fw-semibold text-dark">
                     <?= $pasajeros ?> pasajero<?= $pasajeros !== 1 ? 's' : '' ?> 
                 </span> 
 
-                <a href="<?= estaLogueado() ? url('index.php?pagina=cliente') : url('index.php?pagina=inicio') ?>" class="btn btn-outline-dark fw-semibold text-decoration-none" style="">
+                <button type="button" class="btn btn-outline-dark fw-semibold"
+                        data-bs-toggle="collapse" data-bs-target="#modificarBusqueda"
+                        aria-expanded="false" aria-controls="modificarBusqueda">
                     Modificar búsqueda
-                </a>
+                </button>
             </div >
+        </div>
+
+        <!-- Modificar búsqueda sin volver al inicio -->
+        <div class="collapse mb-3" id="modificarBusqueda">
+            <form method="GET" action="<?= url('index.php') ?>" class="bg-white shadow-sm rounded-4 p-3 row g-2 align-items-end">
+                <input type="hidden" name="pagina" value="buscar-vuelos">
+                <input type="hidden" name="orden" value="<?= htmlspecialchars($orden) ?>">
+
+                <div class="col-12 col-md-2">
+                    <label class="form-label small fw-semibold mb-1" for="mbTipoViaje">Tipo de viaje</label>
+                    <select class="form-select" id="mbTipoViaje" name="tipo_viaje">
+                        <option value="solo_ida" <?= !$esIdaVuelta ? 'selected' : '' ?>>Solo ida</option>
+                        <option value="ida_vuelta" <?= $esIdaVuelta ? 'selected' : '' ?>>Ida y vuelta</option>
+                    </select>
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="form-label small fw-semibold mb-1" for="mbOrigen">Origen</label>
+                    <input type="text" class="form-control" id="mbOrigen" name="origen" list="mbCiudades"
+                           placeholder="Cualquiera" autocomplete="off" value="<?= htmlspecialchars($origen) ?>">
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="form-label small fw-semibold mb-1" for="mbDestino">Destino</label>
+                    <input type="text" class="form-control" id="mbDestino" name="destino" list="mbCiudades"
+                           placeholder="Cualquiera" autocomplete="off" value="<?= htmlspecialchars($destino) ?>">
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="form-label small fw-semibold mb-1" for="mbFecha">Salida <small class="fw-normal">(opcional)</small></label>
+                    <input type="date" class="form-control" id="mbFecha" name="fecha" min="<?= date('Y-m-d') ?>" value="<?= htmlspecialchars($fecha) ?>">
+                </div>
+                <div class="col-6 col-md-2 <?= $esIdaVuelta ? '' : 'd-none' ?>" id="mbContVuelta">
+                    <label class="form-label small fw-semibold mb-1" for="mbFechaVuelta">Vuelta <small class="fw-normal">(opcional)</small></label>
+                    <input type="date" class="form-control" id="mbFechaVuelta" name="fecha_vuelta" min="<?= htmlspecialchars($fecha ?: date('Y-m-d')) ?>" value="<?= htmlspecialchars($fechaVuelta) ?>" <?= $esIdaVuelta ? '' : 'disabled' ?>>
+                </div>
+                <div class="col-6 col-md-1">
+                    <label class="form-label small fw-semibold mb-1" for="mbPasajeros">Pasajeros</label>
+                    <select class="form-select" id="mbPasajeros" name="pasajeros">
+                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                            <option value="<?= $i ?>" <?= $i === $pasajeros ? 'selected' : '' ?>><?= $i ?></option>
+                        <?php endfor; ?>
+                    </select>
+                </div>
+                <div class="col-6 col-md-1 d-grid">
+                    <button type="submit" class="btn btn-primary fw-semibold">Buscar</button>
+                </div>
+
+                <datalist id="mbCiudades">
+                    <?php foreach (array_unique(array_column($ciudades, 'city')) as $ciudad): ?>
+                        <option value="<?= htmlspecialchars($ciudad) ?>"></option>
+                    <?php endforeach; ?>
+                </datalist>
+            </form>
         </div>
 
         <?php if ($esIdaVuelta && $paso === 'vuelta'): ?>
@@ -698,5 +752,26 @@ $textoVacio = !$esIdaVuelta
 </script>
 
 
+<script>
+(function () {
+    const tipo = document.getElementById('mbTipoViaje');
+    const cont = document.getElementById('mbContVuelta');
+    const ida = document.getElementById('mbFecha');
+    const vuelta = document.getElementById('mbFechaVuelta');
+    if (!tipo || !cont || !vuelta) return;
+
+    tipo.addEventListener('change', function () {
+        const conVuelta = this.value === 'ida_vuelta';
+        cont.classList.toggle('d-none', !conVuelta);
+        vuelta.disabled = !conVuelta;
+        if (!conVuelta) vuelta.value = '';
+    });
+
+    ida.addEventListener('change', function () {
+        vuelta.min = this.value || ida.min;
+        if (vuelta.value && this.value && vuelta.value < this.value) vuelta.value = '';
+    });
+})();
+</script>
 </body>
 </html>
