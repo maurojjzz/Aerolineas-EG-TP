@@ -1,21 +1,14 @@
 (function () {
     "use strict";
 
-    // Botón de impresión del reporte activo.
+    // Botón de impresión: abre el informe imprimible en la misma pestaña
+    // (el informe tiene su propio botón "Volver al reporte").
     const btnImprimir = document.getElementById("btnImprimirReporte");
     if (btnImprimir) {
         btnImprimir.addEventListener("click", function () {
             const url = new URL(window.location.href);
             url.searchParams.set("imprimir", "1");
-            window.open(url.toString(), "_blank", "noopener,noreferrer");
-        });
-    }
-
-    if (new URLSearchParams(window.location.search).get("imprimir") === "1") {
-        window.addEventListener("load", function () {
-            window.setTimeout(function () {
-                window.print();
-            }, 250);
+            window.location.href = url.toString();
         });
     }
 
