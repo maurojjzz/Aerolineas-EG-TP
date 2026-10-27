@@ -153,6 +153,7 @@ $fechaLlegada = date('d/m/Y', strtotime($reserva['fechaHoraLlegadaVuelo']));
 
 <div style="min-height:100vh;">
 <main id="contenido" tabindex="-1" class="container-xxl py-4 px-3 px-lg-5">
+    <?php $migas = [['label' => 'Mis reservas', 'href' => 'index.php?pagina=mis-reservas'], ['label' => 'Pago']]; require __DIR__ . '/../components/breadcrumbCliente.php'; ?>
 
     <!-- Título -->
     <div class="text-center mb-4">

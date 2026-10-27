@@ -225,7 +225,7 @@ document.addEventListener('change', function(e) {
                 dividerVuelta.classList.remove('d-none');
                 dividerVuelta.style.display = 'block';
             }
-            if (inputVuelta) inputVuelta.required = true;
+            if (inputVuelta) inputVuelta.required = false; // La vuelta es opcional: sin fecha se listan todos los vuelos posteriores a la ida
             if (hiddenTipoViaje) hiddenTipoViaje.value = 'ida_vuelta';
         } else {
             if (contenedorVuelta) {

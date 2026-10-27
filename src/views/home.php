@@ -58,8 +58,8 @@
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
         <script src="<?= url('public/js/aeropuertos.js') ?>"></script>
-        <script src="<?= url('public/js/searchMobile.js') ?>"></script>
-        <script src="<?= url('public/js/searchDesktop.js') ?>"></script>
+        <script src="<?= url('public/js/searchMobile.js') ?>?v=<?= filemtime(__DIR__ . '/../../public/js/searchMobile.js') ?>"></script>
+        <script src="<?= url('public/js/searchDesktop.js') ?>?v=<?= filemtime(__DIR__ . '/../../public/js/searchDesktop.js') ?>"></script>
         <script src="<?= url('public/js/homeDestacados.js') ?>"></script>
         <script src="<?= url('public/js/accesibilidad.js') ?>?v=<?= time() ?>"></script>
     </body>

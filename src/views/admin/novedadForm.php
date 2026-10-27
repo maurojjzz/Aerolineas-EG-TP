@@ -12,7 +12,7 @@ $esEdicion = !empty($novedad);
 <div>
     <nav class="breadcrumbCont" aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <!-- <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=inicio') ?>">Inicio</a></li> -->
+            <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=aerolinea&seccion=listado') ?>">Administración</a></li>
             <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=novedades&seccion=listado') ?>">Novedades</a></li>
             <li class="breadcrumb-item active" aria-current="page">Editar: <?= htmlspecialchars($novedad['titulo'] ?? '') ?></li>
         </ol>

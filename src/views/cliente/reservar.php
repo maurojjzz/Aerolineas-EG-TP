@@ -139,6 +139,7 @@ foreach ($tramos as $tramo) {
 
 <div style="min-height:100vh;">
 <main id="contenido" tabindex="-1" class="container-xxl py-4 px-3 px-lg-5">
+    <?php $migas = [['label' => 'Reservar vuelo']]; require __DIR__ . '/../components/breadcrumbCliente.php'; ?>
 
     <div class="titulo-cuadro text-center mb-4">
         <p class="h5 fw-bold mb-1">Paso 2 de 3</p>

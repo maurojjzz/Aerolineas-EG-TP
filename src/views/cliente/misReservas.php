@@ -51,6 +51,7 @@ $conteos = [
 
 <div style="min-height:100vh;">
 <main id="contenido" tabindex="-1" class="container-xxl py-4 px-3 px-lg-5">
+    <?php $migas = [['label' => 'Mis reservas']]; require __DIR__ . '/../components/breadcrumbCliente.php'; ?>
 
     <?php require __DIR__ . '/../components/alertToast.php';  ?>
 
@@ -243,15 +244,10 @@ $conteos = [
                             <?php endif; ?>
 
                             <?php if ($puedeCancelar): ?>
-                            <form method="POST" action="<?= url('src/routes/reserva.php?accion=cancelar') ?>"
-                                  onsubmit="return confirm('¿Seguro que querés cancelar esta reserva?')"
-                                  data-loading-form>
-                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
-                                <input type="hidden" name="idReserva"  value="<?= $r['idReserva'] ?>">
-                                <button type="submit" class="btn btn-outline-danger btn-sm">
-                                    Cancelar
-                                </button>
-                            </form>
+                            <button type="button" class="btn btn-outline-danger btn-sm"
+                                    onclick="abrirCancelar(<?= $dataId ?>)">
+                                Cancelar
+                            </button>
                             <?php endif; ?>
 
                             <?php if (($r['estadoReserva'] ?? '') === 'confirmada'): ?>
@@ -305,11 +301,47 @@ $conteos = [
     </div>
 </div>
 
+<!-- Modal de confirmación de cancelación -->
+<div class="modal fade" id="modalCancelar" tabindex="-1" role="dialog" aria-labelledby="modalCancelarLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow">
+            <div class="modal-header border-0 pb-0">
+                <h2 class="modal-title fw-bold h5 text-danger" id="modalCancelarLabel">Cancelar reserva</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <form method="POST" action="<?= url('src/routes/reserva.php?accion=cancelar') ?>" data-loading-form>
+                <div class="modal-body p-4">
+                    <p class="mb-2">¿Seguro que querés cancelar esta reserva?</p>
+                    <div class="bg-light rounded-3 p-3 mb-3" id="modalCancelarResumen"></div>
+                    <p class="text-muted small m-0">Esta acción no se puede deshacer y los asientos quedarán liberados.</p>
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+                    <input type="hidden" name="idReserva" id="modalCancelarId" value="">
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Volver</button>
+                    <button type="submit" class="btn btn-danger fw-semibold" data-loading-text="Cancelando…">Sí, cancelar reserva</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <?php require_once './src/views/layouts/footer.php'; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 // Datos de todas las reservas embebidos en JS
 const reservasData = <?= json_encode(array_values($todasReservas), JSON_UNESCAPED_UNICODE) ?>;
+
+function abrirCancelar(idReserva) {
+    const r = reservasData.find(x => x.idReserva == idReserva);
+    if (!r) return;
+    const esc = (t) => String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    document.getElementById('modalCancelarId').value = r.idReserva;
+    document.getElementById('modalCancelarResumen').innerHTML =
+        `<p class="fw-semibold m-0">Reserva #${String(r.idReserva).padStart(6, '0')}</p>
+         <p class="m-0">${esc(r.origenVuelo)} → ${esc(r.destinoVuelo)}</p>`;
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('modalCancelar')).show();
+}
 
 function abrirDetalle(idReserva) {
     const r = reservasData.find(x => x.idReserva == idReserva);

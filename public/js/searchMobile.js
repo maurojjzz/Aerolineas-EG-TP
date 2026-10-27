@@ -206,7 +206,7 @@ if (radiosMobile.length > 0) {
             if (this.value === 'ida_vuelta') {
                 // Mostrar calendario de vuelta
                 calendarVuelta.classList.remove('d-none');
-                fechaVueltaInput.required = true;
+                fechaVueltaInput.required = false; // La vuelta es opcional: sin fecha se listan todos los vuelos posteriores a la ida
                 hiddenTipoViajeMobile.value = 'ida_vuelta';
                 calendarVuelta.classList.remove('inputCalendar-bloqueado');
             } else {
