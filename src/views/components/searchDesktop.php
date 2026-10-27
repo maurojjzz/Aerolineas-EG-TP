@@ -112,7 +112,7 @@
                 <div class="desktop-divider d-none" id="dividerVueltaDesktop"></div>
 
                 <div class="desktop-field desktop-date d-none" id="contenedorFechaVueltaDesktop">
-                    <label for="fecha-vuelta-desktop">Vuelta <small class="fw-normal">(opcional)</small></label>
+                    <label for="fecha-vuelta-desktop">Vuelta</label>
                     <input type="date" id="fecha-vuelta-desktop" class="desktop-date-input" min="<?php echo date('Y-m-d'); ?>" name="fecha_vuelta">
                     <p id="fecha-vuelta-sub-desktop">Seleccione fecha</p>
                 </div>
