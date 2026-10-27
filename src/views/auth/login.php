@@ -7,7 +7,8 @@
         <title>Iniciar Sesión — Volaré</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 
-        <link rel="stylesheet" href="<?= url('public/css/layout/login.css') ?>?v=1.0">
+        <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
+        <link rel="stylesheet" href="<?= url('public/css/layout/login.css') ?>?v=1.1">
         <link rel="stylesheet" href="<?= url('public/css/layout/header.css') ?>">
         <link rel="stylesheet" href="<?= url('public/css/components/menuMobile.css') ?>">
 
@@ -43,7 +44,12 @@
                     
                     <div class="form-group d-flex flex-column ">
                         <label class="form-label-t" id="labContrasena" for="contrasena">Contraseña: <span class="text-danger" aria-hidden="true">*</span></label>
-                        <input type="password" name="contrasena" id="contrasena" class="form-control ctm-inp" required autocomplete="current-password" placeholder="********" aria-describedby="infoContrasena">
+                        <div class="position-relative">
+                            <input type="password" name="contrasena" id="contrasena" class="form-control ctm-inp pe-5" required autocomplete="current-password" placeholder="********" aria-describedby="infoContrasena">
+                            <button type="button" class="btn-ver-contrasena" id="btnVerContrasena" aria-label="Mostrar contraseña" aria-pressed="false" aria-controls="contrasena">
+                                <i class="bi bi-eye" aria-hidden="true"></i>
+                            </button>
+                        </div>
                         <p id="infoContrasena" class="form-text-info" aria-live="polite"></p>
                     </div>
 

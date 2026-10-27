@@ -77,3 +77,14 @@ if (formLogin) {
         }
     });
 }
+// Botón para mostrar/ocultar la contraseña
+const btnVerContrasena = document.getElementById("btnVerContrasena");
+if (btnVerContrasena && iContrasena) {
+    btnVerContrasena.addEventListener("click", function () {
+        const mostrar = iContrasena.type === "password";
+        iContrasena.type = mostrar ? "text" : "password";
+        this.querySelector("i").className = mostrar ? "bi bi-eye-slash" : "bi bi-eye";
+        this.setAttribute("aria-pressed", String(mostrar));
+        this.setAttribute("aria-label", mostrar ? "Ocultar contraseña" : "Mostrar contraseña");
+    });
+}

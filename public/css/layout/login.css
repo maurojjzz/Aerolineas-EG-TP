@@ -110,3 +110,21 @@ body {
     -webkit-text-stroke: 2.5px #082149;
     font-weight: 800;
 }
+
+.btn-ver-contrasena {
+    position: absolute;
+    top: 50%;
+    right: 0.5rem;
+    transform: translateY(-50%);
+    border: 0;
+    background: transparent;
+    color: #6c757d;
+    padding: 0.25rem 0.5rem;
+    line-height: 1;
+    font-size: 1.15rem;
+}
+
+.btn-ver-contrasena:hover,
+.btn-ver-contrasena:focus-visible {
+    color: #031f47;
+}
