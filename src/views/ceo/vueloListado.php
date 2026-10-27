@@ -216,19 +216,17 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                                                 <div class="d-flex justify-content-center align-items-center gap-2">
                                                     <a href="<?= url('index.php?pagina=vuelo&id=' . $v['idVuelo']) ?>"
                                                     class="p-0 bg-transparent border-0"
-                                                    title="Editar vuelo"
-                                                    aria-label="Editar el vuelo">
+                                                    title="Editar vuelo">
                                                         <img src="<?= url('public/img/icons/lapiz-editar.png') ?>"
-                                                            class="img-fluid btn-tabla" alt="">
+                                                            class="img-fluid btn-tabla" alt="Editar vuelo <?= htmlspecialchars($v['origenVuelo'] . ' → ' . $v['destinoVuelo']) ?>">
                                                     </a>
                                                     <button type="button"
                                                             class="p-0 bg-transparent border-0 btn-eliminar-vuelo"
                                                             data-id="<?= $v['idVuelo'] ?>"
                                                             data-ruta="<?= htmlspecialchars($v['origenVuelo'] . ' → ' .$v['destinoVuelo']) ?>"
-                                                            title="Eliminar vuelo"
-                                                            aria-label="Eliminar vuelo">
+                                                            title="Eliminar vuelo">
                                                         <img src="<?= url('public/img/icons/trash.png') ?>"
-                                                            class="img-fluid btn-tabla" alt="">
+                                                            class="img-fluid btn-tabla" alt="Eliminar vuelo <?= htmlspecialchars($v['origenVuelo'] . ' → ' . $v['destinoVuelo']) ?>">
                                                     </button>
                                                 </div>
                                             </td>
@@ -325,8 +323,8 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                                                     <div><dt>Disponibles</dt><dd><?= $v['asientosDisponibles'] ?></dd></div>
                                                 </dl>
                                                 <div class="admin-mobile-card__actions">
-                                                    <a class="btn btn-outline-secondary btn-sm" href="<?= url('index.php?pagina=vuelo&id=' . $v['idVuelo']) ?>">Editar vuelo</a>
-                                                    <button type="button" class="btn btn-outline-danger btn-sm btn-eliminar-vuelo" data-id="<?= $v['idVuelo'] ?>" data-ruta="<?= htmlspecialchars($v['origenVuelo'] . ' → ' . $v['destinoVuelo']) ?>">Eliminar</button>
+                                                    <a class="btn btn-outline-secondary btn-sm" href="<?= url('index.php?pagina=vuelo&id=' . $v['idVuelo']) ?>">Editar vuelo<span class="visually-hidden"> <?= htmlspecialchars($v['origenVuelo'] . ' → ' . $v['destinoVuelo']) ?></span></a>
+                                                    <button type="button" class="btn btn-outline-danger btn-sm btn-eliminar-vuelo" data-id="<?= $v['idVuelo'] ?>" data-ruta="<?= htmlspecialchars($v['origenVuelo'] . ' → ' . $v['destinoVuelo']) ?>">Eliminar<span class="visually-hidden"> vuelo <?= htmlspecialchars($v['origenVuelo'] . ' → ' . $v['destinoVuelo']) ?></span></button>
                                                 </div>
                                             </article>
                                         <?php endforeach; ?>
@@ -391,8 +389,9 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                                         </nav>
 
                                         <div class="d-flex align-items-center gap-2">
-                                            <span class="text-muted" style="font-size:0.8rem;">Por página:</span>
+                                            <label for="porPaginaVuelos" class="text-muted" style="font-size:0.8rem;">Por página:</label>
                                             <select
+                                                id="porPaginaVuelos"
                                                 class="form-select form-select-sm border-0 bg-light rounded-2"
                                                 style="width:auto; font-size:0.8rem; cursor:pointer;"
                                                 onchange="window.location.href=this.value"
