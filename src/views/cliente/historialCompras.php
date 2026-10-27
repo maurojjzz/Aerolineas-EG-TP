@@ -202,7 +202,7 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
         <div class="row g-3 mb-4">
             <div class="col-12 col-sm-6 col-xl-3">
                 <div class="historial-kpi h-100">
-                    <div class="historial-kpi-icon"><i class="bi bi-bag-check"></i></div>
+                    <div class="historial-kpi-icon"><i class="bi bi-bag-check" aria-hidden="true"></i></div>
                     <div class="min-width-0">
                         <p class="historial-kpi-label">Compras realizadas</p>
                         <p class="historial-kpi-value"><?= $totalCompras ?></p>
@@ -213,7 +213,7 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
 
             <div class="col-12 col-sm-6 col-xl-3">
                 <div class="historial-kpi h-100">
-                    <div class="historial-kpi-icon"><i class="bi bi-cash-stack"></i></div>
+                    <div class="historial-kpi-icon"><i class="bi bi-cash-stack" aria-hidden="true"></i></div>
                     <div class="min-width-0">
                         <p class="historial-kpi-label">Total invertido</p>
                         <p class="historial-kpi-value historial-kpi-value-money"><?= $fmtPesos($totalInvertido) ?></p>
@@ -224,7 +224,7 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
 
             <div class="col-12 col-sm-6 col-xl-3">
                 <div class="historial-kpi h-100">
-                    <div class="historial-kpi-icon"><i class="bi bi-people"></i></div>
+                    <div class="historial-kpi-icon"><i class="bi bi-people" aria-hidden="true"></i></div>
                     <div class="min-width-0">
                         <p class="historial-kpi-label">Pasajeros transportados</p>
                         <p class="historial-kpi-value"><?= $totalPasajeros ?></p>
@@ -235,7 +235,7 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
 
             <div class="col-12 col-sm-6 col-xl-3">
                 <div class="historial-kpi h-100">
-                    <div class="historial-kpi-icon"><i class="bi bi-geo-alt"></i></div>
+                    <div class="historial-kpi-icon"><i class="bi bi-geo-alt" aria-hidden="true"></i></div>
                     <div class="min-width-0">
                         <p class="historial-kpi-label">Destino favorito</p>
                         <p class="historial-kpi-value historial-kpi-value-destination text-truncate"
@@ -259,7 +259,7 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
                 <div class="col-12 col-lg-4">
                     <label class="form-label" for="busquedaCompra">Buscar</label>
                     <div class="input-group">
-                        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                        <span class="input-group-text bg-white"><i class="bi bi-search" aria-hidden="true"></i></span>
                         <input type="search"
                                class="form-control"
                                id="busquedaCompra"
@@ -306,7 +306,7 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
             <div class="d-flex flex-column flex-sm-row justify-content-end gap-2 mt-3">
                 <a href="<?= htmlspecialchars($urlLimpiar) ?>" class="btn btn-light border">Limpiar filtros</a>
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-funnel"></i> Filtrar
+                    <i class="bi bi-funnel" aria-hidden="true"></i> Filtrar
                 </button>
             </div>
         </form>
@@ -327,14 +327,14 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
 
             <?php if ($totalCompras === 0): ?>
                 <div class="text-center py-5">
-                    <div class="historial-empty-icon mb-3"><i class="bi bi-bag-x"></i></div>
+                    <div class="historial-empty-icon mb-3"><i class="bi bi-bag-x" aria-hidden="true"></i></div>
                     <p class="fs-5 fw-semibold mb-1">Todavía no tenés compras confirmadas.</p>
                     <p class="text-muted mb-3">Cuando concretes una reserva, va a aparecer en este historial.</p>
                     <a href="<?= url('index.php?pagina=buscar-vuelos') ?>" class="btn btn-primary">+ Buscar vuelos</a>
                 </div>
             <?php elseif ($totalFiltrado === 0): ?>
                 <div class="text-center py-5">
-                    <div class="historial-empty-icon mb-3"><i class="bi bi-search"></i></div>
+                    <div class="historial-empty-icon mb-3"><i class="bi bi-search" aria-hidden="true"></i></div>
                     <p class="fs-5 fw-semibold mb-1">No encontramos compras con esos filtros.</p>
                     <p class="text-muted mb-3">Probá con otro destino, aerolínea o rango de fechas.</p>
                     <a href="<?= htmlspecialchars($urlLimpiar) ?>" class="btn btn-outline-primary">Limpiar filtros</a>
@@ -380,7 +380,7 @@ $urlPaginaHistorial = static function (int $numeroPagina): string {
                                             <span class="ruta-codigo"><?= htmlspecialchars($compra['codigoOrigen'] ?? '—') ?></span>
                                             <span class="ruta-ciudad"><?= htmlspecialchars($origenCiudad) ?></span>
                                         </div>
-                                        <span class="ruta-flecha"><i class="bi bi-airplane-fill"></i></span>
+                                        <span class="ruta-flecha"><i class="bi bi-airplane-fill" aria-hidden="true"></i></span>
                                         <div class="ruta-punto">
                                             <span class="ruta-codigo"><?= htmlspecialchars($compra['codigoDestino'] ?? '—') ?></span>
                                             <span class="ruta-ciudad"><?= htmlspecialchars($destinoCiudad) ?></span>
