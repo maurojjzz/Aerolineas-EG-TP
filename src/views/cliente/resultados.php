@@ -174,6 +174,17 @@ $filtrosActivos = [
     'precioMax'  => $precioMaxFiltro,
 ];
 
+// Búsqueda editable dentro del panel de filtros.
+$busqueda = [
+    'origen'      => $origen,
+    'destino'     => $destino,
+    'fecha'       => $fecha,
+    'fechaVuelta' => $fechaVuelta,
+    'pasajeros'   => $pasajeros,
+    'esIdaVuelta' => $esIdaVuelta,
+    'ciudades'    => $ciudades,
+];
+
 // Parámetros que el formulario de filtros tiene que conservar.
 $paramsFiltros = array_filter([
     'origen'       => $origen,
@@ -283,64 +294,12 @@ $textoVacio = !$esIdaVuelta
                     <?= $pasajeros ?> pasajero<?= $pasajeros !== 1 ? 's' : '' ?> 
                 </span> 
 
-                <button type="button" class="btn btn-outline-dark fw-semibold"
-                        data-bs-toggle="collapse" data-bs-target="#modificarBusqueda"
-                        aria-expanded="false" aria-controls="modificarBusqueda">
+                <button type="button" class="btn btn-outline-dark fw-semibold" id="btnModificarBusqueda">
                     Modificar búsqueda
                 </button>
             </div >
         </div>
 
-        <!-- Modificar búsqueda sin volver al inicio -->
-        <div class="collapse mb-3" id="modificarBusqueda">
-            <form method="GET" action="<?= url('index.php') ?>" class="bg-white shadow-sm rounded-4 p-3 row g-2 align-items-end">
-                <input type="hidden" name="pagina" value="buscar-vuelos">
-                <input type="hidden" name="orden" value="<?= htmlspecialchars($orden) ?>">
-
-                <div class="col-12 col-md-2">
-                    <label class="form-label small fw-semibold mb-1" for="mbTipoViaje">Tipo de viaje</label>
-                    <select class="form-select" id="mbTipoViaje" name="tipo_viaje">
-                        <option value="solo_ida" <?= !$esIdaVuelta ? 'selected' : '' ?>>Solo ida</option>
-                        <option value="ida_vuelta" <?= $esIdaVuelta ? 'selected' : '' ?>>Ida y vuelta</option>
-                    </select>
-                </div>
-                <div class="col-6 col-md-2">
-                    <label class="form-label small fw-semibold mb-1" for="mbOrigen">Origen</label>
-                    <input type="text" class="form-control" id="mbOrigen" name="origen" list="mbCiudades"
-                           placeholder="Cualquiera" autocomplete="off" value="<?= htmlspecialchars($origen) ?>">
-                </div>
-                <div class="col-6 col-md-2">
-                    <label class="form-label small fw-semibold mb-1" for="mbDestino">Destino</label>
-                    <input type="text" class="form-control" id="mbDestino" name="destino" list="mbCiudades"
-                           placeholder="Cualquiera" autocomplete="off" value="<?= htmlspecialchars($destino) ?>">
-                </div>
-                <div class="col-6 col-md-2">
-                    <label class="form-label small fw-semibold mb-1" for="mbFecha">Salida <small class="fw-normal">(opcional)</small></label>
-                    <input type="date" class="form-control" id="mbFecha" name="fecha" min="<?= date('Y-m-d') ?>" value="<?= htmlspecialchars($fecha) ?>">
-                </div>
-                <div class="col-6 col-md-2 <?= $esIdaVuelta ? '' : 'd-none' ?>" id="mbContVuelta">
-                    <label class="form-label small fw-semibold mb-1" for="mbFechaVuelta">Vuelta <small class="fw-normal">(opcional)</small></label>
-                    <input type="date" class="form-control" id="mbFechaVuelta" name="fecha_vuelta" min="<?= htmlspecialchars($fecha ?: date('Y-m-d')) ?>" value="<?= htmlspecialchars($fechaVuelta) ?>" <?= $esIdaVuelta ? '' : 'disabled' ?>>
-                </div>
-                <div class="col-6 col-md-1">
-                    <label class="form-label small fw-semibold mb-1" for="mbPasajeros">Pasajeros</label>
-                    <select class="form-select" id="mbPasajeros" name="pasajeros">
-                        <?php for ($i = 1; $i <= 5; $i++): ?>
-                            <option value="<?= $i ?>" <?= $i === $pasajeros ? 'selected' : '' ?>><?= $i ?></option>
-                        <?php endfor; ?>
-                    </select>
-                </div>
-                <div class="col-6 col-md-1 d-grid">
-                    <button type="submit" class="btn btn-primary fw-semibold">Buscar</button>
-                </div>
-
-                <datalist id="mbCiudades">
-                    <?php foreach (array_unique(array_column($ciudades, 'city')) as $ciudad): ?>
-                        <option value="<?= htmlspecialchars($ciudad) ?>"></option>
-                    <?php endforeach; ?>
-                </datalist>
-            </form>
-        </div>
 
         <?php if ($esIdaVuelta && $paso === 'vuelta'): ?>
             <div class="alert alert-light border shadow-sm d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2">
@@ -383,7 +342,7 @@ $textoVacio = !$esIdaVuelta
                 </button>
 
                 <div class="filtros-contenido px-3 pb-3" id="filtros-contenido">
-                    <h2 class="filtro-titulo-panel fw-semibold mb-2">Filtros</h2>
+                    <h2 class="filtro-titulo-panel fw-semibold mb-2">Búsqueda y filtros</h2>
 
                     <?php
                     $idPrefijo = 'filtrosDesktop';
@@ -403,7 +362,7 @@ $textoVacio = !$esIdaVuelta
                             data-bs-target="#filtrosMobile"
                             aria-controls="filtrosMobile">
                         <i class="bi bi-funnel" aria-hidden="true"></i>
-                        Filtros<?= $cantidadFiltros > 0 ? ' (' . $cantidadFiltros . ')' : '' ?>
+                        Búsqueda y filtros<?= $cantidadFiltros > 0 ? ' (' . $cantidadFiltros . ')' : '' ?>
                     </button>
                 </div>
 
@@ -754,22 +713,37 @@ $textoVacio = !$esIdaVuelta
 
 <script>
 (function () {
-    const tipo = document.getElementById('mbTipoViaje');
-    const cont = document.getElementById('mbContVuelta');
-    const ida = document.getElementById('mbFecha');
-    const vuelta = document.getElementById('mbFechaVuelta');
-    if (!tipo || !cont || !vuelta) return;
+    // Tipo de viaje y fechas en el bloque "Tu búsqueda" (escritorio y mobile)
+    document.querySelectorAll('.filtro-busqueda').forEach(function (grupo) {
+        const tipo = grupo.querySelector('.js-tipo-viaje');
+        const cont = grupo.querySelector('.js-cont-vuelta');
+        const ida = grupo.querySelector('.js-fecha-ida');
+        const vuelta = grupo.querySelector('.js-fecha-vuelta');
 
-    tipo.addEventListener('change', function () {
-        const conVuelta = this.value === 'ida_vuelta';
-        cont.classList.toggle('d-none', !conVuelta);
-        vuelta.disabled = !conVuelta;
-        if (!conVuelta) vuelta.value = '';
+        tipo.addEventListener('change', function () {
+            const conVuelta = this.value === 'ida_vuelta';
+            cont.classList.toggle('d-none', !conVuelta);
+            vuelta.disabled = !conVuelta;
+            if (!conVuelta) vuelta.value = '';
+        });
+
+        ida.addEventListener('change', function () {
+            vuelta.min = this.value || ida.min;
+            if (vuelta.value && this.value && vuelta.value < this.value) vuelta.value = '';
+        });
     });
 
-    ida.addEventListener('change', function () {
-        vuelta.min = this.value || ida.min;
-        if (vuelta.value && this.value && vuelta.value < this.value) vuelta.value = '';
+    // "Modificar búsqueda" abre el panel de filtros, donde está la búsqueda
+    const btn = document.getElementById('btnModificarBusqueda');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+        if (window.matchMedia('(min-width: 992px)').matches) {
+            if (filtroBtn.getAttribute('aria-expanded') !== 'true') filtroBtn.click();
+            setTimeout(function () { document.getElementById('filtrosDesktopOrigen')?.focus(); }, 200);
+            filtrosColumna.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+            bootstrap.Offcanvas.getOrCreateInstance(document.getElementById('filtrosMobile')).show();
+        }
     });
 })();
 </script>
