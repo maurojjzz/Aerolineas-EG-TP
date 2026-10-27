@@ -40,7 +40,7 @@ if (!in_array($tabActual, ['novedades', 'promociones'], true)) {
 
         <div class="d-flex justify-content-start pt-3">
             <a href="<?= url('index.php?pagina=inicio') ?>" class="text-decoration-none d-inline-flex align-items-center gap-1 text-muted">
-                <i class="bi bi-arrow-left"></i> Volver al inicio
+                <i class="bi bi-arrow-left" aria-hidden="true"></i> Volver al inicio
             </a>
         </div>
 
@@ -81,7 +81,7 @@ if (!in_array($tabActual, ['novedades', 'promociones'], true)) {
                                     <img src="<?= htmlspecialchars($n['imagen']) ?>" class="card-img-top rounded-top-3" alt="Imagen de la novedad: <?= htmlspecialchars($n['titulo']) ?>" style="height: 180px; object-fit: cover;">
                                 <?php else: ?>
                                     <div class="card-img-top rounded-top-3 bg-primary text-white d-flex align-items-center justify-content-center" style="height: 180px;">
-                                        <i class="bi bi-megaphone fs-1"></i>
+                                        <i class="bi bi-megaphone fs-1" aria-hidden="true"></i>
                                     </div>
                                 <?php endif; ?>
                                 <div class="card-body d-flex flex-column">
@@ -144,7 +144,7 @@ if (!in_array($tabActual, ['novedades', 'promociones'], true)) {
                                     <!-- 4. Fechas -->
                                     <div class="d-flex flex-column text-start px-3 border-start text-nowrap" style="min-width: 180px;">
                                         <div class="d-flex align-items-center gap-1 text-muted" style="font-size: 0.95rem;">
-                                            <i class="bi bi-calendar-check text-success"></i>
+                                            <i class="bi bi-calendar-check text-success" aria-hidden="true"></i>
                                             <span>Del <strong><?= $fInicio ?></strong> al <strong><?= $fFin ?></strong></span>
                                         </div>
                                     </div>
@@ -172,7 +172,7 @@ if (!in_array($tabActual, ['novedades', 'promociones'], true)) {
                                     <div class="d-flex justify-content-between align-items-center border-top pt-2 mt-1 small text-muted">
                                         <span>Aerolínea: <strong class="text-dark"><?= htmlspecialchars($p['nombreAerolinea'] ?? 'Aerolínea') ?></strong></span>
                                         <div class="d-flex align-items-center gap-1">
-                                            <i class="bi bi-calendar-check text-success"></i>
+                                            <i class="bi bi-calendar-check text-success" aria-hidden="true"></i>
                                             <span><?= $fInicio ?> - <?= $fFin ?></span>
                                         </div>
                                     </div>
