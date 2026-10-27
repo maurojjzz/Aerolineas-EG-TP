@@ -72,7 +72,7 @@ if ($diff > 0) {
                 <div class="bg-white shadow rounded-3 py-2 px-4">
                     <div class="d-flex flex-row align-items-center justify-content-start gap-3">
                         <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:55px;height:55px;background-color:#E3F0FE;">
-                            <i class="bi bi-people-fill text-primary fs-3"></i>
+                            <i class="bi bi-people-fill text-primary fs-3" aria-hidden="true"></i>
                         </div>
                         <div class="d-flex flex-column justify-content-center p-0 m-0">
                             <p class="fw-semibold m-0 p-0 text-muted" style="font-size:14px;">Total Usuarios</p>
@@ -80,7 +80,7 @@ if ($diff > 0) {
                         </div>
                     </div>
                     <div class="d-flex flex-row justify-content-start p-0 m-0 gap-2 mt-1">
-                        <img src="<?= url('public/img/icons/placeholdersCards/' . $flechaImg) ?>" class="img-fluid" alt="tendencia" style="width:20px;height:20px;object-fit:contain;">
+                        <img src="<?= url('public/img/icons/placeholdersCards/' . $flechaImg) ?>" class="img-fluid" alt="" style="width:20px;height:20px;object-fit:contain;">
                         <p class="fw-normal m-0 p-0 <?= $flechaColor ?>" style="font-size:14px;"><?= $flechaTexto ?></p>
                     </div>
                 </div>
@@ -90,7 +90,7 @@ if ($diff > 0) {
                 <div class="bg-white shadow rounded-3 py-2 px-4">
                     <div class="d-flex flex-row align-items-center justify-content-start gap-3">
                         <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:55px;height:55px;background-color:#E3F0FE;">
-                            <i class="bi bi-person-plus-fill text-primary fs-3"></i>
+                            <i class="bi bi-person-plus-fill text-primary fs-3" aria-hidden="true"></i>
                         </div>
                         <div class="d-flex flex-column justify-content-center p-0 m-0">
                             <p class="fw-semibold m-0 p-0 text-muted" style="font-size:14px;">Nuevos este mes</p>
@@ -98,7 +98,7 @@ if ($diff > 0) {
                         </div>
                     </div>
                     <div class="d-flex flex-row justify-content-start p-0 m-0 gap-2 mt-1">
-                        <img src="<?= url('public/img/icons/placeholdersCards/' . $flechaImg) ?>" class="img-fluid" alt="tendencia" style="width:20px;height:20px;object-fit:contain;">
+                        <img src="<?= url('public/img/icons/placeholdersCards/' . $flechaImg) ?>" class="img-fluid" alt="" style="width:20px;height:20px;object-fit:contain;">
                         <p class="fw-normal m-0 p-0 <?= $flechaColor ?>" style="font-size:14px;"><?= $flechaTexto ?></p>
                     </div>
                 </div>
@@ -108,7 +108,7 @@ if ($diff > 0) {
                 <div class="bg-white shadow rounded-3 py-2 px-4">
                     <div class="d-flex flex-row align-items-center justify-content-start gap-3">
                         <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:55px;height:55px;background-color:#E3F0FE;">
-                            <i class="bi bi-person-badge-fill text-primary fs-3"></i>
+                            <i class="bi bi-person-badge-fill text-primary fs-3" aria-hidden="true"></i>
                         </div>
                         <div class="d-flex flex-column justify-content-center p-0 m-0">
                             <p class="fw-semibold m-0 p-0 text-muted" style="font-size:14px;">Clientes / CEOs</p>
@@ -116,7 +116,7 @@ if ($diff > 0) {
                         </div>
                     </div>
                     <div class="d-flex flex-row justify-content-start p-0 m-0 gap-2 mt-1">
-                        <img src="<?= url('public/img/icons/placeholdersCards/simbolo-igual.png') ?>" class="img-fluid" alt="igual" style="width:20px;height:20px;object-fit:contain;">
+                        <img src="<?= url('public/img/icons/placeholdersCards/simbolo-igual.png') ?>" class="img-fluid" alt="" style="width:20px;height:20px;object-fit:contain;">
                         <p class="fw-normal m-0 p-0 text-muted" style="font-size:14px;">Distribución por roles</p>
                     </div>
                 </div>
@@ -134,8 +134,10 @@ if ($diff > 0) {
                             <input type="hidden" name="seccion" value="listado">
                             <input type="hidden" name="porPagina" value="<?= $porPagina ?>">
 
+                            <label for="filtroRolUsuario" class="visually-hidden">Filtrar por rol</label>
                             <select
                                 name="rol"
+                                id="filtroRolUsuario"
                                 class="form-select ctm-inp"
                                 aria-label="Filtrar por rol"
                                 style="max-width: 170px; cursor:pointer;"
@@ -146,8 +148,10 @@ if ($diff > 0) {
                                 <option value="ceo" <?= $rol === 'ceo' ? 'selected' : '' ?>>CEOs</option>
                             </select>
 
+                            <label for="filtroEstadoUsuario" class="visually-hidden">Filtrar por estado</label>
                             <select
                                 name="estado"
+                                id="filtroEstadoUsuario"
                                 class="form-select ctm-inp"
                                 aria-label="Filtrar por estado"
                                 style="max-width: 190px; cursor:pointer;"
@@ -159,9 +163,10 @@ if ($diff > 0) {
                                 <option value="sin-verificar" <?= $estado === 'sin-verificar' ? 'selected' : '' ?>>Email sin verificar</option>
                             </select>
 
-                            <input 
-                                type="text" 
-                                name="busqueda" 
+                            <label for="buscadorUsuario" class="visually-hidden">Buscar usuario por nombre o email</label>
+                            <input
+                                type="text"
+                                name="busqueda"
                                 id="buscadorUsuario" 
                                 class="form-control ctm-inp" 
                                 placeholder="Buscar..." 
@@ -228,7 +233,7 @@ if ($diff > 0) {
                                             class="p-0 text-start bg-transparent border-0 btn-ver-detalle"
                                             title="Ver Detalle"
                                         >
-                                            <img src="<?= url('public/img/icons/readTabla.png') ?>" class="img-fluid btn-tabla" alt="icono ver detalle">
+                                            <img src="<?= url('public/img/icons/readTabla.png') ?>" class="img-fluid btn-tabla" alt="Ver detalle de <?= htmlspecialchars(($u['nombre'] ?? '') . ' ' . ($u['apellido'] ?? '')) ?>">
                                         </a>
 
                                         <!-- Editar usuario -->
@@ -237,7 +242,7 @@ if ($diff > 0) {
                                             class="p-0 text-start bg-transparent border-0"
                                             title="Editar Usuario"
                                         >
-                                            <img src="<?= url('public/img/icons/lapiz-editar.png') ?>" class="img-fluid btn-tabla" alt="icono editar usuario">
+                                            <img src="<?= url('public/img/icons/lapiz-editar.png') ?>" class="img-fluid btn-tabla" alt="Editar a <?= htmlspecialchars(($u['nombre'] ?? '') . ' ' . ($u['apellido'] ?? '')) ?>">
                                         </a>
 
                                         <!-- Activar / Desactivar -->
@@ -249,7 +254,7 @@ if ($diff > 0) {
                                             data-nombre="<?= htmlspecialchars($u['nombre'] . ' ' . $u['apellido']) ?>"
                                             title="<?= $u['activo'] ? 'Desactivar Usuario' : 'Activar Usuario' ?>"
                                         >
-                                            <img src="<?= url($u['activo'] ? 'public/img/icons/trash.png' : 'public/img/icons/redo.png') ?>" class="img-fluid btn-tabla" alt="<?= $u['activo'] ? 'desactivar' : 'activar' ?>">
+                                            <img src="<?= url($u['activo'] ? 'public/img/icons/trash.png' : 'public/img/icons/redo.png') ?>" class="img-fluid btn-tabla" alt="<?= $u['activo'] ? 'Desactivar' : 'Activar' ?> a <?= htmlspecialchars(($u['nombre'] ?? '') . ' ' . ($u['apellido'] ?? '')) ?>">
                                         </button>
                                     </div>
                                 </td>
@@ -373,8 +378,8 @@ if ($diff > 0) {
                         </nav>
 
                         <div class="d-flex align-items-center gap-2">
-                            <span class="text-muted" style="font-size:0.8rem;">Por página:</span>
-                            <select class="form-select form-select-sm border-0 bg-light rounded-2" style="width:auto; font-size:0.8rem; cursor:pointer;" onchange="window.location.href=this.value" aria-label="Resultados por página">
+                            <label for="porPaginaUsuario" class="text-muted" style="font-size:0.8rem;">Por página:</label>
+                            <select id="porPaginaUsuario" class="form-select form-select-sm border-0 bg-light rounded-2" style="width:auto; font-size:0.8rem; cursor:pointer;" onchange="window.location.href=this.value" aria-label="Resultados por página">
                                 <?php foreach ([5, 10, 25, 50] as $op): ?>
                                     <option value="<?= urlPagina(1, $op) ?>" <?= $op === $porPagina ? 'selected' : '' ?>>
                                         <?= $op ?> por página
