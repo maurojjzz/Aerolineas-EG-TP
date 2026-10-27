@@ -154,7 +154,7 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
 <div>
     <nav class="breadcrumbCont" aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <!-- <li class="breadcrumb-item"><a href="#">Inicio</a></li> -->
+            <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=aerolinea&seccion=listado') ?>">Administración</a></li>
             <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=aerolinea&seccion=listado') ?>">Aerolíneas</a></li>
             <li class="breadcrumb-item active">Aerolinea: <?= htmlspecialchars($aero['nombreAerolinea']) ?></li>
         </ol>
@@ -440,7 +440,7 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3 mb-3">
                         <h2 class="m-0 fs-5 fw-bold">Vuelos de la aerolínea</h2>
 
-                        <form method="GET" action="index.php" class="d-flex flex-column flex-sm-row gap-2 align-items-stretch">
+                        <form method="GET" action="index.php" class="d-flex flex-column flex-sm-row gap-2 align-items-stretch" data-filtro-vivo>
                             <input type="hidden" name="pagina" value="aerolinea">
                             <input type="hidden" name="seccion" value="detalle">
                             <input type="hidden" name="id" value="<?= $id ?>">
@@ -462,7 +462,6 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
                                 <option value="pasados" <?= $estadoVuelos === 'pasados' ? 'selected' : '' ?>>Pasados</option>
                             </select>
 
-                            <button type="submit" class="btn btn-sm btn-outline-primary text-nowrap">Filtrar</button>
                             <a href="<?= adminAeroUrlDetalle($id, 'vuelos') ?>" class="btn btn-sm btn-outline-secondary text-nowrap">Limpiar</a>
                         </form>
                     </div>
@@ -611,7 +610,7 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3 mb-3">
                         <h3 class="m-0 fs-5 fw-bold">Promociones de la aerolínea</h3>
 
-                        <form method="GET" action="index.php" class="d-flex flex-column flex-sm-row gap-2 align-items-stretch">
+                        <form method="GET" action="index.php" class="d-flex flex-column flex-sm-row gap-2 align-items-stretch" data-filtro-vivo>
                             <input type="hidden" name="pagina" value="aerolinea">
                             <input type="hidden" name="seccion" value="detalle">
                             <input type="hidden" name="id" value="<?= $id ?>">
@@ -634,7 +633,6 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
                                 <option value="Denegada" <?= $estadoPromos === 'Denegada' ? 'selected' : '' ?>>Denegada</option>
                             </select>
 
-                            <button type="submit" class="btn btn-sm btn-outline-primary text-nowrap">Filtrar</button>
                             <a href="<?= adminAeroUrlDetalle($id, 'promociones') ?>" class="btn btn-sm btn-outline-secondary text-nowrap">Limpiar</a>
                         </form>
                     </div>
@@ -781,6 +779,55 @@ document.addEventListener("DOMContentLoaded", function () {
             const url = new URL(window.location.href);
             url.searchParams.set('tab', this.dataset.tab);
             history.replaceState({}, '', url);
+        });
+    });
+
+    // Filtrado en vivo: trae el listado por fetch y reemplaza solo la tabla y la
+    // paginación de la pestaña, sin recargar ni mover el scroll.
+    document.querySelectorAll('form[data-filtro-vivo]').forEach(function (form) {
+        const pane = form.closest('.tab-pane');
+        let espera;
+        let ultimaPeticion = 0;
+
+        async function aplicarFiltro() {
+            const url = new URL(form.getAttribute('action'), window.location.href);
+            url.search = new URLSearchParams(new FormData(form)).toString();
+            const peticion = ++ultimaPeticion;
+            pane.setAttribute('aria-busy', 'true');
+
+            try {
+                const resp = await fetch(url, { credentials: 'same-origin' });
+                if (!resp.ok) throw new Error(resp.status);
+                const doc = new DOMParser().parseFromString(await resp.text(), 'text/html');
+                const nuevoPane = doc.getElementById(pane.id);
+                if (peticion !== ultimaPeticion || !nuevoPane) return;
+
+                // Se conserva el encabezado con el formulario (y el foco del buscador)
+                Array.from(pane.children).slice(1).forEach(function (el) { el.remove(); });
+                Array.from(nuevoPane.children).slice(1).forEach(function (el) {
+                    pane.appendChild(document.importNode(el, true));
+                });
+                history.replaceState({}, '', url);
+            } catch (e) {
+                form.submit();
+            } finally {
+                pane.removeAttribute('aria-busy');
+            }
+        }
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            clearTimeout(espera);
+            aplicarFiltro();
+        });
+        form.querySelectorAll('select').forEach(function (sel) {
+            sel.addEventListener('change', aplicarFiltro);
+        });
+        form.querySelectorAll('input[type="text"]').forEach(function (input) {
+            input.addEventListener('input', function () {
+                clearTimeout(espera);
+                espera = setTimeout(aplicarFiltro, 400);
+            });
         });
     });
 });

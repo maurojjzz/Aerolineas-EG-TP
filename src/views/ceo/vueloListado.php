@@ -78,6 +78,7 @@ function urlPaginaVuelo(int $pag, ?int $porPagina = null): string {
                     <?php require __DIR__ . '/../components/alertToast.php';  ?>
                     <nav class="breadcrumbCont" aria-label="breadcrumb">
                         <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=ceo') ?>">Mi Aerolínea</a></li>
                             <li class="breadcrumb-item active" aria-current="page">Vuelos</li>
                         </ol>
                     </nav>

@@ -122,3 +122,202 @@
         margin: 0 0 8px;
     }
 }
+
+/* El layout admin usa html/body con height:100% + overflow y contenedores flex con
+   overflow-hidden: al imprimir eso recortaba el reporte a una sola hoja. */
+@media print {
+    html,
+    body {
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    body > .d-flex,
+    .admin-main,
+    .admin-content,
+    .contForm {
+        display: block !important;
+        height: auto !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+    }
+
+    /* Encabezado de la tabla repetido en cada hoja */
+    thead {
+        display: table-header-group;
+    }
+
+    tfoot {
+        display: table-footer-group;
+    }
+
+    .reporte-portada,
+    .reporte-grafico,
+    .row.g-3 {
+        break-inside: avoid;
+    }
+
+    .reporte-registros {
+        font-weight: 600;
+        color: #123d72;
+    }
+}
+
+/* ── Bloques de reporte: indicadores compactos y tablas de análisis ── */
+.rep-resumen {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0;
+    background: #fff;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    margin: 0.75rem 0;
+}
+
+.rep-indicador {
+    display: flex;
+    flex-direction: column;
+    padding: 0.65rem 0.9rem;
+    border-right: 1px solid #edf1f5;
+    border-bottom: 1px solid #edf1f5;
+    min-width: 0;
+}
+
+.rep-indicador-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.rep-indicador-valor {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #172033;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rep-indicador-detalle {
+    font-size: 0.75rem;
+    color: #596579;
+}
+
+.rep-ok .rep-indicador-valor { color: #198754; }
+.rep-alerta .rep-indicador-valor { color: #b02a37; }
+
+.rep-analisis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.rep-analisis-card {
+    background: #fff;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.08);
+    padding: 0.75rem 0.9rem;
+    min-width: 0;
+    overflow-x: auto;
+}
+
+.rep-analisis-titulo {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #123d72;
+    margin: 0 0 0.5rem;
+}
+
+.rep-analisis-vacio {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin: 0;
+}
+
+.rep-mini {
+    font-size: 0.82rem;
+}
+
+.rep-mini th {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    color: #6c757d;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.rep-mini td {
+    white-space: nowrap;
+}
+
+.rep-barra {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 110px;
+}
+
+.rep-barra-base {
+    flex: 1;
+    height: 8px;
+    background: #e8edf3;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.rep-barra-valor {
+    height: 100%;
+    background: #2878d7;
+    border-radius: 6px;
+}
+
+.rep-barra span {
+    min-width: 38px;
+    text-align: right;
+}
+
+@media print {
+    .rep-resumen {
+        grid-template-columns: repeat(6, 1fr);
+        box-shadow: none;
+        border: 1px solid #dbe2ea;
+        margin: 0 0 10px;
+        break-inside: avoid;
+    }
+
+    .rep-indicador { padding: 6px 8px; }
+    .rep-indicador-label { font-size: 8px; }
+    .rep-indicador-valor { font-size: 14px; }
+    .rep-indicador-detalle { font-size: 8px; }
+
+    .rep-analisis {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+    .rep-analisis-card {
+        box-shadow: none !important;
+        border: 1px solid #dbe2ea;
+        padding: 6px 8px;
+        break-inside: avoid;
+        overflow: visible;
+    }
+
+    .rep-analisis-titulo { font-size: 11px; margin-bottom: 4px; }
+    .rep-mini { font-size: 9px; }
+    .rep-mini th { font-size: 8px; }
+    .rep-mini td, .rep-mini th { padding: 2px 4px !important; }
+    .rep-barra { min-width: 70px; }
+    .rep-barra-base { height: 6px; }
+
+    /* Tabla de detalle más densa para usar menos hojas */
+    .reporte-tabla td,
+    .reporte-tabla th {
+        padding: 3px 5px !important;
+    }
+}

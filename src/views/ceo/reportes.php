@@ -2,6 +2,7 @@
 date_default_timezone_set('America/Argentina/Buenos_Aires');
 
 require_once __DIR__ . '/../../config/conexion.php';
+require_once __DIR__ . '/../components/reporteBloques.php';
 require_once __DIR__ . '/../../config/app.php';
 require_once __DIR__ . '/../../controllers/AerolineaController.php';
 
@@ -63,12 +64,13 @@ function repCeoUrl(int $pag, ?int $porPagina = null): string {
 $tab = in_array($_GET['tab'] ?? '', ['ventas', 'ocupacion'], true) ? $_GET['tab'] : 'ventas';
 
 $porPaginaPermitidos = [10, 25, 50];
-$pag = max(1, (int)($_GET['pag'] ?? 1));
+$pag = ($_GET['imprimir'] ?? '') === '1' ? 1 : max(1, (int)($_GET['pag'] ?? 1));
 $porPaginaRaw = (int)($_GET['porPagina'] ?? 10);
 $porPagina = in_array($porPaginaRaw, $porPaginaPermitidos, true) ? $porPaginaRaw : 10;
 $modoImpresion = ($_GET['imprimir'] ?? '') === '1';
+// El informe imprimible sintetiza: muestra un detalle acotado, no todos los registros.
 if ($modoImpresion) {
-    $porPagina = 5000;
+    $porPagina = 25;
 }
 
 $desde = repCeoFecha(trim($_GET['desde'] ?? ''));
@@ -104,6 +106,38 @@ if ($tab === 'ventas') {
                 COALESCE(SUM(r.cantPasajeros), 0) AS pasajeros,
                 COUNT(DISTINCT r.idUsuario) AS clientes
          $baseFrom", $tipos, $params)[0] ?? ['ventas' => 0, 'ingresos' => 0, 'pasajeros' => 0, 'clientes' => 0];
+
+    // Análisis: mismas condiciones, sin el filtro de estado para medir cancelaciones.
+    $whereSinEstado = implode(' AND ', array_diff($where, ["r.estadoReserva = 'confirmada'"]));
+    $estados = repCeoConsulta($link,
+        "SELECT r.estadoReserva AS estado, COUNT(*) AS cantidad
+         FROM reserva r
+         INNER JOIN usuario u ON u.idUsuario = r.idUsuario
+         INNER JOIN vuelo v ON v.idVuelo = r.idVuelo
+         WHERE $whereSinEstado
+         GROUP BY r.estadoReserva", $tipos, $params);
+    $porEstado = array_column($estados, 'cantidad', 'estado');
+    $reservasTotales = array_sum($porEstado);
+
+    $analisisRutas = repCeoConsulta($link,
+        "SELECT CONCAT(v.codigoOrigen, ' → ', v.codigoDestino) AS ruta, COUNT(*) AS ventas,
+                SUM(r.cantPasajeros) AS pasajeros, SUM(r.precioTotal) AS ingresos
+         $baseFrom
+         GROUP BY v.codigoOrigen, v.codigoDestino
+         ORDER BY ingresos DESC LIMIT 6", $tipos, $params);
+
+    $analisisMeses = repCeoConsulta($link,
+        "SELECT DATE_FORMAT(r.fechaReserva, '%Y-%m') AS mes, COUNT(*) AS ventas,
+                SUM(r.precioTotal) AS ingresos
+         $baseFrom
+         GROUP BY mes ORDER BY mes DESC LIMIT 6", $tipos, $params);
+
+    $analisisClientes = repCeoConsulta($link,
+        "SELECT CONCAT(u.nombre, ' ', u.apellido) AS cliente, COUNT(*) AS compras,
+                SUM(r.precioTotal) AS gastado
+         $baseFrom
+         GROUP BY u.idUsuario, u.nombre, u.apellido
+         ORDER BY gastado DESC LIMIT 6", $tipos, $params);
 
     $total = (int)$resumen['ventas'];
     $totalPaginas = max(1, (int)ceil($total / $porPagina));
@@ -141,8 +175,37 @@ if ($tab === 'ventas') {
          $baseFrom", $tipos, $params)[0] ?? ['vuelos' => 0, 'pasajeros' => 0, 'ingresos' => 0];
 
     $disponibles = repCeoConsulta($link,
-        "SELECT COALESCE(SUM(v.asientosDisponibles), 0) AS disponibles
-         FROM vuelo v WHERE $whereSql", $tipos, $params)[0] ?? ['disponibles' => 0];
+        "SELECT COALESCE(SUM(v.asientosDisponibles), 0) AS disponibles,
+                COALESCE(SUM(v.asientosTotales), 0) AS asientos,
+                COALESCE(SUM(v.fechaHoraSalidaVuelo >= NOW()), 0) AS proximos
+         FROM vuelo v WHERE $whereSql", $tipos, $params)[0] ?? ['disponibles' => 0, 'asientos' => 0, 'proximos' => 0];
+
+    // Una fila por vuelo (evita duplicar asientos por el JOIN con reservas).
+    $porVuelo = "SELECT v.idVuelo, v.codigoOrigen, v.codigoDestino, v.asientosTotales, v.fechaHoraSalidaVuelo,
+                        COALESCE(SUM(CASE WHEN r.estadoReserva = 'confirmada' THEN r.cantPasajeros ELSE 0 END), 0) AS vendidos,
+                        COALESCE(SUM(CASE WHEN r.estadoReserva = 'confirmada' THEN r.precioTotal ELSE 0 END), 0) AS ingresos
+                 $baseFrom
+                 GROUP BY v.idVuelo";
+
+    $conteos = repCeoConsulta($link,
+        "SELECT COALESCE(SUM(t.vendidos = 0), 0) AS sinVentas,
+                COALESCE(SUM(t.asientosTotales > 0 AND t.vendidos / t.asientosTotales >= 0.9), 0) AS llenos
+         FROM ($porVuelo) t", $tipos, $params)[0] ?? ['sinVentas' => 0, 'llenos' => 0];
+
+    $sqlRutas = "SELECT CONCAT(t.codigoOrigen, ' → ', t.codigoDestino) AS ruta, COUNT(*) AS vuelos,
+                        SUM(t.vendidos) AS vendidos, SUM(t.asientosTotales) AS asientos, SUM(t.ingresos) AS ingresos,
+                        SUM(t.vendidos) / NULLIF(SUM(t.asientosTotales), 0) AS ocupacion
+                 FROM ($porVuelo) t
+                 GROUP BY t.codigoOrigen, t.codigoDestino";
+    $analisisRutas = repCeoConsulta($link, "$sqlRutas ORDER BY ingresos DESC LIMIT 6", $tipos, $params);
+    $analisisRutasBajas = repCeoConsulta($link, "$sqlRutas ORDER BY ocupacion ASC, vuelos DESC LIMIT 6", $tipos, $params);
+
+    // Próximos vuelos que todavía necesitan ventas.
+    $analisisProximos = repCeoConsulta($link,
+        "SELECT t.* FROM ($porVuelo) t
+         WHERE t.fechaHoraSalidaVuelo >= NOW()
+         ORDER BY t.vendidos / NULLIF(t.asientosTotales, 0) ASC, t.fechaHoraSalidaVuelo ASC
+         LIMIT 6", $tipos, $params);
 
     $total = (int)$resumen['vuelos'];
     $totalPaginas = max(1, (int)ceil($total / $porPagina));
@@ -168,23 +231,6 @@ if ($busqueda !== '') $filtrosActivos++;
 $desdeFila = $total === 0 ? 0 : ($pag - 1) * $porPagina + 1;
 $hastaFila = min($pag * $porPagina, $total);
 
-$graficoReporte = [];
-foreach ($filas as $fila) {
-    if ($tab === 'ventas') {
-        $ruta = ($fila['codigoOrigen'] ?? '') . ' → ' . ($fila['codigoDestino'] ?? '');
-        $graficoReporte[$ruta] = ($graficoReporte[$ruta] ?? 0) + (int)$fila['cantPasajeros'];
-    } else {
-        $ruta = ($fila['codigoOrigen'] ?? '') . ' → ' . ($fila['codigoDestino'] ?? '');
-        $ocupacion = (int)($fila['asientosTotales'] ?? 0) > 0
-            ? round(((int)$fila['vendidos'] / (int)$fila['asientosTotales']) * 100)
-            : 0;
-        $graficoReporte[$ruta] = max($graficoReporte[$ruta] ?? 0, $ocupacion);
-    }
-}
-arsort($graficoReporte);
-$graficoReporte = array_slice($graficoReporte, 0, 5, true);
-$valoresGrafico = array_values($graficoReporte);
-$maxGrafico = $valoresGrafico ? max(1, ...$valoresGrafico) : 1;
 
 $tabs = [
     'ventas'    => 'Ventas',
@@ -202,6 +248,144 @@ function montoCompacto(float $monto): string {
     }
     return $signo . number_format($valor, 0, ',', '.');
 }
+
+// ── Indicadores, análisis y síntesis (compartidos por la pantalla y el informe) ──
+$conclusiones = [];
+
+if ($tab === 'ventas') {
+    $ticketPromedio = (int)$resumen['ventas'] > 0 ? (float)$resumen['ingresos'] / (int)$resumen['ventas'] : 0;
+    $canceladas = (int)($porEstado['cancelada'] ?? 0);
+    $pendientes = (int)($porEstado['pendiente de pago'] ?? 0);
+    $tasaCancelacion = $reservasTotales > 0 ? $canceladas / $reservasTotales : 0;
+    $ingresosTotales = max(1, (float)$resumen['ingresos']);
+    $maxMes = max(1, ...array_map(fn($f) => (float)$f['ingresos'], $analisisMeses ?: [['ingresos' => 1]]));
+
+    $indicadores = [
+        ['label' => 'Ventas confirmadas', 'valor' => repNum($resumen['ventas']), 'detalle' => repPct($resumen['ventas'], $reservasTotales) . ' de las reservas'],
+        ['label' => 'Ingresos', 'valor' => '$ ' . montoCompacto((float)$resumen['ingresos']), 'titulo' => repPesos($resumen['ingresos'])],
+        ['label' => 'Pasajeros', 'valor' => repNum($resumen['pasajeros']), 'detalle' => repNum((int)$resumen['ventas'] > 0 ? $resumen['pasajeros'] / $resumen['ventas'] : 0, 1) . ' por venta'],
+        ['label' => 'Ticket promedio', 'valor' => '$ ' . montoCompacto($ticketPromedio), 'titulo' => repPesos($ticketPromedio)],
+        ['label' => 'Clientes compradores', 'valor' => repNum($resumen['clientes'])],
+        ['label' => 'Cancelación', 'valor' => repPct($canceladas, $reservasTotales, 1), 'detalle' => repNum($canceladas) . ' canceladas · ' . repNum($pendientes) . ' pendientes', 'tono' => $tasaCancelacion > 0.2 ? 'alerta' : ''],
+    ];
+    $secciones = [
+        ['titulo' => 'Rutas con más ingresos',
+         'columnas' => [['label' => 'Ruta'], ['label' => 'Pasajeros', 'clase' => 'text-end'], ['label' => 'Participación']],
+         'filas' => array_map(fn($f) => [$f['ruta'], repNum($f['pasajeros']), repBarra($f['ingresos'] / $ingresosTotales * 100, '$ ' . montoCompacto((float)$f['ingresos']))], $analisisRutas)],
+        ['titulo' => 'Evolución mensual',
+         'columnas' => [['label' => 'Mes'], ['label' => 'Ventas', 'clase' => 'text-end'], ['label' => 'Ingresos']],
+         'filas' => array_map(fn($f) => [repMes($f['mes']), repNum($f['ventas']), repBarra($f['ingresos'] / $maxMes * 100, '$ ' . montoCompacto((float)$f['ingresos']))], $analisisMeses)],
+        ['titulo' => 'Mejores clientes',
+         'columnas' => [['label' => 'Cliente'], ['label' => 'Compras', 'clase' => 'text-end'], ['label' => 'Gastado', 'clase' => 'text-end']],
+         'filas' => array_map(fn($f) => [$f['cliente'], repNum($f['compras']), repPesos($f['gastado'])], $analisisClientes)],
+    ];
+
+    if ((int)$resumen['ventas'] > 0) {
+        $conclusiones[] = 'Se confirmaron ' . repNum($resumen['ventas']) . ' ventas por ' . repPesos($resumen['ingresos'])
+            . ' (' . repNum($resumen['pasajeros']) . ' pasajeros, ticket promedio de ' . repPesos($ticketPromedio) . ') a ' . repNum($resumen['clientes']) . ' clientes.';
+        if ($analisisRutas) {
+            $conclusiones[] = 'La ruta ' . $analisisRutas[0]['ruta'] . ' es la que más factura: ' . repPesos($analisisRutas[0]['ingresos'])
+                . ' (' . repPct($analisisRutas[0]['ingresos'], $ingresosTotales) . ' del total).';
+        }
+        if ($tendencia = repTendenciaMensual($analisisMeses, 'ingresos', 'los ingresos')) $conclusiones[] = $tendencia;
+        if ($analisisClientes) {
+            $conclusiones[] = 'El mejor cliente es ' . $analisisClientes[0]['cliente'] . ' con ' . repPesos($analisisClientes[0]['gastado']) . ' en ' . repNum($analisisClientes[0]['compras']) . ' compras.';
+        }
+    } else {
+        $conclusiones[] = 'No hay ventas confirmadas para los filtros seleccionados.';
+    }
+    if ($reservasTotales > 0) {
+        $conclusiones[] = 'La tasa de cancelación es de ' . repPct($canceladas, $reservasTotales, 1) . ' (' . repNum($canceladas) . ' reservas)'
+            . ($tasaCancelacion > 0.2 ? ', por encima del 20% esperable.' : '.')
+            . ($pendientes > 0 ? ' Quedan ' . repNum($pendientes) . ' reservas pendientes de pago.' : '');
+    }
+
+    $detalleImpresion = [
+        'titulo' => 'Detalle de ventas',
+        'columnas' => [['label' => '#'], ['label' => 'Fecha'], ['label' => 'Cliente'], ['label' => 'Ruta'], ['label' => 'Salida'], ['label' => 'Pax', 'clase' => 'text-center'], ['label' => 'Total', 'clase' => 'text-end']],
+        'filas' => array_map(fn($f) => [(int)$f['idReserva'], date('d/m/Y', strtotime($f['fechaReserva'])), $f['nombre'] . ' ' . $f['apellido'], $f['codigoOrigen'] . ' → ' . $f['codigoDestino'], date('d/m/Y H:i', strtotime($f['fechaHoraSalidaVuelo'])), (int)$f['cantPasajeros'], repPesos($f['precioTotal'])], $filas),
+        'totales' => ['', '', 'Total del período', '', '', repNum($resumen['pasajeros']), repPesos($resumen['ingresos'])],
+    ];
+
+} else {
+    $asientos = (int)$disponibles['asientos'];
+    $ocupacionGeneral = $asientos > 0 ? (int)$resumen['pasajeros'] / $asientos * 100 : 0;
+    $filaRuta = fn($f) => [$f['ruta'], repNum($f['vuelos']), repBarra((float)$f['ocupacion'] * 100, repPct($f['vendidos'], $f['asientos'], 1)), '$ ' . montoCompacto((float)$f['ingresos'])];
+    $colsRuta = [['label' => 'Ruta'], ['label' => 'Vuelos', 'clase' => 'text-end'], ['label' => 'Ocupación'], ['label' => 'Ingresos', 'clase' => 'text-end']];
+
+    $indicadores = [
+        ['label' => 'Vuelos', 'valor' => repNum($resumen['vuelos']), 'detalle' => repNum($disponibles['proximos']) . ' próximos'],
+        ['label' => 'Ocupación promedio', 'valor' => repPct($resumen['pasajeros'], $asientos, 1), 'detalle' => repNum($resumen['pasajeros']) . ' de ' . repNum($asientos) . ' asientos', 'tono' => $ocupacionGeneral >= 70 ? 'ok' : ($ocupacionGeneral < 30 && $asientos > 0 ? 'alerta' : '')],
+        ['label' => 'Ingresos', 'valor' => '$ ' . montoCompacto((float)$resumen['ingresos']), 'titulo' => repPesos($resumen['ingresos'])],
+        ['label' => 'Ingreso por vuelo', 'valor' => '$ ' . montoCompacto((int)$resumen['vuelos'] > 0 ? (float)$resumen['ingresos'] / (int)$resumen['vuelos'] : 0)],
+        ['label' => 'Vuelos +90% llenos', 'valor' => repNum($conteos['llenos']), 'tono' => (int)$conteos['llenos'] > 0 ? 'ok' : ''],
+        ['label' => 'Vuelos sin ventas', 'valor' => repNum($conteos['sinVentas']), 'detalle' => repPct($conteos['sinVentas'], $resumen['vuelos']) . ' del total', 'tono' => (int)$conteos['sinVentas'] > 0 ? 'alerta' : ''],
+    ];
+    $secciones = [
+        ['titulo' => 'Rutas con más ingresos', 'columnas' => $colsRuta, 'filas' => array_map($filaRuta, $analisisRutas)],
+        ['titulo' => 'Rutas con menor ocupación', 'columnas' => $colsRuta, 'filas' => array_map($filaRuta, $analisisRutasBajas)],
+        ['titulo' => 'Próximos vuelos a reforzar',
+         'columnas' => [['label' => 'Vuelo'], ['label' => 'Salida'], ['label' => 'Ocupación']],
+         'filas' => array_map(fn($f) => [$f['codigoOrigen'] . ' → ' . $f['codigoDestino'], date('d/m H:i', strtotime($f['fechaHoraSalidaVuelo'])), repBarra($f['asientosTotales'] > 0 ? $f['vendidos'] / $f['asientosTotales'] * 100 : 0, repPct($f['vendidos'], $f['asientosTotales'], 1))], $analisisProximos),
+         'vacio' => 'No hay vuelos próximos en el período.'],
+    ];
+
+    if ((int)$resumen['vuelos'] > 0) {
+        $conclusiones[] = repNum($resumen['vuelos']) . ' vuelos con una ocupación promedio de ' . repPct($resumen['pasajeros'], $asientos, 1)
+            . ' (' . repNum($resumen['pasajeros']) . ' pasajeros sobre ' . repNum($asientos) . ' asientos) y ' . repPesos($resumen['ingresos']) . ' de ingresos.';
+        if ((int)$conteos['sinVentas'] > 0) {
+            $conclusiones[] = repNum($conteos['sinVentas']) . ' vuelos (' . repPct($conteos['sinVentas'], $resumen['vuelos']) . ') no registran ninguna venta confirmada.';
+        }
+        if ((int)$conteos['llenos'] > 0) {
+            $conclusiones[] = repNum($conteos['llenos']) . ' vuelos superan el 90% de ocupación.';
+        }
+        if ($analisisRutas) {
+            $conclusiones[] = 'La ruta más rentable es ' . $analisisRutas[0]['ruta'] . ' (' . repPesos($analisisRutas[0]['ingresos']) . ')'
+                . ($analisisRutasBajas ? '; la de menor ocupación es ' . $analisisRutasBajas[0]['ruta'] . ' (' . repPct($analisisRutasBajas[0]['vendidos'], $analisisRutasBajas[0]['asientos'], 1) . ').' : '.');
+        }
+        if ($analisisProximos) {
+            $conclusiones[] = 'El próximo vuelo con menos ventas es ' . $analisisProximos[0]['codigoOrigen'] . ' → ' . $analisisProximos[0]['codigoDestino']
+                . ' del ' . date('d/m/Y H:i', strtotime($analisisProximos[0]['fechaHoraSalidaVuelo'])) . ' (' . repPct($analisisProximos[0]['vendidos'], $analisisProximos[0]['asientosTotales'], 1) . ' ocupado).';
+        }
+    } else {
+        $conclusiones[] = 'No hay vuelos para los filtros seleccionados.';
+    }
+
+    $detalleImpresion = [
+        'titulo' => 'Detalle de vuelos',
+        'columnas' => [['label' => '#'], ['label' => 'Ruta'], ['label' => 'Salida'], ['label' => 'Precio', 'clase' => 'text-end'], ['label' => 'Vendidos', 'clase' => 'text-center'], ['label' => 'Ocupación', 'clase' => 'text-end'], ['label' => 'Ingresos', 'clase' => 'text-end']],
+        'filas' => array_map(fn($f) => [(int)$f['idVuelo'], $f['codigoOrigen'] . ' → ' . $f['codigoDestino'], date('d/m/Y H:i', strtotime($f['fechaHoraSalidaVuelo'])), repPesos($f['precioVuelo']), (int)$f['vendidos'] . ' / ' . (int)$f['asientosTotales'], repPct($f['vendidos'], $f['asientosTotales'], 1), repPesos($f['ingresos'])], $filas),
+        'totales' => ['', 'Total del período', '', '', repNum($resumen['pasajeros']) . ' / ' . repNum($asientos), repPct($resumen['pasajeros'], $asientos, 1), repPesos($resumen['ingresos'])],
+    ];
+}
+
+// ── Informe imprimible: documento propio, sin la interfaz del panel ──
+if ($modoImpresion) {
+    $mostrados = count($filas);
+    $detalleImpresion['nota'] = $total > $mostrados
+        ? 'Se listan los ' . $mostrados . ' registros más recientes de ' . repNum($total) . '. Los totales y el análisis consideran todos los registros.'
+        : 'Se listan los ' . $mostrados . ' registros del período.';
+
+    $paramsVolver = $_GET;
+    unset($paramsVolver['imprimir']);
+
+    $informe = [
+        'titulo'       => 'Reporte de ' . mb_strtolower($tabs[$tab]),
+        'alcance'      => $aero['nombreAerolinea'],
+        'meta'         => [
+            'Período'   => ($desde ? date('d/m/Y', strtotime($desde)) : 'Inicio') . ' al ' . ($hasta ? date('d/m/Y', strtotime($hasta)) : 'hoy'),
+            'Filtros'   => $busqueda !== '' ? 'Búsqueda: "' . $busqueda . '"' : 'Ninguno',
+            'Registros' => repNum($total),
+        ],
+        'conclusiones' => $conclusiones,
+        'indicadores'  => $indicadores,
+        'secciones'    => $secciones,
+        'detalle'      => $detalleImpresion,
+        'volver'       => 'index.php?' . http_build_query($paramsVolver),
+    ];
+    require __DIR__ . '/../components/reporteImpresion.php';
+    return;
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -212,6 +396,7 @@ function montoCompacto(float $monto): string {
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="<?= url('public/css/admin.css') ?>?v=<?= time() ?>">
+    <link rel="stylesheet" href="<?= url('public/css/layout/reportes.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/layout/headerAdmin.css') ?>">
     <link rel="stylesheet" href="<?= url('public/css/components/tablaLista.css') ?>?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= url('public/css/bootstrap-icons.css') ?>">
@@ -271,6 +456,7 @@ function montoCompacto(float $monto): string {
                 <div class="reporte-meta">
                     <strong>Volaré</strong><br>
                     Generado: <?= date('d/m/Y H:i') ?><br>
+                    <span class="reporte-registros">Registros incluidos: <?= number_format($total, 0, ',', '.') ?></span><br>
                     <?= $desde || $hasta ? 'Período: ' . ($desde ? date('d/m/Y', strtotime($desde)) : 'sin inicio') . ' a ' . ($hasta ? date('d/m/Y', strtotime($hasta)) : 'sin fin') : 'Período: todos los registros' ?>
                 </div>
             </div>
@@ -309,62 +495,12 @@ function montoCompacto(float $monto): string {
                     <?php endforeach; ?>
                 </ul>
 
-                <!-- KPIs -->
-                <div class="row g-3 g-md-2 mt-2 mb-3 justify-content-center reportes-resumen">
-                    <?php if ($tab === 'ventas'): ?>
-                        <?php
-                        $ticketPromedio = (int)$resumen['ventas'] > 0
-                            ? (float)$resumen['ingresos'] / (int)$resumen['ventas']
-                            : 0;
-                        $cards = [
-                            ['icon' => 'etiqueta.png', 'label' => 'Ventas confirmadas', 'valor' => number_format((int)$resumen['ventas'], 0, ',', '.')],
-                            ['icon' => 'ceo.png', 'label' => 'Ingresos', 'valor' => '$ ' . montoCompacto((float)$resumen['ingresos'])],
-                            ['icon' => 'avion.png', 'label' => 'Pasajeros', 'valor' => number_format((int)$resumen['pasajeros'], 0, ',', '.')],
-                            ['icon' => 'ceo.png', 'label' => 'Ticket promedio', 'valor' => '$ ' . number_format($ticketPromedio, 2, ',', '.')],
-                        ];
-                        ?>
-                    <?php else: ?>
-                        <?php
-                        $cards = [
-                            ['icon' => 'avion.png', 'label' => 'Vuelos', 'valor' => number_format((int)$resumen['vuelos'], 0, ',', '.')],
-                            ['icon' => 'ceo.png', 'label' => 'Pasajeros confirmados', 'valor' => number_format((int)$resumen['pasajeros'], 0, ',', '.')],
-                            ['icon' => 'etiqueta.png', 'label' => 'Ingresos', 'valor' => '$ ' . montoCompacto((float)$resumen['ingresos'])],
-                            ['icon' => 'avion.png', 'label' => 'Asientos disponibles', 'valor' => number_format((int)$disponibles['disponibles'], 0, ',', '.')],
-                        ];
-                        ?>
-                    <?php endif; ?>
-
-                    <?php foreach ($cards as $card): ?>
-                        <div class="col-6 col-md-3">
-                            <div class="bg-white shadow rounded-3 py-2 px-3 h-100">
-                                <div class="d-flex flex-row align-items-center gap-3">
-                                    <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
-                                         style="width:55px;height:55px;background-color:#E3F0FE;">
-                                        <img src="<?= url('public/img/icons/placeholdersCards/' . $card['icon']) ?>"
-                                             class="img-fluid" alt="Icono de <?= htmlspecialchars($card['label']) ?>" style="width:32px;height:32px;object-fit:contain;">
-                                    </div>
-
-                                    <div class="d-flex flex-column justify-content-center">
-                                        <p class="fw-semibold m-0 p-0 text-muted" style="font-size:14px;"><?= $card['label'] ?></p>
-                                        <p class="fs-4 fw-bold text-dark m-0 p-0 text-nowrap"><?= $card['valor'] ?></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <!-- Indicadores y análisis -->
+                <?php repResumen($indicadores); ?>
+                <section class="rep-analisis" aria-label="Análisis del reporte">
+                    <?php foreach ($secciones as $sec): ?>
+                        <?php repTablaMini($sec['titulo'], $sec['columnas'], $sec['filas'], $sec['vacio'] ?? 'Sin datos para el período.'); ?>
                     <?php endforeach; ?>
-                </div>
-
-                <section class="reporte-grafico" aria-label="Resumen gráfico del reporte">
-                    <h2>Indicador destacado por ruta</h2>
-                    <?php if ($graficoReporte): foreach ($graficoReporte as $ruta => $valor): ?>
-                        <div class="barra-fila">
-                            <span><?= htmlspecialchars($ruta) ?></span>
-                            <div class="barra-base"><div class="barra-valor" style="width: <?= round(($valor / $maxGrafico) * 100) ?>%;"></div></div>
-                            <strong><?= $valor ?><?= $tab === 'ocupacion' ? '%' : ' pasajeros' ?></strong>
-                        </div>
-                    <?php endforeach; else: ?>
-                        <p>Sin datos suficientes para generar el indicador.</p>
-                    <?php endif; ?>
                 </section>
 
                 <div class="table-responsive bg-white shadow rounded-3 pt-3 tablaContenedor">
@@ -593,7 +729,7 @@ function montoCompacto(float $monto): string {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 <script src="<?= url('public/js/admin/sidebar.js') ?>"></script>
-<script src="<?= url('public/js/admin/reportesListado.js') ?>"></script>
+<script src="<?= url('public/js/admin/reportesListado.js') ?>?v=<?= filemtime(__DIR__ . '/../../../public/js/admin/reportesListado.js') ?>"></script>
 
 </body>
 </html>

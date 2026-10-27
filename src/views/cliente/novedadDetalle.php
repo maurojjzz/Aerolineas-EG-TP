@@ -40,6 +40,7 @@ if (!$novedad || $novedad['estado'] !== 'publicada') {
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 
+                <?php $migas = [['label' => 'Novedades', 'href' => 'index.php?pagina=cliente-novedades'], ['label' => $novedad['titulo'] ?? 'Detalle']]; require __DIR__ . '/../components/breadcrumbCliente.php'; ?>
                 <!-- Botón volver -->
                 <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
                     <a href="<?= url('index.php?pagina=cliente-novedades') ?>" class="text-decoration-none d-inline-flex align-items-center gap-1 text-muted">

@@ -63,10 +63,11 @@ $idVueloIda = max(0, (int)($_GET['idVueloIda'] ?? 0));
 $errorFechaVuelta = '';
 $errorBusqueda = '';
 if ($esIdaVuelta && $paso === 'vuelta') {
-    if ($fechaVuelta === '') {
-        $errorFechaVuelta = 'Elegí una fecha de vuelta para ver los vuelos disponibles.';
-    } elseif ($fecha !== '' && $fechaVuelta < $fecha) {
+    if ($fechaVuelta !== '' && $fecha !== '' && $fechaVuelta < $fecha) {
         $errorFechaVuelta = 'La fecha de vuelta no puede ser anterior a la fecha de ida.';
+    } elseif ($fechaVuelta === '' && $fecha !== '') {
+        // Sin fecha de vuelta: se muestran todos los vuelos desde la fecha de ida.
+        $filtros['fechaDesde'] = $fecha;
     }
 }
 
@@ -83,7 +84,7 @@ if ($errorBusqueda === '' && $errorFechaVuelta === '') {
 }
 
 $facetas = $errorFechaVuelta === ''
-    ? $ctrl->obtenerFacetasVuelos($origenActual, $destinoActual, $fechaActual, $pasajeros)
+    ? $ctrl->obtenerFacetasVuelos($origenActual, $destinoActual, $fechaActual, $pasajeros, $filtros)
     : ['aerolineas' => [], 'precioMin' => 0, 'precioMax' => 0, 'total' => 0];
 
 $vuelos  = $resultado['data'];
@@ -173,6 +174,17 @@ $filtrosActivos = [
     'precioMax'  => $precioMaxFiltro,
 ];
 
+// Búsqueda editable dentro del panel de filtros.
+$busqueda = [
+    'origen'      => $origen,
+    'destino'     => $destino,
+    'fecha'       => $fecha,
+    'fechaVuelta' => $fechaVuelta,
+    'pasajeros'   => $pasajeros,
+    'esIdaVuelta' => $esIdaVuelta,
+    'ciudades'    => $ciudades,
+];
+
 // Parámetros que el formulario de filtros tiene que conservar.
 $paramsFiltros = array_filter([
     'origen'       => $origen,
@@ -239,6 +251,7 @@ $textoVacio = !$esIdaVuelta
 <!-- Hero con datos de búsqueda -->
 <main id="contenido" tabindex="-1" style="min-height: 100vh;">
     <div class="container-xxl py-4 px-3 px-lg-5">
+        <?php $migas = [['label' => 'Resultados de vuelos']]; require __DIR__ . '/../components/breadcrumbCliente.php'; ?>
 
         <div class="titulo-cuadro-resul text-center ">
             <h1 class="fw-bold text-dark display-6">RESULTADO DE <span>VUELOS</span></h1>
@@ -274,18 +287,19 @@ $textoVacio = !$esIdaVuelta
             <div class="d-flex flex-column flex-sm-row justify-content-center justify-content-md-end align-items-center gap-4 ">
                 <span class="fw-semibold text-dark">
                     <?= $esIdaVuelta ? ($paso === 'vuelta' ? 'Vuelta: ' : 'Ida: ') : '' ?>
-                    <?= $fechaActual ? htmlspecialchars($fechaActual) : 'Sin fecha especifica' ?>
+                    <?= $fechaActual ? htmlspecialchars($fechaActual) : (!empty($filtros['fechaDesde']) ? 'Desde ' . htmlspecialchars($filtros['fechaDesde']) : 'Sin fecha específica') ?>
                 </span> 
 
                 <span class="fw-semibold text-dark">
                     <?= $pasajeros ?> pasajero<?= $pasajeros !== 1 ? 's' : '' ?> 
                 </span> 
 
-                <a href="<?= estaLogueado() ? url('index.php?pagina=cliente') : url('index.php?pagina=inicio') ?>" class="btn btn-outline-dark fw-semibold text-decoration-none" style="">
+                <button type="button" class="btn btn-outline-dark fw-semibold" id="btnModificarBusqueda">
                     Modificar búsqueda
-                </a>
+                </button>
             </div >
         </div>
+
 
         <?php if ($esIdaVuelta && $paso === 'vuelta'): ?>
             <div class="alert alert-light border shadow-sm d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2">
@@ -328,7 +342,7 @@ $textoVacio = !$esIdaVuelta
                 </button>
 
                 <div class="filtros-contenido px-3 pb-3" id="filtros-contenido">
-                    <h2 class="filtro-titulo-panel fw-semibold mb-2">Filtros</h2>
+                    <h2 class="filtro-titulo-panel fw-semibold mb-2">Búsqueda y filtros</h2>
 
                     <?php
                     $idPrefijo = 'filtrosDesktop';
@@ -348,7 +362,7 @@ $textoVacio = !$esIdaVuelta
                             data-bs-target="#filtrosMobile"
                             aria-controls="filtrosMobile">
                         <i class="bi bi-funnel" aria-hidden="true"></i>
-                        Filtros<?= $cantidadFiltros > 0 ? ' (' . $cantidadFiltros . ')' : '' ?>
+                        Búsqueda y filtros<?= $cantidadFiltros > 0 ? ' (' . $cantidadFiltros . ')' : '' ?>
                     </button>
                 </div>
 
@@ -697,5 +711,41 @@ $textoVacio = !$esIdaVuelta
 </script>
 
 
+<script>
+(function () {
+    // Tipo de viaje y fechas en el bloque "Tu búsqueda" (escritorio y mobile)
+    document.querySelectorAll('.filtro-busqueda').forEach(function (grupo) {
+        const tipo = grupo.querySelector('.js-tipo-viaje');
+        const cont = grupo.querySelector('.js-cont-vuelta');
+        const ida = grupo.querySelector('.js-fecha-ida');
+        const vuelta = grupo.querySelector('.js-fecha-vuelta');
+
+        tipo.addEventListener('change', function () {
+            const conVuelta = this.value === 'ida_vuelta';
+            cont.classList.toggle('d-none', !conVuelta);
+            vuelta.disabled = !conVuelta;
+            if (!conVuelta) vuelta.value = '';
+        });
+
+        ida.addEventListener('change', function () {
+            vuelta.min = this.value || ida.min;
+            if (vuelta.value && this.value && vuelta.value < this.value) vuelta.value = '';
+        });
+    });
+
+    // "Modificar búsqueda" abre el panel de filtros, donde está la búsqueda
+    const btn = document.getElementById('btnModificarBusqueda');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+        if (window.matchMedia('(min-width: 992px)').matches) {
+            if (filtroBtn.getAttribute('aria-expanded') !== 'true') filtroBtn.click();
+            setTimeout(function () { document.getElementById('filtrosDesktopOrigen')?.focus(); }, 200);
+            filtrosColumna.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+            bootstrap.Offcanvas.getOrCreateInstance(document.getElementById('filtrosMobile')).show();
+        }
+    });
+})();
+</script>
 </body>
 </html>

@@ -190,7 +190,7 @@ function badgeVigenciaPromo(array $p): string {
           
                 <nav class="breadcrumbCont" aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <!-- <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=ceo') ?>">Inicio</a></li> -->
+                        <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=ceo') ?>">Mi Aerolínea</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Promociones</li>
                     </ol>
                 </nav>

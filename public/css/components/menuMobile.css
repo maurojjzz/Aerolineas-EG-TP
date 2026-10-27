@@ -93,3 +93,16 @@
     color: #b02a37 !important;
     background: rgba(255, 255, 255, 0.12);
 }
+
+/* Estado uniforme al tocar/seleccionar un ítem del menú móvil */
+.offcanvas .navbar-nav .nav-link:active,
+.offcanvas .navbar-nav .nav-link:focus-visible,
+.offcanvas .navbar-nav .nav-link.active {
+    color: #fff !important;
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: none;
+}
+
+.offcanvas .nav-link {
+    -webkit-tap-highlight-color: transparent;
+}

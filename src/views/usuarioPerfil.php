@@ -56,6 +56,7 @@ $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
     <main id="contenido" tabindex="-1" class="container pb-4">
         <div class="row justify-content-center">
             <div class="col-12 col-md-8 col-lg-7">
+                <?php $migas = [['label' => 'Mi perfil']]; require __DIR__ . '/components/breadcrumbCliente.php'; ?>
                 
                 
                 <!-- Cabecera de la sección -->
@@ -151,7 +152,7 @@ $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold" for="passwordActual" style="font-size:0.9rem;">Contraseña Actual</label>
                                 <div class="input-group">
-                                    <input type="password" name="passwordActual" id="passwordActual" class="form-control" placeholder="••••••••">
+                                    <input type="password" name="passwordActual" id="passwordActual" class="form-control" placeholder="Ingresá tu contraseña actual">
                                     <button class="btn btn-outline-secondary toggle-password" type="button" data-target="passwordActual" aria-label="Mostrar contraseña actual" aria-pressed="false">
                                         <i class="bi bi-eye" aria-hidden="true"></i>
                                     </button>
@@ -164,7 +165,7 @@ $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold" for="passwordNueva" style="font-size:0.9rem;">Nueva Contraseña</label>
                                 <div class="input-group">
-                                    <input type="password" name="passwordNueva" id="passwordNueva" class="form-control" placeholder="••••••••" minlength="8">
+                                    <input type="password" name="passwordNueva" id="passwordNueva" class="form-control" placeholder="Ingresá tu nueva contraseña" minlength="8">
                                     <button class="btn btn-outline-secondary toggle-password" type="button" data-target="passwordNueva" aria-label="Mostrar nueva contraseña" aria-pressed="false">
                                         <i class="bi bi-eye" aria-hidden="true"></i>
                                     </button>
@@ -174,7 +175,7 @@ $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold" for="passwordConfirmar" style="font-size:0.9rem;">Confirmar Nueva Contraseña</label>
                                 <div class="input-group">
-                                    <input type="password" name="passwordConfirmar" id="passwordConfirmar" class="form-control" placeholder="••••••••" minlength="8">
+                                    <input type="password" name="passwordConfirmar" id="passwordConfirmar" class="form-control" placeholder="Repetí tu nueva contraseña" minlength="8">
                                     <button class="btn btn-outline-secondary toggle-password" type="button" data-target="passwordConfirmar" aria-label="Mostrar confirmación de contraseña" aria-pressed="false">
                                         <i class="bi bi-eye" aria-hidden="true"></i>
                                     </button>

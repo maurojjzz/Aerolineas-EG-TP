@@ -37,6 +37,7 @@ if (!in_array($tabActual, ['novedades', 'promociones'], true)) {
     <?php require __DIR__ . '/../layouts/header.php'; ?>
 
     <main id="contenido" tabindex="-1" class="container pb-5">
+    <?php $migas = [['label' => 'Novedades y promociones']]; require __DIR__ . '/../components/breadcrumbCliente.php'; ?>
 
         <div class="d-flex justify-content-start pt-3">
             <a href="<?= url('index.php?pagina=inicio') ?>" class="text-decoration-none d-inline-flex align-items-center gap-1 text-muted">

@@ -385,8 +385,10 @@ class VueloController {
     // ── Facetas para los filtros de la vista de resultados ────────────────────
     // Devuelve las aerolíneas disponibles en la búsqueda base y el rango de
     // precios, para no ofrecer filtros que no devuelvan resultados.
-    public function obtenerFacetasVuelos(string $origen, string $destino, string $fecha, int $pasajeros): array {
-        [$condiciones, $params, $tipos] = $this->condicionesBusqueda($origen, $destino, $fecha, $pasajeros);
+    public function obtenerFacetasVuelos(string $origen, string $destino, string $fecha, int $pasajeros, array $filtros = []): array {
+        // Solo se respeta el piso de fecha: las facetas muestran todas las opciones disponibles.
+        $base = isset($filtros['fechaDesde']) ? ['fechaDesde' => $filtros['fechaDesde']] : [];
+        [$condiciones, $params, $tipos] = $this->condicionesBusqueda($origen, $destino, $fecha, $pasajeros, $base);
 
         $where = 'WHERE ' . implode(' AND ', $condiciones);
 
@@ -445,6 +447,13 @@ class VueloController {
         if ($origen  !== '') { $condiciones[] = "v.origenVuelo LIKE ?";  $params[] = "%$origen%";  $tipos .= 's'; }
         if ($destino !== '') { $condiciones[] = "v.destinoVuelo LIKE ?"; $params[] = "%$destino%"; $tipos .= 's'; }
         if ($fecha   !== '') { $condiciones[] = "DATE(v.fechaHoraSalidaVuelo) = ?"; $params[] = $fecha; $tipos .= 's'; }
+
+        // Vuelta sin fecha específica: cualquier vuelo a partir de la fecha de ida.
+        if (($filtros['fechaDesde'] ?? '') !== '') {
+            $condiciones[] = "DATE(v.fechaHoraSalidaVuelo) >= ?";
+            $params[]      = $filtros['fechaDesde'];
+            $tipos        .= 's';
+        }
 
         // Aerolíneas elegidas en los filtros.
         $aerolineas = $filtros['aerolineas'] ?? [];
