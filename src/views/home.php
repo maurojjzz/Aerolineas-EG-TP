@@ -61,7 +61,7 @@
         <script src="<?= url('public/js/searchMobile.js') ?>?v=<?= filemtime(__DIR__ . '/../../public/js/searchMobile.js') ?>"></script>
         <script src="<?= url('public/js/searchDesktop.js') ?>?v=<?= filemtime(__DIR__ . '/../../public/js/searchDesktop.js') ?>"></script>
         <script src="<?= url('public/js/homeDestacados.js') ?>"></script>
-
+        <script src="<?= url('public/js/accesibilidad.js') ?>?v=<?= time() ?>"></script>
     </body>
 
 </html>
