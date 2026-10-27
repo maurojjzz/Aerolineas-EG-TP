@@ -158,8 +158,28 @@ ul .nav-item .nav-link:hover {
     background: rgba(255, 255, 255, 0.12);
 }
 
+.mobile-admin-menu .mobile-menu-link:active,
+.mobile-admin-menu .mobile-menu-link:focus-visible,
 .mobile-admin-menu .mobile-menu-link.active {
+    color: #fff !important;
     background: rgba(255, 255, 255, 0.2) !important;
+    box-shadow: none;
+}
+
+.mobile-admin-menu .mobile-menu-link {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Cerrar sesión en rojo, igual que en el menú de cliente */
+.mobile-admin-menu .mobile-menu-link.mobile-logout {
+    color: #dc3545 !important;
+}
+
+.mobile-admin-menu .mobile-menu-link.mobile-logout:hover,
+.mobile-admin-menu .mobile-menu-link.mobile-logout:focus,
+.mobile-admin-menu .mobile-menu-link.mobile-logout:active {
+    color: #b02a37 !important;
+    background: rgba(255, 255, 255, 0.12) !important;
 }
 
 .mobile-admin-menu .mobile-user-box {
