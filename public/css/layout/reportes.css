@@ -122,3 +122,43 @@
         margin: 0 0 8px;
     }
 }
+
+/* El layout admin usa html/body con height:100% + overflow y contenedores flex con
+   overflow-hidden: al imprimir eso recortaba el reporte a una sola hoja. */
+@media print {
+    html,
+    body {
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    body > .d-flex,
+    .admin-main,
+    .admin-content,
+    .contForm {
+        display: block !important;
+        height: auto !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+    }
+
+    /* Encabezado de la tabla repetido en cada hoja */
+    thead {
+        display: table-header-group;
+    }
+
+    tfoot {
+        display: table-footer-group;
+    }
+
+    .reporte-portada,
+    .reporte-grafico,
+    .row.g-3 {
+        break-inside: avoid;
+    }
+
+    .reporte-registros {
+        font-weight: 600;
+        color: #123d72;
+    }
+}

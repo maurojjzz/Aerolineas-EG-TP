@@ -291,6 +291,7 @@ $tabs = [
         <div class="reporte-meta">
             <strong>Informe de gestión</strong><br>
             Generado: <?= date('d/m/Y H:i') ?><br>
+            <span class="reporte-registros">Registros incluidos: <?= number_format($total, 0, ',', '.') ?></span><br>
             <?= $desde || $hasta ? 'Período: ' . ($desde ? date('d/m/Y', strtotime($desde)) : 'sin inicio') . ' a ' . ($hasta ? date('d/m/Y', strtotime($hasta)) : 'sin fin') : 'Período: todos los registros' ?>
         </div>
     </div>
