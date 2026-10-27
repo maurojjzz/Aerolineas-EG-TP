@@ -440,7 +440,7 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3 mb-3">
                         <h2 class="m-0 fs-5 fw-bold">Vuelos de la aerolínea</h2>
 
-                        <form method="GET" action="index.php" class="d-flex flex-column flex-sm-row gap-2 align-items-stretch">
+                        <form method="GET" action="index.php" class="d-flex flex-column flex-sm-row gap-2 align-items-stretch" data-filtro-vivo>
                             <input type="hidden" name="pagina" value="aerolinea">
                             <input type="hidden" name="seccion" value="detalle">
                             <input type="hidden" name="id" value="<?= $id ?>">
@@ -462,7 +462,6 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
                                 <option value="pasados" <?= $estadoVuelos === 'pasados' ? 'selected' : '' ?>>Pasados</option>
                             </select>
 
-                            <button type="submit" class="btn btn-sm btn-outline-primary text-nowrap">Filtrar</button>
                             <a href="<?= adminAeroUrlDetalle($id, 'vuelos') ?>" class="btn btn-sm btn-outline-secondary text-nowrap">Limpiar</a>
                         </form>
                     </div>
@@ -611,7 +610,7 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3 mb-3">
                         <h3 class="m-0 fs-5 fw-bold">Promociones de la aerolínea</h3>
 
-                        <form method="GET" action="index.php" class="d-flex flex-column flex-sm-row gap-2 align-items-stretch">
+                        <form method="GET" action="index.php" class="d-flex flex-column flex-sm-row gap-2 align-items-stretch" data-filtro-vivo>
                             <input type="hidden" name="pagina" value="aerolinea">
                             <input type="hidden" name="seccion" value="detalle">
                             <input type="hidden" name="id" value="<?= $id ?>">
@@ -634,7 +633,6 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
                                 <option value="Denegada" <?= $estadoPromos === 'Denegada' ? 'selected' : '' ?>>Denegada</option>
                             </select>
 
-                            <button type="submit" class="btn btn-sm btn-outline-primary text-nowrap">Filtrar</button>
                             <a href="<?= adminAeroUrlDetalle($id, 'promociones') ?>" class="btn btn-sm btn-outline-secondary text-nowrap">Limpiar</a>
                         </form>
                     </div>
@@ -783,5 +781,33 @@ document.addEventListener("DOMContentLoaded", function () {
             history.replaceState({}, '', url);
         });
     });
+
+    // Filtrado en vivo: el listado se actualiza al cambiar el estado o al escribir
+    document.querySelectorAll('form[data-filtro-vivo]').forEach(function (form) {
+        let espera;
+        form.querySelectorAll('select').forEach(function (sel) {
+            sel.addEventListener('change', function () { form.submit(); });
+        });
+        form.querySelectorAll('input[type="text"]').forEach(function (input) {
+            input.addEventListener('input', function () {
+                clearTimeout(espera);
+                espera = setTimeout(function () {
+                    sessionStorage.setItem('filtroFoco', input.name);
+                    form.submit();
+                }, 500);
+            });
+        });
+    });
+
+    // Devolver el foco al buscador después de recargar
+    const foco = sessionStorage.getItem('filtroFoco');
+    if (foco) {
+        sessionStorage.removeItem('filtroFoco');
+        const input = document.querySelector('form[data-filtro-vivo] input[name="' + foco + '"]');
+        if (input) {
+            input.focus();
+            input.setSelectionRange(input.value.length, input.value.length);
+        }
+    }
 });
 </script>
