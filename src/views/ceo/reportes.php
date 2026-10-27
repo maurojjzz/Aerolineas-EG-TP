@@ -320,7 +320,7 @@ function montoCompacto(float $monto): string {
                             ['icon' => 'etiqueta.png', 'label' => 'Ventas confirmadas', 'valor' => number_format((int)$resumen['ventas'], 0, ',', '.')],
                             ['icon' => 'ceo.png', 'label' => 'Ingresos', 'valor' => '$ ' . montoCompacto((float)$resumen['ingresos'])],
                             ['icon' => 'avion.png', 'label' => 'Pasajeros', 'valor' => number_format((int)$resumen['pasajeros'], 0, ',', '.')],
-                            ['icon' => 'ceo.png', 'label' => 'Ticket promedio', 'valor' => '$ ' . number_format($ticketPromedio, 2, ',', '.')],
+                            ['icon' => 'ceo.png', 'label' => 'Ticket promedio', 'valor' => '$ ' . montoCompacto($ticketPromedio), 'completo' => '$ ' . number_format($ticketPromedio, 2, ',', '.')],
                         ];
                         ?>
                     <?php else: ?>
@@ -344,9 +344,9 @@ function montoCompacto(float $monto): string {
                                              class="img-fluid" alt="Icono de <?= htmlspecialchars($card['label']) ?>" style="width:32px;height:32px;object-fit:contain;">
                                     </div>
 
-                                    <div class="d-flex flex-column justify-content-center">
+                                    <div class="d-flex flex-column justify-content-center" style="min-width:0;">
                                         <p class="fw-semibold m-0 p-0 text-muted" style="font-size:14px;"><?= $card['label'] ?></p>
-                                        <p class="fs-4 fw-bold text-dark m-0 p-0 text-nowrap"><?= $card['valor'] ?></p>
+                                        <p class="fs-4 fw-bold text-dark m-0 p-0 text-nowrap text-truncate" title="<?= htmlspecialchars($card['completo'] ?? $card['valor']) ?>"><?= $card['valor'] ?></p>
                                     </div>
                                 </div>
                             </div>
