@@ -239,6 +239,7 @@ $textoVacio = !$esIdaVuelta
 <!-- Hero con datos de búsqueda -->
 <main id="contenido" tabindex="-1" style="min-height: 100vh;">
     <div class="container-xxl py-4 px-3 px-lg-5">
+        <?php $migas = [['label' => 'Resultados de vuelos']]; require __DIR__ . '/../components/breadcrumbCliente.php'; ?>
 
         <div class="titulo-cuadro-resul text-center ">
             <h1 class="fw-bold text-dark display-6">RESULTADO DE <span>VUELOS</span></h1>

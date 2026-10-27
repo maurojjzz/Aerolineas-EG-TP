@@ -56,6 +56,7 @@ $tiposDoc = ['DNI', 'Pasaporte', 'LC', 'LE'];
     <main id="contenido" tabindex="-1" class="container pb-4">
         <div class="row justify-content-center">
             <div class="col-12 col-md-8 col-lg-7">
+                <?php $migas = [['label' => 'Mi perfil']]; require __DIR__ . '/components/breadcrumbCliente.php'; ?>
                 
                 
                 <!-- Cabecera de la sección -->

@@ -51,6 +51,7 @@ $conteos = [
 
 <div style="min-height:100vh;">
 <main id="contenido" tabindex="-1" class="container-xxl py-4 px-3 px-lg-5">
+    <?php $migas = [['label' => 'Mis reservas']]; require __DIR__ . '/../components/breadcrumbCliente.php'; ?>
 
     <?php require __DIR__ . '/../components/alertToast.php';  ?>
 
