@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../config/conexion.php';
 require_once __DIR__ . '/../../config/app.php';
+require_once __DIR__ . '/../components/reporteBloques.php';
 
 // ── Helpers de la vista ──────────────────────────────────────────────────────
 function repAdminFecha(?string $valor): ?string {
@@ -106,8 +107,42 @@ if ($tab === 'ventas') {
     $resumen = repAdminConsulta($link,
         "SELECT COUNT(*) AS ventas,
                 COALESCE(SUM(r.precioTotal), 0) AS ingresos,
-                COALESCE(SUM(r.cantPasajeros), 0) AS pasajeros
-         $baseFrom", $tipos, $params)[0] ?? ['ventas' => 0, 'ingresos' => 0, 'pasajeros' => 0];
+                COALESCE(SUM(r.cantPasajeros), 0) AS pasajeros,
+                COUNT(DISTINCT r.idUsuario) AS clientes
+         $baseFrom", $tipos, $params)[0] ?? ['ventas' => 0, 'ingresos' => 0, 'pasajeros' => 0, 'clientes' => 0];
+
+    // Análisis: mismas condiciones, sin el filtro de estado para medir cancelaciones.
+    $whereSinEstado = implode(' AND ', array_slice($where, 1)) ?: '1 = 1';
+    $estados = repAdminConsulta($link,
+        "SELECT r.estadoReserva AS estado, COUNT(*) AS cantidad
+         FROM reserva r
+         INNER JOIN usuario u ON u.idUsuario = r.idUsuario
+         INNER JOIN vuelo v ON v.idVuelo = r.idVuelo
+         INNER JOIN aerolinea a ON a.idAerolinea = v.idAerolinea
+         WHERE $whereSinEstado
+         GROUP BY r.estadoReserva", $tipos, $params);
+    $porEstado = array_column($estados, 'cantidad', 'estado');
+    $reservasTotales = array_sum($porEstado);
+
+    $analisisAerolineas = repAdminConsulta($link,
+        "SELECT a.nombreAerolinea AS nombre, COUNT(*) AS ventas,
+                SUM(r.cantPasajeros) AS pasajeros, SUM(r.precioTotal) AS ingresos
+         $baseFrom
+         GROUP BY a.idAerolinea, a.nombreAerolinea
+         ORDER BY ingresos DESC LIMIT 6", $tipos, $params);
+
+    $analisisRutas = repAdminConsulta($link,
+        "SELECT CONCAT(v.codigoOrigen, ' → ', v.codigoDestino) AS ruta, COUNT(*) AS ventas,
+                SUM(r.cantPasajeros) AS pasajeros, SUM(r.precioTotal) AS ingresos
+         $baseFrom
+         GROUP BY v.codigoOrigen, v.codigoDestino
+         ORDER BY ingresos DESC LIMIT 6", $tipos, $params);
+
+    $analisisMeses = repAdminConsulta($link,
+        "SELECT DATE_FORMAT(r.fechaReserva, '%Y-%m') AS mes, COUNT(*) AS ventas,
+                SUM(r.precioTotal) AS ingresos
+         $baseFrom
+         GROUP BY mes ORDER BY mes DESC LIMIT 6", $tipos, $params);
 
     $total = (int)$resumen['ventas'];
     $totalPaginas = max(1, (int)ceil($total / $porPagina));
@@ -153,9 +188,37 @@ if ($tab === 'ventas') {
          $baseFrom", $tipos, $params)[0] ?? ['vuelos' => 0, 'pasajeros' => 0, 'ingresos' => 0];
 
     $disponibles = repAdminConsulta($link,
-        "SELECT COALESCE(SUM(v.asientosDisponibles), 0) AS disponibles
+        "SELECT COALESCE(SUM(v.asientosDisponibles), 0) AS disponibles,
+                COALESCE(SUM(v.asientosTotales), 0) AS asientos,
+                COALESCE(SUM(v.fechaHoraSalidaVuelo >= NOW()), 0) AS proximos
          FROM vuelo v INNER JOIN aerolinea a ON a.idAerolinea = v.idAerolinea
-         WHERE $whereSql", $tipos, $params)[0] ?? ['disponibles' => 0];
+         WHERE $whereSql", $tipos, $params)[0] ?? ['disponibles' => 0, 'asientos' => 0, 'proximos' => 0];
+
+    // Una fila por vuelo (evita duplicar asientos por el JOIN con reservas).
+    $porVuelo = "SELECT v.idVuelo, v.idAerolinea, v.codigoOrigen, v.codigoDestino, v.asientosTotales,
+                        v.fechaHoraSalidaVuelo,
+                        COALESCE(SUM(CASE WHEN r.estadoReserva = 'confirmada' THEN r.cantPasajeros ELSE 0 END), 0) AS vendidos,
+                        COALESCE(SUM(CASE WHEN r.estadoReserva = 'confirmada' THEN r.precioTotal ELSE 0 END), 0) AS ingresos
+                 $baseFrom
+                 GROUP BY v.idVuelo";
+
+    $sinVentas = (int)(repAdminConsulta($link,
+        "SELECT COUNT(*) AS n FROM ($porVuelo) t WHERE t.vendidos = 0", $tipos, $params)[0]['n'] ?? 0);
+
+    $analisisAerolineas = repAdminConsulta($link,
+        "SELECT al.nombreAerolinea AS nombre, COUNT(*) AS vuelos,
+                SUM(t.vendidos) AS vendidos, SUM(t.asientosTotales) AS asientos, SUM(t.ingresos) AS ingresos
+         FROM ($porVuelo) t INNER JOIN aerolinea al ON al.idAerolinea = t.idAerolinea
+         GROUP BY al.idAerolinea, al.nombreAerolinea
+         ORDER BY ingresos DESC LIMIT 6", $tipos, $params);
+
+    $sqlRutas = "SELECT CONCAT(t.codigoOrigen, ' → ', t.codigoDestino) AS ruta, COUNT(*) AS vuelos,
+                        SUM(t.vendidos) AS vendidos, SUM(t.asientosTotales) AS asientos, SUM(t.ingresos) AS ingresos,
+                        SUM(t.vendidos) / NULLIF(SUM(t.asientosTotales), 0) AS ocupacion
+                 FROM ($porVuelo) t
+                 GROUP BY t.codigoOrigen, t.codigoDestino";
+    $analisisRutas = repAdminConsulta($link, "$sqlRutas ORDER BY ingresos DESC LIMIT 6", $tipos, $params);
+    $analisisRutasBajas = repAdminConsulta($link, "$sqlRutas ORDER BY ocupacion ASC, vuelos DESC LIMIT 6", $tipos, $params);
 
     $total = (int)$resumen['vuelos'];
     $totalPaginas = max(1, (int)ceil($total / $porPagina));
@@ -197,14 +260,36 @@ if ($tab === 'ventas') {
     $resumen = repAdminConsulta($link,
         "SELECT COUNT(*) AS total,
                 COALESCE(SUM(u.activo = 1), 0) AS activos,
-                COALESCE(SUM(u.emailVerificado = 1), 0) AS verificados
-         $baseFrom", $tipos, $params)[0] ?? ['total' => 0, 'activos' => 0, 'verificados' => 0];
+                COALESCE(SUM(u.emailVerificado = 1), 0) AS verificados,
+                COALESCE(SUM(u.fechaCreacion >= NOW() - INTERVAL 30 DAY), 0) AS nuevos30
+         $baseFrom", $tipos, $params)[0] ?? ['total' => 0, 'activos' => 0, 'verificados' => 0, 'nuevos30' => 0];
 
     $conCompras = repAdminConsulta($link,
         "SELECT COUNT(DISTINCT u.idUsuario) AS conCompras
          FROM usuario u
          INNER JOIN reserva r ON r.idUsuario = u.idUsuario AND r.estadoReserva = 'confirmada'
          WHERE $whereSql", $tipos, $params)[0] ?? ['conCompras' => 0];
+
+    $gastoClientes = repAdminConsulta($link,
+        "SELECT COALESCE(SUM(r.precioTotal), 0) AS gastado
+         FROM usuario u
+         INNER JOIN reserva r ON r.idUsuario = u.idUsuario AND r.estadoReserva = 'confirmada'
+         WHERE $whereSql", $tipos, $params)[0]['gastado'] ?? 0;
+
+    $analisisTopClientes = repAdminConsulta($link,
+        "SELECT CONCAT(u.nombre, ' ', u.apellido) AS cliente, COUNT(*) AS compras,
+                SUM(r.precioTotal) AS gastado
+         FROM usuario u
+         INNER JOIN reserva r ON r.idUsuario = u.idUsuario AND r.estadoReserva = 'confirmada'
+         WHERE $whereSql
+         GROUP BY u.idUsuario, u.nombre, u.apellido
+         ORDER BY gastado DESC LIMIT 6", $tipos, $params);
+
+    $analisisMeses = repAdminConsulta($link,
+        "SELECT DATE_FORMAT(u.fechaCreacion, '%Y-%m') AS mes, COUNT(*) AS altas,
+                SUM(u.emailVerificado = 1) AS verificados
+         $baseFrom
+         GROUP BY mes ORDER BY mes DESC LIMIT 6", $tipos, $params);
 
     $total = (int)$resumen['total'];
     $totalPaginas = max(1, (int)ceil($total / $porPagina));
@@ -251,27 +336,6 @@ if ($tab === 'usuarios' && $verificado !== '') $filtrosActivos++;
 $desdeFila = $total === 0 ? 0 : ($pag - 1) * $porPagina + 1;
 $hastaFila = min($pag * $porPagina, $total);
 
-$graficoReporte = [];
-foreach ($filas as $fila) {
-    if ($tab === 'ventas') {
-        $ruta = ($fila['codigoOrigen'] ?? '') . ' → ' . ($fila['codigoDestino'] ?? '');
-        $graficoReporte[$ruta] = ($graficoReporte[$ruta] ?? 0) + (int)$fila['cantPasajeros'];
-    } elseif ($tab === 'vuelos') {
-        $ruta = ($fila['codigoOrigen'] ?? '') . ' → ' . ($fila['codigoDestino'] ?? '');
-        $ocupacion = (int)($fila['asientosTotales'] ?? 0) > 0
-            ? round(((int)$fila['vendidos'] / (int)$fila['asientosTotales']) * 100)
-            : 0;
-        $graficoReporte[$ruta] = max($graficoReporte[$ruta] ?? 0, $ocupacion);
-    } else {
-        $graficoReporte['Activos'] = (int)$resumen['activos'];
-        $graficoReporte['Email verificado'] = (int)$resumen['verificados'];
-        $graficoReporte['Con compras'] = (int)$conCompras['conCompras'];
-    }
-}
-arsort($graficoReporte);
-$graficoReporte = array_slice($graficoReporte, 0, 5, true);
-$valoresGrafico = array_values($graficoReporte);
-$maxGrafico = $valoresGrafico ? max(1, ...$valoresGrafico) : 1;
 
 $tabs = [
     'ventas'   => 'Ventas',
@@ -329,70 +393,95 @@ $tabs = [
             <?php endforeach; ?>
         </ul>
 
-        <!-- KPIs -->
-        <div class="row g-3 g-md-2 mt-2 mb-3 justify-content-center">
-            <?php if ($tab === 'ventas'): ?>
+        <!-- Indicadores y análisis -->
+        <?php if ($tab === 'ventas'): ?>
+            <?php
+            $ticketPromedio = (int)$resumen['ventas'] > 0 ? (float)$resumen['ingresos'] / (int)$resumen['ventas'] : 0;
+            $canceladas = (int)($porEstado['cancelada'] ?? 0);
+            repResumen([
+                ['label' => 'Ventas confirmadas', 'valor' => repNum($resumen['ventas']), 'detalle' => repPct($resumen['ventas'], $reservasTotales) . ' de las reservas'],
+                ['label' => 'Ingresos', 'valor' => '$ ' . montoCompacto((float)$resumen['ingresos']), 'titulo' => repPesos($resumen['ingresos'])],
+                ['label' => 'Pasajeros', 'valor' => repNum($resumen['pasajeros']), 'detalle' => repNum((int)$resumen['ventas'] > 0 ? $resumen['pasajeros'] / $resumen['ventas'] : 0, 1) . ' por venta'],
+                ['label' => 'Ticket promedio', 'valor' => '$ ' . montoCompacto($ticketPromedio), 'titulo' => repPesos($ticketPromedio)],
+                ['label' => 'Clientes compradores', 'valor' => repNum($resumen['clientes'])],
+                ['label' => 'Cancelación', 'valor' => repPct($canceladas, $reservasTotales, 1), 'detalle' => repNum($canceladas) . ' canceladas · ' . repNum($porEstado['pendiente de pago'] ?? 0) . ' pendientes', 'tono' => $reservasTotales > 0 && $canceladas / $reservasTotales > 0.2 ? 'alerta' : ''],
+            ]);
+            $ingresosTotales = max(1, (float)$resumen['ingresos']);
+            ?>
+            <section class="rep-analisis" aria-label="Análisis de ventas">
                 <?php
-                $ticketPromedio = (int)$resumen['ventas'] > 0
-                    ? (float)$resumen['ingresos'] / (int)$resumen['ventas']
-                    : 0;
-                $cardsVentas = [
-                    ['icon' => 'etiqueta.png', 'label' => 'Ventas confirmadas', 'valor' => number_format((int)$resumen['ventas'], 0, ',', '.')],
-                    ['icon' => 'ceo.png', 'label' => 'Ingresos totales', 'valor' => '$ ' . montoCompacto((float)$resumen['ingresos'])],
-                    ['icon' => 'avion.png', 'label' => 'Pasajeros', 'valor' => number_format((int)$resumen['pasajeros'], 0, ',', '.')],
-                    ['icon' => 'etiqueta.png', 'label' => 'Ticket promedio', 'valor' => '$ ' . montoCompacto($ticketPromedio), 'completo' => '$ ' . number_format($ticketPromedio, 2, ',', '.')],
-                ];
+                repTablaMini('Ingresos por aerolínea',
+                    [['label' => 'Aerolínea'], ['label' => 'Ventas', 'clase' => 'text-end'], ['label' => 'Ingresos', 'clase' => 'text-end'], ['label' => 'Participación']],
+                    array_map(fn($f) => [$f['nombre'], repNum($f['ventas']), repPesos($f['ingresos']), repBarra($f['ingresos'] / $ingresosTotales * 100, repPct($f['ingresos'], $ingresosTotales))], $analisisAerolineas));
+                repTablaMini('Rutas con más ingresos',
+                    [['label' => 'Ruta'], ['label' => 'Pasajeros', 'clase' => 'text-end'], ['label' => 'Ingresos', 'clase' => 'text-end']],
+                    array_map(fn($f) => [$f['ruta'], repNum($f['pasajeros']), repPesos($f['ingresos'])], $analisisRutas));
+                $maxMes = max(1, ...array_map(fn($f) => (float)$f['ingresos'], $analisisMeses ?: [['ingresos' => 1]]));
+                repTablaMini('Evolución mensual',
+                    [['label' => 'Mes'], ['label' => 'Ventas', 'clase' => 'text-end'], ['label' => 'Ingresos']],
+                    array_map(fn($f) => [repMes($f['mes']), repNum($f['ventas']), repBarra($f['ingresos'] / $maxMes * 100, '$ ' . montoCompacto((float)$f['ingresos']))], $analisisMeses));
                 ?>
-            <?php elseif ($tab === 'vuelos'): ?>
+            </section>
+
+        <?php elseif ($tab === 'vuelos'): ?>
+            <?php
+            $asientos = (int)$disponibles['asientos'];
+            $ocupacionGeneral = $asientos > 0 ? (int)$resumen['pasajeros'] / $asientos * 100 : 0;
+            repResumen([
+                ['label' => 'Vuelos', 'valor' => repNum($resumen['vuelos']), 'detalle' => repNum($disponibles['proximos']) . ' próximos'],
+                ['label' => 'Ocupación promedio', 'valor' => repPct($resumen['pasajeros'], $asientos, 1), 'tono' => $ocupacionGeneral >= 70 ? 'ok' : ($ocupacionGeneral < 30 && $asientos > 0 ? 'alerta' : '')],
+                ['label' => 'Pasajeros', 'valor' => repNum($resumen['pasajeros']), 'detalle' => 'de ' . repNum($asientos) . ' asientos'],
+                ['label' => 'Ingresos', 'valor' => '$ ' . montoCompacto((float)$resumen['ingresos']), 'titulo' => repPesos($resumen['ingresos'])],
+                ['label' => 'Ingreso por vuelo', 'valor' => '$ ' . montoCompacto((int)$resumen['vuelos'] > 0 ? (float)$resumen['ingresos'] / (int)$resumen['vuelos'] : 0)],
+                ['label' => 'Vuelos sin ventas', 'valor' => repNum($sinVentas), 'detalle' => repPct($sinVentas, $resumen['vuelos']) . ' del total', 'tono' => $sinVentas > 0 ? 'alerta' : ''],
+            ]);
+            $filaRuta = fn($f) => [$f['ruta'], repNum($f['vuelos']), repBarra((float)$f['ocupacion'] * 100, repPct($f['vendidos'], $f['asientos'], 1)), '$ ' . montoCompacto((float)$f['ingresos'])];
+            $colsRuta = [['label' => 'Ruta'], ['label' => 'Vuelos', 'clase' => 'text-end'], ['label' => 'Ocupación'], ['label' => 'Ingresos', 'clase' => 'text-end']];
+            ?>
+            <section class="rep-analisis" aria-label="Análisis de vuelos">
                 <?php
-                $cardsVentas = [
-                    ['icon' => 'avion.png', 'label' => 'Vuelos', 'valor' => number_format((int)$resumen['vuelos'], 0, ',', '.')],
-                    ['icon' => 'ceo.png', 'label' => 'Pasajeros confirmados', 'valor' => number_format((int)$resumen['pasajeros'], 0, ',', '.')],
-                    ['icon' => 'etiqueta.png', 'label' => 'Ingresos confirmados', 'valor' => '$ ' . montoCompacto((float)$resumen['ingresos'])],
-                    ['icon' => 'avion.png', 'label' => 'Asientos disponibles', 'valor' => number_format((int)$disponibles['disponibles'], 0, ',', '.')],
-                ];
+                repTablaMini('Rendimiento por aerolínea',
+                    [['label' => 'Aerolínea'], ['label' => 'Vuelos', 'clase' => 'text-end'], ['label' => 'Ocupación'], ['label' => 'Ingresos', 'clase' => 'text-end']],
+                    array_map(fn($f) => [$f['nombre'], repNum($f['vuelos']), repBarra((float)$f['asientos'] > 0 ? $f['vendidos'] / $f['asientos'] * 100 : 0, repPct($f['vendidos'], $f['asientos'], 1)), '$ ' . montoCompacto((float)$f['ingresos'])], $analisisAerolineas));
+                repTablaMini('Rutas con más ingresos', $colsRuta, array_map($filaRuta, $analisisRutas));
+                repTablaMini('Rutas con menor ocupación', $colsRuta, array_map($filaRuta, $analisisRutasBajas));
                 ?>
-            <?php else: ?>
+            </section>
+
+        <?php else: ?>
+            <?php
+            $totalClientes = (int)$resumen['total'];
+            $compradores = (int)$conCompras['conCompras'];
+            repResumen([
+                ['label' => 'Clientes', 'valor' => repNum($totalClientes), 'detalle' => repNum($resumen['nuevos30']) . ' nuevos en 30 días'],
+                ['label' => 'Activos', 'valor' => repNum($resumen['activos']), 'detalle' => repPct($resumen['activos'], $totalClientes)],
+                ['label' => 'Email verificado', 'valor' => repNum($resumen['verificados']), 'detalle' => repPct($resumen['verificados'], $totalClientes)],
+                ['label' => 'Con compras', 'valor' => repNum($compradores), 'detalle' => 'conversión ' . repPct($compradores, $totalClientes, 1)],
+                ['label' => 'Gasto total', 'valor' => '$ ' . montoCompacto((float)$gastoClientes), 'titulo' => repPesos($gastoClientes)],
+                ['label' => 'Gasto por comprador', 'valor' => '$ ' . montoCompacto($compradores > 0 ? (float)$gastoClientes / $compradores : 0)],
+            ]);
+            $embudo = [
+                ['Registrados', $totalClientes],
+                ['Email verificado', (int)$resumen['verificados']],
+                ['Activos', (int)$resumen['activos']],
+                ['Con compras', $compradores],
+            ];
+            ?>
+            <section class="rep-analisis" aria-label="Análisis de usuarios">
                 <?php
-                $cardsVentas = [
-                    ['icon' => 'ceo.png', 'label' => 'Clientes', 'valor' => number_format((int)$resumen['total'], 0, ',', '.')],
-                    ['icon' => 'ceo.png', 'label' => 'Activos', 'valor' => number_format((int)$resumen['activos'], 0, ',', '.')],
-                    ['icon' => 'ceo.png', 'label' => 'Email verificado', 'valor' => number_format((int)$resumen['verificados'], 0, ',', '.')],
-                    ['icon' => 'etiqueta.png', 'label' => 'Con compras', 'valor' => number_format((int)$conCompras['conCompras'], 0, ',', '.')],
-                ];
+                repTablaMini('Embudo de clientes',
+                    [['label' => 'Etapa'], ['label' => 'Clientes', 'clase' => 'text-end'], ['label' => 'Del total']],
+                    array_map(fn($e) => [$e[0], repNum($e[1]), repBarra($totalClientes > 0 ? $e[1] / $totalClientes * 100 : 0, repPct($e[1], $totalClientes))], $embudo));
+                repTablaMini('Clientes que más gastaron',
+                    [['label' => 'Cliente'], ['label' => 'Compras', 'clase' => 'text-end'], ['label' => 'Gastado', 'clase' => 'text-end']],
+                    array_map(fn($f) => [$f['cliente'], repNum($f['compras']), repPesos($f['gastado'])], $analisisTopClientes),
+                    'Todavía no hay compras confirmadas.');
+                repTablaMini('Altas por mes',
+                    [['label' => 'Mes'], ['label' => 'Altas', 'clase' => 'text-end'], ['label' => 'Verificaron']],
+                    array_map(fn($f) => [repMes($f['mes']), repNum($f['altas']), repBarra($f['altas'] > 0 ? $f['verificados'] / $f['altas'] * 100 : 0, repPct($f['verificados'], $f['altas']))], $analisisMeses));
                 ?>
-            <?php endif; ?>
-
-            <?php foreach ($cardsVentas as $card): ?>
-                <div class="col-6 col-md-3">
-                    <div class="bg-white shadow rounded-3 py-2 px-3 h-100">
-                        <div class="d-flex flex-row align-items-center gap-3">
-                            <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
-                                 style="width:55px;height:55px;background-color:#E3F0FE;">
-                                <img src="<?= url('public/img/icons/placeholdersCards/' . $card['icon']) ?>"
-                                     class="img-fluid" alt="Icono de <?= htmlspecialchars($card['label']) ?>" style="width:32px;height:32px;object-fit:contain;">
-                            </div>
-
-                            <div class="d-flex flex-column justify-content-center" style="min-width:0;">
-                                <p class="fw-semibold m-0 p-0 text-muted" style="font-size:14px;"><?= $card['label'] ?></p>
-                                <p class="fs-4 fw-bold text-dark m-0 p-0 text-nowrap text-truncate" title="<?= htmlspecialchars($card['completo'] ?? $card['valor']) ?>"><?= $card['valor'] ?></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
-
-        <section class="reporte-grafico" aria-label="Resumen gráfico del reporte">
-            <h2>Indicador destacado</h2>
-            <?php foreach ($graficoReporte as $etiqueta => $valor): ?>
-                <div class="barra-fila">
-                    <span><?= htmlspecialchars($etiqueta) ?></span>
-                    <div class="barra-base"><div class="barra-valor" style="width: <?= round(($valor / $maxGrafico) * 100) ?>%;"></div></div>
-                    <strong><?= $valor ?><?= $tab === 'vuelos' ? '%' : '' ?></strong>
-                </div>
-            <?php endforeach; ?>
-        </section>
+            </section>
+        <?php endif; ?>
 
         <div class="d-flex flex-column gap-2">
             <div class="table-responsive bg-white shadow rounded-3 pt-3 tablaContenedor">
