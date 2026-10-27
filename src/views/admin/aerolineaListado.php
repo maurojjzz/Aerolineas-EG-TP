@@ -147,7 +147,7 @@ if ($diff > 0) {
                             aria-expanded="<?= $filtrosActivos > 0 ? 'true' : 'false' ?>"
                             aria-controls="panelFiltrosAerolinea"
                         >
-                            <i class="bi bi-funnel me-1"></i>
+                            <i class="bi bi-funnel me-1" aria-hidden="true"></i>
                             Filtros
                             <?php if ($filtrosActivos > 0): ?>
                                 <span class="badge text-bg-primary ms-1"><?= $filtrosActivos ?></span>
@@ -168,6 +168,7 @@ if ($diff > 0) {
                                 <input type="hidden" name="conCeo" value="<?= htmlspecialchars($conCeo) ?>">
                             <?php endif; ?>
 
+                            <label for="buscadorAerolinea" class="visually-hidden">Buscar aerolínea por nombre o código</label>
                             <input
                                 type="text"
                                 name="busqueda"
@@ -301,7 +302,7 @@ if ($diff > 0) {
                                         <img
                                             src="<?= url('public/img/icons/readTabla.png') ?>"
                                             class= "img-fluid btn-tabla"
-                                            alt="icono ver aerolinea"
+                                            alt="Ver detalle de <?= htmlspecialchars($aero['nombreAerolinea']) ?>"
                                         >
                                     </a>
                                     <a 
@@ -318,7 +319,7 @@ if ($diff > 0) {
                                         <img
                                             src="<?= url('public/img/icons/lapiz-editar.png') ?>"
                                             class= "img-fluid btn-tabla"
-                                            alt="icono editar aerolinea"
+                                            alt="Editar <?= htmlspecialchars($aero['nombreAerolinea']) ?>"
                                         >
                                     </a>
                                     <button 
@@ -385,11 +386,11 @@ if ($diff > 0) {
                                             <p class="fw-semibold m-0 mb-1" style="font-size:0.85rem;">Acciones disponibles</p>
                                             <a href="<?= url('index.php?pagina=aerolinea&seccion=detalle&id=' . $aero['idAerolinea']) ?>" 
                                             class="btn btn-outline-primary btn-sm d-flex align-items-center gap-2">
-                                                Ver detalle
+                                                Ver detalle<span class="visually-hidden"> de <?= htmlspecialchars($aero['nombreAerolinea']) ?></span>
                                             </a>
                                             <a href="<?= url('index.php?pagina=aerolinea&seccion=editar&id=' . $aero['idAerolinea']) ?>" 
                                             class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-2">
-                                                Editar aerolínea
+                                                Editar aerolínea<span class="visually-hidden"> <?= htmlspecialchars($aero['nombreAerolinea']) ?></span>
                                             </a>
                                             <button type="button"
                                                 class="btn btn-sm d-flex align-items-center gap-2 btn-toggle-estado
@@ -436,8 +437,8 @@ if ($diff > 0) {
                                     <div><dt>CEO asociado</dt><dd><?= $aero['ceoNombre'] ? htmlspecialchars($aero['ceoNombre'] . ' ' . $aero['ceoApellido']) : '—' ?></dd></div>
                                 </dl>
                                 <div class="admin-mobile-card__actions">
-                                    <a class="btn btn-outline-primary btn-sm" href="<?= url('index.php?pagina=aerolinea&seccion=detalle&id=' . $aero['idAerolinea']) ?>">Ver detalle</a>
-                                    <a class="btn btn-outline-secondary btn-sm" href="<?= url('index.php?pagina=aerolinea&seccion=editar&id=' . $aero['idAerolinea']) ?>">Editar</a>
+                                    <a class="btn btn-outline-primary btn-sm" href="<?= url('index.php?pagina=aerolinea&seccion=detalle&id=' . $aero['idAerolinea']) ?>">Ver detalle<span class="visually-hidden"> de <?= htmlspecialchars($aero['nombreAerolinea']) ?></span></a>
+                                    <a class="btn btn-outline-secondary btn-sm" href="<?= url('index.php?pagina=aerolinea&seccion=editar&id=' . $aero['idAerolinea']) ?>">Editar<span class="visually-hidden"> <?= htmlspecialchars($aero['nombreAerolinea']) ?></span></a>
                                     <button type="button" class="btn <?= $aero['activo'] ? 'btn-outline-danger' : 'btn-outline-success' ?> btn-sm btn-toggle-estado" data-id="<?= $aero['idAerolinea'] ?>" data-activo="<?= $aero['activo'] ?>" data-nombre="<?= htmlspecialchars($aero['nombreAerolinea']) ?>"><?= $aero['activo'] ? 'Desactivar' : 'Activar' ?></button>
                                 </div>
                             </article>
@@ -502,8 +503,9 @@ if ($diff > 0) {
                         </nav>
 
                         <div class="d-flex align-items-center gap-2">
-                            <span class="text-muted" style="font-size:0.8rem;">Por página:</span>
+                            <label for="porPaginaAerolinea" class="text-muted" style="font-size:0.8rem;">Por página:</label>
                             <select
+                                id="porPaginaAerolinea"
                                 class="form-select form-select-sm border-0 bg-light rounded-2"
                                 style="width:auto; font-size:0.8rem; cursor:pointer;"
                                 onchange="window.location.href=this.value"
@@ -527,7 +529,7 @@ if ($diff > 0) {
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header border-0">
-                    <h2 class="modal-title fw-bold h5" id="modalToggleTitulo"></h2>
+                    <h2 class="modal-title fw-bold h5" id="modalToggleTitulo">Confirmar cambio de estado</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
