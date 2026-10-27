@@ -46,7 +46,7 @@ $esCeo = ($rolActual === 'ceo');
 <div>
     <nav class="breadcrumbCont" aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <!-- <li class="breadcrumb-item"><a href="#">Inicio</a></li> -->
+            <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=aerolinea&seccion=listado') ?>">Administración</a></li>
             <li class="breadcrumb-item"><a href="<?= url('/index.php?pagina=usuario&seccion=listado') ?>">Usuarios</a></li>
             <li class="breadcrumb-item active" aria-current="page">Editar Usuario</li>
         </ol>

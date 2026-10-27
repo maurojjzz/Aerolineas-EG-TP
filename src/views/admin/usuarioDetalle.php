@@ -115,7 +115,7 @@ $urlReservas = static function (int $pagina) use ($id): string {
 <div>
     <nav class="breadcrumbCont" aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <!-- <li class="breadcrumb-item"><a href="#">Inicio</a></li> -->
+            <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=aerolinea&seccion=listado') ?>">Administración</a></li>
             <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=usuario&seccion=listado') ?>">Usuarios</a></li>
             <li class="breadcrumb-item active">Detalle: <?= htmlspecialchars($u['nombre'] . ' ' . $u['apellido']) ?></li>
         </ol>

@@ -154,7 +154,7 @@ $hastaPromos     = min($pagPromos * $porPaginaPromos, $totalPromosTab);
 <div>
     <nav class="breadcrumbCont" aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <!-- <li class="breadcrumb-item"><a href="#">Inicio</a></li> -->
+            <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=aerolinea&seccion=listado') ?>">Administración</a></li>
             <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=aerolinea&seccion=listado') ?>">Aerolíneas</a></li>
             <li class="breadcrumb-item active">Aerolinea: <?= htmlspecialchars($aero['nombreAerolinea']) ?></li>
         </ol>

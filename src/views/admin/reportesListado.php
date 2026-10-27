@@ -296,7 +296,7 @@ $tabs = [
     </div>
     <nav class="breadcrumbCont" aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=inicio') ?>">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=aerolinea&seccion=listado') ?>">Administración</a></li>
             <li class="breadcrumb-item"><a href="<?= url('index.php?pagina=reportes&seccion=listado') ?>">Reportes</a></li>
             <li class="breadcrumb-item active" aria-current="page"><?= $tabs[$tab] ?></li>
         </ol>
