@@ -782,32 +782,53 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Filtrado en vivo: el listado se actualiza al cambiar el estado o al escribir
+    // Filtrado en vivo: trae el listado por fetch y reemplaza solo la tabla y la
+    // paginación de la pestaña, sin recargar ni mover el scroll.
     document.querySelectorAll('form[data-filtro-vivo]').forEach(function (form) {
+        const pane = form.closest('.tab-pane');
         let espera;
+        let ultimaPeticion = 0;
+
+        async function aplicarFiltro() {
+            const url = new URL(form.getAttribute('action'), window.location.href);
+            url.search = new URLSearchParams(new FormData(form)).toString();
+            const peticion = ++ultimaPeticion;
+            pane.setAttribute('aria-busy', 'true');
+
+            try {
+                const resp = await fetch(url, { credentials: 'same-origin' });
+                if (!resp.ok) throw new Error(resp.status);
+                const doc = new DOMParser().parseFromString(await resp.text(), 'text/html');
+                const nuevoPane = doc.getElementById(pane.id);
+                if (peticion !== ultimaPeticion || !nuevoPane) return;
+
+                // Se conserva el encabezado con el formulario (y el foco del buscador)
+                Array.from(pane.children).slice(1).forEach(function (el) { el.remove(); });
+                Array.from(nuevoPane.children).slice(1).forEach(function (el) {
+                    pane.appendChild(document.importNode(el, true));
+                });
+                history.replaceState({}, '', url);
+            } catch (e) {
+                form.submit();
+            } finally {
+                pane.removeAttribute('aria-busy');
+            }
+        }
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            clearTimeout(espera);
+            aplicarFiltro();
+        });
         form.querySelectorAll('select').forEach(function (sel) {
-            sel.addEventListener('change', function () { form.submit(); });
+            sel.addEventListener('change', aplicarFiltro);
         });
         form.querySelectorAll('input[type="text"]').forEach(function (input) {
             input.addEventListener('input', function () {
                 clearTimeout(espera);
-                espera = setTimeout(function () {
-                    sessionStorage.setItem('filtroFoco', input.name);
-                    form.submit();
-                }, 500);
+                espera = setTimeout(aplicarFiltro, 400);
             });
         });
     });
-
-    // Devolver el foco al buscador después de recargar
-    const foco = sessionStorage.getItem('filtroFoco');
-    if (foco) {
-        sessionStorage.removeItem('filtroFoco');
-        const input = document.querySelector('form[data-filtro-vivo] input[name="' + foco + '"]');
-        if (input) {
-            input.focus();
-            input.setSelectionRange(input.value.length, input.value.length);
-        }
-    }
 });
 </script>
